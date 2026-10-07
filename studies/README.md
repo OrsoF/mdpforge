@@ -1,0 +1,19 @@
+# Studies
+
+This folder replaces the old `exps/` and `notebooks/` trees with theme-oriented notebooks.
+Notebook outputs were stripped during consolidation; run only the sections needed for a given analysis.
+Some sections preserve old command-line scripts as notebook cells; set the parameter block manually before running those cells.
+
+Install analysis dependencies from the repository root with
+`python -m pip install -e ".[notebooks]"`. Add the relevant backend extra for each
+study (for example, `.[notebooks,gurobi]` for LP comparisons). Notebook execution
+also needs a separately installed Jupyter frontend/kernel. Historical RL cells
+that import the absent `solvers_agg` package remain unavailable even with `deep`.
+
+## Notebooks
+
+- `01_tutorial_and_data_extraction.ipynb`: tutorial and data extraction notes.
+- `02_solver_comparison_smoke_tests.ipynb`: legacy solver comparison and smoke-test recipes.
+- `03_manuscript_runtime_tables.ipynb`: manuscript, JMLR, MTG, discounted, and total-reward tables.
+- `04_lp_vs_dp_scaling.ipynb`: LP-vs-DP state/action scaling studies.
+- `05_abstraction_and_rl_studies.ipynb`: abstraction, aggregation, and RL study material.

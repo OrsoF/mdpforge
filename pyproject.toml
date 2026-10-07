@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mdpforge"
+version = "0.1.0"
+description = "Finite Markov decision process models, solvers, and benchmarks"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = ["numpy>=1.26", "scipy>=1.12"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff==0.16.10"]
+plot = ["matplotlib>=3.8"]
+mdptoolbox = [
+    "pymdptoolbox @ git+https://github.com/OrsoF/pymdptoolbox_update.git@a70336d78641545e1c1dab19c0539533b9596bf8",
+]
+gurobi = ["gurobipy"]
+mdpsolver = ["mdpsolver"]
+deep = ["stable-baselines3", "gymnasium"]
+maze = ["mazelib"]
+progress = ["tqdm"]
+notebooks = ["mdpforge[plot]", "ipython", "pandas", "seaborn", "openpyxl"]
+# Preserve the previous opt-in extras without duplicating dependency declarations.
+reference = ["mdpforge[mdptoolbox]"]
+legacy = ["mdpforge[notebooks,mdptoolbox,gurobi,mdpsolver,deep,maze,progress]"]
+
+[project.urls]
+Repository = "https://github.com/OrsoF/mdpforge"
+
+[tool.setuptools]
+py-modules = ["main", "main_total"]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+include = ["core*", "models*", "solvers*", "utils*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+extend-exclude = ["artifacts", "studies"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+# Keep concise numerical callbacks and conventional coordinate/board symbols.
+ignore = ["E731", "E741"]

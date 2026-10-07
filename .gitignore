@@ -1,3 +1,15 @@
+# Generated research caches and scratch outputs
+/artifacts/tmp/
+/artifacts/saved_models/
+/artifacts/saved_value_functions/
+# Keep artifacts/results/, artifacts/figures/, and artifacts/exps/ versionable.
+
+# Local editor and operating-system files
+/.vscode/
+/.idea/
+.DS_Store
+Thumbs.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
