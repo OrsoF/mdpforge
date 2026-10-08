@@ -11,7 +11,7 @@ import time
 
 import numpy as np
 
-from mdpforge.core.model import SPARSE, GenericModel
+from mdpforge.core.model import GenericModel
 from mdpforge.core.operators import (
     bellman_operator,
     bellman_policy_operator,
@@ -63,8 +63,6 @@ class Solver:
             raise ValueError("split_method must be 'width' or 'tiles'.")
 
         self.projected_steps = projected_steps
-
-        self.model._convert_model(SPARSE)
 
         self.name = "PDMPI" if self.split_method == "width" else "PDMPItiles"
 

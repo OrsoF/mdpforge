@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
 import numpy as np
+from scipy.sparse import csr_matrix
 
-from mdpforge.core.conversion import NUMPY, SPARSE
 from mdpforge.utils.persistence import (
     get_cached_value_function,
     load_model,
@@ -16,7 +16,7 @@ class GenericModel(ABC):
         self.action_dim = action_dim
         self.name = f"{state_dim}_{action_dim}_{self.__class__.__name__.lower()}"
 
-        self.transition_matrix: list | np.ndarray
+        self.transition_matrix: list[csr_matrix]
         self.reward_matrix: np.ndarray
         self.params: dict = {}
 
@@ -27,9 +27,14 @@ class GenericModel(ABC):
         save: bool = True,
     ):
         """Load cached matrices or build, optionally validate, normalize and save."""
-        if self._is_model_built() or load_model(self):
+        already_built = self._is_model_built() or load_model(self)
+        if not already_built:
+            self._build_model()
+        self.transition_matrix = [
+            csr_matrix(matrix) for matrix in self.transition_matrix
+        ]
+        if already_built:
             return
-        self._build_model()
         if normalize_reward:
             self._normalize_reward_matrix()
         if check_transition:
@@ -106,15 +111,9 @@ class GenericModel(ABC):
         if not np.array_equal(np.sort(permutation), expected_states):
             raise ValueError("Permutation must contain each state exactly once.")
 
-        if isinstance(self.transition_matrix, list):
-            self.transition_matrix = [
-                matrix[permutation, :][:, permutation]
-                for matrix in self.transition_matrix
-            ]
-        else:
-            self.transition_matrix = self.transition_matrix[:, permutation, :][
-                :, :, permutation
-            ]
+        self.transition_matrix = [
+            matrix[permutation, :][:, permutation] for matrix in self.transition_matrix
+        ]
 
         self.reward_matrix = self.reward_matrix[permutation, :]
         return permutation
@@ -122,36 +121,13 @@ class GenericModel(ABC):
     def get_transition_density(self) -> float:
         """Return the density of the transition matrix: |T|/S^2/A"""
         return (
-            sum(len(matrix.data) for matrix in self.transition_matrix)
+            sum(matrix.nnz for matrix in self.transition_matrix)
             / self.state_dim**2
             / self.action_dim
         )
 
     def get_reward_density(self) -> float:
         return np.count_nonzero(self.reward_matrix) / self.state_dim / self.action_dim
-
-    def get_model_type(self) -> str:
-        if isinstance(self.transition_matrix, list):
-            return SPARSE
-        else:
-            return NUMPY
-
-    def _model_to_numpy(self):
-        """Convert the transition and reward matrices to numpy arrays."""
-        from mdpforge.core.conversion import model_to_numpy
-
-        model_to_numpy(self)
-
-    def _model_to_sparse(self):
-        from mdpforge.core.conversion import model_to_sparse
-
-        model_to_sparse(self)
-
-    def _model_to_marmote(self):
-        """Convert the transition and reward matrices to marmote format."""
-        from mdpforge.core.conversion import model_to_marmote
-
-        model_to_marmote(self)
 
     def _compute_mdpsolver_args(self) -> tuple:
         """Convert the model transition and reward to value made for MDPSolver."""
@@ -161,11 +137,6 @@ class GenericModel(ABC):
 
     def _is_model_built(self) -> bool:
         return hasattr(self, "transition_matrix") and hasattr(self, "reward_matrix")
-
-    def _convert_model(self, mode: str):
-        from mdpforge.core.conversion import convert_model
-
-        convert_model(self, mode)
 
     def get_model_main_parameters(self) -> list:
         # State dim, action dim, transition density, transition average, transition std, reward density, reward average, reward std

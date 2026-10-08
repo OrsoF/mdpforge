@@ -2,7 +2,7 @@ from time import time
 
 import numpy as np
 
-from mdpforge.core.model import SPARSE, GenericModel
+from mdpforge.core.model import GenericModel
 from mdpforge.core.operators import bellman_operator, compact_optimal_bellman_operator
 from mdpforge.core.partition import Partition
 from mdpforge.utils.bellman import (
@@ -31,7 +31,6 @@ class Solver:
         model: GenericModel,
         discount: float,
         final_precision: float = 1e-3,
-        mode: str = SPARSE,
         verbose: bool = False,
         bellman_updates: int = 10,
         refinement: str = "width",
@@ -59,7 +58,6 @@ class Solver:
             self.model.reward_matrix == self.model.reward_matrix[:, [0]]
         )
 
-        self.model._convert_model(mode)
         self.name = self._name()
         self.policy = None
 

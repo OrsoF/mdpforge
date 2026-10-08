@@ -8,6 +8,7 @@ from importlib.util import find_spec
 import numpy as np
 import pytest
 from numpy.testing import assert_allclose
+from scipy.sparse import csr_matrix
 
 from mdpforge.core.operators import (
     bellman_operator,
@@ -59,6 +60,7 @@ def test_model_contract(
     model = module.Model(**parameters)
     model.create_model(save=False)
     validate_model(model)
+    assert all(isinstance(matrix, csr_matrix) for matrix in model.transition_matrix)
 
 
 def test_solver_contract(solver_module, chain, monkeypatch, request, tmp_path):
@@ -72,7 +74,9 @@ def test_solver_contract(solver_module, chain, monkeypatch, request, tmp_path):
     discount = 0.9
     monkeypatch.setattr(np.random, "randint", np.random.RandomState(0).randint)
     solver = solver_class(chain, discount, final_precision=1e-4)
+    assert all(isinstance(matrix, csr_matrix) for matrix in chain.transition_matrix)
     solver.run()
+    assert all(isinstance(matrix, csr_matrix) for matrix in chain.transition_matrix)
     assert solver.value.shape == (chain.state_dim,)
     assert np.all(np.isfinite(solver.value))
     assert_allclose(solver.value, [1.8, 2, 0], atol=1e-3, rtol=0)
@@ -111,7 +115,7 @@ def test_vi_final_precision(vi_module, chain, monkeypatch, request, tmp_path):
         (0.95, 1e-3, True),
     ):
         model = deepcopy(chain)
-        model.transition_matrix = np.array([transition, transition])
+        model.transition_matrix = [csr_matrix(transition), csr_matrix(transition)]
         model.reward_matrix = np.array([[1, 0.2], [2, -0.1], [0.5, 0]])
         if constant_reward:
             model.reward_matrix[:] = 1

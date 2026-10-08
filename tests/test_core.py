@@ -1,9 +1,8 @@
 from types import SimpleNamespace
 
 import numpy as np
-import pytest
 from numpy.testing import assert_allclose
-from scipy.sparse import csr_array
+from scipy.sparse import csr_matrix
 
 from mdpforge.core.operators import (
     bellman_operator,
@@ -13,8 +12,7 @@ from mdpforge.core.operators import (
 from mdpforge.core.validation import validate_model
 
 
-@pytest.mark.parametrize("sparse", [False, True])
-def test_bellman_and_policy_selection(sparse):
+def test_bellman_and_policy_selection():
     transitions = np.array(
         [
             [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
@@ -25,9 +23,7 @@ def test_bellman_and_policy_selection(sparse):
     model = SimpleNamespace(
         state_dim=3,
         action_dim=2,
-        transition_matrix=[csr_array(p) for p in transitions]
-        if sparse
-        else transitions,
+        transition_matrix=[csr_matrix(p) for p in transitions],
         reward_matrix=np.array([[1, 0], [2, 3], [0, 4]], dtype=float),
     )
     validate_model(model)

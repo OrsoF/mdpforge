@@ -35,8 +35,6 @@ class Solver(GenericSolver):
     def run(self):
         start_time = time.time()
 
-        self.model._model_to_numpy()
-
         self.vi = ValueIterationGS(
             self.model.transition_matrix,
             self.model.reward_matrix,

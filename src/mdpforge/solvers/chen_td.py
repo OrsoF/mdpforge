@@ -7,7 +7,7 @@ from time import time
 
 import numpy as np
 
-from mdpforge.core.model import SPARSE, GenericModel
+from mdpforge.core.model import GenericModel
 from mdpforge.core.operators import (
     compact_optimal_bellman_operator,
     norminf,
@@ -26,7 +26,6 @@ class Solver:
         verbose: bool = False,
         iter_agg: int = 40,
         iter_bellman: int = 100,
-        mode: str = SPARSE,
     ):
         assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         # Class arguments
@@ -37,9 +36,7 @@ class Solver:
         self.verbose = verbose
         self.iter_agg = iter_agg
         self.iter_bellman = iter_bellman
-        self.mode = mode
 
-        self.model._convert_model(self.mode)
         self.name = "Chen"
         self.policy = None
         self.shared_reward = np.all(

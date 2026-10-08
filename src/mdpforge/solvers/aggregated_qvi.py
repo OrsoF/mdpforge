@@ -25,8 +25,6 @@ from mdpforge.utils.projected_bellman import (
     projected_optimal_q_bellman_operator,
 )
 
-NUMPY, SPARSE = "numpy", "sparse"
-
 
 class Solver(GenericSolver):
     solver_type = "vi"
@@ -54,7 +52,6 @@ class Solver(GenericSolver):
         )
         self.name = "PDQVI"
         self.policy = None
-        self.model._convert_model(SPARSE)
 
         self.partition = Partition(self.model)
 

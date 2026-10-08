@@ -21,6 +21,8 @@ changes that preserve scientific behavior and keep the project easy to extend.
 - Models expose `state_dim`, `action_dim`, `transition_matrix[action]`, and
   `reward_matrix[state, action]`; construct them with `create_model()`.
   Solvers take explicit constructor options followed by an option-free `run()`.
+  Transitions are a list of SciPy `csr_matrix` objects; rewards and values are
+  NumPy arrays. Finalize CSR in `create_model()`; keep backend conversions local.
 - Support only discounted criteria (`0 < discount < 1`, asserted by solvers).
   VI precision bounds absolute value error using the full Bellman residual.
   Check solution quality, not just runtime.

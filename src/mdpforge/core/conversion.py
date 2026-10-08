@@ -3,15 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import numpy as np
-from scipy.sparse import csr_array
+from scipy.sparse import csr_matrix
 
 if TYPE_CHECKING:
     from marmote.core import FullMatrix
 
     from mdpforge.core.model import GenericModel
-
-
-NUMPY, SPARSE = "numpy", "sparse"
 
 
 ####### MARMOTE #######
@@ -30,7 +27,7 @@ def build_marmote_reward_matrix(
 
 
 def build_marmote_transition_list(
-    state_dim: int, action_dim: int, transition_matrix: list[np.ndarray]
+    state_dim: int, action_dim: int, transition_matrix: list[csr_matrix]
 ) -> list:
     from marmote.core import SparseMatrix
 
@@ -48,52 +45,6 @@ def build_marmote_transition_list(
         marmote_transitions_list.append(P)
         P = None
     return marmote_transitions_list
-
-
-def model_to_numpy(model: "GenericModel") -> None:
-    """Convert transition and reward matrices to dense numpy arrays in place."""
-    try:
-        model.transition_matrix = np.array(
-            [matrix.toarray() for matrix in model.transition_matrix]
-        )
-    except AttributeError:
-        pass
-
-    try:
-        model.reward_matrix = model.reward_matrix.toarray()
-    except AttributeError:
-        pass
-
-
-####### SPARSE #######
-
-
-def model_to_sparse(model: "GenericModel") -> None:
-    """Convert transition matrices to a list of CSR sparse arrays in place."""
-    model.transition_matrix = [csr_array(matrix) for matrix in model.transition_matrix]
-
-
-####### MARMOTE MODEL #######
-
-
-def model_to_marmote(model: "GenericModel") -> None:
-    """Convert transition and reward matrices to Marmote-compatible objects."""
-    if not model._is_model_built():
-        raise ValueError("Model is not built yet.")
-
-    model.transition_matrix = build_marmote_transition_list(
-        model.state_dim,
-        model.action_dim,
-        model.transition_matrix,
-    )
-    model.reward_matrix = build_marmote_reward_matrix(
-        model.state_dim,
-        model.action_dim,
-        model.reward_matrix,
-    )
-
-
-####### MDPSOLVER #######
 
 
 def compute_mdpsolver_args(model: "GenericModel") -> tuple:
@@ -121,11 +72,13 @@ def compute_mdpsolver_args(model: "GenericModel") -> tuple:
 ####### DISPATCH #######
 
 
-def convert_model(model: "GenericModel", mode: str) -> None:
-    """Convert model matrices to one of the supported internal formats."""
-    if mode == NUMPY:
-        model_to_numpy(model)
-    elif mode == SPARSE:
-        model_to_sparse(model)
-    else:
-        raise ValueError(f"Unknown model conversion mode: {mode}")
+def compute_marmote_args(model: "GenericModel") -> tuple:
+    """Build native Marmote matrices without changing the CSR model."""
+    return (
+        build_marmote_transition_list(
+            model.state_dim, model.action_dim, model.transition_matrix
+        ),
+        build_marmote_reward_matrix(
+            model.state_dim, model.action_dim, model.reward_matrix
+        ),
+    )

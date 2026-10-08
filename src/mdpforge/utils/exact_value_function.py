@@ -9,7 +9,7 @@ def compute_value_function(model: GenericModel, discount: float, precision: floa
     """Solve with VI while preserving the model's matrix representation."""
     from mdpforge.solvers.personal_vi import Solver
 
-    solver = Solver(model, discount, precision, mode=model.get_model_type())
+    solver = Solver(model, discount, precision)
     solver.run()
     return solver.value
 

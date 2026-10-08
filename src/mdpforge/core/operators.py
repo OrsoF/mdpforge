@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 import numpy as np
-from scipy.sparse import csr_matrix, diags, issparse
+from scipy.sparse import csr_matrix, diags
 
 if TYPE_CHECKING:
     from mdpforge.core.model import GenericModel
@@ -64,8 +64,6 @@ def compute_transition_reward_policy(
         if not np.any(mask):
             continue
         transition = model.transition_matrix[action]
-        if not issparse(transition):
-            transition = csr_matrix(transition)
         transition_policy += diags(mask.astype(float)) @ transition
 
     states = np.arange(model.state_dim)

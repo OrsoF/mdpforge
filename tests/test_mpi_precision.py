@@ -3,8 +3,9 @@ from importlib import import_module
 import numpy as np
 import pytest
 from numpy.testing import assert_allclose
+from scipy.sparse import csr_matrix
 
-from mdpforge.core.model import NUMPY, SPARSE, GenericModel
+from mdpforge.core.model import GenericModel
 from mdpforge.core.operators import (
     compute_transition_reward_policy,
     optimal_bellman_operator,
@@ -13,7 +14,7 @@ from mdpforge.core.operators import (
 
 class RecurrentModel(GenericModel):
     def _build_model(self):
-        self.transition_matrix = np.array([np.eye(2), np.eye(2)])
+        self.transition_matrix = [csr_matrix(np.eye(2)), csr_matrix(np.eye(2))]
         self.reward_matrix = np.array([[1.0, 0.0], [2.0, 0.0]])
 
 
@@ -28,8 +29,7 @@ def recurrent_model(isolated_model_cache):
     "module_name, options",
     [
         ("personal_mpi", {}),
-        ("personal_mpi_init", {"mode": NUMPY}),
-        ("personal_mpi_init", {"mode": SPARSE}),
+        ("personal_mpi_init", {}),
         ("personal_stochasticmpi", {"proba": 0.5}),
         ("aggregated_mpi", {}),
         ("aggregated_mpi", {"split_method": "tiles", "n_tiles": 2}),
@@ -95,7 +95,7 @@ def test_inner_evaluation_keeps_last_update_at_cap(module_name, recurrent_model)
 def test_truncated_evaluation_can_improve_initially_stable_policy(
     module_name, recurrent_model, monkeypatch
 ):
-    recurrent_model.transition_matrix[1] = np.array([[0.0, 1.0], [0.0, 1.0]])
+    recurrent_model.transition_matrix[1] = csr_matrix([[0.0, 1.0], [0.0, 1.0]])
     monkeypatch.setattr(
         np.random, "randint", lambda *args, **kwargs: np.zeros(2, dtype=int)
     )

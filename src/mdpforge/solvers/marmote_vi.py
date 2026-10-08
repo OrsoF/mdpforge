@@ -2,13 +2,13 @@
 Solver calling the Marmote Value Iteration solver in C++.
 """
 
-from copy import copy
 from time import time
 
 import numpy as np
 from marmote.core import MarmoteInterval
 from marmote.mdp import DiscountedMDP, SolutionMDP
 
+from mdpforge.core.conversion import compute_marmote_args
 from mdpforge.core.model import GenericModel
 from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
@@ -32,8 +32,7 @@ class Solver(GenericSolver):
         self.epsilon = final_precision
         self.max_iter = int(1e8)
 
-        self.reference_model = copy(self.model)
-        self.model._model_to_marmote()
+        self.transitions, self.rewards = compute_marmote_args(self.model)
 
     def run(self):
 
@@ -44,8 +43,8 @@ class Solver(GenericSolver):
             "max",
             self.state_space,
             self.action_space,
-            self.model.transition_matrix,
-            self.model.reward_matrix,
+            self.transitions,
+            self.rewards,
             self.discount,
         )
 
@@ -58,8 +57,6 @@ class Solver(GenericSolver):
         self.value = np.array(
             [self.opt.getValueIndex(ss) for ss in range(self.model.state_dim)]
         )
-        self.value = certify_value(
-            self.reference_model, self.value, self.discount, self.epsilon
-        )
+        self.value = certify_value(self.model, self.value, self.discount, self.epsilon)
         self.policy = None
         self.runtime = time() - self.start_time

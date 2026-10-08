@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.sparse import issparse
+from scipy.sparse import csr_matrix
 
 
 def validate_model(
@@ -42,6 +42,10 @@ def validate_model_attributes(model) -> None:
 
     if not isinstance(model.action_dim, int) or model.action_dim <= 0:
         raise ValueError("model.action_dim must be a positive integer.")
+    if not isinstance(model.transition_matrix, list):
+        raise ValueError("transition_matrix must be a list of CSR matrices.")
+    if not isinstance(model.reward_matrix, np.ndarray):
+        raise ValueError("reward_matrix must be a NumPy array.")
 
 
 def validate_model_shapes(model) -> None:
@@ -64,6 +68,10 @@ def validate_model_shapes(model) -> None:
 
     expected_transition_shape = (model.state_dim, model.state_dim)
     for action, transition in enumerate(model.transition_matrix):
+        if not isinstance(transition, csr_matrix):
+            raise ValueError(
+                f"Transition matrix for action {action} must be a CSR matrix."
+            )
         if transition.shape != expected_transition_shape:
             raise ValueError(
                 "Transition matrix for action {} has shape {}, expected {}.".format(
@@ -75,11 +83,11 @@ def validate_model_shapes(model) -> None:
 
 
 def validate_model_finite_values(model) -> None:
-    if not np.all(np.isfinite(_to_numpy(model.reward_matrix))):
+    if not np.all(np.isfinite(model.reward_matrix)):
         raise ValueError("Reward matrix contains NaN or infinite values.")
 
     for action, transition in enumerate(model.transition_matrix):
-        values = transition.data if issparse(transition) else _to_numpy(transition)
+        values = transition.data
         if not np.all(np.isfinite(values)):
             raise ValueError(
                 "Transition matrix for action {} contains NaN or infinite values.".format(
@@ -90,7 +98,7 @@ def validate_model_finite_values(model) -> None:
 
 def validate_transition_stochasticity(model, tol: float = 1e-6) -> None:
     for action, transition in enumerate(model.transition_matrix):
-        values = transition.data if issparse(transition) else _to_numpy(transition)
+        values = transition.data
         if np.any(values < 0):
             raise ValueError(
                 f"Transition matrix for action {action} contains negative probabilities."
@@ -107,9 +115,3 @@ def validate_transition_stochasticity(model, tol: float = 1e-6) -> None:
                     row_sums[first_bad_row],
                 )
             )
-
-
-def _to_numpy(matrix) -> np.ndarray:
-    if issparse(matrix):
-        return matrix.toarray()
-    return np.asarray(matrix)

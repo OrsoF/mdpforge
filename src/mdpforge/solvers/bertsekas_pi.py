@@ -8,7 +8,7 @@ import time
 
 import numpy as np
 
-from mdpforge.core.model import SPARSE, GenericModel
+from mdpforge.core.model import GenericModel
 from mdpforge.core.operators import (
     bellman_operator,
     bellman_policy_operator,
@@ -41,7 +41,6 @@ class Solver:
         self.n_regions = n_regions
         self.verbose = verbose
 
-        self.model._convert_model(SPARSE)
         self.name = "BertsekasAdaptivePI"
 
         self.fixed_partition = Partition(self.model)

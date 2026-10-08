@@ -68,6 +68,10 @@ the benchmark checks every solver against the same final error bound.
   length `state_dim`. Repository tests also expect `policy` (or `None`) and `runtime`.
   Add the constructor to the dictionary passed to `benchmark()`.
 
+Transitions have one format: a list of SciPy `csr_matrix` objects, finalized by
+`create_model()` after building or loading. Rewards and values remain NumPy arrays.
+Solvers use this format directly; external backend objects are built separately.
+
 ## Development
 
 ```sh
@@ -83,7 +87,9 @@ Tests discover modules in `models/` and `solvers/`; models can provide
 
 External backends require their [optional dependencies](pyproject.toml), e.g.
 `python -m pip install -e ".[mdptoolbox]"`. Run their tests with `python -m pytest --optional`;
-missing dependencies are skipped. MDPToolbox VI/GS can fail with constant optimal
-immediate rewards in the pinned PyPI version. MDPSolver runs serially by default.
+missing dependencies are skipped. In the pinned MDPToolbox version, VI can fail
+with constant optimal immediate rewards; Gauss-Seidel fails on CSR inputs under
+NumPy 2 because its native loop converts a one-element array to a scalar.
+MDPSolver runs serially by default.
 
 [MIT license](LICENSE).

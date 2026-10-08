@@ -4,6 +4,7 @@ import random
 import numpy as np
 import pytest
 from numpy.testing import assert_allclose
+from scipy.sparse import csr_matrix
 
 from mdpforge.core.benchmark import benchmark, export_csv
 from mdpforge.solvers.personal_qvi import Solver as QVI
@@ -25,16 +26,18 @@ def test_benchmark_measures_vi_and_qvi(chain):
         assert np.isfinite(row["runtime"]) and row["runtime"] >= 0
         assert row["residual"] <= row["epsilon"] * (1 - row["discount"])
         assert row["error_bound"] <= row["epsilon"]
-    assert chain.get_model_type() == "numpy"
+    assert all(isinstance(matrix, csr_matrix) for matrix in chain.transition_matrix)
 
 
 def test_benchmark_checks_original_model_and_isolates_trials(chain):
-    transitions, rewards = chain.transition_matrix.copy(), chain.reward_matrix.copy()
+    transitions = [matrix.copy() for matrix in chain.transition_matrix]
+    rewards = chain.reward_matrix.copy()
 
     class MutatingSolver:
         def __init__(self, model, discount, final_precision):
             model.reward_matrix[:] = 0
-            model.transition_matrix[:] = 0
+            for matrix in model.transition_matrix:
+                matrix.data[:] = 0
             self.value = np.zeros(model.state_dim)
 
         def run(self):
@@ -51,7 +54,8 @@ def test_benchmark_checks_original_model_and_isolates_trials(chain):
     ]
     assert results[0]["residual"] == 2
     assert results[0]["error_bound"] == pytest.approx(20)
-    assert_allclose(chain.transition_matrix, transitions, rtol=0, atol=0)
+    for matrix, original in zip(chain.transition_matrix, transitions):
+        assert_allclose(matrix.toarray(), original.toarray(), rtol=0, atol=0)
     assert_allclose(chain.reward_matrix, rewards, rtol=0, atol=0)
 
 

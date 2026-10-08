@@ -1,10 +1,11 @@
 from time import time
 
 import numpy as np
-from scipy.sparse import eye, lil_matrix
+from scipy.sparse import eye
 from scipy.sparse.linalg import spsolve
 
-from mdpforge.core.model import SPARSE, GenericModel
+from mdpforge.core.model import GenericModel
+from mdpforge.core.operators import compute_transition_reward_policy
 
 
 class Solver:
@@ -20,7 +21,6 @@ class Solver:
         self.discount = discount
 
         self.name = "PI"
-        self.model._convert_model(SPARSE)
 
         self.max_iter_eval = int(1e8)
         self.precision_policy_eval: float = 1e-2
@@ -55,7 +55,9 @@ class Solver:
         value: np.ndarray,
     ) -> np.ndarray:
         """Policy evaluation using LP solving."""
-        transition_policy, reward_policy = self._compute_transition_reward_pi(policy)
+        transition_policy, reward_policy = compute_transition_reward_policy(
+            self.model, policy
+        )
 
         A = eye(self.model.state_dim, format="csr") - self.discount * transition_policy
         b = reward_policy
@@ -63,37 +65,6 @@ class Solver:
         value = spsolve(A, b)
 
         return value
-
-    def _compute_transition_reward_pi(self, policy):
-        """Compute the transition and reward matrices for the given policy."""
-        # Methode 1
-        # transition_policy = lil_matrix((self.model.state_dim, self.model.state_dim))
-        # reward_policy = np.zeros(self.model.state_dim)
-        # for aa in range(self.model.action_dim):
-        #     ind: np.ndarray = (policy == aa).nonzero()[0]
-        #     if ind.size > 0:
-        #         # transition_policy[ind, :] = model.transition_matrix[aa][
-        #         #     ind, :
-        #         # ].toarray()
-        #         for i, elem in enumerate(self.model.transition_matrix[aa][ind, :]):
-        #             if elem.toarray()[0, 0] > 0:
-        #                 transition_policy[ind, i] = elem
-        # # transition_policy = transition_policy.tocsr()
-        # return transition_policy, reward_policy
-
-        # Methode 2
-        transition_policy = lil_matrix((self.model.state_dim, self.model.state_dim))
-        reward_policy = np.zeros(self.model.state_dim)
-        for aa in range(self.model.action_dim):
-            ind = (policy == aa).nonzero()[0]
-            if ind.size > 0:
-                for ss in ind:
-                    transition_policy[[ss], :] = self.model.transition_matrix[aa][
-                        [ss], :
-                    ].toarray()
-                reward_policy[ind] = self.model.reward_matrix[ind, aa]
-        transition_policy = transition_policy.tocsr()
-        return transition_policy, reward_policy
 
     def bellman_no_max(self, value: np.ndarray) -> np.ndarray:
         q_value = np.zeros((self.model.state_dim, self.model.action_dim))

@@ -6,7 +6,7 @@ from pkgutil import iter_modules
 
 import numpy as np
 import pytest
-from scipy.sparse import csr_array
+from scipy.sparse import csr_matrix
 
 from mdpforge import models, solvers
 from mdpforge.core.model import GenericModel
@@ -18,8 +18,8 @@ class FourStateModel(GenericModel):
 
     def _build_model(self):
         self.transition_matrix = [
-            csr_array(np.eye(4)),
-            csr_array(np.roll(np.eye(4), 1, axis=1)),
+            csr_matrix(np.eye(4)),
+            csr_matrix(np.roll(np.eye(4), 1, axis=1)),
         ]
         self.reward_matrix = np.array([[1, 0.5], [1, 1], [2, 1.5], [3, 2]])
 
@@ -28,9 +28,10 @@ class ChainModel(GenericModel):
     """Transient rewards with known optimal value [2 * discount, 2, 0]."""
 
     def _build_model(self):
-        self.transition_matrix = np.array(
-            [[[0, 1, 0], [0, 0, 1], [0, 0, 1]], np.eye(3)], dtype=float
-        )
+        self.transition_matrix = [
+            csr_matrix([[0, 1, 0], [0, 0, 1], [0, 0, 1]], dtype=float),
+            csr_matrix(np.eye(3)),
+        ]
         self.reward_matrix = np.array([[0, 0], [2, 0], [0, 0]], dtype=float)
 
 
@@ -126,6 +127,6 @@ def chain(tmp_path, monkeypatch, isolated_model_cache):
 def model_script():
     # Reuse the synthetic model in isolated interpreters without importing tests.
     return (
-        "import numpy as np\nfrom mdpforge.core.model import GenericModel\n"
-        + inspect.getsource(ChainModel)
+        "import numpy as np\nfrom scipy.sparse import csr_matrix\n"
+        "from mdpforge.core.model import GenericModel\n" + inspect.getsource(ChainModel)
     )

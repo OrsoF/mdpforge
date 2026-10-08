@@ -2,7 +2,7 @@ import time
 
 import numpy as np
 
-from mdpforge.core.model import SPARSE, GenericModel
+from mdpforge.core.model import GenericModel
 
 
 class Solver:
@@ -20,7 +20,6 @@ class Solver:
         assert final_precision > 0, "final_precision must be positive"
         self.epsilon = final_precision
 
-        self.model._convert_model(SPARSE)
         self.name = "QVI"
 
         # print("Change the product in at in Personal Value Iteration")

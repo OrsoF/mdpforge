@@ -8,6 +8,7 @@ import numpy as np
 from marmote.core import MarmoteInterval
 from marmote.mdp import DiscountedMDP, FeedbackSolutionMDP
 
+from mdpforge.core.conversion import compute_marmote_args
 from mdpforge.core.model import GenericModel
 from mdpforge.core.solver import GenericSolver
 
@@ -29,7 +30,7 @@ class Solver(GenericSolver):
         self.max_step_policy_update = int(1e8)
         self.max_step_policy_evaluation = 10
 
-        self.model._model_to_marmote()
+        self.transitions, self.rewards = compute_marmote_args(self.model)
 
     def run(self):
         self.state_space = MarmoteInterval(0, int(self.model.state_dim - 1))
@@ -39,8 +40,8 @@ class Solver(GenericSolver):
             "max",
             self.state_space,
             self.action_space,
-            self.model.transition_matrix,
-            self.model.reward_matrix,
+            self.transitions,
+            self.rewards,
             self.discount,
         )
 

@@ -2,7 +2,7 @@ from time import time
 
 import numpy as np
 
-from mdpforge.core.model import SPARSE, GenericModel
+from mdpforge.core.model import GenericModel
 from mdpforge.core.operators import bellman_operator, compute_transition_reward_policy
 
 
@@ -19,7 +19,6 @@ class Solver:
         self.discount = discount
 
         self.name = "MPI"
-        self.model._convert_model(SPARSE)
 
         self.max_iter_eval = int(1e1)
         self.precision_policy_eval = final_precision
