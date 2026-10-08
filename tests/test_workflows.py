@@ -7,6 +7,7 @@ from mdpforge.core.operators import (
     compute_transition_reward_policy,
     optimal_bellman_operator,
 )
+from mdpforge.core.validation import validate_model
 from mdpforge.solvers.personal_pim import Solver as MPI
 from mdpforge.solvers.personal_vi import Solver as VI
 
@@ -15,9 +16,11 @@ from mdpforge.solvers.personal_vi import Solver as VI
 def test_model_to_solver_workflow(
     model_spec, isolated_model_cache, solver_class, monkeypatch
 ):
-    model_class, state_dim, action_dim, _ = model_spec
+    model_class, state_dim, action_dim, expected_dimensions = model_spec
     model = model_class(state_dim, action_dim)
     model.create_model(save=False)
+    assert (model.state_dim, model.action_dim) == expected_dimensions
+    validate_model(model)
     discount = 0.9
     # MPI initializes a random policy; isolate the global RNG used by that solver.
     monkeypatch.setattr(np.random, "randint", np.random.RandomState(0).randint)

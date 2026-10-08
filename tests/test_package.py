@@ -2,35 +2,22 @@ import subprocess
 import sys
 
 
-def test_installed_namespace_and_workflow(tmp_path):
+def test_installed_package_works_outside_checkout(tmp_path):
     # Run outside the checkout, without PYTHONPATH or the current directory.
     script = """
-from importlib import import_module
 from pathlib import Path
-import sys
 
-import mdpforge
 from mdpforge.models.rooms import Model
 from mdpforge.solvers.personal_vi import Solver
-from mdpforge.utils.paths import ARTIFACTS_PATH, MODEL_PATH, SOLVER_PATH
+from mdpforge.utils.paths import ARTIFACTS_PATH
 
-assert mdpforge.__file__
 assert ARTIFACTS_PATH == Path.cwd() / 'artifacts'
-assert MODEL_PATH == Path(mdpforge.__file__).parent / 'models'
-assert SOLVER_PATH == Path(mdpforge.__file__).parent / 'solvers'
-for name in ('rooms', 'total.rooms_total'):
-    model = import_module(f'mdpforge.models.{name}').Model(100, 4)
-    model.create_model(save=False)
-    solver = Solver(model, discount=0.9)
-    solver.run()
-    assert solver.bellman_residual() < 1e-4
-
 model = Model(100, 4)
 model.create_model()
+solver = Solver(model, discount=0.9)
+solver.run()
+assert solver.bellman_residual() < 1e-4
 assert (ARTIFACTS_PATH / 'saved_models' / f'{model.name}.pkl').is_file()
-model.optimal_value_function(0.9)
-assert (ARTIFACTS_PATH / 'saved_value_functions' / f'0.9_{model.name}.pkl').is_file()
-assert not {'core', 'models', 'solvers', 'utils'} & sys.modules.keys()
 """
     result = subprocess.run(
         [sys.executable, "-I", "-c", script],

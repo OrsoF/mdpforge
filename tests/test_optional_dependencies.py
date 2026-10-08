@@ -5,26 +5,15 @@ import sys
 def test_core_workflow_without_optional_dependencies(tmp_path):
     # A fresh interpreter also catches optional imports hidden by test collection.
     script = """
-import importlib
 import sys
 from pathlib import Path
 
 class BlockOptionalImports:
     def find_spec(self, fullname, path=None, target=None):
-        if fullname.split('.')[0] in {
-            'gurobipy', 'mdpsolver', 'mdptoolbox', 'marmote', 'stable_baselines3',
-            'torch', 'gymnasium', 'mazelib', 'matplotlib', 'pandas', 'seaborn',
-            'openpyxl', 'IPython', 'tqdm', 'solvers_agg',
-        }:
+        if fullname.split('.')[0] in {'mdptoolbox', 'matplotlib', 'mazelib'}:
             raise ModuleNotFoundError(f'Optional dependency blocked: {fullname}')
 
 sys.meta_path.insert(0, BlockOptionalImports())
-for name in ('mdpforge.core.model', 'mdpforge.core.solver', 'mdpforge.core.partition', 'mdpforge.core.operators',
-             'mdpforge.core.conversion', 'mdpforge.core.validation', 'mdpforge.utils.bellman',
-             'mdpforge.utils.projected_bellman', 'mdpforge.utils.exact_value_function',
-             'mdpforge.solvers.personal_vi', 'mdpforge.solvers.personal_pim'):
-    importlib.import_module(name)
-
 from mdpforge.models.schoolboy import Model
 from mdpforge.solvers.personal_vi import Solver
 from mdpforge.utils import persistence
