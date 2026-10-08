@@ -32,11 +32,12 @@ legacy = ["mdpforge[notebooks,mdptoolbox,gurobi,mdpsolver,deep,maze,progress]"]
 Repository = "https://github.com/OrsoF/mdpforge"
 
 [tool.setuptools]
-py-modules = ["main", "main_total"]
+package-dir = {"" = "src"}
 include-package-data = false
 
 [tool.setuptools.packages.find]
-include = ["core*", "models*", "solvers*", "utils*"]
+where = ["src"]
+include = ["mdpforge", "mdpforge.*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

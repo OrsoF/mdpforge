@@ -19,19 +19,19 @@ class BlockOptionalImports:
             raise ModuleNotFoundError(f'Optional dependency blocked: {fullname}')
 
 sys.meta_path.insert(0, BlockOptionalImports())
-for name in ('core.model', 'core.solver', 'core.partition', 'core.operators',
-             'core.conversion', 'core.validation', 'utils.bellman',
-             'utils.projected_bellman', 'utils.exact_value_function',
-             'utils.data_management', 'main', 'main_total'):
+for name in ('mdpforge.core.model', 'mdpforge.core.solver', 'mdpforge.core.partition', 'mdpforge.core.operators',
+             'mdpforge.core.conversion', 'mdpforge.core.validation', 'mdpforge.utils.bellman',
+             'mdpforge.utils.projected_bellman', 'mdpforge.utils.exact_value_function',
+             'mdpforge.utils.data_management', 'main', 'main_total'):
     importlib.import_module(name)
 import main
 for module_name, _ in main.SOLVERS.values():
-    importlib.import_module(f'solvers.{module_name}')
+    importlib.import_module(f'mdpforge.solvers.{module_name}')
 
-from models.forest import Model
-from solvers.personal_vi import Solver
-from utils import persistence
-from core.validation import validate_model
+from mdpforge.models.forest import Model
+from mdpforge.solvers.personal_vi import Solver
+from mdpforge.utils import persistence
+from mdpforge.core.validation import validate_model
 persistence.SAVED_MODELS_PATH = Path(sys.argv[1]) / 'models'
 model = Model(4, 2)
 model.create_model(save=False)

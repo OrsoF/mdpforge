@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from scipy.sparse import csr_array
 
-from core.validation import validate_model
+from mdpforge.core.validation import validate_model
 
 
 @pytest.mark.parametrize("sparse", [False, True], ids=["dense", "sparse"])

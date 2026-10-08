@@ -5,12 +5,12 @@ import pytest
 from numpy.testing import assert_allclose
 from scipy.sparse import csr_array
 
-from core.operators import (
+from mdpforge.core.operators import (
     bellman_operator,
     compute_transition_reward_policy,
     optimal_bellman_operator,
 )
-from core.validation import validate_model
+from mdpforge.core.validation import validate_model
 
 
 @pytest.mark.parametrize("sparse", [False, True])

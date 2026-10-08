@@ -4,8 +4,8 @@ import numpy as np
 import pytest
 from numpy.testing import assert_allclose, assert_array_equal
 
-from core.partition import Partition
-from core.validation import validate_model
+from mdpforge.core.partition import Partition
+from mdpforge.core.validation import validate_model
 
 
 def test_partition_regions_cover_every_state(forest):

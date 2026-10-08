@@ -7,8 +7,8 @@ from pathlib import Path
 
 import numpy as np
 
-from utils.data_management import import_models_from_file
-from utils.paths import RESULTS_PATH
+from mdpforge.utils.data_management import import_models_from_file
+from mdpforge.utils.paths import RESULTS_PATH
 
 MODELS = {
     "rooms": ("total/rooms_total", 100_000, 4, "Rooms total"),
@@ -78,7 +78,7 @@ def solver_options(name, a):
 
 
 def make_solver(name, model, a):
-    solver = import_module(f"solvers.total.{SOLVERS[name][0]}").Solver(
+    solver = import_module(f"mdpforge.solvers.total.{SOLVERS[name][0]}").Solver(
         model, a.discount, **solver_options(name, a)
     )
     if name == "mpi":

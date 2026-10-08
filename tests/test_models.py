@@ -2,8 +2,8 @@ import numpy as np
 from numpy.testing import assert_allclose
 from scipy.sparse import issparse
 
-from core.validation import validate_model
-from utils import persistence
+from mdpforge.core.validation import validate_model
+from mdpforge.utils import persistence
 
 
 def test_model_contract(model_spec, isolated_model_cache):

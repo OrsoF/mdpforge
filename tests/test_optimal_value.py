@@ -2,9 +2,9 @@ import numpy as np
 import pytest
 from numpy.testing import assert_allclose
 
-from core.model import GenericModel
-from core.operators import optimal_bellman_operator
-from utils import persistence
+from mdpforge.core.model import GenericModel
+from mdpforge.core.operators import optimal_bellman_operator
+from mdpforge.utils import persistence
 
 
 class ChainModel(GenericModel):

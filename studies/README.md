@@ -10,6 +10,12 @@ study (for example, `.[notebooks,gurobi]` for LP comparisons). Notebook executio
 also needs a separately installed Jupyter frontend/kernel. Historical RL cells
 that import the absent `solvers_agg` package remain unavailable even with `deep`.
 
+Cells import the installed `mdpforge` package; they no longer add the checkout to
+`sys.path`. The setup cell selects the repository root as the working directory
+so research outputs and caches stay under its `artifacts/` folder. Historical
+references to removed modules (such as `utils.generic_model`) and old solver
+locations still need adaptation before those sections can run.
+
 ## Notebooks
 
 - `01_tutorial_and_data_extraction.ipynb`: tutorial and data extraction notes.

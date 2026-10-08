@@ -2,106 +2,290 @@
 
 [![CI](https://github.com/OrsoF/mdpforge/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/OrsoF/mdpforge/actions/workflows/ci.yml)
 
-A research framework for building, solving, and benchmarking finite Markov decision
-processes with NumPy and SciPy. It includes tabular planning methods, adaptive state
-aggregation, and discounted, total-reward, and average-reward model/solver variants.
+**Benchmark a new MDP with reference solvers, or a new solver with reference MDPs.**
+
+mdpforge is a Python benchmark platform for finite Markov decision processes with
+explicit transition and reward matrices. It brings together NumPy/SciPy model
+representations, planning algorithms, numerical validation, and experiment scripts.
+
+| You bring | Use mdpforge to |
+| --- | --- |
+| A new MDP | Validate its matrices, solve it with reference methods, and study how performance changes with problem size and parameters. |
+| A new MDP solver | Run it on benchmark environments, check solution quality, and compare runtime with reference methods. |
+
+The starting point is **discounted planning with known dynamics**. Total and
+average reward require separate convergence assumptions and evaluation protocols.
+A fast runtime is useful only alongside a verified solution.
 
 ## Quick start
 
-Use Python 3.11 or newer and Git. The following commands use an isolated environment
-and run a small discounted planning example; no commercial solver or reference
-results are needed.
+The package requires Python 3.11 or newer; the development workflow targets Python
+3.11 and 3.12. Core dependencies are NumPy and SciPy. From a checkout containing
+`src/mdpforge/` and `pyproject.toml`, create an environment:
 
 ```sh
-git clone https://github.com/OrsoF/mdpforge.git
-cd mdpforge
 python -m venv .venv
 ```
 
-Activate it on Linux/macOS:
-
-```sh
-source .venv/bin/activate
-```
-
-Or in Windows PowerShell:
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-Then, from the repository root:
+Activate it on Linux/macOS with `source .venv/bin/activate`, or in Windows
+PowerShell with `.venv\Scripts\Activate.ps1`. Then install from the repository root:
 
 ```sh
 python -m pip install -e ".[dev]"
-python -m pytest
-python main.py --model rooms --state 100 --solvers vi pdvi --discount 0.9 --repeat 2 --seed 0 --output-dir artifacts/tmp/demo_discounted
 ```
 
-The example constructs a 100-state, four-action Rooms MDP and runs VI and PDVI
-twice each. It writes `rooms_runs.csv` (individual runtimes), `rooms.csv` (runtime
-summary), and `rooms.tex` under `artifacts/tmp/demo_discounted/`. These CLI tables
-measure runtime; they do not report policy-quality metrics. Model construction may
-also create a cache under `artifacts/saved_models/`.
-
-The tests check numerical invariants and small end-to-end workflows, including both
-benchmark entry points. Seeds are explicit; measured runtimes depend on the machine.
-The install, test, and demo commands have been validated locally on Windows with
-Python 3.11 and 3.12 in isolated environments. CI checks the installation, lint,
-format, and tests on Ubuntu for both versions.
-
-## Tests
-
-Run `python -m pytest` from the repository root. The suite covers:
-
-- Model validation: dense/sparse transitions, matrix dimensions, finite values,
-  nonnegative probabilities, and stochastic row sums. Negative probabilities are
-  rejected even when a row sums to one.
-- Partitions: complete state coverage, normalized projection weights, stochastic
-  aggregation, and refinement that preserves existing region boundaries.
-- A shared model contract for Rooms, Forest, and RandomWalk, including each
-  environment's actual dimensions and construction with `save=False`.
-- Model-to-solver integration for VI and PDVI on those three environments, plus
-  both benchmark CLIs. Solver checks cover finite values, Bellman residuals, and
-  agreement with independently evaluated greedy policies.
-- Core imports and a model-to-VI workflow with optional dependencies explicitly
-  blocked in a fresh interpreter.
-- Cached optimal values: computation on cache miss using the existing VI solver,
-  dense/sparse model representations, discounted and finite total rewards, cache
-  reuse, and separate entries for different discounts.
-
-The tests isolate model caches and CLI outputs from existing research artifacts.
-They use small deterministic environments and require only the `dev` installation.
-`.gitignore` excludes `artifacts/tmp/`, generated model/value caches, Python/tool
-caches, virtual environments, and local editor settings. Reference results and
-curated figures under `artifacts/results/`, `artifacts/figures/`, and
-`artifacts/exps/` remain versionable; keep experimental outputs in `artifacts/tmp/`.
-The solver checks use discount 0.9: a Bellman residual bounded by `1e-4` bounds
-the value error by `1e-3` through the discounted Bellman contraction.
-
-## Development checks
-
-After installing the `dev` extra, run these commands from the repository root:
+Run a small discounted benchmark:
 
 ```sh
-ruff check .
-ruff format --check .
-pytest
+python main.py --model rooms --state 100 --solvers vi mpi --discount 0.9 --repeat 2 --seed 0 --output-dir artifacts/tmp/demo_discounted
 ```
 
-To apply formatting, use `ruff format .`. Ruff's version is pinned in
-`pyproject.toml` so developers use the same formatter. Lint starts with common
-Python errors (`E4`, `E7`, `E9`, `F`) and import sorting (`I`). The two style rules
-`E731` and `E741` are disabled to retain concise numerical callbacks and existing
-coordinate/board symbols. Research notebooks under `studies/` and generated or
-scratch material under `artifacts/` are excluded; all Python source packages,
-entry points, and tests are checked.
+This constructs a 100-state, four-action Rooms MDP and runs value iteration (VI)
+and modified policy iteration (MPI) twice each. Outputs are:
 
-Type annotations are adopted incrementally. No MyPy or strict typing gate is
-required. For VS Code, install the Ruff extension and select it as the Python
-formatter; this checkout does not include workspace editor settings.
+- `rooms_runs.csv`: individual runtimes and region counts when available.
+- `rooms.csv`: mean runtime, standard deviation, and mean region count.
+- `rooms.tex`: a LaTeX runtime table.
 
-For the existing Conda research environment, use:
+The CLI currently exports runtime statistics. The Python operators below provide
+solution-quality checks; these metrics are not yet included in the CSVs.
+Use explicit small sizes for a first run: CLI defaults target larger experiments.
+Some models adjust requested dimensions; use the actual dimensions printed.
+
+For runtime-only installation, use `python -m pip install .` or a built wheel.
+`python -m pip install -r requirements.txt` selects the core editable installation.
+The library is installed under `mdpforge`; `main.py` and `main_total.py` are
+repository scripts and are not included in the wheel. Former imports starting
+with `core`, `models`, `solvers`, or `utils` now start with `mdpforge.`.
+
+## Solve and check a reference MDP
+
+```python
+from mdpforge.core.validation import validate_model
+from mdpforge.models.rooms import Model
+from mdpforge.solvers.personal_vi import Solver
+
+discount = 0.9
+model = Model(100, 4)
+model.create_model(save=False)
+validate_model(model)
+
+solver = Solver(model, discount=discount, final_precision=1e-4)
+solver.run()
+print("Dimensions:", model.state_dim, model.action_dim)
+print("Runtime (s):", solver.runtime)
+print("Bellman residual:", solver.bellman_residual())
+```
+
+For a discounted problem, independently evaluate the policy greedy with respect
+to the returned value. Continuing the example above:
+
+```python
+import numpy as np
+from scipy.sparse import eye
+from scipy.sparse.linalg import spsolve
+
+from mdpforge.core.operators import (
+    bellman_operator,
+    compute_transition_reward_policy,
+    optimal_bellman_operator,
+)
+
+policy = bellman_operator(model, solver.value, discount).argmax(axis=1)
+transition, reward = compute_transition_reward_policy(model, policy)
+policy_value = spsolve(
+    eye(model.state_dim, format="csr") - discount * transition, reward
+)
+residual = np.linalg.norm(
+    optimal_bellman_operator(model, solver.value, discount) - solver.value,
+    ord=np.inf,
+)
+discrepancy = np.max(np.abs(solver.value - policy_value))
+print("Value error bound:", residual / (1 - discount))
+print("Value/policy evaluation discrepancy:", discrepancy)
+```
+
+For `0 <= discount < 1`, the Bellman residual divided by `1 - discount` bounds
+the infinity-norm error of the returned value relative to the optimal value.
+For example, a residual of `1e-4` at discount `0.9` bounds that error by `1e-3`.
+The policy evaluation discrepancy checks consistency with the greedy policy;
+it is not itself a measure of policy suboptimality. These formulas do not provide
+a total-reward or average-reward evaluation protocol.
+
+## Bring a new MDP
+
+Implement a model using the shared matrix contract:
+
+| Field | Convention |
+| --- | --- |
+| `state_dim`, `action_dim` | Actual numbers of states and actions. |
+| `transition_matrix[action]` | A `(state_dim, state_dim)` matrix whose rows are probability distributions over next states. |
+| `reward_matrix[state, action]` | Expected immediate reward, in an array of shape `(state_dim, action_dim)`. |
+| `name` | Model identifier used for caches; distinguish parameter settings and instances. |
+
+Transitions can be a dense array of shape `(action_dim, state_dim, state_dim)`
+or a list of SciPy sparse matrices. Models inheriting from `GenericModel` implement
+`_build_model()` and use `create_model()` to build or load their matrices.
+
+Here is a complete two-state, two-action example:
+
+```python
+import numpy as np
+
+from mdpforge.core.model import GenericModel
+from mdpforge.core.validation import validate_model
+from mdpforge.solvers.personal_vi import Solver
+
+
+class TwoStateModel(GenericModel):
+    def _build_model(self):
+        self.transition_matrix = np.array(
+            [[[1.0, 0.0], [0.0, 1.0]], [[0.0, 1.0], [1.0, 0.0]]]
+        )
+        self.reward_matrix = np.array([[0.0, 1.0], [0.0, 0.0]])
+
+
+model = TwoStateModel(2, 2)
+model.create_model(save=False)
+validate_model(model)
+solver = Solver(model, discount=0.9, final_precision=1e-4)
+solver.run()
+print(solver.value)
+```
+
+Start with a small instance. Check dimensions, finite values, nonnegative
+probabilities, and stochastic row sums, then verify a reference solution before
+increasing the problem size. Preserve reward scales and terminal-state conventions
+when comparing solvers.
+
+For inclusion in the discounted CLI, expose `Model(state_dim, action_dim)` in
+`src/mdpforge/models/<name>.py` and add an explicit entry to `MODELS` in `main.py`.
+The registry is maintained in source; it does not discover user plugins.
+Document model parameters and provenance, and add small deterministic tests.
+
+## Bring a new solver
+
+Use explicit constructor options followed by an option-free `run()`:
+
+- Accept a built model and the reward criterion's parameters, including
+  `discount` for discounted planning.
+- Expose a final `value` vector of shape `(state_dim,)` for value-based checks.
+- Expose `policy` or `q_value` when available, and `runtime` in seconds.
+- Document initialization, numerical tolerance, stopping criterion, and what
+  the reported runtime includes.
+
+Use [VI](src/mdpforge/solvers/personal_vi.py) and
+[MPI](src/mdpforge/solvers/personal_pim.py) as reference implementations.
+`GenericSolver` provides value diagnostics, but existing solvers also use the
+contract without inheriting from it.
+
+To integrate with the discounted CLI, expose a `Solver` class in
+`src/mdpforge/solvers/<name>.py`, add an entry to `SOLVERS` in `main.py`, and pass
+its constructor settings through `solver_options()` as needed. The current runner
+records `runtime` and optional `partition.n_regions`; verify values and greedy
+policies separately before interpreting the runtime comparison.
+
+Compare methods at a stated solution quality: identical constructor tolerances
+may have different meanings across algorithms. Add tests on small instances
+before running scaling experiments.
+
+## Benchmark protocol and reproducibility
+
+The discounted runner requires `0 <= discount < 1` and at least two repeats.
+It seeds model construction with `--seed`, constructs or loads one model, then
+uses `seed + run_index` for each solver repetition. Repeats measure performance
+on the same instance; they do not sample independently generated MDPs. Both
+runners use NumPy's global random seed.
+
+Keep experiments in separate output directories: a run overwrites the same
+model's output files there. For a reproducible comparison, record:
+
+- Actual dimensions, model parameters, instance seed, and dense/sparse format.
+- Reward criterion, discount, solver settings, and initialization.
+- Runtime alongside Bellman residuals and independently evaluated policy values.
+- Run count, machine, Python/dependency versions, and code revision.
+
+The current CSVs do not contain a complete experiment manifest or standardized
+timing boundaries. They report each solver's own `runtime`. For VI, that timer
+covers `run()` and excludes model construction and constructor-time conversion.
+Check each method's timing boundary before comparing results.
+
+### Caches
+
+Artifact paths are anchored to the working directory when the package is imported.
+Model caches live in `artifacts/saved_models/`. `create_model(save=False)` prevents
+a new cache write but can still load an existing matching cache.
+
+`model.optimal_value_function(discount)` loads a cached value vector or computes
+one with VI at `final_precision=1e-3`, preserving the model's dense/sparse format.
+Values are stored in `artifacts/saved_value_functions/` under
+`<discount>_<model.name>.pkl`. This is a numerical reference at that precision.
+For `discount=1`, the model must have convergent value iteration.
+
+Cache keys use model names, not matrix contents. A cached model can bypass seeded
+construction. Use distinct names or remove the corresponding stale cache when
+changing parameters, generation seeds, or reward conventions. Keep scratch outputs
+under `artifacts/tmp/`; reference results and curated artifacts remain versionable.
+
+## Current scope and next steps
+
+The examples above use Rooms and the VI/MPI sources present in this checkout.
+Schoolboy and RiverSwim model sources are also present. The research catalogue
+is described in [MODELS.md](MODELS.md), but several listed sources and CLI
+registrations are currently absent, including PDVI and the total-reward solver
+modules. `main_total.py` exists, but its registered solver sources must be available
+before it can run a total-reward benchmark.
+
+Inspect configured CLI choices with:
+
+```sh
+python main.py --help
+python main_total.py --help
+```
+
+Help lists registry entries; it does not verify module availability. The test
+suite also references absent modules and fixtures; these gaps must be resolved
+before the full suite can pass.
+
+The next benchmark milestones are integrated quality metrics, saved experiment
+metadata, and broader validated model/solver coverage. Total and average reward
+need separate protocols. Historical RL workflows are outside this starting scope;
+the former `agg_*.py` entry points and `solvers_agg/` package are absent.
+
+## Optional dependencies
+
+Dependencies and tool configuration are declared in [pyproject.toml](pyproject.toml).
+Select extras only for the relevant workflow:
+
+| Extra | Dependencies/purpose |
+| --- | --- |
+| `dev` | pytest and pinned Ruff. |
+| `mdptoolbox` | MDPtoolbox fork pinned to a Git commit; requires Git. |
+| `gurobi` | gurobipy; solver use requires a suitable license. |
+| `mdpsolver` | External mdpsolver backend. |
+| `deep` | Stable-Baselines3 and Gymnasium; includes PyTorch transitively. |
+| `maze` | mazelib for maze generation. |
+| `progress` | tqdm for progress reporting. |
+| `plot` | Matplotlib. |
+| `notebooks` | Plotting, IPython, pandas, seaborn, and openpyxl. |
+
+For example, `python -m pip install -e ".[dev,notebooks]"` installs development
+and analysis dependencies. `reference` selects `mdptoolbox`; `legacy` selects all
+historical integration and analysis extras, without `dev`. Marmote needs a separate
+platform-specific installation. Extras install dependencies; they do not restore
+missing source modules or establish that historical workflows run.
+
+## Development and validation
+
+After installing `.[dev]`, run from the repository root:
+
+```sh
+python -m ruff check .
+python -m ruff format --check .
+python -m pytest
+```
+
+For the project's Conda environment:
 
 ```sh
 conda run -n benchmark python -m pip install -e ".[dev]"
@@ -110,103 +294,40 @@ conda run -n benchmark python -m ruff format --check .
 conda run -n benchmark python -m pytest
 ```
 
-## Continuous integration
+Tests cover model validation, Bellman operators, partitions, optional dependency
+isolation, cached values, package imports, and model-to-solver/CLI workflows,
+subject to the missing-source limitations above. Use deterministic small models,
+explicit seeds, and justified numerical tolerances for new tests.
 
-[CI](.github/workflows/ci.yml) runs on push and pull request with a small Ubuntu
-matrix for Python 3.11 and 3.12: install `.[dev]`, then run `ruff check .`,
-`ruff format --check .`, and `pytest` using `pyproject.toml`. The pip download
-cache is keyed by `pyproject.toml`. The badge links to the workflow and reports
-the latest push result on `main`.
-External solver/RL extras and heavy research benchmarks need separate validation.
+Ruff checks source, entry points, and tests; `studies/` and `artifacts/` are excluded.
+Lint uses `E4`, `E7`, `E9`, `F`, and `I`, with `E731` and `E741` disabled to preserve
+the numerical style. No strict typing gate is configured.
 
-## Cached optimal values
+The [CI badge](https://github.com/OrsoF/mdpforge/actions/workflows/ci.yml) links to
+hosted push results on `main`, independently of local checks. The workflow file
+is currently absent from this checkout. Optional backends and heavy experiments
+require their own validation.
 
-For a built model, `model.optimal_value_function(discount)` returns its cached
-value vector or computes it with the existing VI solver at precision `1e-3`.
-This works with the core installation, preserves the model's dense/sparse format,
-and stores values under `artifacts/saved_value_functions/` using the existing
-`<discount>_<model.name>.pkl` key. A matching cache can be reused without rebuilding
-the model. Rebuild or remove the corresponding cache after changing model
-parameters; the key identifies the model by name, not by matrix contents.
-For total reward (`discount=1`), value iteration must converge for the chosen model.
-
-## Total-reward example
-
-```sh
-python main_total.py --model rooms --state 100 --solvers vi pdvi --repeat 2 --seed 0 --output-dir artifacts/tmp/demo_total
-```
-
-Total-reward solvers use `discount=1`. Discounted benchmarks require a discount in
-`[0, 1)`. Both commands require at least two repeats. Some models adjust requested
-state/action counts, so use the dimensions printed by the command. Defaults target
-larger research benchmarks; keep the explicit small sizes above for a quick demo.
-
-To inspect the available models, solvers, and parameters:
-
-```sh
-python main.py --help
-python main_total.py --help
-```
-
-## Dependencies and optional workflows
-
-`pyproject.toml` is the source of dependency declarations. Install the core with
-`python -m pip install -e .`: its only runtime dependencies are NumPy and SciPy.
-Choose extras for the workflows you need:
-
-| Extra | Dependencies and purpose |
-| --- | --- |
-| `dev` | pytest and Ruff for tests and development checks |
-| `mdptoolbox` | MDPtoolbox fork pinned to a Git commit for reference values and adapters; requires Git |
-| `gurobi` | gurobipy for linear-programming adapters; solver use requires a suitable license |
-| `mdpsolver` | mdpsolver for its external planning adapters |
-| `deep` | Stable-Baselines3 and Gymnasium for external RL experiments and the Gymnasium conversion utility; includes PyTorch transitively |
-| `maze` | mazelib for `models/maze_*` and their total-reward variants |
-| `progress` | tqdm for the Ambulance and Impatience models |
-| `plot` | Matplotlib for plotting |
-| `notebooks` | plotting tools, IPython, pandas, seaborn, and openpyxl for research analysis and tables |
-
-For example:
-
-```sh
-python -m pip install -e ".[dev]"
-python -m pip install -e ".[deep]"
-python -m pip install -e ".[mdptoolbox,plot]"
-python -m pip install -e ".[gurobi]"
-```
-
-Plots comparing solver values to reference values need both `plot` and
-`mdptoolbox`. The existing `reference` extra selects `mdptoolbox`; `legacy`
-selects all historical research integrations and analysis tools, without `dev`.
-For that broad environment, explicitly install `.[dev,legacy]`.
-
-`python -m pip install -r requirements.txt`, run from the repository root, now
-installs only the core. It no longer installs development or external solver/RL
-dependencies. Existing users of the broad requirements file should use
-`python -m pip install -e ".[dev,legacy]"` instead.
-
-Marmote requires separate platform-specific installation and is not supplied by an
-extra. Installing an extra supplies its dependencies; it does not validate every
-historical workflow. Several legacy RL modules reference a `solvers_agg` package
-that is absent from this checkout; installing `deep` does not restore it. Those
-workflows and the absent `agg_*.py` scripts are outside the supported quick start.
-
-## Repository layout
+## Repository map
 
 ```text
-core/            Model/solver interfaces, Bellman operators, partitions, validation
-models/          Finite MDP environments, including models/total/
-solvers/         Planning methods and optional external/RL integrations
-utils/           Persistence, simulation, and numerical utilities
-tests/           Deterministic unit and integration tests
+src/mdpforge/
+    core/        Model contract, Bellman operators, partitions, validation
+    models/      Finite MDP model implementations
+    solvers/     Planning algorithm implementations
+    utils/       Persistence, simulation, and numerical utilities
+tests/           Unit and integration tests
 studies/         Research notebooks
-artifacts/       Reference results, caches, and temporary outputs
-main.py          Discounted planning benchmark CLI
-main_total.py    Total-reward planning benchmark CLI
-pyproject.toml   Packaging and development-tool configuration
-.github/workflows/ci.yml  Push/PR checks on Python 3.11 and 3.12
+artifacts/       Reference results, caches, and scratch outputs
+main.py          Discounted runtime benchmark CLI
+main_total.py    Total-reward runner (solver sources currently missing)
+pyproject.toml   Packaging, dependencies, and tool configuration
 ```
 
-See [STRUCTURE.md](STRUCTURE.md) for module responsibilities,
-[MODELS.md](MODELS.md) for the model inventory, and [AGENTS.md](AGENTS.md) for
-development conventions. The project uses the [MIT license](LICENSE).
+See [STRUCTURE.md](STRUCTURE.md) for the module map,
+[MODELS.md](MODELS.md) for the research model catalogue,
+[studies/README.md](studies/README.md) for notebooks, and
+[AGENTS.md](AGENTS.md) for engineering conventions. Some catalogue/module-map
+entries describe sources absent from this checkout, as noted above.
+
+Licensed under [MIT](LICENSE).

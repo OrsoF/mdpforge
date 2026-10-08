@@ -1,5 +1,4 @@
 import csv
-import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -8,13 +7,13 @@ import numpy as np
 import pytest
 from numpy.testing import assert_allclose
 
-from core.operators import (
+from mdpforge.core.operators import (
     bellman_operator,
     compute_transition_reward_policy,
     optimal_bellman_operator,
 )
-from solvers.aggregated_vi import Solver as AggregatedVI
-from solvers.personal_vi import Solver as VI
+from mdpforge.solvers.aggregated_vi import Solver as AggregatedVI
+from mdpforge.solvers.personal_vi import Solver as VI
 
 
 @pytest.mark.parametrize("solver_class", [VI, AggregatedVI], ids=["vi", "pdvi"])
@@ -54,17 +53,10 @@ def test_model_to_solver_workflow(model_spec, isolated_model_cache, solver_class
 def test_documented_benchmark_cli_writes_runtime_tables(tmp_path, script):
     root = Path(__file__).resolve().parents[1]
     # Keep CLI caches and results isolated from the user's research artifacts.
-    for directory in ("core", "models", "solvers", "utils"):
-        shutil.copytree(
-            root / directory,
-            tmp_path / directory,
-            ignore=shutil.ignore_patterns("__pycache__"),
-        )
-    shutil.copy2(root / script, tmp_path / script)
     output = tmp_path / "artifacts" / "tmp" / "demo"
     command = [
         sys.executable,
-        script,
+        str(root / script),
         "--model",
         "rooms",
         "--state",
