@@ -1,12 +1,10 @@
-from typing import Callable, Optional
+from typing import Optional
 
 import numpy as np
 
 from mdpforge.core.model import GenericModel
 from mdpforge.utils.paths import SAVED_VALUE_FUNCTIONS_PATH
 from mdpforge.utils.persistence import get_cached_object
-
-# from mdpforge.utils.calculus import norminf
 
 
 def norminf(value: np.ndarray) -> float:
@@ -124,19 +122,9 @@ def get_exact_value(model: GenericModel, discount: float) -> np.ndarray:
         model, criterion, discount, warning=False
     )
 
-    return get_saved_object(
-        saving_folder, solving_function, exact_value_function_pickle_file
+    return get_cached_object(
+        saving_folder, exact_value_function_pickle_file, solving_function
     )
-
-
-def get_saved_object(
-    folder_path: str, function_to_compute_it: Callable, file_name: str
-):
-    """
-    If file_name already exists, return the pickle load of it.
-    Else, compute a result with function_to_compute_it and save it using pickle.
-    """
-    return get_cached_object(folder_path, file_name, function_to_compute_it)
 
 
 def distance_to_optimal(
@@ -154,15 +142,6 @@ def distance_to_optimal(
         return norminf(value - exact_value)
     else:
         return np.linalg.norm(value - exact_value, ord=norm_method)
-
-
-def distance_to_optimal_q(
-    q_value: np.ndarray,
-    model: GenericModel,
-    discount: float,
-    norm_method: float = np.inf,
-):
-    return distance_to_optimal(q_value.max(axis=1), model, discount, norm_method)
 
 
 def bellman_no_max(

@@ -17,14 +17,6 @@ class GenericSolver:
         self.policy: np.ndarray
         self.runtime: float
 
-    def run(self):
-        # Example
-        pass
-
-    def build_solution(self):
-        # Example
-        pass
-
     def distance_to_optimal(self):
         return distance_to_optimal(self.value, self.model, self.discount)
 

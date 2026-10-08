@@ -144,7 +144,7 @@ conda run -n benchmark python -m ruff format --check .
 Outside Conda, use the corresponding `python -m ...` commands. Tests cover matrix
 validation, Bellman operators, partitions, caches, installed imports, optional
 dependency isolation, and VI/MPI workflows on the three discounted models.
-Ruff excludes `studies/` and `artifacts/`; no strict typing gate is configured.
+Ruff excludes generated artifacts; no strict typing gate is configured.
 
 [CI](.github/workflows/ci.yml) runs these checks on Ubuntu/Python 3.11 and 3.12.
 Local results do not establish the status of a hosted run.
@@ -160,10 +160,8 @@ removed source modules.
 - `src/mdpforge/core/`: model contract, Bellman operators, partitions, validation.
 - `src/mdpforge/models/`: finite MDP implementations.
 - `src/mdpforge/solvers/`: VI and MPI.
-- `src/mdpforge/utils/`: persistence, simulation, and numerical utilities.
+- `src/mdpforge/utils/`: persistence and numerical utilities.
 - `tests/`: deterministic unit and integration tests.
-- [studies/](studies/README.md): historical notebooks; some cells need removed
-  modules or adaptations before they can run.
 
 See [AGENTS.md](AGENTS.md) for concise engineering guidelines. Licensed under
 [MIT](LICENSE).

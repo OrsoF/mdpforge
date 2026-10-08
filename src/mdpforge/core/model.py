@@ -19,7 +19,6 @@ class GenericModel(ABC):
 
         self.transition_matrix: list | np.ndarray
         self.reward_matrix: np.ndarray
-        self.params: dict = {}
 
     def create_model(
         self,
@@ -30,7 +29,6 @@ class GenericModel(ABC):
         """
         Function that create the reward and transition matrices.
         """
-        self.pickle_file_name = "{}.pkl".format(self.name)
         pickle_file_path = model_cache_path(self.name)
 
         if hasattr(self, "transition_matrix") and hasattr(self, "reward_matrix"):
@@ -158,18 +156,6 @@ class GenericModel(ABC):
         from mdpforge.core.conversion import model_to_sparse
 
         model_to_sparse(self)
-
-    def _model_to_marmote(self):
-        """Convert the transition and reward matrices to marmote format."""
-        from mdpforge.core.conversion import model_to_marmote
-
-        model_to_marmote(self)
-
-    def _compute_mdpsolver_args(self) -> tuple:
-        """Convert the model transition and reward to value made for MDPSolver."""
-        from mdpforge.core.conversion import compute_mdpsolver_args
-
-        return compute_mdpsolver_args(self)
 
     def _is_model_built(self) -> bool:
         return hasattr(self, "transition_matrix") and hasattr(self, "reward_matrix")
