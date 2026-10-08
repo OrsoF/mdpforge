@@ -40,6 +40,7 @@ def apply_pobo_until_var_small(
     max_steps=np.inf,
     shift_acceleration: bool = False,
 ):
+    assert 0 < discount < 1, "discount must be strictly between 0 and 1"
     steps_done = 0
 
     contracted_value = (
@@ -66,7 +67,7 @@ def apply_pobo_until_var_small(
         if variation < variation_tol:
             contracted_value = new_contracted_value
             break
-        if shift_acceleration and discount < 1:
+        if shift_acceleration:
             shift = (delta.max() + delta.min()) / 2
             # Projected Bellman operators preserve uniform shifts up to discount.
             new_contracted_value += discount * shift / (1 - discount)
@@ -169,6 +170,7 @@ def apply_poqbo_until_var_small(
     ``shift_acceleration`` removes the nearly constant residual component whose
     discounted decay is especially slow when the discount is close to one.
     """
+    assert 0 < discount < 1, "discount must be strictly between 0 and 1"
     steps_done = 0
 
     q_contracted_value = (
@@ -198,7 +200,7 @@ def apply_poqbo_until_var_small(
         if variation < variation_tol:
             q_contracted_value = new_q_contracted_value
             break
-        if shift_acceleration and discount < 1:
+        if shift_acceleration:
             shift = (delta.max() + delta.min()) / 2
             # T(Q + c) = T(Q) + discount * c for a uniform scalar shift.
             new_q_contracted_value += discount * shift / (1 - discount)
@@ -235,6 +237,7 @@ def apply_ppbo_until_var_small(
     """
     Applies Pi T^pi until ||V - Pi T^pi V|| <= variation_tol.
     """
+    assert 0 < discount < 1, "discount must be strictly between 0 and 1"
     contracted_value = init_agg_value
     steps_done = 0
 
@@ -251,7 +254,7 @@ def apply_ppbo_until_var_small(
         if variation < variation_tol:
             contracted_value = new_contracted_value
             break
-        if shift_acceleration and discount < 1:
+        if shift_acceleration:
             shift = (delta.max() + delta.min()) / 2
             new_contracted_value += discount * shift / (1 - discount)
         contracted_value = new_contracted_value

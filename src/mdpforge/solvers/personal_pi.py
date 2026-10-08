@@ -14,11 +14,12 @@ class Solver:
         discount: float,
         final_precision: float,
     ):
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         # Class arguments
         self.model = model
         self.discount = discount
 
-        self.name = "PIM"
+        self.name = "PI"
         self.model._convert_model(SPARSE)
 
         self.max_iter_eval = int(1e8)

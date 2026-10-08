@@ -1,5 +1,5 @@
 """
-Solver calling the MDP Toolbox Value Iteration solver.
+Solver calling MDPSolver MPI with SOR and explicit initialization.
 """
 
 import time
@@ -19,11 +19,12 @@ class Solver(GenericSolver):
         final_precision: float,
         parallel: bool = False,
     ):
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         self.model = model
         self.discount = discount
         self.parallel = parallel
         self.epsilon = final_precision
-        self.name = "MPI MDPSolver"
+        self.name = "MPISOR init MDPSolver"
 
         self.trans, self.rew = self.model._compute_mdpsolver_args()
         self.mdl = mdpsolver.model()
@@ -39,7 +40,7 @@ class Solver(GenericSolver):
         self.mdl.solve(
             algorithm="mpi",
             tolerance=self.epsilon,
-            update="gs",
+            update="sor",
             criterion="discounted",
             parallel=self.parallel,
             initValueVector=[0.0] * self.model.state_dim,

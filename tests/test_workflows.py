@@ -65,6 +65,9 @@ def test_solver_contract(solver_module, chain, monkeypatch, request, tmp_path):
     if run_optional_test(request, tmp_path):
         return
     solver_class = import_module(solver_module).Solver
+    for invalid_discount in (-0.1, 0, 1, 1.1, np.nan):
+        with pytest.raises(AssertionError, match="discount"):
+            solver_class(chain, invalid_discount, final_precision=1e-4)
     reference_model = deepcopy(chain)
     discount = 0.9
     monkeypatch.setattr(np.random, "randint", np.random.RandomState(0).randint)
@@ -94,3 +97,33 @@ def test_solver_contract(solver_module, chain, monkeypatch, request, tmp_path):
     )
     assert_allclose(policy_value, [1.8, 2, 0], atol=1e-3, rtol=0)
     assert np.isfinite(solver.runtime) and solver.runtime >= 0
+
+
+def test_vi_final_precision(vi_module, chain, monkeypatch, request, tmp_path):
+    if run_optional_test(request, tmp_path):
+        return
+    solver_class = import_module(vi_module).Solver
+    monkeypatch.setattr(np.random, "randint", np.random.RandomState(0).randint)
+    transition = np.array([[0.7, 0.3, 0], [0.2, 0.5, 0.3], [0, 0.1, 0.9]])
+    for discount, epsilon, constant_reward in (
+        (0.5, 1e-3, False),
+        (0.99, 1e-5, False),
+        (0.95, 1e-3, True),
+    ):
+        model = deepcopy(chain)
+        model.transition_matrix = np.array([transition, transition])
+        model.reward_matrix = np.array([[1, 0.2], [2, -0.1], [0.5, 0]])
+        if constant_reward:
+            model.reward_matrix[:] = 1
+        reference = deepcopy(model)
+        # Action zero dominates everywhere, so this linear solve gives V*.
+        expected = np.linalg.solve(
+            np.eye(3) - discount * transition, model.reward_matrix[:, 0]
+        )
+        solver = solver_class(model, discount, final_precision=epsilon)
+        solver.run()
+        residual = np.abs(
+            optimal_bellman_operator(reference, solver.value, discount) - solver.value
+        ).max()
+        assert residual <= epsilon * (1 - discount)
+        assert_allclose(solver.value, expected, atol=epsilon, rtol=0)

@@ -14,12 +14,15 @@ class Solver:
         final_precision: float,
         proba: float = 0.01,
     ):
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         # Class arguments
         self.model = model
         self.discount = discount
-        self.variation_policy_evaluation = final_precision * (1 - discount)
+        tolerance = final_precision * (1 - discount)
+        self.variation_policy_evaluation = tolerance
+        self.variation_policy_update = tolerance
 
-        self.name = "StochasticPIM"
+        self.name = "StochasticMPI"
 
         self.model._convert_model(SPARSE)
         self.max_iter_evaluation = int(1e8)
@@ -45,18 +48,24 @@ class Solver:
                 self.policy
             )
             for _ in range(int(1 / self.proba)):
-                self.value = reward_policy + self.discount * transition_policy.dot(
+                new_value = reward_policy + self.discount * transition_policy.dot(
                     self.value
                 )
+                variation = np.absolute(new_value - self.value).max()
+                self.value = new_value
+                if variation <= self.variation_policy_evaluation:
+                    break
             new_value = reward_policy + self.discount * transition_policy.dot(
                 self.value
             )
-            variation = np.absolute(new_value - self.value).max()
             self.value = new_value
 
-            variation_condition = variation <= self.variation_policy_evaluation
+            q_value = self.bellman_no_max(self.value)
+            variation = np.absolute(q_value.max(axis=1) - self.value).max()
+            variation_condition = variation <= self.variation_policy_update
 
             if variation_condition:
+                self.policy = q_value.argmax(axis=1)
                 self.runtime = time() - start_time
                 break
 

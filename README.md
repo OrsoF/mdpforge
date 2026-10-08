@@ -18,6 +18,11 @@ python -m pip install -e ".[dev]"
 Use `python -m pip install -e .` for the core library only.
 Dependencies are declared in [pyproject.toml](pyproject.toml).
 
+For the MDPToolbox integration, install `python -m pip install -e ".[mdptoolbox]"`.
+This extra uses the official PyPI release `pymdptoolbox==4.0b3`.
+Its VI and VI-GS constructors fail when the initial Bellman variation has zero
+span, for example with constant optimal immediate rewards.
+
 ## Example
 
 ```python
@@ -30,6 +35,12 @@ solver = Solver(model, discount=0.9)
 solver.run()
 print(solver.value)
 ```
+
+Only discounted problems are supported: `0 < discount < 1` (asserted by solvers).
+VI solvers use `final_precision=epsilon` (default `1e-3`) to bound the final
+absolute value error by epsilon through `max(abs(T(V) - V)) <= epsilon *
+(1 - discount)`. External VI results are centered and checked; failure to meet
+the bound raises an error. PI/MPI tolerances remain algorithm-specific.
 
 ## Development checks
 

@@ -21,11 +21,12 @@ changes that preserve scientific behavior and keep the project easy to extend.
 - Models expose `state_dim`, `action_dim`, `transition_matrix[action]`, and
   `reward_matrix[state, action]`; construct them with `create_model()`.
   Solvers take explicit constructor options followed by an option-free `run()`.
-- Treat discounted, total, and average reward separately. Check solution quality,
-  not just runtime. Never use `1 / (1-discount)` acceleration at `discount=1`.
+- Support only discounted criteria (`0 < discount < 1`, asserted by solvers).
+  VI precision bounds absolute value error using the full Bellman residual.
+  Check solution quality, not just runtime.
 - Preserve the VI-based optimal-value cache, its precision and representation,
   and the `<discount>_<model.name>` key. Account for stale caches when changing
-  model parameters; total reward requires convergent value iteration.
+  model parameters.
 
 ## Scale validation to the change
 

@@ -8,6 +8,7 @@ from mdpforge.utils.bellman import (
     apply_obo_until_var_small,
     bellman_no_max,
     compact_optimal_bellman_operator,
+    optimal_bellman_residual,
 )
 from mdpforge.utils.projected_bellman import (
     aggregation_norm_weights,
@@ -17,6 +18,8 @@ from mdpforge.utils.projected_bellman import (
 
 
 class Solver:
+    solver_type = "vi"
+
     norm_methods = {
         "region_size",
         "average_reward",
@@ -28,7 +31,7 @@ class Solver:
         self,
         model: GenericModel,
         discount: float,
-        final_precision: float = 1e-1,
+        final_precision: float = 1e-3,
         mode: str = SPARSE,
         verbose: bool = False,
         bellman_updates: int = 10,
@@ -38,12 +41,14 @@ class Solver:
         n_tiles: int | None = None,
         projected_steps: int = 100,
     ):
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         if refinement not in {"width", "tiles"}:
             raise ValueError("refinement must be 'width' or 'tiles'")
         self._check_norm_method(norm_method)
 
         self.model = model
         self.discount = discount
+        assert final_precision > 0, "final_precision must be positive"
         self.epsilon = final_precision
         self.verbose = verbose
         self.bellman_updates = bellman_updates
@@ -127,8 +132,12 @@ class Solver:
                 )
 
             if not refined and pbr_value <= self.epsilon_pbr:
-                self._finish(self.partition.phi @ contracted_value, start_time)
-                return
+                value = self.partition.phi @ contracted_value
+                if optimal_bellman_residual(
+                    self.model, value, self.discount
+                ) <= self.epsilon * (1 - self.discount):
+                    self._finish(value, start_time)
+                    return
 
     def _bellman_steps(self, contracted_value: np.ndarray) -> np.ndarray:
         """Optimal Bellman operator."""

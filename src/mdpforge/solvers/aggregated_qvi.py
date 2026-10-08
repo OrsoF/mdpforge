@@ -15,6 +15,7 @@ from mdpforge.utils.bellman import (
     apply_obo_until_var_small,
     compact_optimal_bellman_operator,
     norminf,
+    optimal_bellman_residual,
     q_optimal_bellman_operator,
 )
 from mdpforge.utils.projected_bellman import (
@@ -26,18 +27,22 @@ NUMPY, SPARSE = "numpy", "sparse"
 
 
 class Solver(GenericSolver):
+    solver_type = "vi"
+
     def __init__(
         self,
         model: GenericModel,
         discount: float,
-        final_precision: float = 1e-2,
+        final_precision: float = 1e-3,
         verbose: bool = False,
         bellman_updates: int = 50,
         projected_steps: int = 100,
     ):
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         # Class arguments
         self.model = model
         self.discount = discount
+        assert final_precision > 0, "final_precision must be positive"
         self.epsilon = final_precision
         self.verbose = verbose
         self.bellman_updates = bellman_updates
@@ -109,9 +114,13 @@ class Solver(GenericSolver):
                 pbr_value = norminf(projected_q_bellman_value - contracted_q_value)
 
             if not refined and pbr_value <= self.epsilon_pbr:
-                self.contracted_q_value = contracted_q_value
-                self._finish(self.partition.phi.dot(contracted_q_value), start_time)
-                return
+                q_value = self.partition.phi.dot(contracted_q_value)
+                if optimal_bellman_residual(
+                    self.model, q_value.max(axis=1), self.discount
+                ) <= self.epsilon * (1 - self.discount):
+                    self.contracted_q_value = contracted_q_value
+                    self._finish(q_value, start_time)
+                    return
 
     def _bellman_steps(self, q_value: np.ndarray) -> np.ndarray:
         value = q_value.max(axis=1)

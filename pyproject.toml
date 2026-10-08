@@ -15,9 +15,7 @@ dependencies = ["numpy>=1.26", "scipy>=1.12"]
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff==0.16.10"]
 plot = ["matplotlib>=3.8"]
-mdptoolbox = [
-    "pymdptoolbox @ git+https://github.com/OrsoF/pymdptoolbox_update.git@a70336d78641545e1c1dab19c0539533b9596bf8",
-]
+mdptoolbox = ["pymdptoolbox==4.0b3"]
 gurobi = ["gurobipy"]
 mdpsolver = ["mdpsolver"]
 marmote = ["marmote"]

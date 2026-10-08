@@ -20,6 +20,7 @@ class Solver:
         discount: float,
         final_precision: float,
     ):
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         self.env = env
         self.discount = discount
         self.name = "Gurobi LP Dual"

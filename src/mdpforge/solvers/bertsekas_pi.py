@@ -29,11 +29,7 @@ class Solver:
         n_regions: int = 5,
         verbose: bool = False,
     ):
-        if discount >= 1.0:
-            raise ValueError(
-                "bertsekas_pi is discounted; use an average-cost solver for discount=1."
-            )
-
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         self.model = model
         self.discount = discount
         self.epsilon_policy_evaluation = final_precision / 10

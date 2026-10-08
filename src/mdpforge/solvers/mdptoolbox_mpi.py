@@ -17,6 +17,7 @@ class Solver:
         discount: float,
         final_precision: float,
     ):
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         self.model = model
         self.gamma = discount
         self.epsilon = final_precision
@@ -29,16 +30,15 @@ class Solver:
     def run(self):
         start_time = time.time()
 
-        self.pim = PolicyIterationModified(
+        self.mpi = PolicyIterationModified(
             self.model.transition_matrix,
             self.model.reward_matrix,
             discount=self.gamma,
             epsilon=self.epsilon,
             max_iter=self.max_step_policy_evaluation,
-            skip_check=True,
         )
-        self.pim.run()
+        self.mpi.run()
         self.runtime = time.time() - start_time
 
-        self.value = np.array(self.pim.V)
-        self.policy = np.array(self.pim.policy)
+        self.value = np.array(self.mpi.V)
+        self.policy = np.array(self.mpi.policy)

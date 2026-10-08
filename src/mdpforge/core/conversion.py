@@ -13,9 +13,7 @@ if TYPE_CHECKING:
 
 
 NUMPY, SPARSE = "numpy", "sparse"
-AVERAGE = "average"
 DISCOUNTED = "discounted"
-TOTAL = "total"
 
 
 ####### MARMOTE #######
@@ -60,8 +58,10 @@ def build_marmote_model(
     criterion: str,
     discount: Optional[float] = None,
 ) -> GenericMDP:
+    assert criterion == DISCOUNTED, "Only discounted criteria are supported"
+    assert 0 < discount < 1, "discount must be strictly between 0 and 1"
     from marmote.core import MarmoteInterval
-    from marmote.mdp import AverageMDP, DiscountedMDP, TotalRewardMDP
+    from marmote.mdp import DiscountedMDP
 
     """
     Input :
@@ -81,37 +81,14 @@ def build_marmote_model(
         state_dim, action_dim, transition_matrix
     )
 
-    if criterion == AVERAGE:
-        mdp = AverageMDP(
-            "max",
-            state_space,
-            action_space,
-            marmote_transition_list,
-            marmote_reward_matrix,
-        )
-    elif criterion == DISCOUNTED:
-        mdp = DiscountedMDP(
-            "max",
-            state_space,
-            action_space,
-            marmote_transition_list,
-            marmote_reward_matrix,
-            discount,
-        )
-    elif criterion == TOTAL:
-        mdp = TotalRewardMDP(
-            "max",
-            state_space,
-            action_space,
-            marmote_transition_list,
-            marmote_reward_matrix,
-        )
-    else:
-        assert False, "Criterion {} not recognized. Choose {} or {} or {}".format(
-            criterion, DISCOUNTED, TOTAL, AVERAGE
-        )
-
-    return mdp
+    return DiscountedMDP(
+        "max",
+        state_space,
+        action_space,
+        marmote_transition_list,
+        marmote_reward_matrix,
+        discount,
+    )
 
 
 ####### NUMPY #######

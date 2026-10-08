@@ -18,6 +18,7 @@ class Solver(GenericSolver):
         discount: float,
         final_precision: float,
     ):
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         self.model = model
         self.discount = discount
         self.epsilon = final_precision
@@ -35,7 +36,6 @@ class Solver(GenericSolver):
             self.model.reward_matrix,
             discount=self.discount,
             max_iter=self.max_iter,
-            skip_check=True,
         )
         self.vi.run()
         self.runtime = time.time() - start_time

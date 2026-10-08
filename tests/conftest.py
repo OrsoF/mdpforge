@@ -34,15 +34,27 @@ class ChainModel(GenericModel):
         self.reward_matrix = np.array([[0, 0], [2, 0], [0, 0]], dtype=float)
 
 
-def module_names(package):
+def module_names(package, solver_type=None):
     # Subpackages contain specialized workflows with their own configurations.
     parameters = []
     for module in sorted(iter_modules(package.__path__), key=lambda item: item.name):
         if module.ispkg or module.name.startswith("_"):
             continue
         source = Path(package.__file__).with_name(f"{module.name}.py")
+        tree = ast.parse(source.read_text(encoding="utf-8"))
+        if solver_type is not None and not any(
+            isinstance(node, ast.Assign)
+            and any(
+                isinstance(target, ast.Name) and target.id == "solver_type"
+                for target in node.targets
+            )
+            and isinstance(node.value, ast.Constant)
+            and node.value.value == solver_type
+            for node in ast.walk(tree)
+        ):
+            continue
         imports = set()
-        for node in ast.walk(ast.parse(source.read_text(encoding="utf-8"))):
+        for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 imports.update(alias.name.split(".")[0] for alias in node.names)
             elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
@@ -94,6 +106,11 @@ def model_module(request):
 
 @pytest.fixture(params=module_names(solvers))
 def solver_module(request):
+    return f"{solvers.__name__}.{request.param}"
+
+
+@pytest.fixture(params=module_names(solvers, solver_type="vi"))
+def vi_module(request):
     return f"{solvers.__name__}.{request.param}"
 
 

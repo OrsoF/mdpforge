@@ -14,13 +14,15 @@ class Solver:
         final_precision: float,
         mode: str = SPARSE,
     ):
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         # Class arguments
         self.model = model
         self.discount = discount
         self.epsilon_policy_evaluation = final_precision
+        self.epsilon_policy_update = final_precision
         self.mode = mode
 
-        self.name = "PIM"
+        self.name = "MPI"
 
         self.model._convert_model(self.mode)
         self.max_iter_evaluation = int(1e8)
@@ -36,23 +38,27 @@ class Solver:
         self.value = self.model.reward_matrix.max(axis=1)
 
         policy_update_iter = 0
+        tolerance = self.epsilon_policy_update * (1 - self.discount)
         while True:
+            policy_update_iter += 1
             self.value = self._policy_evaluation(
                 self.policy,
                 self.epsilon_policy_evaluation,
                 self.max_iter_evaluation,
                 self.value,
             )
-            new_policy = self.bellman_no_max(self.value).argmax(axis=1)
+            q_value = self.bellman_no_max(self.value)
+            new_policy = q_value.argmax(axis=1)
 
-            policy_update_condition = np.all(new_policy == self.policy)
+            variation_condition = (
+                np.absolute(q_value.max(axis=1) - self.value).max() < tolerance
+            )
             max_iter_condition = policy_update_iter == self.max_iter_policy_update
+            self.policy = new_policy
 
-            if policy_update_condition or max_iter_condition:
+            if variation_condition or max_iter_condition:
                 self.runtime = time() - start_time
                 break
-            else:
-                self.policy = new_policy
 
     def _policy_evaluation(
         self,
@@ -63,15 +69,13 @@ class Solver:
     ) -> np.ndarray:
         eval_iter = 0
         transition_policy, reward_policy = self._compute_transition_reward_pi(policy)
+        tolerance = (1 - self.discount) * epsilon_policy_evaluation
 
         while True:
             eval_iter += 1
             new_value = reward_policy + self.discount * transition_policy.dot(value)
             variation = np.absolute(new_value - value).max()
-            if (
-                variation
-                < ((1 - self.discount) / self.discount) * epsilon_policy_evaluation
-            ) or eval_iter == max_iteration_evaluation:
+            if variation < tolerance or eval_iter == max_iteration_evaluation:
                 return new_value
             else:
                 value = new_value

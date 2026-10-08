@@ -8,6 +8,8 @@ from mdpforge.utils.bellman import optimal_bellman_operator
 
 
 class Solver(GenericSolver):
+    solver_type = "vi"
+
     def __init__(
         self,
         model: GenericModel,
@@ -16,9 +18,11 @@ class Solver(GenericSolver):
         mode: str = SPARSE,
         initial_value: np.ndarray = None,
     ):
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         self.model = model
         self.discount = discount
-        self.epsilon = final_precision / 10
+        assert final_precision > 0, "final_precision must be positive"
+        self.epsilon = final_precision
         self.mode = mode
 
         if initial_value is not None:
@@ -31,11 +35,7 @@ class Solver(GenericSolver):
 
     def run(self):
         start_time = time.time()
-        tolerance = (
-            0.1 * self.epsilon * (1 - self.discount)
-            if self.discount < 1.0
-            else 0.1 * self.epsilon
-        )
+        tolerance = self.epsilon * (1 - self.discount)
 
         while True:
             new_value = optimal_bellman_operator(self.model, self.value, self.discount)

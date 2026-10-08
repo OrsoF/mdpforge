@@ -19,6 +19,7 @@ class Solver(GenericSolver):
         discount: float,
         final_precision: float,
     ):
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         self.model = model
         self.discount = discount
         self.name = "MPIGS Marmote"

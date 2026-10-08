@@ -16,19 +16,23 @@ from mdpforge.utils.bellman import (
 
 
 class Solver:
+    solver_type = "vi"
+
     def __init__(
         self,
         model: GenericModel,
         discount: float,
-        final_precision: float = 1e-2,
+        final_precision: float = 1e-3,
         verbose: bool = False,
         iter_agg: int = 40,
         iter_bellman: int = 100,
         mode: str = SPARSE,
     ):
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         # Class arguments
         self.model = model
         self.discount = discount
+        assert final_precision > 0, "final_precision must be positive"
         self.epsilon = final_precision
         self.verbose = verbose
         self.iter_agg = iter_agg
@@ -50,9 +54,7 @@ class Solver:
 
     def run(self):
         start_time = time()
-        tolerance = (
-            self.epsilon * (1 - self.discount) if self.discount < 1.0 else self.epsilon
-        )
+        tolerance = self.epsilon * (1 - self.discount)
         self.value = np.zeros((self.model.state_dim))
 
         n = 1

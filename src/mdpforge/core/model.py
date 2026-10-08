@@ -224,10 +224,8 @@ class GenericModel(ABC):
         return compute_transition_reward_policy(self, policy)
 
     def optimal_value_function(self, discount: float) -> np.ndarray:
-        """Load cached values or solve a built model with VI at precision 1e-3.
-
-        Total reward (discount=1) requires convergent value iteration.
-        """
+        """Load cached discounted values or solve with VI at precision 1e-3."""
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
 
         def compute_value():
             from mdpforge.solvers.personal_vi import Solver

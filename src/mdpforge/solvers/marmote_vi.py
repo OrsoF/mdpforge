@@ -2,6 +2,7 @@
 Solver calling the Marmote Value Iteration solver in C++.
 """
 
+from copy import copy
 from time import time
 
 import numpy as np
@@ -9,23 +10,29 @@ from marmote.core import MarmoteInterval
 from marmote.mdp import DiscountedMDP, SolutionMDP
 
 from mdpforge.core.model import GenericModel
+from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
 
 
 class Solver(GenericSolver):
+    solver_type = "vi"
+
     def __init__(
         self,
         model: GenericModel,
         discount: float,
-        final_precision: float,
+        final_precision: float = 1e-3,
     ):
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         self.model = model
         self.discount = discount
         self.name = "VI Marmote"
 
-        self.epsilon = 1e-3
+        assert final_precision > 0, "final_precision must be positive"
+        self.epsilon = final_precision
         self.max_iter = int(1e8)
 
+        self.reference_model = copy(self.model)
         self.model._model_to_marmote()
 
     def run(self):
@@ -44,10 +51,15 @@ class Solver(GenericSolver):
 
         self.start_time = time()
 
-        self.opt: SolutionMDP = self.mdp.ValueIteration(self.epsilon, self.max_iter)
+        self.opt: SolutionMDP = self.mdp.ValueIteration(
+            self.epsilon * (1 - self.discount), self.max_iter
+        )
 
-        self.runtime = time() - self.start_time
         self.value = np.array(
             [self.opt.getValueIndex(ss) for ss in range(self.model.state_dim)]
         )
+        self.value = certify_value(
+            self.reference_model, self.value, self.discount, self.epsilon
+        )
         self.policy = None
+        self.runtime = time() - self.start_time

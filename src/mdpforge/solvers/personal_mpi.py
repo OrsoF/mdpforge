@@ -16,15 +16,17 @@ class Solver:
         discount: float,
         final_precision: float = 1e-2,
     ):
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         # Class arguments
         self.model = model
         self.discount = discount
 
-        self.name = "PIM"
+        self.name = "MPI"
         self.model._convert_model(SPARSE)
 
         self.max_iter_eval = int(1e1)
         self.precision_policy_eval = final_precision
+        self.precision_policy_update = final_precision
 
     def run(self):
         start_time = time()
@@ -43,12 +45,14 @@ class Solver:
                 value,
             )
 
-            new_policy = bellman_no_max(self.model, value, self.discount).argmax(axis=1)
-            policy_update_condition = np.all(new_policy == policy)
+            q_value = bellman_no_max(self.model, value, self.discount)
+            new_policy = q_value.argmax(axis=1)
+            tolerance = self.precision_policy_update * (1 - self.discount)
+            variation = np.absolute(q_value.max(axis=1) - value).max()
 
-            if policy_update_condition:
+            if variation < tolerance:
                 self.value = value
-                self.policy = policy
+                self.policy = new_policy
                 self.runtime = time() - start_time
                 break
             else:
@@ -65,17 +69,15 @@ class Solver:
         eval_iter = 0
         transition_policy, reward_policy = self._compute_transition_reward_pi(policy)
 
-        tolerance = (
-            (1 - self.discount) * epsi_eval if self.discount < 1.0 else epsi_eval
-        )
+        tolerance = (1 - self.discount) * epsi_eval
 
         while True:
             eval_iter += 1
             new_value = reward_policy + self.discount * transition_policy.dot(value)
             variation = np.absolute(new_value - value).max()
+            value = new_value
             if variation < tolerance or eval_iter == max_iteration_evaluation:
                 break
-            value = new_value
 
         return value
 

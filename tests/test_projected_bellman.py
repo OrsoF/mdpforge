@@ -11,7 +11,7 @@ from mdpforge.utils.projected_bellman import (
 )
 
 
-@pytest.mark.parametrize("discount", [0.9, 1.0])
+@pytest.mark.parametrize("discount", [0.9, 0.99])
 def test_projected_iterations_recover_chain_values(chain, discount):
     partition = Partition(chain, labels=np.arange(chain.state_dim))
     transitions, rewards = partition.compute_agg_trans_reward_v()

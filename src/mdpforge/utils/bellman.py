@@ -109,6 +109,7 @@ def iterative_policy_evaluation(
     """
     Apply Bellman^pi to initial_value until |initial_value - Bellman^pi initial_value| < tolerance
     """
+    assert 0 < discount < 1, "discount must be strictly between 0 and 1"
     if initial_value is None:
         value = np.zeros((transition_policy.shape[0]))
     else:
@@ -230,6 +231,7 @@ def apply_obo_until_var_small(
     initial_value: np.ndarray,
     shift_acceleration: bool = False,
 ) -> Tuple[np.ndarray, float]:
+    assert 0 < discount < 1, "discount must be strictly between 0 and 1"
     value = initial_value
 
     while True:
@@ -239,7 +241,7 @@ def apply_obo_until_var_small(
         if variation < variation_tol:
             value = new_value
             break
-        if shift_acceleration and discount < 1:
+        if shift_acceleration:
             shift = 0.5 * (delta.max() + delta.min())
             new_value += discount * shift / (1 - discount)
         value = new_value

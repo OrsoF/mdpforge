@@ -38,6 +38,7 @@ class Solver:
         n_tiles: int | None = None,
         projected_steps: int = 100,
     ):
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         self.model = model
         self.discount = discount
 
@@ -56,8 +57,6 @@ class Solver:
             self.model.reward_matrix == self.model.reward_matrix[:, [0]]
         )
 
-        assert self.discount < 1.0, "Use aggregated_pim_total instead."
-
         if self.split_method not in {"width", "tiles"}:
             raise ValueError("split_method must be 'width' or 'tiles'.")
 
@@ -65,7 +64,7 @@ class Solver:
 
         self.model._convert_model(SPARSE)
 
-        self.name = "PDPIM" if self.split_method == "width" else "PDPIMtiles"
+        self.name = "PDMPI" if self.split_method == "width" else "PDMPItiles"
 
         self.partition = Partition(self.model)
 
@@ -102,11 +101,9 @@ class Solver:
                 new_value - self.value
             ) < self.epsilon_variation * (1 - self.discount)
 
-            condition_policy = np.all(new_policy == self.policy)
-
             self.value = new_value
 
-            if condition_variation or condition_policy:
+            if condition_variation:
                 self.policy = new_policy
                 self.runtime = time.perf_counter() - start_time
                 break
@@ -175,7 +172,7 @@ class Solver:
                     transition_policy,
                     reward_policy,
                     self.discount,
-                    epsilon_policy_evaluation,
+                    epsilon_policy_evaluation * (1 - self.discount),
                     value,
                 )
 

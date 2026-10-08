@@ -9,6 +9,7 @@ class GenericSolver:
     def __init__(
         self, model: GenericModel, discount: float, final_precision: float
     ) -> None:
+        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         self.name: str
         self.model = model
         self.discount = discount
