@@ -20,6 +20,7 @@ mdptoolbox = [
 ]
 gurobi = ["gurobipy"]
 mdpsolver = ["mdpsolver"]
+marmote = ["marmote"]
 deep = ["stable-baselines3", "gymnasium"]
 maze = ["mazelib"]
 progress = ["tqdm"]
@@ -42,6 +43,7 @@ include = ["mdpforge", "mdpforge.*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
+markers = ["optional: integrations requiring dependencies beyond NumPy/SciPy"]
 
 [tool.ruff]
 target-version = "py311"

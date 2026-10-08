@@ -2,9 +2,10 @@ import subprocess
 import sys
 
 
-def test_core_workflow_without_optional_dependencies(tmp_path):
+def test_core_workflow_without_optional_dependencies(tmp_path, model_script):
     # A fresh interpreter also catches optional imports hidden by test collection.
-    script = """
+    script = (
+        """
 import sys
 from pathlib import Path
 
@@ -14,18 +15,19 @@ class BlockOptionalImports:
             raise ModuleNotFoundError(f'Optional dependency blocked: {fullname}')
 
 sys.meta_path.insert(0, BlockOptionalImports())
-from mdpforge.models.schoolboy import Model
-from mdpforge.solvers.personal_vi import Solver
+"""
+        + model_script
+        + """
 from mdpforge.utils import persistence
 from mdpforge.core.validation import validate_model
 persistence.SAVED_MODELS_PATH = Path(sys.argv[1]) / 'models'
-model = Model(7, 3)
+persistence.SAVED_VALUE_FUNCTIONS_PATH = Path(sys.argv[1]) / 'values'
+model = ChainModel(3, 2)
 model.create_model(save=False)
 validate_model(model)
-solver = Solver(model, discount=0.9, final_precision=1e-4)
-solver.run()
-assert solver.bellman_residual() < 1e-4
+np.testing.assert_allclose(model.optimal_value_function(0.9), [1.8, 2, 0])
 """
+    )
     result = subprocess.run(
         [sys.executable, "-c", script, str(tmp_path)],
         capture_output=True,

@@ -1,27 +1,8 @@
-import numpy as np
 import pytest
 from numpy.testing import assert_allclose
 
-from mdpforge.core.model import GenericModel
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.utils import persistence
-
-
-class ChainModel(GenericModel):
-    def _build_model(self):
-        self.transition_matrix = np.array(
-            [[[0, 1, 0], [0, 0, 1], [0, 0, 1]], np.eye(3)], dtype=float
-        )
-        self.reward_matrix = np.array([[0, 0], [2, 0], [0, 0]], dtype=float)
-
-
-@pytest.fixture
-def chain(tmp_path, monkeypatch):
-    monkeypatch.setattr(persistence, "SAVED_MODELS_PATH", tmp_path / "models")
-    monkeypatch.setattr(persistence, "SAVED_VALUE_FUNCTIONS_PATH", tmp_path / "values")
-    model = ChainModel(3, 2)
-    model.create_model(save=False)
-    return model
 
 
 @pytest.mark.parametrize("mode", ["numpy", "sparse"])
@@ -41,7 +22,7 @@ def test_optimal_value_on_cache_miss(chain, mode, discount):
 def test_optimal_value_reuses_persisted_cache(chain):
     expected = chain.optimal_value_function(0.9)
     # A fresh model can reuse the persisted value without rebuilding its matrices.
-    cached_model = ChainModel(3, 2)
+    cached_model = type(chain)(3, 2)
     assert_allclose(cached_model.optimal_value_function(0.9), expected, rtol=0, atol=0)
 
 

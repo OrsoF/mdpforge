@@ -19,6 +19,7 @@ class GenericModel(ABC):
 
         self.transition_matrix: list | np.ndarray
         self.reward_matrix: np.ndarray
+        self.params: dict = {}
 
     def create_model(
         self,
@@ -29,18 +30,23 @@ class GenericModel(ABC):
         """
         Function that create the reward and transition matrices.
         """
+        # Saving files process
+        self.pickle_file_name = "{}.pkl".format(self.name)
         pickle_file_path = model_cache_path(self.name)
 
         if hasattr(self, "transition_matrix") and hasattr(self, "reward_matrix"):
             return
         elif not pickle_file_path.exists():
             self._build_model()
+
+            # print("Model built.")
             if normalize_reward:
                 self._normalize_reward_matrix()
             if check_transition:
                 self.test_model()
                 print("Transition is stochastic.")
 
+            # print("Saving model...")
             if save:
                 save_model(self)
 
@@ -157,6 +163,18 @@ class GenericModel(ABC):
 
         model_to_sparse(self)
 
+    def _model_to_marmote(self):
+        """Convert the transition and reward matrices to marmote format."""
+        from mdpforge.core.conversion import model_to_marmote
+
+        model_to_marmote(self)
+
+    def _compute_mdpsolver_args(self) -> tuple:
+        """Convert the model transition and reward to value made for MDPSolver."""
+        from mdpforge.core.conversion import compute_mdpsolver_args
+
+        return compute_mdpsolver_args(self)
+
     def _is_model_built(self) -> bool:
         return hasattr(self, "transition_matrix") and hasattr(self, "reward_matrix")
 
@@ -208,7 +226,7 @@ class GenericModel(ABC):
     def optimal_value_function(self, discount: float) -> np.ndarray:
         """Load cached values or solve a built model with VI at precision 1e-3.
 
-        Total reward (discount=1) requires a model with convergent value iteration.
+        Total reward (discount=1) requires convergent value iteration.
         """
 
         def compute_value():
