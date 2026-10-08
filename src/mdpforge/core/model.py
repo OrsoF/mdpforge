@@ -1,4 +1,3 @@
-import time
 from abc import ABC, abstractmethod
 
 import numpy as np
@@ -31,26 +30,19 @@ class GenericModel(ABC):
         """
         Function that create the reward and transition matrices.
         """
-        # Saving files process
         self.pickle_file_name = "{}.pkl".format(self.name)
         pickle_file_path = model_cache_path(self.name)
 
         if hasattr(self, "transition_matrix") and hasattr(self, "reward_matrix"):
             return
         elif not pickle_file_path.exists():
-            start_build_time = time.time()
             self._build_model()
-            _build_time = np.round(time.time() - start_build_time, 2)
-            # print("Build time : {}".format(_build_time))
-
-            # print("Model built.")
             if normalize_reward:
                 self._normalize_reward_matrix()
             if check_transition:
                 self.test_model()
                 print("Transition is stochastic.")
 
-            # print("Saving model...")
             if save:
                 save_model(self)
 

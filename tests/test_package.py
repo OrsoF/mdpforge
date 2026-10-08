@@ -2,32 +2,29 @@ import subprocess
 import sys
 
 
-def test_installed_namespace_and_dynamic_loading(tmp_path):
+def test_installed_namespace_and_workflow(tmp_path):
     # Run outside the checkout, without PYTHONPATH or the current directory.
     script = """
+from importlib import import_module
 from pathlib import Path
 import sys
 
 import mdpforge
 from mdpforge.models.rooms import Model
 from mdpforge.solvers.personal_vi import Solver
-from mdpforge.utils.data_management import import_models_from_file, import_solver_from_file
 from mdpforge.utils.paths import ARTIFACTS_PATH, MODEL_PATH, SOLVER_PATH
 
 assert mdpforge.__file__
 assert ARTIFACTS_PATH == Path.cwd() / 'artifacts'
 assert MODEL_PATH == Path(mdpforge.__file__).parent / 'models'
 assert SOLVER_PATH == Path(mdpforge.__file__).parent / 'solvers'
-for name in ('rooms', 'rooms.py', 'total/rooms_total'):
-    model = import_models_from_file(name)(100, 4)
+for name in ('rooms', 'total.rooms_total'):
+    model = import_module(f'mdpforge.models.{name}').Model(100, 4)
     model.create_model(save=False)
     solver = Solver(model, discount=0.9)
     solver.run()
     assert solver.bellman_residual() < 1e-4
 
-solver = import_solver_from_file('personal_vi')
-solver.run()
-assert solver.bellman_residual() < 1e-4
 model = Model(100, 4)
 model.create_model()
 assert (ARTIFACTS_PATH / 'saved_models' / f'{model.name}.pkl').is_file()

@@ -4,6 +4,17 @@ This folder replaces the old `exps/` and `notebooks/` trees with theme-oriented 
 Notebook outputs were stripped during consolidation; run only the sections needed for a given analysis.
 Some sections preserve old command-line scripts as notebook cells; set the parameter block manually before running those cells.
 
+These notebooks preserve historical research, not the current supported benchmark
+suite. The retained discounted models are Rooms, Schoolboy, and RiverSwim; the
+retained solvers are VI and MPI. Cells using other models, aggregation solvers, or
+external solver adapters require those sources to be added back first. Installing
+an extra supplies dependencies, not removed code. The supported starting workflow
+is documented in [the README](../README.md).
+
+The old benchmark scripts and the `data_management`/`toy_model` helpers were
+removed. Cells using those helpers require direct imports and fresh solver
+construction for each repetition. Notebook contents remain historical material.
+
 Install analysis dependencies from the repository root with
 `python -m pip install -e ".[notebooks]"`. Add the relevant backend extra for each
 study (for example, `.[notebooks,gurobi]` for LP comparisons). Notebook execution

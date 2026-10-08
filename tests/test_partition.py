@@ -8,18 +8,20 @@ from mdpforge.core.partition import Partition
 from mdpforge.core.validation import validate_model
 
 
-def test_partition_regions_cover_every_state(forest):
-    partition = Partition(forest, [10, 10, 3, 8])
+def test_partition_regions_cover_every_state(small_model):
+    partition = Partition(small_model, [10, 10, 3, 8])
     regions = partition.states_in_region
     assert all(regions)
-    assert_array_equal(np.sort(np.concatenate(regions)), np.arange(forest.state_dim))
+    assert_array_equal(
+        np.sort(np.concatenate(regions)), np.arange(small_model.state_dim)
+    )
     assert_array_equal(np.unique(partition.state_to_region), np.arange(3))
     for label, states in enumerate(regions):
         assert np.all(partition.state_to_region[states] == label)
 
 
-def test_partition_weights_sum_correctly(forest):
-    partition = Partition.from_regions(forest, [[0, 1], [2], [3]])
+def test_partition_weights_sum_correctly(small_model):
+    partition = Partition.from_regions(small_model, [[0, 1], [2], [3]])
     assert_allclose(
         partition.weights.toarray(),
         [[0.5, 0.5, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]],
@@ -31,13 +33,13 @@ def test_partition_weights_sum_correctly(forest):
     assert_allclose(partition.weights @ np.array([0, 2, 4, 6]), [1, 4, 6])
 
 
-def test_aggregated_model_remains_stochastic(forest):
-    partition = Partition(forest, [0, 0, 1, 1])
+def test_aggregated_model_remains_stochastic(small_model):
+    partition = Partition(small_model, [0, 0, 1, 1])
     transitions, rewards = partition.compute_agg_trans_reward_q()
     validate_model(
         SimpleNamespace(
             state_dim=2,
-            action_dim=forest.action_dim,
+            action_dim=small_model.action_dim,
             transition_matrix=transitions,
             reward_matrix=rewards,
         )

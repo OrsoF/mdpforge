@@ -22,18 +22,15 @@ sys.meta_path.insert(0, BlockOptionalImports())
 for name in ('mdpforge.core.model', 'mdpforge.core.solver', 'mdpforge.core.partition', 'mdpforge.core.operators',
              'mdpforge.core.conversion', 'mdpforge.core.validation', 'mdpforge.utils.bellman',
              'mdpforge.utils.projected_bellman', 'mdpforge.utils.exact_value_function',
-             'mdpforge.utils.data_management', 'main', 'main_total'):
+             'mdpforge.solvers.personal_vi', 'mdpforge.solvers.personal_pim'):
     importlib.import_module(name)
-import main
-for module_name, _ in main.SOLVERS.values():
-    importlib.import_module(f'mdpforge.solvers.{module_name}')
 
-from mdpforge.models.forest import Model
+from mdpforge.models.schoolboy import Model
 from mdpforge.solvers.personal_vi import Solver
 from mdpforge.utils import persistence
 from mdpforge.core.validation import validate_model
 persistence.SAVED_MODELS_PATH = Path(sys.argv[1]) / 'models'
-model = Model(4, 2)
+model = Model(7, 3)
 model.create_model(save=False)
 validate_model(model)
 solver = Solver(model, discount=0.9, final_precision=1e-4)
