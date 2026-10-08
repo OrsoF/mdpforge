@@ -9,11 +9,13 @@ import time
 import numpy as np
 
 from mdpforge.core.model import SPARSE, GenericModel
-from mdpforge.core.operators import compute_transition_reward_policy
-from mdpforge.core.partition import Partition
-from mdpforge.utils.bellman import (
+from mdpforge.core.operators import (
     bellman_operator,
     bellman_policy_operator,
+    compute_transition_reward_policy,
+)
+from mdpforge.core.partition import Partition
+from mdpforge.utils.bellman import (
     iterative_policy_evaluation,
 )
 

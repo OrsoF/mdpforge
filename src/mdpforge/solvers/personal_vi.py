@@ -3,8 +3,8 @@ import time
 import numpy as np
 
 from mdpforge.core.model import SPARSE, GenericModel
+from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.solver import GenericSolver
-from mdpforge.utils.bellman import optimal_bellman_operator
 
 
 class Solver(GenericSolver):

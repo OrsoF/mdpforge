@@ -6,7 +6,6 @@ from mdpforge.core.conversion import NUMPY, SPARSE
 from mdpforge.utils.persistence import (
     get_cached_value_function,
     load_model,
-    model_cache_path,
     save_model,
 )
 
@@ -27,35 +26,20 @@ class GenericModel(ABC):
         normalize_reward: bool = False,
         save: bool = True,
     ):
-        """
-        Function that create the reward and transition matrices.
-        """
-        # Saving files process
-        self.pickle_file_name = "{}.pkl".format(self.name)
-        pickle_file_path = model_cache_path(self.name)
-
-        if hasattr(self, "transition_matrix") and hasattr(self, "reward_matrix"):
+        """Load cached matrices or build, optionally validate, normalize and save."""
+        if self._is_model_built() or load_model(self):
             return
-        elif not pickle_file_path.exists():
-            self._build_model()
-
-            # print("Model built.")
-            if normalize_reward:
-                self._normalize_reward_matrix()
-            if check_transition:
-                self.test_model()
-                print("Transition is stochastic.")
-
-            # print("Saving model...")
-            if save:
-                save_model(self)
-
-        else:
-            load_model(self)
+        self._build_model()
+        if normalize_reward:
+            self._normalize_reward_matrix()
+        if check_transition:
+            self.test_model()
+            print("Transition is stochastic.")
+        if save:
+            save_model(self)
 
     @abstractmethod
     def _build_model(self):
-        # Define it in the specific model.
         raise NotImplementedError(
             "Subclasses of GenericModel must implement _build_model."
         )
@@ -225,18 +209,10 @@ class GenericModel(ABC):
 
     def optimal_value_function(self, discount: float) -> np.ndarray:
         """Load cached discounted values or solve with VI at precision 1e-3."""
+        from mdpforge.utils.exact_value_function import compute_value_function
+
         assert 0 < discount < 1, "discount must be strictly between 0 and 1"
-
-        def compute_value():
-            from mdpforge.solvers.personal_vi import Solver
-
-            solver = Solver(
-                self, discount, final_precision=1e-3, mode=self.get_model_type()
-            )
-            solver.run()
-            return solver.value
-
         return get_cached_value_function(
             f"{discount}_{self.name}",
-            compute_value,
+            lambda: compute_value_function(self, discount, 1e-3),
         )

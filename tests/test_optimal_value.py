@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 from numpy.testing import assert_allclose
 
@@ -58,3 +59,23 @@ def test_exact_value_ignores_old_span_reference(chain, tmp_path, monkeypatch):
         [43.8, 44, 42], tmp_path / f"discounted_0.9_{chain.name}.pkl"
     )
     assert_allclose(get_exact_value(chain, 0.9), [1.8, 2, 0], atol=1e-6, rtol=0)
+
+
+@pytest.mark.parametrize("mode", ["numpy", "sparse"])
+def test_reference_precisions_and_caches_remain_distinct(
+    chain, mode, tmp_path, monkeypatch
+):
+    monkeypatch.setattr(
+        "mdpforge.utils.exact_value_function.SAVED_VALUE_FUNCTIONS_PATH", tmp_path
+    )
+    chain.transition_matrix = np.array([np.eye(3), np.eye(3)])
+    chain.reward_matrix = np.array([[1, 0], [2, 0], [0, 0]], dtype=float)
+    chain._convert_model(mode)
+    coarse = chain.optimal_value_function(0.9)
+    reference = get_exact_value(chain, 0.9)
+    assert_allclose(coarse, [10, 20, 0], atol=1e-3, rtol=0)
+    assert_allclose(reference, [10, 20, 0], atol=1e-6, rtol=0)
+    assert np.abs(coarse - reference).max() > 1e-6
+    assert chain.get_model_type() == mode
+    assert persistence.value_function_cache_path(f"0.9_{chain.name}").is_file()
+    assert (tmp_path / f"discounted_absolute_0.9_{chain.name}.pkl").is_file()

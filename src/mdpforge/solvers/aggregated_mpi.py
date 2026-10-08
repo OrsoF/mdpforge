@@ -12,14 +12,16 @@ import time
 import numpy as np
 
 from mdpforge.core.model import SPARSE, GenericModel
-from mdpforge.core.operators import compute_transition_reward_policy
-from mdpforge.core.partition import Partition
-from mdpforge.utils.bellman import (
+from mdpforge.core.operators import (
     bellman_operator,
     bellman_policy_operator,
     compact_optimal_bellman_operator,
-    iterative_policy_evaluation,
+    compute_transition_reward_policy,
     norminf,
+)
+from mdpforge.core.partition import Partition
+from mdpforge.utils.bellman import (
+    iterative_policy_evaluation,
 )
 from mdpforge.utils.projected_bellman import (
     apply_ppbo_until_var_small,

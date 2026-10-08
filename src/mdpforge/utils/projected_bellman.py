@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple
 import numpy as np
 
 from mdpforge.core.model import GenericModel
-from mdpforge.utils.bellman import norminf
+from mdpforge.core.operators import norminf
 
 
 def projected_optimal_bellman_operator(

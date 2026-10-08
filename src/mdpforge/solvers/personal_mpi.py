@@ -3,10 +3,7 @@ from time import time
 import numpy as np
 
 from mdpforge.core.model import SPARSE, GenericModel
-from mdpforge.core.operators import compute_transition_reward_policy
-from mdpforge.utils.bellman import (
-    bellman_no_max,
-)
+from mdpforge.core.operators import bellman_operator, compute_transition_reward_policy
 
 
 class Solver:
@@ -45,7 +42,7 @@ class Solver:
                 value,
             )
 
-            q_value = bellman_no_max(self.model, value, self.discount)
+            q_value = bellman_operator(self.model, value, self.discount)
             new_policy = q_value.argmax(axis=1)
             tolerance = self.precision_policy_update * (1 - self.discount)
             variation = np.absolute(q_value.max(axis=1) - value).max()

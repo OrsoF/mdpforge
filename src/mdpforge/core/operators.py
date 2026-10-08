@@ -73,26 +73,31 @@ def compute_transition_reward_policy(
     return transition_policy.tocsr(), reward_policy
 
 
-def iterative_policy_evaluation(
-    transition_policy,
-    reward_policy: np.ndarray,
+def compact_optimal_bellman_operator(
+    model: "GenericModel",
+    value: np.ndarray,
     discount: float,
-    variation_tol: float,
-    max_step: int,
-    initial_value: np.ndarray | None = None,
+    shared_reward: bool = False,
 ) -> np.ndarray:
-    """Evaluate a fixed policy by repeated Bellman policy updates."""
-    value = (
-        np.zeros(transition_policy.shape[0])
-        if initial_value is None
-        else np.asarray(initial_value).ravel()
-    )
-    for _ in range(max_step):
-        next_value = bellman_policy_operator(
-            value, discount, transition_policy, reward_policy
-        )
-        if norminf(next_value - value) <= variation_tol:
-            return next_value
-        value = next_value
+    """Apply T* without materializing the full action-by-state array."""
+    if shared_reward:
+        new_value = model.transition_matrix[0].dot(value)
+        for aa in range(1, model.action_dim):
+            np.maximum(
+                new_value,
+                model.transition_matrix[aa].dot(value),
+                out=new_value,
+            )
+        new_value *= discount
+        new_value += model.reward_matrix[:, 0]
+        return new_value
 
-    return value
+    new_value = model.reward_matrix[:, 0] + discount * model.transition_matrix[0].dot(
+        value
+    )
+    for aa in range(1, model.action_dim):
+        candidate = model.reward_matrix[:, aa] + discount * model.transition_matrix[
+            aa
+        ].dot(value)
+        np.maximum(new_value, candidate, out=new_value)
+    return new_value

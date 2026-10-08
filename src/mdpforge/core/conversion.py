@@ -1,19 +1,17 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import numpy as np
 from scipy.sparse import csr_array
 
 if TYPE_CHECKING:
     from marmote.core import FullMatrix
-    from marmote.mdp import GenericMDP
 
     from mdpforge.core.model import GenericModel
 
 
 NUMPY, SPARSE = "numpy", "sparse"
-DISCOUNTED = "discounted"
 
 
 ####### MARMOTE #######
@@ -50,48 +48,6 @@ def build_marmote_transition_list(
         marmote_transitions_list.append(P)
         P = None
     return marmote_transitions_list
-
-
-def build_marmote_model(
-    transition_matrix: list,
-    reward_matrix: np.ndarray,
-    criterion: str,
-    discount: Optional[float] = None,
-) -> GenericMDP:
-    assert criterion == DISCOUNTED, "Only discounted criteria are supported"
-    assert 0 < discount < 1, "discount must be strictly between 0 and 1"
-    from marmote.core import MarmoteInterval
-    from marmote.mdp import DiscountedMDP
-
-    """
-    Input :
-    transition_matrix : liste de taille A de matrices de shape SxS
-    reward_matrix : matrice de taille SxA
-    discount :
-    """
-    state_dim, action_dim = reward_matrix.shape
-    state_space = MarmoteInterval(0, int(state_dim - 1))
-    action_space = MarmoteInterval(0, int(action_dim - 1))
-
-    marmote_reward_matrix = build_marmote_reward_matrix(
-        state_dim, action_dim, reward_matrix
-    )
-
-    marmote_transition_list = build_marmote_transition_list(
-        state_dim, action_dim, transition_matrix
-    )
-
-    return DiscountedMDP(
-        "max",
-        state_space,
-        action_space,
-        marmote_transition_list,
-        marmote_reward_matrix,
-        discount,
-    )
-
-
-####### NUMPY #######
 
 
 def model_to_numpy(model: "GenericModel") -> None:

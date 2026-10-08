@@ -3,11 +3,10 @@ from time import time
 import numpy as np
 
 from mdpforge.core.model import SPARSE, GenericModel
+from mdpforge.core.operators import bellman_operator, compact_optimal_bellman_operator
 from mdpforge.core.partition import Partition
 from mdpforge.utils.bellman import (
     apply_obo_until_var_small,
-    bellman_no_max,
-    compact_optimal_bellman_operator,
     optimal_bellman_residual,
 )
 from mdpforge.utils.projected_bellman import (
@@ -168,7 +167,7 @@ class Solver:
 
     def _finish(self, value: np.ndarray, start_time: float):
         self.value = value
-        self.policy = bellman_no_max(self.model, value, self.discount).argmax(axis=1)
+        self.policy = bellman_operator(self.model, value, self.discount).argmax(axis=1)
         self.runtime = time() - start_time
 
     def _name(self) -> str:

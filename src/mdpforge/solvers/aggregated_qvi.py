@@ -9,14 +9,16 @@ from time import time
 import numpy as np
 
 from mdpforge.core.model import GenericModel
+from mdpforge.core.operators import (
+    compact_optimal_bellman_operator,
+    norminf,
+    q_optimal_bellman_operator,
+)
 from mdpforge.core.partition import Partition
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.bellman import (
     apply_obo_until_var_small,
-    compact_optimal_bellman_operator,
-    norminf,
     optimal_bellman_residual,
-    q_optimal_bellman_operator,
 )
 from mdpforge.utils.projected_bellman import (
     apply_poqbo_until_var_small,

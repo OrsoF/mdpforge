@@ -8,11 +8,11 @@ from time import time
 import numpy as np
 
 from mdpforge.core.model import SPARSE, GenericModel
-from mdpforge.core.partition import Partition
-from mdpforge.utils.bellman import (
+from mdpforge.core.operators import (
     compact_optimal_bellman_operator,
     norminf,
 )
+from mdpforge.core.partition import Partition
 
 
 class Solver:
