@@ -1,7 +1,7 @@
 # Generated research caches and scratch outputs
-artifacts/tmp/
-artifacts/saved_models/
-artifacts/saved_value_functions/
+**/artifacts/tmp/
+**/artifacts/saved_models/
+**/artifacts/saved_value_functions/
 # Keep artifacts/results/, artifacts/figures/, and artifacts/exps/ versionable.
 
 # Local editor and operating-system files

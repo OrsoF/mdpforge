@@ -34,8 +34,7 @@ def test_bertsekas_pi_final_value_precision(recurrent_model):
     solver.run()
 
     residual = (
-        optimal_bellman_operator(recurrent_model, solver.value, discount)
-        - solver.value
+        optimal_bellman_operator(recurrent_model, solver.value, discount) - solver.value
     )
     assert np.max(np.abs(residual)) / (1 - discount) <= precision
     assert_allclose(solver.value, [100, 200], atol=precision, rtol=0)

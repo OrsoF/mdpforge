@@ -197,10 +197,16 @@ def test_catalogue_model_uses_own_defaults(isolated_model_cache):
 
 
 def test_impatience_catalogue_model_uses_current_mdp_contract(isolated_model_cache):
+    from mdpforge.models.impatience import Model
+
+    expected = Model()
     bench = Benchmark(default_solvers=False).add_mdp("impatience")
     model = bench._mdps[0]
     assert isinstance(model, MDP)
-    assert (model.state_dim, model.action_dim) == (50, 10)
+    assert (model.state_dim, model.action_dim) == (
+        expected.state_dim,
+        expected.action_dim,
+    )
     validate_model(model)
 
 
