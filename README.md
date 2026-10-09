@@ -1,101 +1,81 @@
 # mdpforge
 
-Benchmark finite Markov decision processes: compare a new solver on existing
-MDPs, or compare existing solvers on a new MDP. Built with NumPy and SciPy.
-The project is experimental and supports discounted problems (`0 < discount < 1`).
+Compare solvers on finite Markov decision processes, or benchmark a new MDP.
+Experimental, built with NumPy/SciPy; discounted problems only (`0 < discount < 1`).
 
 ## Install
 
-Python 3.11 or newer. From the repository root:
+Python 3.11+. From the repository root:
 
 ```sh
 python -m pip install -e .
 ```
 
+Optional [extras](pyproject.toml): `plot`, `mdptoolbox`, `mdpsolver`, `gurobi`,
+`marmote`, `maze`. Example: `python -m pip install -e ".[mdptoolbox]"`.
+MDPToolbox uses the official `pymdptoolbox==4.0b3` package.
+
 ## Run a benchmark
-
-This example compares VI and QVI on Rooms (100 states, 4 actions), with three
-trials per solver and a requested value error of at most `1e-3`.
-
-```python
-from mdpforge.core.benchmark import benchmark, export_csv
-from mdpforge.models.rooms import Model
-from mdpforge.solvers.personal_vi import Solver as VI
-from mdpforge.solvers.personal_qvi import Solver as QVI
-
-model = Model()
-model.create_model(save=False)
-
-results = benchmark(
-    model,
-    {"VI": VI, "QVI": QVI},
-    discount=0.9,
-    epsilon=1e-3,
-    repeats=3,
-    seed=0,
-)
-for row in results:
-    print(row["solver"], row["status"], row["runtime"], row["error_bound"])
-export_csv(results, "artifacts/tmp/benchmark.csv")
-```
-
-`benchmark()` constructs and runs each solver on a fresh copy of the built model.
-It returns one dictionary per trial; `export_csv()` writes the same measurements.
-Models provide modest default state sizes and accept `action_dim=10` by default;
-some environments determine their actual dimensions internally. Pass explicit
-dimensions, such as `Model(100, 4)`, to override the defaults.
-
-## Read the results
-
-| Field | Meaning |
-| --- | --- |
-| `runtime` | Seconds spent constructing the solver and executing `run()`. |
-| `residual` | Maximum absolute difference between the final value and one optimal Bellman update. |
-| `error_bound` | Upper bound on the maximum difference from the optimal value: `residual / (1 - discount)`. |
-| `status` | `success`: bound ≤ epsilon; `imprecise`: bound exceeds epsilon; `error`: exception or invalid value. |
-| `error` | Explanation when the trial fails. |
-
-Compare median runtimes of successful trials, keeping the model, discount and
-epsilon fixed. Model copying and independent verification are excluded from timing.
-VI uses `final_precision=epsilon`; PI/MPI tolerances are algorithm-specific, but
-the benchmark checks every solver against the same final error bound.
-
-## Add a model or solver
-
-- **Model:** add `Model(MDP)` in [models](src/mdpforge/models), importing
-  `MDP` from `mdpforge.core.mdp`.
-  Implement `_build_model()` and call `create_model()`. Expose `state_dim`, `action_dim`, transitions
-  `transition_matrix[action]` of shape `(states, states)`, and rewards
-  `reward_matrix` of shape `(states, actions)`, and `name` for benchmarks and caches.
-- **Solver:** add a `Solver` class in [solvers](src/mdpforge/solvers). Its constructor
-  takes `(model, discount, final_precision=...)`; `run()` sets `value`, a vector of
-  length `state_dim`. Repository tests also expect `policy` (or `None`) and `runtime`.
-  Add the constructor to the dictionary passed to `benchmark()`.
-
-Transitions have one format: a list of SciPy `csr_matrix` objects, finalized by
-`create_model()` after building or loading. Rewards and values remain NumPy arrays.
-Solvers use this format directly; external backend objects are built separately.
-Solvers accept any built object exposing these five attributes, described by the
-[`MDPProtocol`](src/mdpforge/core/model.py). This describes the shared data
-interface; `validate_model()` checks numerical validity. Inheritance is optional.
-[`MDP`](src/mdpforge/core/mdp.py) is the common class for generated models such as
-Rooms and models supplied through matrices. It provides construction, validation,
-state relabeling, density measurements and optimal-value caching. Existing model
-names and cache keys are preserved.
-
-If the matrices are already available, use `MDP.from_matrices(...)`.
-It infers the dimensions, converts transitions to CSR and validates the data.
-The returned model is ready for the benchmark without calling `create_model()`:
 
 ```python
 from mdpforge.core.benchmark import Benchmark
-from mdpforge.core.mdp import MDP
+from mdpforge.models.rooms import Model as Rooms
 from mdpforge.solvers.personal_vi import Solver as VI
+from mdpforge.solvers.personal_qvi import Solver as QVI
+
+model = Rooms()
+model.create_model(save=False)
+
+bench = Benchmark().add_mdp(model)
+bench.add_solver(VI, name="VI").add_solver(QVI, name="QVI")
+results = bench.run(discount=0.9, precision=1e-3, repeats=3, seed=0)
+bench.export_csv("artifacts/tmp/benchmark.csv")
+```
+
+Register more built models with `add_mdp()`; each must have a unique name.
+Every model/solver pair runs on fresh copies, returning one dictionary per trial.
+Models have modest defaults; pass dimensions such as `Rooms(100, 4)` to override
+them. Some environments determine their actual dimensions internally.
+With the `plot` extra, `bench.plot_heat(reference="VI")` compares median runtimes.
+
+| Field | Meaning |
+| --- | --- |
+| `runtime` | Seconds for solver construction and `run()`; copying and verification excluded. |
+| `residual` | Maximum absolute difference between the final value and its optimal Bellman update. |
+| `error_bound` | Certified maximum value error: `residual / (1 - discount)`. |
+| `status` | `success`: bound ≤ precision; `imprecise`: bound too large; `error`: failed trial, explained in `error`. |
+
+Compare successful trials at fixed model, discount and precision. All solvers
+face the same final error bound; heatmaps mark `FAIL` if any repeat misses it.
+
+## Define an MDP
+
+[`MDP`](src/mdpforge/core/mdp.py) supports both generators and existing matrices:
+
+```python
+from mdpforge.core.mdp import MDP
 
 model = MDP.from_matrices("my_mdp", transition_matrix, reward_matrix)
-bench = Benchmark().add_mdp(model).add_solver(VI, name="VI")
-results = bench.run(discount=0.9, precision=1e-3)
 ```
+
+This infers dimensions, converts transitions to CSR and validates the data;
+the model is ready for `add_mdp()`. For a generator, add `Model(MDP)` in
+[models](src/mdpforge/models), implement `_build_model()` and call `create_model()`.
+
+Data contract: `name`, `state_dim`, `action_dim`, a list of CSR matrices
+`transition_matrix[action]` of shape `(S, S)`, and NumPy `reward_matrix` of shape
+`(S, A)`. External objects implementing [`MDPProtocol`](src/mdpforge/core/model.py)
+are accepted without inheritance.
+
+`MDP` also provides validation, state relabeling, densities and cached optimal
+values. Caches live under `artifacts/`; change `name` when changing model parameters.
+
+## Add a solver
+
+Add `Solver` in [solvers](src/mdpforge/solvers). Its constructor accepts
+`(model, discount, final_precision=...)` plus explicit options; `run()` takes no
+options and sets NumPy `value` of length `state_dim`, `policy` (or `None`) and
+`runtime`. Register it with `bench.add_solver(Solver, name="label", **options)`.
 
 ## Development
 
@@ -106,16 +86,8 @@ python -m ruff check .
 python -m ruff format --check .
 ```
 
-In the project's Conda environment, prefix commands with `conda run -n benchmark`.
-Tests discover modules in `models/` and `solvers/`; models can provide
-`TEST_PARAMETERS` for a small valid instance.
-`python -m pytest` runs the full suite, including all installed backends;
-only tests whose dependencies are missing are skipped.
-
-External backends require their [optional dependencies](pyproject.toml), e.g.
-`python -m pip install -e ".[mdptoolbox]"`. MDPToolbox Gauss-Seidel uses a local dense copy
-of transitions; the input model stays in CSR. MDPToolbox VI asserts that maximum
-immediate rewards vary across states.
-MDPSolver runs serially by default.
+In Conda, prefix commands with `conda run -n benchmark`. Tests discover models and
+solvers, run installed backends and skip missing dependencies. Models may define
+`TEST_PARAMETERS` for small instances.
 
 [MIT license](LICENSE).
