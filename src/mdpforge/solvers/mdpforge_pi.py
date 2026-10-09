@@ -20,7 +20,7 @@ class Solver:
         self.model = model
         self.discount = discount
 
-        self.name = "PI"
+        self.name = "mdpforge PI"
 
     def run(self):
         start_time = time()

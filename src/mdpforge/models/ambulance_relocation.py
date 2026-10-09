@@ -6,6 +6,14 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "resource_management",
+    "description": "Ambulance relocation with response and movement costs.",
+    "reference": (
+        "Sinclair, Banerjee & Yu (2019), Adaptive Discretization for Episodic RL."
+    ),
+}
+
 
 class Model(MDP):
     """Discretized one-dimensional ambulance relocation benchmark.

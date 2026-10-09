@@ -7,6 +7,12 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "queueing",
+    "description": "Service allocation in a finite queueing network.",
+    "reference": None,
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 500, action_dim: int = 10):

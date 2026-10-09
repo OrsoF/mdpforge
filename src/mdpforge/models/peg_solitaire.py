@@ -7,6 +7,17 @@ from mdpforge.core.mdp import MDP
 
 TEST_PARAMETERS = {"state_dim": 512, "action_dim": 4}
 
+METADATA = {
+    "category": "games",
+    "description": (
+        "Peg-jumping puzzle with board configurations represented as states."
+    ),
+    "reference": (
+        "Winston, W. L. and Goldberg, J. B. (2004). Operations Research: "
+        "Applications and Algorithms, 4th ed."
+    ),
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 512, action_dim: int = 10):

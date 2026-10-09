@@ -5,6 +5,12 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "resource_management",
+    "description": "Forest aging, fire risk and harvesting decisions.",
+    "reference": None,
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10):

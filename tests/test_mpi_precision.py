@@ -44,9 +44,9 @@ def test_bertsekas_pi_final_value_precision(recurrent_model):
 @pytest.mark.parametrize(
     "module_name, options",
     [
-        ("personal_mpi", {}),
-        ("personal_mpi_init", {}),
-        ("personal_stochasticmpi", {"proba": 0.5}),
+        ("mdpforge_mpi", {}),
+        ("mdpforge_mpi_reward_init", {}),
+        ("mdpforge_mpi_eval_budget", {"proba": 0.5}),
         ("aggregated_mpi", {}),
         ("aggregated_mpi", {"split_method": "tiles", "n_tiles": 2}),
     ],
@@ -60,9 +60,9 @@ def test_mpi_precision_with_stable_policy(
     )
     # Truncation of the inner evaluation must not allow a stable policy to
     # bypass the outer precision criterion.
-    if module_name == "personal_mpi":
+    if module_name == "mdpforge_mpi":
         solver.max_iter_eval = 1
-    elif module_name == "personal_mpi_init":
+    elif module_name == "mdpforge_mpi_reward_init":
         solver.max_iter_evaluation = 1
     solver.run()
 
@@ -83,7 +83,7 @@ def test_mpi_precision_with_stable_policy(
     assert_allclose(policy_value, [10, 20], atol=1e-12, rtol=0)
 
 
-@pytest.mark.parametrize("module_name", ["personal_mpi", "personal_mpi_init"])
+@pytest.mark.parametrize("module_name", ["mdpforge_mpi", "mdpforge_mpi_reward_init"])
 def test_inner_evaluation_threshold(module_name, recurrent_model):
     discount = 0.5
     solver = import_module(f"mdpforge.solvers.{module_name}").Solver(
@@ -96,7 +96,7 @@ def test_inner_evaluation_threshold(module_name, recurrent_model):
     assert np.max(np.abs(residual)) < threshold
 
 
-@pytest.mark.parametrize("module_name", ["personal_mpi", "personal_mpi_init"])
+@pytest.mark.parametrize("module_name", ["mdpforge_mpi", "mdpforge_mpi_reward_init"])
 def test_inner_evaluation_keeps_last_update_at_cap(module_name, recurrent_model):
     solver = import_module(f"mdpforge.solvers.{module_name}").Solver(
         recurrent_model, 0.9, final_precision=1e-4
@@ -106,7 +106,8 @@ def test_inner_evaluation_keeps_last_update_at_cap(module_name, recurrent_model)
 
 
 @pytest.mark.parametrize(
-    "module_name", ["personal_mpi", "personal_mpi_init", "personal_stochasticmpi"]
+    "module_name",
+    ["mdpforge_mpi", "mdpforge_mpi_reward_init", "mdpforge_mpi_eval_budget"],
 )
 def test_truncated_evaluation_can_improve_initially_stable_policy(
     module_name, recurrent_model, monkeypatch
@@ -118,9 +119,9 @@ def test_truncated_evaluation_can_improve_initially_stable_policy(
     solver = import_module(f"mdpforge.solvers.{module_name}").Solver(
         recurrent_model, 0.9, final_precision=1e-4
     )
-    if module_name == "personal_mpi":
+    if module_name == "mdpforge_mpi":
         solver.max_iter_eval = 1
-    elif module_name == "personal_mpi_init":
+    elif module_name == "mdpforge_mpi_reward_init":
         solver.max_iter_evaluation = 1
     else:
         solver.proba = 1.0
@@ -130,10 +131,11 @@ def test_truncated_evaluation_can_improve_initially_stable_policy(
 
 
 @pytest.mark.parametrize(
-    "module_name", ["personal_mpi", "personal_mpi_init", "personal_stochasticmpi"]
+    "module_name",
+    ["mdpforge_mpi", "mdpforge_mpi_reward_init", "mdpforge_mpi_eval_budget"],
 )
 @pytest.mark.parametrize("discount", [0.1, 0.99])
-def test_personal_mpi_transient_rewards(module_name, discount, chain, monkeypatch):
+def test_mdpforge_mpi_transient_rewards(module_name, discount, chain, monkeypatch):
     monkeypatch.setattr(np.random, "randint", np.random.RandomState(0).randint)
     solver = import_module(f"mdpforge.solvers.{module_name}").Solver(
         chain, discount, final_precision=1e-4

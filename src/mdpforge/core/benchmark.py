@@ -1,12 +1,15 @@
 """Benchmark finite discounted MDP solvers at a fixed value precision."""
 
 import csv
+import multiprocessing
+import pickle
 import random
 import warnings
 from copy import deepcopy
 from importlib import import_module
 from pathlib import Path
 from pkgutil import iter_modules
+from tempfile import TemporaryDirectory
 from time import perf_counter
 
 import numpy as np
@@ -16,6 +19,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.validation import validate_model
+from mdpforge.utils.experiment import capture_experiment, export_experiment
 
 
 def _catalogue(package):
@@ -25,6 +29,94 @@ def _catalogue(package):
         for module in iter_modules(package.__path__)
         if not module.ispkg and not module.name.startswith("_")
     }
+
+
+def _solver_trial(model, constructor, options, discount, precision, seed):
+    """Return values, solver runtime, status and error for one independent trial."""
+    runtime = np.nan
+    start = None
+    try:
+        trial_model = deepcopy(model)
+        np.random.seed(seed)
+        random.seed(seed)
+        start = perf_counter()
+        if isinstance(constructor, type):
+            solver = constructor(
+                trial_model, discount, final_precision=precision, **options
+            )
+            solver.run()
+            value = solver.value
+        else:
+            value = constructor(
+                trial_model.transition_matrix,
+                trial_model.reward_matrix,
+                discount,
+                precision,
+                **options,
+            )
+        runtime = perf_counter() - start
+        return np.asarray(value), runtime, "success", ""
+    except Exception as exc:
+        if start is not None and np.isnan(runtime):
+            runtime = perf_counter() - start
+        return None, runtime, "error", f"{type(exc).__name__}: {exc}"
+
+
+def _solver_worker(input_path, result_path):
+    # Files avoid blocking on a full IPC pipe during dispatch or worker exit.
+    with input_path.open("rb") as handle:
+        args = pickle.load(handle)
+    with result_path.open("wb") as handle:
+        pickle.dump(_solver_trial(*args), handle)
+
+
+def _isolated_solver_trial(
+    model, constructor, options, discount, precision, seed, timeout
+):
+    context = multiprocessing.get_context("spawn")
+    with TemporaryDirectory(prefix="mdpforge-trial-") as directory:
+        # Serialize before spawning so unpickleable inputs cannot leave a worker
+        # behind if process startup fails halfway through transmitting its inputs.
+        input_path = Path(directory) / "input.pkl"
+        with input_path.open("wb") as handle:
+            pickle.dump(
+                (model, constructor, options, discount, precision, seed), handle
+            )
+        result_path = Path(directory) / "result.pkl"
+        process = context.Process(
+            target=_solver_worker,
+            args=(input_path, result_path),
+        )
+        try:
+            start = perf_counter()
+            process.start()
+            process.join(max(0, timeout - (perf_counter() - start)))
+            if process.is_alive():
+                return (
+                    None,
+                    np.nan,
+                    "timeout",
+                    f"Trial exceeded timeout of {timeout:g} s",
+                )
+            if process.exitcode != 0:
+                return (
+                    None,
+                    np.nan,
+                    "error",
+                    f"Solver process exited with code {process.exitcode}",
+                )
+            with result_path.open("rb") as handle:
+                return pickle.load(handle)
+        finally:
+            if process.pid is not None:
+                if process.is_alive():
+                    process.terminate()
+                    process.join(1)
+                if process.is_alive():
+                    process.kill()
+                    process.join(1)
+                if not process.is_alive():
+                    process.close()
 
 
 class Benchmark:
@@ -47,8 +139,9 @@ class Benchmark:
         self._mdps: list[MDPProtocol] = []
         self._solvers = {}  # label -> (solver class/function, options)
         self.results = []
+        self.experiment = None
         if default_solvers:
-            from mdpforge.solvers.personal_vi import Solver as VI
+            from mdpforge.solvers.mdpforge_vi import Solver as VI
 
             self.add_solver("VI", solve_function=VI)
 
@@ -89,6 +182,7 @@ class Benchmark:
             raise ValueError(f"An MDP named {name!r} is already registered.")
         self._mdps.append(model)
         self.results = []
+        self.experiment = None
         return self
 
     def add_all_models(self):
@@ -148,6 +242,7 @@ class Benchmark:
             raise TypeError("solve_function must be a callable function or class.")
         self._solvers[solver_name] = (solve_function, options)
         self.results = []
+        self.experiment = None
         return self
 
     def add_all_solvers(self):
@@ -175,7 +270,16 @@ class Benchmark:
             self.add_solver(name, solve_function=constructor)
         return self
 
-    def run(self, discount, precision=1e-3, *, repeats=3, seed=0, verbose=False):
+    def run(
+        self,
+        discount,
+        precision=1e-3,
+        *,
+        repeats=3,
+        seed=0,
+        verbose=False,
+        timeout=None,
+    ):
         """Run every registered MDP/solver pair at a common value precision.
 
         ``precision`` is an upper bound on ||V - V*||_infinity, certified by
@@ -189,6 +293,23 @@ class Benchmark:
         across solvers and MDPs for each repeat. Global NumPy and Python RNG
         states are restored; solvers using private RNGs must seed those
         generators themselves.
+
+        ``timeout`` is an optional positive wall-clock limit in seconds per
+        trial. It uses a fresh spawn process and covers child startup, model
+        copying, solver construction/execution and result serialization, after
+        dispatch from the parent. Parent input serialization and final precision
+        verification are outside this limit. Process cleanup can take up to two
+        extra seconds. Timed-out or crashed trials have no solver runtime (NaN).
+        The parent still verifies values against the original MDP.
+
+        With a timeout, models, solvers and options must be pickleable; custom
+        functions/classes must be importable from a module. In scripts, protect
+        the benchmark call with ``if __name__ == "__main__":``. Notebook-local
+        callables are unsupported in this mode. Only the dedicated worker is
+        terminated, not any descendant processes started by a custom solver.
+
+        ``experiment`` captures model fingerprints, configurations, versions and
+        machine information before solver timing. Each row includes its ID.
         """
         if not np.isfinite(discount) or not 0 < discount < 1:
             raise ValueError("discount must be strictly between 0 and 1")
@@ -198,6 +319,13 @@ class Benchmark:
             raise ValueError("repeats must be a positive integer")
         if type(seed) is not int or not 0 <= seed < 2**32 - repeats:
             raise ValueError("seed must allow valid NumPy seeds for every repeat")
+        if timeout is not None and (
+            isinstance(timeout, (bool, np.bool_))
+            or not isinstance(timeout, (int, float, np.integer, np.floating))
+            or not np.isfinite(timeout)
+            or timeout <= 0
+        ):
+            raise ValueError("timeout must be finite and positive, or None")
         if not self._mdps:
             raise ValueError("No MDP registered; call add_mdp() first")
         if not self._solvers:
@@ -209,6 +337,11 @@ class Benchmark:
         self.results = []
         numpy_state, random_state = np.random.get_state(), random.getstate()
         try:
+            self.experiment = None
+            self.experiment = capture_experiment(
+                self._mdps, self._solvers, discount, precision, repeats, seed,
+                timeout=timeout,
+            )
             for model in self._mdps:
                 for solver_name, (constructor, kwargs) in self._solvers.items():
                     for repeat in range(repeats):
@@ -221,62 +354,57 @@ class Benchmark:
                             )
                         runtime = residual = error_bound = np.nan
                         status, error = "error", ""
-                        start = None
                         try:
-                            trial_model = deepcopy(model)
-                            np.random.seed(seed + repeat)
-                            random.seed(seed + repeat)
-                            start = perf_counter()
-                            if isinstance(constructor, type):
-                                solver = constructor(
-                                    trial_model,
-                                    discount,
-                                    final_precision=precision,
-                                    **kwargs,
-                                )
-                                solver.run()
-                                value = solver.value
+                            args = (
+                                model,
+                                constructor,
+                                kwargs,
+                                discount,
+                                precision,
+                                seed + repeat,
+                            )
+                            if timeout is None:
+                                value, runtime, status, error = _solver_trial(*args)
                             else:
-                                value = constructor(
-                                    trial_model.transition_matrix,
-                                    trial_model.reward_matrix,
-                                    discount,
-                                    precision,
-                                    **kwargs,
+                                value, runtime, status, error = _isolated_solver_trial(
+                                    *args, timeout
                                 )
-                            runtime = perf_counter() - start
+                            if status == "success":
+                                if value.shape != (model.state_dim,) or not np.all(
+                                    np.isfinite(value)
+                                ):
+                                    raise ValueError(
+                                        "Solver values must be a finite vector "
+                                        "of state_dim"
+                                    )
 
-                            value = np.asarray(value)
-                            if value.shape != (model.state_dim,) or not np.all(
-                                np.isfinite(value)
-                            ):
-                                raise ValueError(
-                                    "Solver values must be a finite vector of state_dim"
-                                )
-
-                            residual = float(
-                                np.max(
-                                    np.abs(
-                                        optimal_bellman_operator(model, value, discount)
-                                        - value
+                                residual = float(
+                                    np.max(
+                                        np.abs(
+                                            optimal_bellman_operator(
+                                                model, value, discount
+                                            )
+                                            - value
+                                        )
                                     )
                                 )
-                            )
-                            error_bound = residual / (1 - discount)
-                            status = (
-                                "success" if error_bound <= precision else "imprecise"
-                            )
-                            if status == "imprecise":
-                                error = (
-                                    f"Value error bound {error_bound:g} "
-                                    f"exceeds precision {precision:g}"
+                                error_bound = residual / (1 - discount)
+                                status = (
+                                    "success"
+                                    if error_bound <= precision
+                                    else "imprecise"
                                 )
+                                if status == "imprecise":
+                                    error = (
+                                        f"Value error bound {error_bound:g} "
+                                        f"exceeds precision {precision:g}"
+                                    )
                         except Exception as exc:
-                            if start is not None and np.isnan(runtime):
-                                runtime = perf_counter() - start
+                            status = "error"
                             error = f"{type(exc).__name__}: {exc}"
                         self.results.append(
                             {
+                                "experiment_id": self.experiment["experiment_id"],
                                 "model": model.name,
                                 "state_dim": model.state_dim,
                                 "action_dim": model.action_dim,
@@ -326,13 +454,16 @@ class Benchmark:
         )
 
     def export_csv(self, path):
-        """Export the latest run without rerunning any solver."""
+        """Export the latest run and its matching <basename>.experiment.json."""
         if not self.results:
             raise ValueError("No benchmark measurements to export")
+        if self.experiment is None:
+            raise ValueError("No experiment manifest available; call run() first")
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8", newline="") as handle:
             writer = csv.DictWriter(handle, fieldnames=self.results[0].keys())
             writer.writeheader()
             writer.writerows(self.results)
+        export_experiment(self.experiment, path)
         return path

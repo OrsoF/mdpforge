@@ -13,6 +13,16 @@ from scipy.sparse import dok_array
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "control",
+    "description": "Discretized control of an underactuated two-link pendulum.",
+    "reference": (
+        "Sutton, R. S. (1996). Generalization in Reinforcement Learning: Successful "
+        "Examples Using Sparse Coarse Coding. Advances in Neural Information "
+        "Processing Systems 8."
+    ),
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 256, action_dim: int = 10):

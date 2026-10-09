@@ -1,11 +1,35 @@
 import numpy as np
 import pytest
-from numpy.testing import assert_allclose
+from numpy.testing import assert_allclose, assert_array_equal
 from scipy.sparse import coo_matrix, csr_matrix
 
 from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.utils import persistence
+
+
+def test_seeded_garnet_generation_is_reproducible_without_cache(isolated_model_cache):
+    from mdpforge.models.garnet import Model
+
+    numpy_state = np.random.get_state()
+    try:
+        for seed in (0, 17):
+            generated = []
+            for _ in range(2):
+                np.random.seed(seed)
+                model = Model(state_dim=7, action_dim=3)
+                model.create_model(save=False)
+                generated.append(model)
+            first, second = generated
+            assert_array_equal(first.reward_matrix, second.reward_matrix)
+            for actual, expected in zip(
+                first.transition_matrix, second.transition_matrix
+            ):
+                for field in ("data", "indices", "indptr"):
+                    assert_array_equal(getattr(actual, field), getattr(expected, field))
+            assert not persistence.model_cache_path(first.name).exists()
+    finally:
+        np.random.set_state(numpy_state)
 
 
 def test_generated_model_uses_mdp_and_preserves_identity(chain):

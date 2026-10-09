@@ -16,6 +16,17 @@ def build_track(state_dim: int, max_speed: int) -> np.ndarray:
     return track
 
 
+METADATA = {
+    "category": "navigation",
+    "description": "Racetrack navigation with velocity-dependent actions.",
+    "reference": (
+        "Barto, A. G., Bradtke, S. J. and Singh, S. P. (1995). Learning to act "
+        "using real-time dynamic programming. Artificial Intelligence "
+        "72(1-2):81-138."
+    ),
+}
+
+
 class Model(MDP):
     def __init__(
         self,

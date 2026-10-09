@@ -8,6 +8,17 @@ from scipy.sparse import csr_matrix, dok_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "resource_management",
+    "description": (
+        "Survey-location decisions with distance-dependent exploration rewards."
+    ),
+    "reference": (
+        "Mason, W. A. and Watts, D. J. (2012). Collaborative learning in networks. "
+        "PNAS 109(3): 764–769."
+    ),
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10):

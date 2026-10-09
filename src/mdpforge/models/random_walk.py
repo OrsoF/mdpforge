@@ -11,6 +11,15 @@ from scipy.sparse import dok_array
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "synthetic",
+    "description": "Controlled random walk between absorbing boundary states.",
+    "reference": (
+        "Sutton, R. S. and Barto, A. G. (2018). Reinforcement Learning: An "
+        "Introduction, 2nd ed. Random-walk prediction examples."
+    ),
+}
+
 
 class Model(MDP):
     LEFT = 0

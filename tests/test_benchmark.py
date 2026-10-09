@@ -11,16 +11,16 @@ from mdpforge import Benchmark
 from mdpforge.core.mdp import MDP
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.validation import validate_model
-from mdpforge.solvers.personal_mpi import Solver as MPI
-from mdpforge.solvers.personal_vi import Solver as VI
+from mdpforge.solvers.mdpforge_mpi import Solver as MPI
+from mdpforge.solvers.mdpforge_vi import Solver as VI
 
 
 def test_catalogue_solver_loads_class_and_forwards_options(chain):
     bench = Benchmark(default_solvers=False).add_mdp(chain)
-    bench.add_solver(solver_name="personal_vi", initial_value=np.array([1.8, 2.0, 0.0]))
+    bench.add_solver(solver_name="mdpforge_vi", initial_value=np.array([1.8, 2.0, 0.0]))
     results = bench.run(discount=0.9, precision=1e-4, repeats=1)
     assert len(results) == 1
-    assert results[0]["solver"] == "personal_vi"
+    assert results[0]["solver"] == "mdpforge_vi"
     assert results[0]["status"] == "success", results[0]["error"]
     assert results[0]["error_bound"] <= 1e-4
 
@@ -85,7 +85,7 @@ def test_unknown_solver_lists_catalogue_without_importing_it(monkeypatch):
     monkeypatch.setattr("mdpforge.core.benchmark.import_module", fail_import)
     with pytest.raises(
         ValueError,
-        match="Unknown solver 'missing_solver'.*Available solvers:.*personal_vi",
+        match="Unknown solver 'missing_solver'.*Available solvers:.*mdpforge_vi",
     ):
         Benchmark(default_solvers=False).add_solver("missing_solver")
 
@@ -99,12 +99,12 @@ def test_custom_solver_takes_priority_and_rejects_duplicates(chain, monkeypatch)
 
     monkeypatch.setattr("mdpforge.core.benchmark.import_module", fail_import)
     bench = Benchmark(default_solvers=False).add_mdp(chain)
-    bench.add_solver("personal_vi", solve_function=custom_solver)
+    bench.add_solver("mdpforge_vi", solve_function=custom_solver)
     results = bench.run(discount=0.9, repeats=1)
-    assert results[0]["solver"] == "personal_vi"
+    assert results[0]["solver"] == "mdpforge_vi"
     assert results[0]["status"] == "success", results[0]["error"]
     with pytest.raises(ValueError, match="already registered"):
-        bench.add_solver("personal_vi")
+        bench.add_solver("mdpforge_vi")
     with pytest.raises(TypeError, match="solve_function must be a callable"):
         bench.add_solver("invalid_function", solve_function=42)
     with pytest.raises(ValueError, match="parameters controlled by run"):

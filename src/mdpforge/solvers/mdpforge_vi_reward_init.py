@@ -13,16 +13,12 @@ class Solver(GenericSolver):
         model: MDPProtocol,
         discount: float,
         final_precision: float = 1e-3,
-        initial_value: np.ndarray | None = None,
     ):
         super().__init__(model, discount, final_precision)
 
-        if initial_value is not None:
-            self.value = initial_value
-        else:
-            self.value = np.zeros(self.model.state_dim)
+        self.value = model.reward_matrix.max(axis=1) / (1 - discount)
 
-        self.name = "VI"
+        self.name = "mdpforge VI (reward init)"
 
     def _solve(self) -> np.ndarray:
         tolerance = self.final_precision * (1 - self.discount)

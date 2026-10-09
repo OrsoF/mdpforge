@@ -6,6 +6,15 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "games",
+    "description": "Single-agent soccer on a hexagonal grid with a defending opponent.",
+    "reference": (
+        "Continuous U-Tree, Uther & Veloso (1998), enlarged hexagonal-grid soccer; "
+        "inspired by Littman (1994) Markov games.  Single-agent tabular reduction."
+    ),
+}
+
 
 class Model(MDP):
     """Hexagonal-grid soccer as an ordered-discrete tabular control problem.

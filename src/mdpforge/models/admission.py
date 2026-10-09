@@ -3,6 +3,15 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "queueing",
+    "description": "Admission control with customer classes and service phases.",
+    "reference": (
+        "Wieczorek, Busic, and Hyon: admission-control / critical-level-policy "
+        "model, adapted from pyAdmissionControlOF.py (incomplete attribution)."
+    ),
+}
+
 
 class Model(MDP):
     """

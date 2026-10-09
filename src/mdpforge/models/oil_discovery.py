@@ -10,6 +10,17 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "resource_management",
+    "description": (
+        "Oil exploration with drilling costs and evolving reservoir position."
+    ),
+    "reference": (
+        "Sinclair, Banerjee & Yu (2019), Adaptive Discretization for Episodic "
+        "Reinforcement Learning."
+    ),
+}
+
 
 class Model(MDP):
     """Discretized oil-discovery benchmark.

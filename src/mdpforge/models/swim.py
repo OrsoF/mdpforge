@@ -5,6 +5,15 @@ from scipy.sparse import dok_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "control",
+    "description": "River swimming with current-dependent movement rewards.",
+    "reference": (
+        "Strehl, A. L. and Littman, M. L. (2008). An analysis of model-based "
+        "interval estimation for Markov decision processes. JCSS 74(8):1309-1331."
+    ),
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10):

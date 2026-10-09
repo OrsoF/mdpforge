@@ -28,7 +28,7 @@
   ],
   "solvers": [
     "VI",
-    "personal_mpi",
+    "mdpforge_mpi",
     "mdptoolbox_mpi",
     "bertsekas_pi"
   ],

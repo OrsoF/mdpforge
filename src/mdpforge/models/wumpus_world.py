@@ -6,6 +6,18 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "navigation",
+    "description": (
+        "Tabular Wumpus World with movement, gold collection and arrow actions."
+    ),
+    "reference": (
+        "Wumpus World, Russell & Norvig, Artificial Intelligence: A Modern "
+        "Approach; used as a discrete-state benchmark in CAT+RL (Dadvar et al., "
+        "2023)."
+    ),
+}
+
 
 class Model(MDP):
     """Classic 4x4 Wumpus World as a fully enumerated tabular MDP.

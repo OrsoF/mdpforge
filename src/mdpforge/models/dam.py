@@ -77,6 +77,17 @@ def find_closest_indices(
     return best_tuple
 
 
+METADATA = {
+    "category": "resource_management",
+    "description": "Reservoir release decisions with stochastic inflow.",
+    "reference": (
+        "Carpentier, P., Chancelier, J.-P., Leclere, V. and Pacaud, F. (2018). "
+        "Stochastic decomposition applied to large-scale hydro valleys management. "
+        "EJOR 270(3):1086-1098."
+    ),
+}
+
+
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10):
         self._max_dam_capa, self._n_dam = find_closest_indices(state_dim)

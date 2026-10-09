@@ -4,6 +4,17 @@ from scipy.sparse import random
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "synthetic",
+    "description": (
+        "Random finite MDP with Gaussian rewards and normalized random transitions."
+    ),
+    "reference": (
+        "Bhatnagar, S. et al. (2009). Natural actor-critic algorithms. Automatica "
+        "45(11):2471-2482."
+    ),
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 200, action_dim: int = 10):

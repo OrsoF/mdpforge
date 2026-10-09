@@ -16,6 +16,15 @@ from scipy.sparse import dok_array
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "resource_management",
+    "description": "Overnight car transfers between two locations with rental demand.",
+    "reference": (
+        "Sutton, R. S. and Barto, A. G. (2018). Reinforcement Learning: An "
+        "Introduction, 2nd ed., Example 4.2."
+    ),
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 625, action_dim: int = 10):

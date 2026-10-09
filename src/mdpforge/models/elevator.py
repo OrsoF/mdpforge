@@ -3,6 +3,17 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "control",
+    "description": (
+        "Elevator movement and pickup decisions with passenger destination masks."
+    ),
+    "reference": (
+        "Tartan, E. O. and Ciflikli, C. (2023). Sequential Decision Making for "
+        "Elevator Control."
+    ),
+}
+
 
 class Model(MDP):
     """

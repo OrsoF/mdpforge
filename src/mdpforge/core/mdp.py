@@ -26,6 +26,16 @@ class MDP:
         self.transition_matrix: list[csr_matrix]
         self.reward_matrix: np.ndarray
 
+    def get_config(self) -> dict:
+        """Return JSON metadata for public model parameters, excluding matrices.
+
+        Override this method for recipes needing a more specific configuration.
+        Unsupported objects are identified by type rather than silently omitted.
+        """
+        from mdpforge.utils.experiment import model_config
+
+        return model_config(self)
+
     @classmethod
     def from_matrices(cls, name: str, transition_matrix, reward_matrix) -> "MDP":
         """Create a validated MDP with CSR transitions and NumPy rewards.

@@ -3,6 +3,15 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "games",
+    "description": "Stake selection to reach a capital target before ruin.",
+    "reference": (
+        "Sutton & Barto, Reinforcement Learning: An Introduction, Example 4.3, "
+        "Gambler's Problem."
+    ),
+}
+
 
 class Model(MDP):
     """

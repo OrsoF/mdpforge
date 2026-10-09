@@ -8,6 +8,15 @@ from mdpforge.core.mdp import MDP
 
 TEST_PARAMETERS = {"state_dim": 9, "action_dim": 4}
 
+METADATA = {
+    "category": "navigation",
+    "description": "Navigation through a maze generated using Prim's algorithm.",
+    "reference": (
+        "Prim, R. C. (1957). Shortest connection networks and some generalizations. "
+        "Bell System Technical Journal 36(6):1389-1401."
+    ),
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10):

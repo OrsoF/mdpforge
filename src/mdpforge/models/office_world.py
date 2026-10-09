@@ -6,6 +6,15 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "navigation",
+    "description": "Collect mail and coffee before reaching an office destination.",
+    "reference": (
+        "Office World, adapted from Icarte et al. (2018) reward-machine benchmark; "
+        "used as a tabular/factored benchmark in CAT+RL (Dadvar et al., 2023)."
+    ),
+}
+
 
 class Model(MDP):
     """Tabular Office World with position x {mail, coffee} flags.

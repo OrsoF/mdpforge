@@ -50,16 +50,33 @@ def my_solver(transitions, rewards, discount, precision):
 bench = Benchmark(default_solvers=False)
 bench.add_mdp("rooms")  # Existing MDP
 bench.add_mdp("my_mdp", transitions=P, reward=R)  # New MDP
-bench.add_solver("personal_mpi")  # Existing solver
+bench.add_solver("mdpforge_mpi")  # Existing solver
 bench.add_solver("my_solver", solve_function=my_solver)  # New solver
 
 results = bench.run(discount=0.9, precision=1e-3)
-bench.export_csv("results.csv")
+bench.export_csv("results.csv")  # Also writes results.experiment.json
 ```
 
 Each pair runs three trials. Results contain `runtime`, `error_bound` and `status`.
+Each run has an `experiment_id`; its manifest records model configurations and
+matrix fingerprints, solver options/defaults, versions, machine details and Git
+provenance. Metadata is captured before timing. Model generation seeds are separate
+from trial seeds; fingerprints identify the actual data, without storing matrices.
 `Benchmark()` includes VI by default; use `verbose=True` to show progress.
 [Explore the notebook](notebooks/benchmark.ipynb) for catalogue comparisons and plots.
+
+Use `bench.run(discount=0.9, timeout=60)` to limit each trial to 60 seconds in
+a dedicated process. The deadline includes child startup, model copying, solver
+construction/execution and result transfer; parent input serialization and final
+accuracy checks are outside it. A blocked trial gets `status="timeout"`, and the
+remaining trials continue. Timed-out or crashed trials have `runtime=NaN`;
+completed trials measure solver time without process startup or transfers.
+
+The default `timeout=None` runs in the current process. With a timeout, use
+importable solver functions/classes and pickleable models/options. In scripts,
+put benchmark execution under `if __name__ == "__main__":`; in notebooks, import
+custom solvers from a Python module. Cleanup may take up to two extra seconds
+and terminates the worker only, not subprocesses launched by a custom solver.
 
 ## Define an MDP
 
@@ -68,6 +85,12 @@ Each pair runs three trials. Results contain `runtime`, `error_bound` and `statu
 
 Dimensions, CSR conversion and validation are automatic. Use unique names;
 select [catalogue models](src/mdpforge/models) by module name.
+Use `from mdpforge import list_models`, then `list_models(category="navigation")`
+to browse descriptions and declared references without building models.
+Each recipe may expose a literal `METADATA` dict with `category`, `description`
+and `reference`; missing fields are `None`. Dimensions come from built instances.
+`MDP.get_config()` captures public parameters; override it for a custom configuration.
+Objects that cannot be serialized are identified by type in the manifest.
 
 ## Define a solver
 

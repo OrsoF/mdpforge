@@ -12,6 +12,15 @@ from mdpforge.core.mdp import MDP
 rnd_gen = np.random.default_rng(seed=0)
 TEST_PARAMETERS = {"state_dim": 20, "action_dim": 2}
 
+METADATA = {
+    "category": "synthetic",
+    "description": "Random transition blocks with weak connections between blocks.",
+    "reference": (
+        "Meuleau et al. (1998). Solving very large weakly coupled Markov decision "
+        "processes. AAAI."
+    ),
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10):

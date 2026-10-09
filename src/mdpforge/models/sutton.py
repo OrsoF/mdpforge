@@ -96,6 +96,16 @@ def build_track(state_dim: int) -> np.ndarray:
     return track
 
 
+METADATA = {
+    "category": "navigation",
+    "description": "Grid racetrack navigation with position and velocity states.",
+    "reference": (
+        "Sutton, R. S. and Barto, A. G. (2018). Reinforcement Learning: An "
+        "Introduction, 2nd ed., Exercise 5.12."
+    ),
+}
+
+
 class Model(MDP):
     def __init__(
         self,

@@ -9,6 +9,15 @@ from mdpforge.core.mdp import MDP
 WEST, EAST, NORTH, SOUTH, PICKUP, DROPOFF = range(6)
 IN_TAXI = 4
 
+METADATA = {
+    "category": "navigation",
+    "description": "Taxi navigation with passenger pickup and drop-off decisions.",
+    "reference": (
+        "Dietterich, T. G. (2000). Hierarchical reinforcement learning with the "
+        "MAXQ value function decomposition. JAIR 13:227-303."
+    ),
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 500, action_dim: int = 10) -> None:

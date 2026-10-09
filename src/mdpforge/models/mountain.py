@@ -15,6 +15,16 @@ def index_closest_value(value: float, list_of_values) -> Tuple:
     return index, list_of_values[index]
 
 
+METADATA = {
+    "category": "control",
+    "description": "Discretized MountainCar position and velocity control.",
+    "reference": (
+        "Moore, A. W. (1990). Efficient Memory-based Learning for Robot Control. "
+        "PhD thesis, University of Cambridge."
+    ),
+}
+
+
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10) -> None:
         """

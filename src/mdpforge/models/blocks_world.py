@@ -6,6 +6,14 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "games",
+    "description": (
+        "Factored block manipulation with looking, picking and lifting actions."
+    ),
+    "reference": "McCallum (1996), Whitehead's Blocks World revisited.",
+}
+
 
 class Model(MDP):
     """Small factored Blocks World / hand-eye task.

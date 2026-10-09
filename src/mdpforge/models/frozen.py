@@ -3,6 +3,12 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "navigation",
+    "description": "FrozenLake grid navigation with holes and a goal.",
+    "reference": "Gymnasium FrozenLake-v1 / OpenAI Gym FrozenLake.",
+}
+
 
 class Model(MDP):
     """

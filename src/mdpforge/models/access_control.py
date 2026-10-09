@@ -13,6 +13,15 @@ from scipy.sparse import dok_array
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "queueing",
+    "description": "Accept or reject priority requests with limited free servers.",
+    "reference": (
+        "Sutton, R. S. and Barto, A. G. (2018). Reinforcement Learning: An "
+        "Introduction, 2nd ed., Example 10.2."
+    ),
+}
+
 
 class Model(MDP):
     REJECT = 0

@@ -12,6 +12,15 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "navigation",
+    "description": "Navigation through nine connected rooms with uncertain movement.",
+    "reference": (
+        "Inspired by Hengst, B. (2012). Hierarchical approaches. In Reinforcement "
+        "Learning: State-of-the-Art, pp. 293-323."
+    ),
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 81, action_dim: int = 10):

@@ -30,6 +30,13 @@ def params_match_state_dim(state_dim: int, max_index=50) -> tuple:
     return b1, b2, k1, k2, matched_dim
 
 
+METADATA = {
+    "category": "queueing",
+    "description": "Absolute service-capacity choices for two queues in tandem.",
+    "reference": None,
+}
+
+
 class Model(MDP):
     """
     Tandem queue model with absolute VM-choice actions.

@@ -7,6 +7,15 @@ from mdpforge.core.mdp import MDP
 
 param_list = [{}]
 
+METADATA = {
+    "category": "resource_management",
+    "description": "Replacement decisions for equipment with aging-related costs.",
+    "reference": (
+        "Howard, R. A. (1960). Dynamic Programming and Markov Processes, p.54, The "
+        "Replacement Problem."
+    ),
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10) -> None:

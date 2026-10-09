@@ -6,6 +6,12 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "navigation",
+    "description": "M-shaped maze with aliased local observations.",
+    "reference": "McCallum (1996), U-Tree / UDM aliased maze variants.",
+}
+
 
 class Model(MDP):
     """M-shaped aliased maze.

@@ -11,6 +11,17 @@ from scipy.sparse import dok_array
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "synthetic",
+    "description": (
+        "Controlled chain walk with uncertain movement and boundary rewards."
+    ),
+    "reference": (
+        "Lagoudakis, M. G. and Parr, R. (2003). Least-Squares Policy Iteration. "
+        "JMLR 4:1107-1149."
+    ),
+}
+
 
 class Model(MDP):
     LEFT = 0

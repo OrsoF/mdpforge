@@ -5,6 +5,14 @@ from scipy.sparse import csr_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "navigation",
+    "description": (
+        "Choose transport modes with uncertain travel times to reach school."
+    ),
+    "reference": "Hyon, E. (2020). Apprehender le hasard. Tangente Magazine.",
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10):

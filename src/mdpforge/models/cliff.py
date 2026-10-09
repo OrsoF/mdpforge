@@ -4,6 +4,15 @@ from scipy.sparse import dok_array
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "navigation",
+    "description": "Grid navigation beside a cliff with penalties for unsafe moves.",
+    "reference": (
+        "Sutton, R. S. and Barto, A. G. (2018). Reinforcement Learning: An "
+        "Introduction, 2nd ed., Example 6.6."
+    ),
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 48, action_dim: int = 10):

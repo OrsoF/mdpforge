@@ -8,6 +8,15 @@ from mdpforge.core.mdp import MDP
 
 TEST_PARAMETERS = {"state_dim": 9, "action_dim": 4}
 
+METADATA = {
+    "category": "navigation",
+    "description": "Navigation through a maze generated using Wilson's algorithm.",
+    "reference": (
+        "Wilson, D. B. (1996). Generating random spanning trees more quickly than "
+        "the cover time. STOC, pp. 296-303."
+    ),
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10):

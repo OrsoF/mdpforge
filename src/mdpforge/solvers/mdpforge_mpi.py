@@ -18,7 +18,7 @@ class Solver:
         self.model = model
         self.discount = discount
 
-        self.name = "MPI"
+        self.name = "mdpforge MPI"
 
         self.max_iter_eval = int(1e1)
         self.precision_policy_eval = final_precision

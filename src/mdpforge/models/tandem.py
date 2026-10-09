@@ -28,6 +28,13 @@ def get_params(state_dim: int, max_index=50) -> tuple:
     return b1, b2, k1, k2, int(np.prod([b1 + 1, b2 + 1, k1, k2]))
 
 
+METADATA = {
+    "category": "queueing",
+    "description": "Service-capacity adjustments for two queues in tandem.",
+    "reference": None,
+}
+
+
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10):
         # The article has exactly 9 actions:

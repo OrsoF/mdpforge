@@ -22,7 +22,7 @@ class Solver:
         self.variation_policy_evaluation = tolerance
         self.variation_policy_update = tolerance
 
-        self.name = "StochasticMPI"
+        self.name = "mdpforge MPI (evaluation budget)"
 
         self.max_iter_evaluation = int(1e8)
         self.max_iter_policy_update = int(1e8)

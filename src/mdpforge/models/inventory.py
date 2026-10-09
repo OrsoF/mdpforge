@@ -6,6 +6,15 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "resource_management",
+    "description": "Stock replenishment under random demand.",
+    "reference": (
+        "Winston, W. L. and Goldberg, J. B. (2004). Operations Research: "
+        "Applications and Algorithms, 4th ed."
+    ),
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 500, action_dim: int = 10):

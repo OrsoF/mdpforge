@@ -7,7 +7,7 @@ from mdpforge.utils.persistence import get_cached_object
 
 def compute_value_function(model: MDPProtocol, discount: float, precision: float):
     """Solve with VI while preserving the model's matrix representation."""
-    from mdpforge.solvers.personal_vi import Solver
+    from mdpforge.solvers.mdpforge_vi import Solver
 
     solver = Solver(model, discount, precision)
     solver.run()

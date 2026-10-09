@@ -9,6 +9,15 @@ from mdpforge.core.mdp import MDP
 
 TEST_PARAMETERS = {"state_dim": 9, "action_dim": 2}
 
+METADATA = {
+    "category": "resource_management",
+    "description": "One-dimensional ambulance positioning under random demand.",
+    "reference": (
+        "Mason, W. A. and Watts, D. J. (2012). Collaborative learning in networks. "
+        "PNAS 109(3):764-769."
+    ),
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10):

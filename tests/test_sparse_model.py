@@ -6,9 +6,9 @@ from numpy.testing import assert_allclose
 from scipy.sparse import coo_matrix, csr_array, csr_matrix, lil_matrix
 
 from mdpforge.core.operators import optimal_bellman_operator
-from mdpforge.solvers.personal_mpi_init import Solver as MPI
-from mdpforge.solvers.personal_pi import Solver as PI
-from mdpforge.solvers.personal_stochasticmpi import Solver as StochasticMPI
+from mdpforge.solvers.mdpforge_mpi_eval_budget import Solver as EvalBudgetMPI
+from mdpforge.solvers.mdpforge_mpi_reward_init import Solver as MPI
+from mdpforge.solvers.mdpforge_pi import Solver as PI
 from mdpforge.utils import persistence
 
 
@@ -71,7 +71,7 @@ def test_permutation_preserves_csr_and_bellman_values(chain):
     )
 
 
-@pytest.mark.parametrize("solver_class", [PI, MPI, StochasticMPI])
+@pytest.mark.parametrize("solver_class", [PI, MPI, EvalBudgetMPI])
 def test_policy_solvers_do_not_densify_transitions(chain, solver_class, monkeypatch):
     def fail_toarray(*args, **kwargs):
         pytest.fail("A policy solver must not densify transitions")

@@ -16,6 +16,16 @@ def index_closest_value(value: float, list_of_values) -> Tuple[int, float]:
     return index, list_of_values[index]
 
 
+METADATA = {
+    "category": "control",
+    "description": "Discretized CartPole balancing with bounded force actions.",
+    "reference": (
+        "inspired by the classical CartPole model Barto, Sutton and Anderson "
+        "(1983), and by discretized control benchmarks."
+    ),
+}
+
+
 class Model(MDP):
     def __init__(self, state_dim: int = 900, action_dim: int = 10) -> None:
         """

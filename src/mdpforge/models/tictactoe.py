@@ -99,6 +99,16 @@ def render_grid(board: tuple):
     print(np.array(rows))
 
 
+METADATA = {
+    "category": "games",
+    "description": "Tic-tac-toe board decisions against an opponent policy.",
+    "reference": (
+        "Sutton, R. S. and Barto, A. G. (2018). Reinforcement Learning: An "
+        "Introduction, 2nd ed., Section 1.5."
+    ),
+}
+
+
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10) -> None:
         self.size = get_grid_size(action_dim)

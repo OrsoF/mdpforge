@@ -5,6 +5,15 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "synthetic",
+    "description": "Two-action chain with a zero-cost boundary state.",
+    "reference": (
+        "Puterman, M. L. (2014). Markov Decision Processes: Discrete Stochastic "
+        "Dynamic Programming, p.353."
+    ),
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10):

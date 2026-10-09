@@ -5,6 +5,14 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "resource_management",
+    "description": (
+        "Computer-network maintenance with neighboring failure dependencies."
+    ),
+    "reference": None,
+}
+
 
 class Model(MDP):
     def __init__(self, state_dim: int = 64, action_dim: int = 10):

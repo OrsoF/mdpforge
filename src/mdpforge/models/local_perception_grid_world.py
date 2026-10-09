@@ -6,6 +6,15 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "navigation",
+    "description": "Grid navigation with local wall observations that alias states.",
+    "reference": (
+        "McCallum (1996), Reinforcement Learning with Selective Perception and "
+        "Hidden State."
+    ),
+}
+
 
 class Model(MDP):
     """Aliased gridworld with local wall-bit observations.

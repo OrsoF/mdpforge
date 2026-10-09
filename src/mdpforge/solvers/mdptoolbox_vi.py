@@ -46,6 +46,9 @@ class Solver(GenericSolver):
             epsilon=self.epsilon * (1 - self.discount),
             max_iter=self.max_iter,
         )
+        # Toolbox's automatic cap targets policy accuracy, not the absolute
+        # value precision certified below. Let its span criterion finish.
+        self.vi.max_iter = self.max_iter
         self.vi.run()
 
         self.value = np.array(self.vi.V)

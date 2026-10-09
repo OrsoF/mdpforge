@@ -20,7 +20,7 @@ class Solver:
         self.epsilon_policy_evaluation = final_precision
         self.epsilon_policy_update = final_precision
 
-        self.name = "MPI"
+        self.name = "mdpforge MPI (reward init)"
 
         self.max_iter_evaluation = int(1e8)
         self.max_iter_policy_update = int(1e8)

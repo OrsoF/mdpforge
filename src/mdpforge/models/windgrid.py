@@ -3,6 +3,15 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+METADATA = {
+    "category": "navigation",
+    "description": "Grid navigation under column-dependent wind.",
+    "reference": (
+        "Sutton & Barto, Reinforcement Learning: An Introduction, Example 6.5, "
+        "Windy Gridworld."
+    ),
+}
+
 
 class Model(MDP):
     """
