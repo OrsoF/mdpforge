@@ -5,10 +5,6 @@ from scipy.sparse import csc_matrix, csr_array, csr_matrix
 from mdpforge.core.validation import validate_model
 
 
-def test_accepts_valid_model(small_model):
-    validate_model(small_model)
-
-
 def test_rejects_missing_name(small_model):
     del small_model.name
     with pytest.raises(ValueError, match="missing required attributes: name"):

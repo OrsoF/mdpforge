@@ -27,18 +27,11 @@ class Solver:
         outgoing_transitions = []
         for matrix in self.env.transition_matrix:
             action_transitions = [[] for _ in range(self.env.state_dim)]
-            if hasattr(matrix, "tocoo"):
-                coo_matrix = matrix.tocoo()
-                for ss1, ss2, value in zip(
-                    coo_matrix.row, coo_matrix.col, coo_matrix.data
-                ):
-                    action_transitions[int(ss1)].append((int(ss2), float(value)))
-            else:
-                for ss1 in range(self.env.state_dim):
-                    for ss2 in range(self.env.state_dim):
-                        value = matrix[ss1, ss2]
-                        if value:
-                            action_transitions[ss1].append((ss2, value))
+            coo_matrix = matrix.tocoo()
+            for ss1, ss2, value in zip(
+                coo_matrix.row, coo_matrix.col, coo_matrix.data
+            ):
+                action_transitions[int(ss1)].append((int(ss2), float(value)))
             outgoing_transitions.append(action_transitions)
         return outgoing_transitions
 

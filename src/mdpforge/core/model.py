@@ -60,16 +60,6 @@ class GenericModel(ABC):
             "Subclasses of GenericModel must implement _build_model."
         )
 
-    def lighten_model(self):
-        """
-        Use it to remove heavy matrices during computations.
-        """
-        try:
-            del self.transition_matrix
-            del self.reward_matrix
-        except AttributeError:
-            pass
-
     def test_model(self):
         from mdpforge.core.validation import validate_model
 
@@ -143,19 +133,6 @@ class GenericModel(ABC):
     def _is_model_built(self) -> bool:
         return hasattr(self, "transition_matrix") and hasattr(self, "reward_matrix")
 
-    def get_model_main_parameters(self) -> list:
-        # State dim, action dim, transition density, transition average, transition std, reward density, reward average, reward std
-        result = [self.state_dim, self.action_dim, self.get_transition_density()]
-        trans_avg = np.mean([matrix.mean() for matrix in self.transition_matrix])
-        trans_std = np.std(
-            np.concatenate([matrix.data for matrix in self.transition_matrix])
-        )
-        reward_density = self.get_reward_density()
-        reward_avg = np.mean(self.reward_matrix)
-        reward_std = np.std(self.reward_matrix)
-        result += [trans_avg, trans_std, reward_density, reward_avg, reward_std]
-        return result
-
     ###### UTILITY METHODS ######
 
     def plot_optimal_value(self, discount: float):
@@ -176,12 +153,6 @@ class GenericModel(ABC):
             plt.ylabel("Value")
             plt.legend()
             plt.show()
-
-    def transition_reward_policy(self, policy: np.ndarray) -> tuple:
-        """Compute the transition and reward policy for a given policy."""
-        from mdpforge.core.operators import compute_transition_reward_policy
-
-        return compute_transition_reward_policy(self, policy)
 
     def optimal_value_function(self, discount: float) -> np.ndarray:
         """Load cached discounted values or solve with VI at precision 1e-3."""

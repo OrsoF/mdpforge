@@ -87,12 +87,13 @@ python -m ruff format --check .
 In the project's Conda environment, prefix commands with `conda run -n benchmark`.
 Tests discover modules in `models/` and `solvers/`; models can provide
 `TEST_PARAMETERS` for a small valid instance.
+`python -m pytest` runs the full suite, including all installed backends;
+only tests whose dependencies are missing are skipped.
 
 External backends require their [optional dependencies](pyproject.toml), e.g.
-`python -m pip install -e ".[mdptoolbox]"`. Run their tests with `python -m pytest --optional`;
-missing dependencies are skipped. In the pinned MDPToolbox version, VI can fail
-with constant optimal immediate rewards; Gauss-Seidel fails on CSR inputs under
-NumPy 2 because its native loop converts a one-element array to a scalar.
+`python -m pip install -e ".[mdptoolbox]"`. MDPToolbox Gauss-Seidel uses a local dense copy
+of transitions; the input model stays in CSR. MDPToolbox VI asserts that maximum
+immediate rewards vary across states.
 MDPSolver runs serially by default.
 
 [MIT license](LICENSE).

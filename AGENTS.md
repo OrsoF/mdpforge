@@ -30,17 +30,14 @@ changes that preserve scientific behavior and keep the project easy to extend.
   and the `<discount>_<model.name>` key. Account for stale caches when changing
   model parameters.
 
-## Scale validation to the change
+## Validation
 
-| Change | Checks |
-| --- | --- |
-| Documentation | Edited text, affected paths, links, and changed commands. No test suite. |
-| Small code change | Relevant tests and Ruff on changed Python files. |
-| Model or solver | Small deterministic instances, explicit seeds, numerical invariants, and value/policy quality. |
-| Migration, packaging, dependencies, or shared core | Full tests and Ruff; installation/import checks when relevant. |
-
-Add tests for meaningful behavior changes. Run final checks once after the change
-stabilizes; repeat only after a failure or further edits. Do not run heavy
+Do not run tests or Ruff automatically; run them only when explicitly requested.
+When requested, run the full pytest suite without a separate backend mode.
+Tests run all installed backends automatically; skip only missing dependencies.
+Add tests for meaningful behavior changes, using small deterministic instances,
+numerical invariants, and value/policy quality. Run requested checks once after the
+change stabilizes; repeat only after a failure or further edits. Do not run heavy
 benchmarks unless needed for the task. Respect requests to skip checks.
 
 ## Environment and reporting

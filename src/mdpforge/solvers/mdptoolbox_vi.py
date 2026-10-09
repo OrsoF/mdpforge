@@ -14,6 +14,7 @@ from mdpforge.core.solver import GenericSolver
 
 class Solver(GenericSolver):
     solver_type = "vi"
+    supports_constant_rewards = False
 
     def __init__(
         self,
@@ -25,6 +26,9 @@ class Solver(GenericSolver):
         self.model = model
         self.discount = discount
         assert final_precision > 0, "final_precision must be positive"
+        assert np.ptp(model.reward_matrix.max(axis=1)) > 0, (
+            "MDPToolbox VI requires nonconstant maximum immediate rewards across states"
+        )
         self.epsilon = final_precision
         self.name = "VI MDPToolbox"
         self.max_iter = int(1e8)

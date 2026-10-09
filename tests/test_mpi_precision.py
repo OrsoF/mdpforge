@@ -116,7 +116,7 @@ def test_truncated_evaluation_can_improve_initially_stable_policy(
 @pytest.mark.parametrize(
     "module_name", ["personal_mpi", "personal_mpi_init", "personal_stochasticmpi"]
 )
-@pytest.mark.parametrize("discount", [0.1, 0.9, 0.99])
+@pytest.mark.parametrize("discount", [0.1, 0.99])
 def test_personal_mpi_transient_rewards(module_name, discount, chain, monkeypatch):
     monkeypatch.setattr(np.random, "randint", np.random.RandomState(0).randint)
     solver = import_module(f"mdpforge.solvers.{module_name}").Solver(

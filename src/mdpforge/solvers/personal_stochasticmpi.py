@@ -3,7 +3,7 @@ from time import time
 import numpy as np
 
 from mdpforge.core.model import MDP
-from mdpforge.core.operators import compute_transition_reward_policy
+from mdpforge.core.operators import bellman_operator, compute_transition_reward_policy
 
 
 class Solver:
@@ -39,7 +39,7 @@ class Solver:
 
         while True:
             # Policy Upgrade
-            q_value = self.bellman_no_max(self.value)
+            q_value = bellman_operator(self.model, self.value, self.discount)
             self.value = q_value.max(axis=1)
             self.policy = q_value.argmax(axis=1)
 
@@ -59,7 +59,7 @@ class Solver:
             )
             self.value = new_value
 
-            q_value = self.bellman_no_max(self.value)
+            q_value = bellman_operator(self.model, self.value, self.discount)
             variation = np.absolute(q_value.max(axis=1) - self.value).max()
             variation_condition = variation <= self.variation_policy_update
 
@@ -67,13 +67,3 @@ class Solver:
                 self.policy = q_value.argmax(axis=1)
                 self.runtime = time() - start_time
                 break
-
-    def bellman_no_max(self, value):
-        q_value = np.zeros((self.model.state_dim, self.model.action_dim))
-
-        for aa in range(self.model.action_dim):
-            q_value[:, aa] = self.model.reward_matrix[
-                :, aa
-            ] + self.discount * self.model.transition_matrix[aa].dot(value)
-
-        return q_value

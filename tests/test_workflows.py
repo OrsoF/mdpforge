@@ -19,13 +19,13 @@ from mdpforge.core.operators import (
 from mdpforge.core.validation import validate_model
 
 
-def run_optional_test(request, tmp_path):
-    marker = request.node.get_closest_marker("optional")
+def run_external_test(request, tmp_path):
+    marker = request.node.get_closest_marker("external")
     if marker is None or os.environ.get("MDPFORGE_TEST_CHILD") == "1":
         return False
     for dependency in marker.kwargs["dependencies"]:
         if find_spec(dependency) is None:
-            pytest.skip(f"Optional dependency not installed: {dependency}")
+            pytest.skip(f"Dependency not installed: {dependency}")
     test_file, test_name = request.node.nodeid.split("::", 1)
     test_id = f"{request.config.rootpath / test_file}::{test_name}"
     result = subprocess.run(
@@ -35,7 +35,6 @@ def run_optional_test(request, tmp_path):
             "-m",
             "pytest",
             test_id,
-            "--optional",
             "-q",
             "--tb=short",
         ],
@@ -53,7 +52,7 @@ def run_optional_test(request, tmp_path):
 def test_model_contract(
     model_module, isolated_model_cache, request, tmp_path, monkeypatch
 ):
-    if run_optional_test(request, tmp_path):
+    if run_external_test(request, tmp_path):
         return
     monkeypatch.setattr(np.random, "randint", np.random.RandomState(0).randint)
     module = import_module(model_module)
@@ -65,7 +64,7 @@ def test_model_contract(
 
 
 def test_solver_contract(solver_module, chain, monkeypatch, request, tmp_path):
-    if run_optional_test(request, tmp_path):
+    if run_external_test(request, tmp_path):
         return
     # Solver input needs data attributes, without GenericModel methods.
     chain = SimpleNamespace(
@@ -114,7 +113,7 @@ def test_solver_contract(solver_module, chain, monkeypatch, request, tmp_path):
 
 
 def test_vi_final_precision(vi_module, chain, monkeypatch, request, tmp_path):
-    if run_optional_test(request, tmp_path):
+    if run_external_test(request, tmp_path):
         return
     solver_class = import_module(vi_module).Solver
     monkeypatch.setattr(np.random, "randint", np.random.RandomState(0).randint)
@@ -124,6 +123,10 @@ def test_vi_final_precision(vi_module, chain, monkeypatch, request, tmp_path):
         (0.99, 1e-5, False),
         (0.95, 1e-3, True),
     ):
+        if constant_reward and not getattr(
+            solver_class, "supports_constant_rewards", True
+        ):
+            continue
         model = deepcopy(chain)
         model.transition_matrix = [csr_matrix(transition), csr_matrix(transition)]
         model.reward_matrix = np.array([[1, 0.2], [2, -0.1], [0.5, 0]])

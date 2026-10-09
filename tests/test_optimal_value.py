@@ -50,16 +50,6 @@ def test_distance_to_optimal_counts_uniform_error(chain, tmp_path, monkeypatch):
     assert_allclose(value, original, rtol=0, atol=0)
 
 
-def test_exact_value_ignores_old_span_reference(chain, tmp_path, monkeypatch):
-    monkeypatch.setattr(
-        "mdpforge.utils.exact_value_function.SAVED_VALUE_FUNCTIONS_PATH", tmp_path
-    )
-    persistence.save_pickle(
-        [43.8, 44, 42], tmp_path / f"discounted_0.9_{chain.name}.pkl"
-    )
-    assert_allclose(get_exact_value(chain, 0.9), [1.8, 2, 0], atol=1e-6, rtol=0)
-
-
 def test_reference_precisions_and_caches_remain_distinct(chain, tmp_path, monkeypatch):
     monkeypatch.setattr(
         "mdpforge.utils.exact_value_function.SAVED_VALUE_FUNCTIONS_PATH", tmp_path

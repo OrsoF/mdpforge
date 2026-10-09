@@ -64,28 +64,12 @@ def module_names(package, solver_type=None):
             imports - sys.stdlib_module_names - {"mdpforge", "numpy", "scipy"}
         )
         marks = (
-            [pytest.mark.optional(dependencies=sorted(dependencies))]
+            [pytest.mark.external(dependencies=sorted(dependencies))]
             if dependencies
             else []
         )
         parameters.append(pytest.param(module.name, marks=marks, id=module.name))
     return parameters
-
-
-def pytest_addoption(parser):
-    parser.addoption(
-        "--optional", action="store_true", help="Test optional integrations"
-    )
-
-
-def pytest_collection_modifyitems(config, items):
-    if config.getoption("--optional"):
-        return
-    for item in items:
-        if item.get_closest_marker("optional"):
-            item.add_marker(
-                pytest.mark.skip(reason="Optional integration; use --optional")
-            )
 
 
 @pytest.fixture

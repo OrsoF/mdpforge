@@ -24,27 +24,17 @@ class Solver:
         self.env = env
         self.discount = discount
         self.name = "Gurobi LP Dual"
-        self.transition_matrix_is_sparse: bool = not isinstance(
-            self.env.transition_matrix, np.ndarray
-        )
         self.incoming_transitions = self._build_incoming_transitions()
 
     def _build_incoming_transitions(self):
         incoming_transitions = []
         for matrix in self.env.transition_matrix:
             action_transitions = [[] for _ in range(self.env.state_dim)]
-            if hasattr(matrix, "tocoo"):
-                coo_matrix = matrix.tocoo()
-                for ss1, ss2, value in zip(
-                    coo_matrix.row, coo_matrix.col, coo_matrix.data
-                ):
-                    action_transitions[int(ss2)].append((int(ss1), float(value)))
-            else:
-                for ss1 in range(self.env.state_dim):
-                    for ss2 in range(self.env.state_dim):
-                        value = matrix[ss1, ss2]
-                        if value:
-                            action_transitions[ss2].append((ss1, value))
+            coo_matrix = matrix.tocoo()
+            for ss1, ss2, value in zip(
+                coo_matrix.row, coo_matrix.col, coo_matrix.data
+            ):
+                action_transitions[int(ss2)].append((int(ss1), float(value)))
             incoming_transitions.append(action_transitions)
         return incoming_transitions
 

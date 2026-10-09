@@ -1,5 +1,5 @@
 """
-Solver calling the MDP Toolbox Value Iteration solver.
+Solver calling the MDP Toolbox Gauss-Seidel Value Iteration solver.
 """
 
 import time
@@ -35,13 +35,20 @@ class Solver(GenericSolver):
     def run(self):
         start_time = time.time()
 
-        transitions = np.array([matrix.toarray() for matrix in self.model.transition_matrix])
+        transitions = np.array(
+            [matrix.toarray() for matrix in self.model.transition_matrix]
+        )
+        initial_value = 0
+        if np.ptp(self.model.reward_matrix.max(axis=1)) == 0:
+            # Toolbox's constructor divides by a zero initial Bellman span.
+            initial_value = [1.0] + [0.0] * (self.model.state_dim - 1)
         self.vi = ValueIterationGS(
             transitions,
             self.model.reward_matrix,
             discount=self.discount,
             epsilon=self.epsilon * (1 - self.discount),
             max_iter=self.max_iter,
+            initial_value=initial_value,
         )
         # Toolbox's VI iteration bound is not a bound for Gauss-Seidel sweeps.
         self.vi.max_iter = self.max_iter
