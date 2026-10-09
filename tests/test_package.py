@@ -34,7 +34,7 @@ assert isinstance(model, MDP) and isinstance(matrix_model, MDP)
 np.testing.assert_allclose(matrix_model.optimal_value_function(0.9), [1.8, 2, 0])
 bench = Benchmark().add_mdp('chain', transitions=model.transition_matrix, rewards=model.reward_matrix)
 results = bench.run(discount=0.9, repeats=1)
-assert len(results) == 2 and all(row['status'] == 'success' for row in results)
+assert len(results) == 1 and all(row['status'] == 'success' for row in results)
 """
     )
     result = subprocess.run(

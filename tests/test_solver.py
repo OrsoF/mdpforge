@@ -61,7 +61,7 @@ def test_custom_options_and_policy_work_with_benchmark(chain):
     assert_allclose(solver.policy, [0, 0, 0], rtol=0, atol=0)
 
     bench = Benchmark(default_solvers=False).add_mdp(chain)
-    bench.add_solver(PolicySolver, policy_action=0)
+    bench.add_solver("PolicySolver", solve_function=PolicySolver, policy_action=0)
     results = bench.run(0.9, precision=1e-4, repeats=1, seed=0)
     assert len(results) == 1
     assert results[0]["solver"] == "PolicySolver"

@@ -13,8 +13,117 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.validation import validate_model
 from mdpforge.solvers.personal_mpi import Solver as MPI
-from mdpforge.solvers.personal_qvi import Solver as QVI
 from mdpforge.solvers.personal_vi import Solver as VI
+
+
+def test_catalogue_solver_loads_class_and_forwards_options(chain):
+    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench.add_solver(
+        solver_name="personal_vi", initial_value=np.array([1.8, 2.0, 0.0])
+    )
+    results = bench.run(discount=0.9, precision=1e-4, repeats=1)
+    assert len(results) == 1
+    assert results[0]["solver"] == "personal_vi"
+    assert results[0]["status"] == "success", results[0]["error"]
+    assert results[0]["error_bound"] <= 1e-4
+
+
+def test_unknown_solver_lists_catalogue_without_importing_it(monkeypatch):
+    def fail_import(*args, **kwargs):
+        pytest.fail("Listing solvers must not import backend dependencies")
+
+    monkeypatch.setattr("mdpforge.core.benchmark.import_module", fail_import)
+    with pytest.raises(
+        ValueError,
+        match="Unknown solver 'missing_solver'.*Available solvers:.*personal_vi",
+    ):
+        Benchmark(default_solvers=False).add_solver("missing_solver")
+
+
+def test_custom_solver_takes_priority_and_rejects_duplicates(chain, monkeypatch):
+    def fail_import(*args, **kwargs):
+        pytest.fail("A custom callable must bypass catalogue imports")
+
+    def custom_solver(transitions, rewards, discount, precision):
+        return np.array([2 * discount, 2, 0])
+
+    monkeypatch.setattr("mdpforge.core.benchmark.import_module", fail_import)
+    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench.add_solver("personal_vi", solve_function=custom_solver)
+    results = bench.run(discount=0.9, repeats=1)
+    assert results[0]["solver"] == "personal_vi"
+    assert results[0]["status"] == "success", results[0]["error"]
+    with pytest.raises(ValueError, match="already registered"):
+        bench.add_solver("personal_vi")
+    with pytest.raises(TypeError, match="solve_function must be a callable"):
+        bench.add_solver("invalid_function", solve_function=42)
+    with pytest.raises(ValueError, match="parameters controlled by run"):
+        bench.add_solver(
+            "invalid_precision", solve_function=custom_solver, precision=0.1
+        )
+
+
+@pytest.mark.parametrize("solver_name", [None, 0, "", " "])
+def test_add_solver_requires_nonempty_name(solver_name):
+    with pytest.raises(ValueError, match="nonempty string name"):
+        Benchmark(default_solvers=False).add_solver(solver_name)
+
+
+def test_function_solver_receives_matrices_and_options_alongside_classes(chain):
+    calls = []
+
+    def mon_solver(transitions, rewards, discount, precision, *, scale):
+        assert all(isinstance(matrix, csr_matrix) for matrix in transitions)
+        assert isinstance(rewards, np.ndarray)
+        calls.append((discount, precision, scale))
+        # Action zero is optimal on this deterministic chain.
+        return scale * np.linalg.solve(
+            np.eye(rewards.shape[0]) - discount * transitions[0].toarray(),
+            rewards[:, 0],
+        )
+
+    bench = Benchmark().add_mdp(chain)
+    bench.add_solver(solver_name="mon_solver", solve_function=mon_solver, scale=1.0)
+    results = bench.run(discount=0.9, precision=1e-4, repeats=2)
+    assert len(results) == 4
+    assert {row["solver"] for row in results} == {"VI", "mon_solver"}
+    assert calls == [(0.9, 1e-4, 1.0)] * 2
+    for row in results:
+        assert row["status"] == "success", row["error"]
+        assert row["error_bound"] <= 1e-4
+
+
+@pytest.mark.parametrize("outcome", ["imprecise", "invalid", "exception"])
+def test_function_solver_failures_are_recorded_and_trials_isolated(chain, outcome):
+    rewards = chain.reward_matrix.copy()
+    transitions = [matrix.copy() for matrix in chain.transition_matrix]
+
+    def broken_solver(transitions, rewards, discount, precision):
+        assert_allclose(rewards, chain.reward_matrix, rtol=0, atol=0)
+        rewards[:] = 0
+        for matrix in transitions:
+            matrix.data[:] = 0
+        if outcome == "exception":
+            raise RuntimeError("broken function")
+        return np.zeros(rewards.shape[0] - (outcome == "invalid"))
+
+    results = benchmark(
+        chain, {"broken": broken_solver, "VI": VI}, discount=0.9, repeats=2
+    )
+    expected = "imprecise" if outcome == "imprecise" else "error"
+    statuses = [row["status"] for row in results]
+    assert statuses == [expected, expected, "success", "success"]
+    if outcome == "exception":
+        assert all(
+            "RuntimeError: broken function" in row["error"] for row in results[:2]
+        )
+    elif outcome == "invalid":
+        assert all("finite vector" in row["error"] for row in results[:2])
+    else:
+        assert results[0]["error_bound"] == pytest.approx(20)
+    assert_allclose(chain.reward_matrix, rewards, rtol=0, atol=0)
+    for matrix, original in zip(chain.transition_matrix, transitions):
+        assert_allclose(matrix.toarray(), original.toarray(), rtol=0, atol=0)
 
 
 def test_catalogue_model_uses_own_defaults(isolated_model_cache):
@@ -30,7 +139,7 @@ def test_catalogue_model_uses_own_defaults(isolated_model_cache):
     )
     validate_model(model)
     results = bench.run(discount=0.9, repeats=1, seed=0)
-    assert len(results) == 2
+    assert len(results) == 1
     for row in results:
         assert row["status"] == "success", row["error"]
         assert row["error_bound"] <= 1e-3
@@ -89,8 +198,8 @@ def test_matrix_benchmark_uses_default_solvers(chain, dense_input):
     )
 
     results = bench.run(discount=0.9)
-    assert len(results) == 6
-    assert {row["solver"] for row in results} == {"VI", "QVI"}
+    assert len(results) == 3
+    assert {row["solver"] for row in results} == {"VI"}
     for row in results:
         assert row["model"] == "my_mdp"
         assert (row["state_dim"], row["action_dim"]) == (3, 2)
@@ -131,15 +240,15 @@ def test_benchmark_accepts_generated_matrix_and_external_mdps(chain, dense_input
     bench = Benchmark(default_solvers=False)
     for model in (chain, matrix_mdp, external_mdp):
         bench.add_mdp(model)
-    for name, constructor in (("VI", VI), ("QVI", QVI), ("MPI", MPI)):
-        bench.add_solver(constructor, name=name)
+    for name, constructor in (("VI", VI), ("MPI", MPI)):
+        bench.add_solver(name, solve_function=constructor)
 
     results = bench.run(0.9, precision=1e-4, repeats=2, seed=0)
-    assert len(results) == 18
+    assert len(results) == 12
     for row in results:
         assert row["status"] == "success", row["error"]
         assert row["residual"] <= 1e-4 * (1 - 0.9)
-    for generated, matrix, external in zip(results[:6], results[6:12], results[12:]):
+    for generated, matrix, external in zip(results[:4], results[4:8], results[8:]):
         for field in ("solver", "repeat", "seed", "residual", "error_bound", "status"):
             assert generated[field] == matrix[field] == external[field]
     assert all(
@@ -147,7 +256,7 @@ def test_benchmark_accepts_generated_matrix_and_external_mdps(chain, dense_input
     )
 
 
-def test_benchmark_measures_vi_and_qvi(chain):
+def test_benchmark_measures_vi_and_mpi(chain):
     chain = SimpleNamespace(
         name=chain.name,
         state_dim=chain.state_dim,
@@ -155,13 +264,13 @@ def test_benchmark_measures_vi_and_qvi(chain):
         transition_matrix=chain.transition_matrix,
         reward_matrix=chain.reward_matrix,
     )
-    results = benchmark(chain, {"VI": VI, "QVI": QVI}, discount=0.9, repeats=2)
+    results = benchmark(chain, {"VI": VI, "MPI": MPI}, discount=0.9, repeats=2)
     assert len(results) == 4
     assert [(row["solver"], row["repeat"]) for row in results] == [
         ("VI", 1),
         ("VI", 2),
-        ("QVI", 1),
-        ("QVI", 2),
+        ("MPI", 1),
+        ("MPI", 2),
     ]
     for row in results:
         assert row["model"] == chain.name

@@ -10,7 +10,7 @@ from time import perf_counter
 
 import numpy as np
 
-from mdpforge import models
+from mdpforge import models, solvers
 from mdpforge.core.mdp import MDP
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import optimal_bellman_operator
@@ -20,28 +20,27 @@ from mdpforge.core.validation import validate_model
 class Benchmark:
     """Compare catalogue, matrix-defined or already-built finite discounted MDPs.
 
-    VI and QVI are registered by default; use default_solvers=False to select
+    VI is registered by default; use default_solvers=False to select
     only your own solvers.
 
     Models must expose ``name``, ``state_dim``, ``action_dim``,
-    ``transition_matrix`` and ``reward_matrix``. Solver constructors must
-    accept ``(model, discount, final_precision=...)`` and return an object
-    providing ``run()`` and a ``value`` vector.
+    ``transition_matrix`` and ``reward_matrix``. Solver functions accept
+    ``(transitions, rewards, discount, precision)`` and return a value vector.
+    Solver classes accept ``(model, discount, final_precision=...)`` and provide
+    ``run()`` and a ``value`` vector.
 
-    Runtime includes solver construction and ``run()``, but excludes model
-    copying, validation and independent precision verification.
+    Runtime includes function execution or class construction and ``run()``,
+    but excludes model copying, validation and independent precision verification.
     """
 
     def __init__(self, *, default_solvers=True):
         self._mdps: list[MDPProtocol] = []
-        self._solvers = {}  # label -> (constructor, constructor kwargs)
+        self._solvers = {}  # label -> (solver class/function, options)
         self.results = []
         if default_solvers:
-            from mdpforge.solvers.personal_qvi import Solver as QVI
             from mdpforge.solvers.personal_vi import Solver as VI
 
-            self.add_solver(VI, name="VI")
-            self.add_solver(QVI, name="QVI")
+            self.add_solver("VI", solve_function=VI)
 
     def add_mdp(
         self, model: MDPProtocol | str, *, transitions=None, reward=None, rewards=None
@@ -92,32 +91,47 @@ class Benchmark:
         self.results = []
         return self
 
-    def add_solver(self, constructor, *, name=None, **kwargs):
-        """Register a solver class/factory and optional constructor settings.
+    def add_solver(self, solver_name: str, *, solve_function=None, **options):
+        """Register a catalogue solver or a named custom function/class.
 
-        ``model``, ``discount`` and ``final_precision`` are supplied by run()
-        and cannot be overridden per solver.
+        Without solve_function, solver_name identifies a module in solvers/.
+        Otherwise it labels the supplied callable. Functions receive
+        (CSR transitions, NumPy rewards, discount, precision) and return values.
+        Classes receive (model, discount, final_precision=...) and expose run()
+        and value. Options are forwarded; problem data, discount and precision
+        are supplied by run() and cannot be overridden per solver.
         """
-        if not callable(constructor):
-            raise TypeError("A solver must be a callable constructor or factory.")
-        reserved = {"model", "discount", "final_precision"} & kwargs.keys()
+        if not isinstance(solver_name, str) or not solver_name.strip():
+            raise ValueError("A solver must have a nonempty string name.")
+        if solver_name in self._solvers:
+            raise ValueError(f"A solver named {solver_name!r} is already registered.")
+        reserved = {
+            "model",
+            "transitions",
+            "rewards",
+            "discount",
+            "precision",
+            "final_precision",
+        } & options.keys()
         if reserved:
             raise ValueError(
                 f"Solver parameters controlled by run(): {sorted(reserved)}"
             )
-        if name is None:
-            name = getattr(constructor, "solver_type", None)
-            if name is not None:
-                name = str(name).upper()
-            else:
-                name = getattr(constructor, "__name__", None)
-                if name == "Solver":
-                    name = constructor.__module__.split(".")[-1]
-        if not isinstance(name, str) or not name.strip():
-            raise ValueError("A solver must have a nonempty name.")
-        if name in self._solvers:
-            raise ValueError(f"A solver named {name!r} is already registered.")
-        self._solvers[name] = (constructor, kwargs)
+        if solve_function is None:
+            catalogue = {
+                module.name
+                for module in iter_modules(solvers.__path__)
+                if not module.ispkg and not module.name.startswith("_")
+            }
+            if solver_name not in catalogue:
+                raise ValueError(
+                    f"Unknown solver {solver_name!r}. Available solvers: "
+                    + ", ".join(sorted(catalogue))
+                )
+            solve_function = import_module(f"{solvers.__name__}.{solver_name}").Solver
+        if not callable(solve_function):
+            raise TypeError("solve_function must be a callable function or class.")
+        self._solvers[solver_name] = (solve_function, options)
         self.results = []
         return self
 
@@ -163,21 +177,31 @@ class Benchmark:
                             np.random.seed(seed + repeat)
                             random.seed(seed + repeat)
                             start = perf_counter()
-                            solver = constructor(
-                                trial_model,
-                                discount,
-                                final_precision=precision,
-                                **kwargs,
-                            )
-                            solver.run()
+                            if isinstance(constructor, type):
+                                solver = constructor(
+                                    trial_model,
+                                    discount,
+                                    final_precision=precision,
+                                    **kwargs,
+                                )
+                                solver.run()
+                                value = solver.value
+                            else:
+                                value = constructor(
+                                    trial_model.transition_matrix,
+                                    trial_model.reward_matrix,
+                                    discount,
+                                    precision,
+                                    **kwargs,
+                                )
                             runtime = perf_counter() - start
 
-                            value = np.asarray(solver.value)
+                            value = np.asarray(value)
                             if value.shape != (model.state_dim,) or not np.all(
                                 np.isfinite(value)
                             ):
                                 raise ValueError(
-                                    "solver.value must be a finite vector of state_dim"
+                                    "Solver values must be a finite vector of state_dim"
                                 )
 
                             residual = float(
@@ -327,7 +351,7 @@ def benchmark(
     """Backward-compatible single-MDP benchmark, returning result rows."""
     bench = Benchmark(default_solvers=False).add_mdp(model)
     for name, constructor in solvers.items():
-        bench.add_solver(constructor, name=name)
+        bench.add_solver(name, solve_function=constructor)
     return bench.run(discount, precision=epsilon, repeats=repeats, seed=seed)
 
 
