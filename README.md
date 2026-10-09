@@ -1,19 +1,29 @@
 # mdpforge
 
-Compare solvers on finite Markov decision processes, or benchmark a new MDP.
-Built with NumPy/SciPy.
+**Benchmark your MDPs. Compare your solvers.**
+
+A Python toolkit for comparing finite discounted MDP solvers at a shared target accuracy.
+
+[![CI](https://github.com/OrsoF/mdpforge/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/OrsoF/mdpforge/actions/workflows/ci.yml)
+[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+![Median solver runtime relative to VI on Garnet, Chain Walk and Rooms](artifacts/figures/readme_heatmap.png)
+
+Compare runtime at the same target accuracy. Lower is faster; `FAIL` means a
+trial failed or missed the target. Discount `0.99`, precision `1e-3`, three trials,
+seed `0`. Timings depend on hardware; [trial results](artifacts/results/readme_benchmark.csv).
 
 ## Install
 
-Python 3.11+. From the repository root:
+Python 3.11+. Install from GitHub:
 
 ```sh
-python -m pip install -e .
+python -m pip install "mdpforge @ git+https://github.com/OrsoF/mdpforge.git"
 ```
 
-Optional [extras](pyproject.toml): `plot`, `mdptoolbox`, `mdpsolver`, `gurobi`,
-`marmote`, `maze`. Example: `python -m pip install -e ".[mdptoolbox]"`.
-MDPToolbox uses the official `pymdptoolbox==4.0b3` package.
+For plotting and MDPToolbox, use `"mdpforge[plot,mdptoolbox] @ git+https://github.com/OrsoF/mdpforge.git"`.
+For local development: `python -m pip install -e .`. Other [extras](pyproject.toml)
+include `mdpsolver`, `gurobi`, `marmote` and `maze`.
 
 ## Run a benchmark
 
@@ -47,40 +57,26 @@ results = bench.run(discount=0.9, precision=1e-3)
 bench.export_csv("results.csv")
 ```
 
-Every pair runs three trials at the same target precision. Results include
-`runtime`, `error_bound` and `status`; compare successful trials.
-`Benchmark()` includes VI by default; `run(..., verbose=True)` prints trial progress.
-
-To compare the whole catalogue and plot it (requires the `plot` extra):
-
-```python
-bench = Benchmark().add_all_models().add_all_solvers()
-bench.run(discount=0.9, precision=1e-3, verbose=True)
-bench.plot_heat(reference="VI")
-```
-
-Missing dependencies are skipped with a warning. Heatmaps mark failed or
-imprecise solver runs as `FAIL`.
-
-Interactive example: [notebooks/benchmark.ipynb](notebooks/benchmark.ipynb).
+Each pair runs three trials. Results contain `runtime`, `error_bound` and `status`.
+`Benchmark()` includes VI by default; use `verbose=True` to show progress.
+[Explore the notebook](notebooks/benchmark.ipynb) for catalogue comparisons and plots.
 
 ## Define an MDP
 
 - `transitions[action]`: an `(S, S)` matrix, dense or sparse.
 - `reward[state, action]`: expected immediate rewards, shape `(S, A)`.
 
-Dimensions, CSR conversion and validation are automatic. Use a unique custom name;
-[catalogue models](src/mdpforge/models) are selected by their module name.
+Dimensions, CSR conversion and validation are automatic. Use unique names;
+select [catalogue models](src/mdpforge/models) by module name.
 
 ## Define a solver
 
-Provide `solve_function(transitions, rewards, discount, precision)` returning a
-NumPy value vector of length `S`. Inputs are CSR transitions and NumPy rewards.
-The benchmark handles copies, timing and final precision verification.
+`solve_function(transitions, rewards, discount, precision)` returns a NumPy value
+vector of length `S`. Inputs are CSR transitions and NumPy rewards; the benchmark
+handles copies, timing and final accuracy checks.
 
-`solver_name` labels the results and must be unique. Without `solve_function`, it
-selects a [catalogue solver](src/mdpforge/solvers). Extra options are forwarded as
-keyword arguments. Solver classes are also accepted through `solve_function`.
+Without `solve_function`, the name selects a [catalogue solver](src/mdpforge/solvers).
+Custom names must be unique; extra keyword options are forwarded to the solver.
 
 ## Limitations
 

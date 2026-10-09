@@ -1,0 +1,44 @@
+{
+  "discount": 0.99,
+  "precision": 0.001,
+  "repeats": 3,
+  "seed": 0,
+  "model_generation_seed": 0,
+  "model_cache": "fresh temporary directory",
+  "metric": "median runtime / median VI runtime; FAIL if any trial is not success",
+  "models": [
+    {
+      "catalogue": "garnet",
+      "name": "200_10_garnet_0.85_1.0",
+      "state_dim": 200,
+      "action_dim": 10
+    },
+    {
+      "catalogue": "chain_walk",
+      "name": "100_2_chain_walk",
+      "state_dim": 100,
+      "action_dim": 2
+    },
+    {
+      "catalogue": "rooms",
+      "name": "100_4_rooms",
+      "state_dim": 100,
+      "action_dim": 4
+    }
+  ],
+  "solvers": [
+    "VI",
+    "personal_mpi",
+    "mdptoolbox_mpi",
+    "bertsekas_pi"
+  ],
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.12",
+  "packages": {
+    "mdpforge": "0.1.0",
+    "numpy": "2.4.2",
+    "scipy": "1.17.0",
+    "matplotlib": "3.10.8",
+    "pymdptoolbox": "4.0b3"
+  }
+}
