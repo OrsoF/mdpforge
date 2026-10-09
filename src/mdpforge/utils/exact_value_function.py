@@ -34,10 +34,3 @@ def distance_to_optimal(
     if value.ndim == 2:
         value = value.max(axis=1)
     return np.linalg.norm(value - get_exact_value(model, discount), ord=norm_method)
-
-
-def get_optimal_policy(model: MDPProtocol, discount: float) -> np.ndarray:
-    from mdpforge.core.operators import bellman_operator
-
-    value = get_exact_value(model, discount)
-    return bellman_operator(model, value, discount).argmax(axis=1)

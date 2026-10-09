@@ -19,7 +19,7 @@ import numpy as np
 from scipy.sparse import csr_matrix
 from scipy.stats import poisson
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
 def _build_base_kernel(N: int, p: float, lam: float, eps: float) -> csr_matrix:
@@ -44,7 +44,7 @@ def _build_base_kernel(N: int, p: float, lam: float, eps: float) -> csr_matrix:
         probs = np.array([1.0])
     else:
         probs = poisson.pmf(np.arange(lo, hi + 1), lam)
-        probs[0] = poisson.cdf(lo, lam)   # Move omitted lower tail to lo.
+        probs[0] = poisson.cdf(lo, lam)  # Move omitted lower tail to lo.
         probs[-1] = poisson.sf(hi - 1, lam)  # Include full upper tail at hi.
 
     data = []
@@ -90,7 +90,7 @@ def _build_base_kernel(N: int, p: float, lam: float, eps: float) -> csr_matrix:
     )
 
 
-class Model(GenericModel):
+class Model(MDP):
     """Impatient-queue MDP with a sparse, accuracy-controlled kernel.
 
     Parameters
@@ -101,19 +101,14 @@ class Model(GenericModel):
         Number of actions, interpreted as service batch sizes 0, 1, ...
     truncation_tol : float
         Upper bound on total-variation error for any base transition row.
-    materialize_actions : bool
-        True (default): expose transition_matrix[q] as CSR matrices to
-        preserve the GenericModel API. False: avoid duplicating the kernel
-        and use apply_transitions(V) for Bellman backups instead.
     """
 
     def __init__(
         self,
-        state_dim: int,
-        action_dim: int,
+        state_dim: int = 50,
+        action_dim: int = 10,
         *,
         truncation_tol: float = 1e-8,
-        materialize_actions: bool = True,
     ):
         self.state_dim = int(state_dim)
         self.action_dim = int(action_dim)
@@ -132,7 +127,6 @@ class Model(GenericModel):
         self.q_cost = (1 - self.proba_person_stay) * self.loss_cost + self.holding_cost
 
         self.truncation_tol = float(truncation_tol)
-        self.materialize_actions = bool(materialize_actions)
         self.name = f"{self.state_dim}_{self.action_dim}_queue_impatience"
 
     def _build_model(self):
@@ -155,30 +149,8 @@ class Model(GenericModel):
         )
 
         # There are only N+1 distinct transition rows across *all* actions.
-        self.base_transition_matrix = _build_base_kernel(
-            N, p, lam, self.truncation_tol
-        )
+        base_transition_matrix = _build_base_kernel(N, p, lam, self.truncation_tol)
 
-        # Keep the legacy GenericModel interface by default.
-        self.transition_matrix = (
-            [
-                self.base_transition_matrix[np.maximum(0, states - q)]
-                for q in actions
-            ]
-            if self.materialize_actions
-            else None
-        )
-
-    def apply_transitions(self, values: np.ndarray) -> np.ndarray:
-        """Return E[values(X_next) | y, q] without per-action matvecs.
-
-        The result has shape (state_dim, action_dim). This method works
-        whether or not the action-specific matrices were materialized.
-        """
-        values = np.asarray(values, dtype=float)
-        if values.shape != (self.state_dim,):
-            raise ValueError(f"Expected values with shape ({self.state_dim},)")
-        continuation = self.base_transition_matrix @ values
-        states = np.arange(self.state_dim)[:, None]
-        actions = np.arange(self.action_dim)[None, :]
-        return continuation[np.maximum(0, states - actions)]
+        self.transition_matrix = [
+            base_transition_matrix[np.maximum(0, states - q)] for q in actions
+        ]

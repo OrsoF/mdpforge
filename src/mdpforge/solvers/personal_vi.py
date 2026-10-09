@@ -1,5 +1,3 @@
-import time
-
 import numpy as np
 
 from mdpforge.core.model import MDPProtocol
@@ -15,13 +13,9 @@ class Solver(GenericSolver):
         model: MDPProtocol,
         discount: float,
         final_precision: float = 1e-3,
-        initial_value: np.ndarray = None,
+        initial_value: np.ndarray | None = None,
     ):
-        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
-        self.model = model
-        self.discount = discount
-        assert final_precision > 0, "final_precision must be positive"
-        self.epsilon = final_precision
+        super().__init__(model, discount, final_precision)
 
         if initial_value is not None:
             self.value = initial_value
@@ -30,17 +24,12 @@ class Solver(GenericSolver):
 
         self.name = "VI"
 
-    def run(self):
-        start_time = time.time()
-        tolerance = self.epsilon * (1 - self.discount)
+    def _solve(self) -> np.ndarray:
+        tolerance = self.final_precision * (1 - self.discount)
 
         while True:
             new_value = optimal_bellman_operator(self.model, self.value, self.discount)
             bellman_residual = np.linalg.norm(new_value - self.value, ord=np.inf)
             if bellman_residual < tolerance:
-                self.value = new_value
-                break
+                return new_value
             self.value = new_value
-
-        self.runtime = time.time() - start_time
-        self.policy = None

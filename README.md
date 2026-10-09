@@ -24,21 +24,23 @@ from mdpforge import Benchmark
 P = [[[1, 0], [0, 1]], [[0, 1], [1, 0]]]
 R = [[1, 0], [0, 2]]
 
+
 def my_solver(transitions, rewards, discount, precision):
     value = np.zeros(rewards.shape[0])
     while True:
-        updated = np.max([
-            rewards[:, a] + discount * (p @ value)
-            for a, p in enumerate(transitions)
-        ], axis=0)
+        updated = np.max(
+            [rewards[:, a] + discount * (p @ value) for a, p in enumerate(transitions)],
+            axis=0,
+        )
         if np.max(np.abs(updated - value)) <= precision * (1 - discount):
             return updated
         value = updated
 
+
 bench = Benchmark(default_solvers=False)
-bench.add_mdp("rooms")                               # Existing MDP
-bench.add_mdp("my_mdp", transitions=P, reward=R)      # New MDP
-bench.add_solver("personal_mpi")                     # Existing solver
+bench.add_mdp("rooms")  # Existing MDP
+bench.add_mdp("my_mdp", transitions=P, reward=R)  # New MDP
+bench.add_solver("personal_mpi")  # Existing solver
 bench.add_solver("my_solver", solve_function=my_solver)  # New solver
 
 results = bench.run(discount=0.9, precision=1e-3)
@@ -47,7 +49,20 @@ bench.export_csv("results.csv")
 
 Every pair runs three trials at the same target precision. Results include
 `runtime`, `error_bound` and `status`; compare successful trials.
-`Benchmark()` includes VI by default.
+`Benchmark()` includes VI by default; `run(..., verbose=True)` prints trial progress.
+
+To compare the whole catalogue and plot it (requires the `plot` extra):
+
+```python
+bench = Benchmark().add_all_models().add_all_solvers()
+bench.run(discount=0.9, precision=1e-3, verbose=True)
+bench.plot_heat(reference="VI")
+```
+
+Missing dependencies are skipped with a warning. Heatmaps mark failed or
+imprecise solver runs as `FAIL`.
+
+Interactive example: [notebooks/benchmark.ipynb](notebooks/benchmark.ipynb).
 
 ## Define an MDP
 

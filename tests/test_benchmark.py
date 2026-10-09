@@ -8,7 +8,6 @@ from numpy.testing import assert_allclose
 from scipy.sparse import csr_matrix
 
 from mdpforge import Benchmark
-from mdpforge.core.benchmark import benchmark, export_csv
 from mdpforge.core.mdp import MDP
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.validation import validate_model
@@ -18,14 +17,65 @@ from mdpforge.solvers.personal_vi import Solver as VI
 
 def test_catalogue_solver_loads_class_and_forwards_options(chain):
     bench = Benchmark(default_solvers=False).add_mdp(chain)
-    bench.add_solver(
-        solver_name="personal_vi", initial_value=np.array([1.8, 2.0, 0.0])
-    )
+    bench.add_solver(solver_name="personal_vi", initial_value=np.array([1.8, 2.0, 0.0]))
     results = bench.run(discount=0.9, precision=1e-4, repeats=1)
     assert len(results) == 1
     assert results[0]["solver"] == "personal_vi"
     assert results[0]["status"] == "success", results[0]["error"]
     assert results[0]["error_bound"] <= 1e-4
+
+
+def test_add_all_models_builds_defaults_and_preserves_existing(chain, monkeypatch):
+    existing = SimpleNamespace(**vars(chain))
+    existing.name = "built_alpha"
+    bench = Benchmark(default_solvers=False).add_mdp(existing)
+
+    def import_catalogue(path):
+        name = path.rsplit(".", 1)[1]
+        if name == "missing":
+            raise ModuleNotFoundError("Missing dependency", name="missing_backend")
+        model = type(chain)(3, 2)
+        model.name = f"built_{name}"
+        return SimpleNamespace(Model=lambda: model)
+
+    monkeypatch.setattr(
+        "mdpforge.core.benchmark._catalogue",
+        lambda package: {"zeta", "missing", "alpha"},
+    )
+    monkeypatch.setattr("mdpforge.core.benchmark.import_module", import_catalogue)
+    for _ in range(2):
+        with pytest.warns(
+            UserWarning, match="Skipping model 'missing'.*missing_backend"
+        ):
+            assert bench.add_all_models() is bench
+    assert [model.name for model in bench._mdps] == ["built_alpha", "built_zeta"]
+    assert bench._mdps[0] is existing
+    for model in bench._mdps:
+        validate_model(model)
+
+
+def test_add_all_solvers_preserves_default_vi_and_skips_missing(monkeypatch):
+    bench = Benchmark()
+
+    def import_catalogue(path):
+        name = path.rsplit(".", 1)[1]
+        if name == "missing":
+            raise ModuleNotFoundError("Missing dependency", name="missing_backend")
+        return SimpleNamespace(Solver={"baseline": VI, "other": MPI}[name])
+
+    monkeypatch.setattr(
+        "mdpforge.core.benchmark._catalogue",
+        lambda package: {"other", "baseline", "missing"},
+    )
+    monkeypatch.setattr("mdpforge.core.benchmark.import_module", import_catalogue)
+    for _ in range(2):
+        with pytest.warns(
+            UserWarning, match="Skipping solver 'missing'.*missing_backend"
+        ):
+            assert bench.add_all_solvers() is bench
+    assert list(bench._solvers) == ["VI", "other"]
+    assert bench._solvers["VI"] == (VI, {})
+    assert bench._solvers["other"] == (MPI, {})
 
 
 def test_unknown_solver_lists_catalogue_without_importing_it(monkeypatch):
@@ -107,9 +157,10 @@ def test_function_solver_failures_are_recorded_and_trials_isolated(chain, outcom
             raise RuntimeError("broken function")
         return np.zeros(rewards.shape[0] - (outcome == "invalid"))
 
-    results = benchmark(
-        chain, {"broken": broken_solver, "VI": VI}, discount=0.9, repeats=2
-    )
+    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench.add_solver("broken", solve_function=broken_solver)
+    bench.add_solver("VI", solve_function=VI)
+    results = bench.run(discount=0.9, repeats=2)
     expected = "imprecise" if outcome == "imprecise" else "error"
     statuses = [row["status"] for row in results]
     assert statuses == [expected, expected, "success", "success"]
@@ -145,6 +196,14 @@ def test_catalogue_model_uses_own_defaults(isolated_model_cache):
         assert row["error_bound"] <= 1e-3
 
 
+def test_impatience_catalogue_model_uses_current_mdp_contract(isolated_model_cache):
+    bench = Benchmark(default_solvers=False).add_mdp("impatience")
+    model = bench._mdps[0]
+    assert isinstance(model, MDP)
+    assert (model.state_dim, model.action_dim) == (50, 10)
+    validate_model(model)
+
+
 def test_unknown_model_lists_catalogue_without_importing_it(monkeypatch):
     def fail_import(*args, **kwargs):
         pytest.fail("Listing model names must not import model dependencies")
@@ -173,28 +232,13 @@ def test_add_mdp_leaves_dimensions_to_model(option):
         Benchmark().add_mdp("rooms", **{option: 10})
 
 
-def test_matrix_reward_option_and_ambiguity(chain):
-    bench = Benchmark().add_mdp(
-        "my_mdp", transitions=chain.transition_matrix, reward=chain.reward_matrix
-    )
-    model = bench._mdps[0]
-    assert_allclose(model.reward_matrix, chain.reward_matrix, rtol=0, atol=0)
-    with pytest.raises(ValueError, match="either reward or rewards"):
-        bench.add_mdp(
-            "ambiguous",
-            transitions=chain.transition_matrix,
-            reward=chain.reward_matrix,
-            rewards=chain.reward_matrix,
-        )
-
-
 @pytest.mark.parametrize("dense_input", [False, True])
 def test_matrix_benchmark_uses_default_solvers(chain, dense_input):
     transitions = chain.transition_matrix
     if dense_input:
         transitions = np.array([matrix.toarray() for matrix in transitions])
     bench = Benchmark().add_mdp(
-        "my_mdp", transitions=transitions, rewards=chain.reward_matrix.tolist()
+        "my_mdp", transitions=transitions, reward=chain.reward_matrix.tolist()
     )
 
     results = bench.run(discount=0.9)
@@ -209,16 +253,16 @@ def test_matrix_benchmark_uses_default_solvers(chain, dense_input):
 
 def test_matrix_benchmark_rejects_missing_matrices_and_duplicate_names(chain):
     bench = Benchmark()
-    with pytest.raises(ValueError, match="both transitions and rewards"):
+    with pytest.raises(ValueError, match="both transitions and reward"):
         bench.add_mdp("incomplete", transitions=chain.transition_matrix)
     with pytest.raises(ValueError, match="Pass a name"):
-        bench.add_mdp(chain, rewards=chain.reward_matrix)
+        bench.add_mdp(chain, reward=chain.reward_matrix)
     bench.add_mdp(
-        "my_mdp", transitions=chain.transition_matrix, rewards=chain.reward_matrix
+        "my_mdp", transitions=chain.transition_matrix, reward=chain.reward_matrix
     )
     with pytest.raises(ValueError, match="already registered"):
         bench.add_mdp(
-            "my_mdp", transitions=chain.transition_matrix, rewards=chain.reward_matrix
+            "my_mdp", transitions=chain.transition_matrix, reward=chain.reward_matrix
         )
 
 
@@ -264,7 +308,10 @@ def test_benchmark_measures_vi_and_mpi(chain):
         transition_matrix=chain.transition_matrix,
         reward_matrix=chain.reward_matrix,
     )
-    results = benchmark(chain, {"VI": VI, "MPI": MPI}, discount=0.9, repeats=2)
+    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench.add_solver("VI", solve_function=VI)
+    bench.add_solver("MPI", solve_function=MPI)
+    results = bench.run(discount=0.9, repeats=2)
     assert len(results) == 4
     assert [(row["solver"], row["repeat"]) for row in results] == [
         ("VI", 1),
@@ -296,9 +343,10 @@ def test_benchmark_checks_original_model_and_isolates_trials(chain):
         def run(self):
             pass
 
-    results = benchmark(
-        chain, {"mutating": MutatingSolver, "VI": VI}, discount=0.9, repeats=2
-    )
+    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench.add_solver("mutating", solve_function=MutatingSolver)
+    bench.add_solver("VI", solve_function=VI)
+    results = bench.run(discount=0.9, repeats=2)
     assert [row["status"] for row in results] == [
         "imprecise",
         "imprecise",
@@ -322,9 +370,10 @@ def test_benchmark_records_exceptions_and_continues(chain, fail_in_constructor):
         def run(self):
             raise RuntimeError("broken run")
 
-    results = benchmark(
-        chain, {"broken": BrokenSolver, "VI": VI}, discount=0.9, repeats=1
-    )
+    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench.add_solver("broken", solve_function=BrokenSolver)
+    bench.add_solver("VI", solve_function=VI)
+    results = bench.run(discount=0.9, repeats=1)
     failed, successful = results
     assert failed["status"] == "error"
     assert "RuntimeError: broken" in failed["error"]
@@ -342,7 +391,9 @@ def test_benchmark_rejects_invalid_values(chain, value):
         def run(self):
             pass
 
-    row = benchmark(chain, {"invalid": InvalidSolver}, discount=0.9, repeats=1)[0]
+    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench.add_solver("invalid", solve_function=InvalidSolver)
+    row = bench.run(discount=0.9, repeats=1)[0]
     assert row["status"] == "error"
     assert "finite vector" in row["error"]
 
@@ -356,13 +407,10 @@ def test_benchmark_pairs_seeds_and_restores_rng_states(chain):
             super().run()
 
     numpy_state, random_state = np.random.get_state(), random.getstate()
-    results = benchmark(
-        chain,
-        {"first": RandomSolver, "second": RandomSolver},
-        discount=0.9,
-        repeats=2,
-        seed=7,
-    )
+    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench.add_solver("first", solve_function=RandomSolver)
+    bench.add_solver("second", solve_function=RandomSolver)
+    results = bench.run(discount=0.9, repeats=2, seed=7)
     assert samples[:2] == samples[2:]
     assert samples[0] != samples[1]
     assert [row["seed"] for row in results] == [7, 8, 7, 8]
@@ -374,8 +422,9 @@ def test_benchmark_pairs_seeds_and_restores_rng_states(chain):
 
 
 def test_export_csv_round_trip(chain, tmp_path):
-    results = benchmark(chain, {"VI": VI}, discount=0.9, repeats=1)
-    path = export_csv(results, tmp_path / "nested" / "benchmark.csv")
+    bench = Benchmark().add_mdp(chain)
+    results = bench.run(discount=0.9, repeats=1)
+    path = bench.export_csv(tmp_path / "nested" / "benchmark.csv")
     with path.open(encoding="utf-8", newline="") as handle:
         rows = list(csv.DictReader(handle))
     assert len(rows) == 1

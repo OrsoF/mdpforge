@@ -11,7 +11,6 @@ from mdpforge.utils import persistence
 def test_generated_model_uses_mdp_and_preserves_identity(chain):
     assert isinstance(chain, MDP)
     assert chain.name == "3_2_chainmodel"
-    assert chain.params == {}
 
 
 def test_matrix_mdp_create_model_keeps_supplied_matrices(chain, monkeypatch):

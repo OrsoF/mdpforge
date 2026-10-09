@@ -25,7 +25,6 @@ class MDP:
 
         self.transition_matrix: list[csr_matrix]
         self.reward_matrix: np.ndarray
-        self.params: dict = {}
 
     @classmethod
     def from_matrices(cls, name: str, transition_matrix, reward_matrix) -> "MDP":

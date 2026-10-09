@@ -2,6 +2,7 @@
 
 import csv
 import random
+import warnings
 from copy import deepcopy
 from importlib import import_module
 from pathlib import Path
@@ -15,6 +16,15 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.validation import validate_model
+
+
+def _catalogue(package):
+    """List public catalogue modules without importing their dependencies."""
+    return {
+        module.name
+        for module in iter_modules(package.__path__)
+        if not module.ispkg and not module.name.startswith("_")
+    }
 
 
 class Benchmark:
@@ -42,30 +52,20 @@ class Benchmark:
 
             self.add_solver("VI", solve_function=VI)
 
-    def add_mdp(
-        self, model: MDPProtocol | str, *, transitions=None, reward=None, rewards=None
-    ):
+    def add_mdp(self, model: MDPProtocol | str, *, transitions=None, reward=None):
         """Register a catalogue name, custom matrices or a built MDP.
 
         Catalogue models use Model() and create_model() with their defaults.
-        Unknown names require transitions and reward (or rewards), converted to
+        Unknown names require transitions and reward, converted to
         CSR and validated with dimensions inferred from rewards of shape (S, A).
         Each built MDP name must be unique. Construction is outside solver timing.
         """
-        if reward is not None:
-            if rewards is not None:
-                raise ValueError("Provide either reward or rewards, not both.")
-            rewards = reward
         if isinstance(model, str):
             if not model.strip():
                 raise ValueError("Each MDP must have a nonempty string 'name'.")
-            catalogue = {
-                module.name
-                for module in iter_modules(models.__path__)
-                if not module.ispkg and not module.name.startswith("_")
-            }
+            catalogue = _catalogue(models)
             if model in catalogue:
-                if transitions is not None or rewards is not None:
+                if transitions is not None or reward is not None:
                     raise ValueError(
                         f"Catalogue model {model!r} uses its generator; "
                         "choose a custom name when supplying matrices."
@@ -73,15 +73,15 @@ class Benchmark:
                 model = import_module(f"{models.__name__}.{model}").Model()
                 model.create_model()
             else:
-                if transitions is None or rewards is None:
+                if transitions is None or reward is None:
                     raise ValueError(
-                        f"Unknown model {model!r}. Provide both transitions and rewards "
+                        f"Unknown model {model!r}. Provide both transitions and reward "
                         "for a custom MDP. Available models: "
                         + ", ".join(sorted(catalogue))
                     )
-                model = MDP.from_matrices(model, transitions, rewards)
-        elif transitions is not None or rewards is not None:
-            raise ValueError("Pass a name when providing transitions and rewards.")
+                model = MDP.from_matrices(model, transitions, reward)
+        elif transitions is not None or reward is not None:
+            raise ValueError("Pass a name when providing transitions and reward.")
         name = getattr(model, "name", None)
         if not isinstance(name, str) or not name.strip():
             raise ValueError("Each MDP must have a nonempty string 'name'.")
@@ -89,6 +89,25 @@ class Benchmark:
             raise ValueError(f"An MDP named {name!r} is already registered.")
         self._mdps.append(model)
         self.results = []
+        return self
+
+    def add_all_models(self):
+        """Add all catalogue models with default dimensions, without duplicates.
+
+        Missing dependencies are skipped with a warning; other errors propagate.
+        """
+        for name in sorted(_catalogue(models)):
+            try:
+                model = import_module(f"{models.__name__}.{name}").Model()
+                if any(existing.name == model.name for existing in self._mdps):
+                    continue
+                model.create_model()
+                self.add_mdp(model)
+            except ModuleNotFoundError as exc:
+                warnings.warn(
+                    f"Skipping model {name!r}: missing dependency {exc.name!r}",
+                    stacklevel=2,
+                )
         return self
 
     def add_solver(self, solver_name: str, *, solve_function=None, **options):
@@ -118,11 +137,7 @@ class Benchmark:
                 f"Solver parameters controlled by run(): {sorted(reserved)}"
             )
         if solve_function is None:
-            catalogue = {
-                module.name
-                for module in iter_modules(solvers.__path__)
-                if not module.ispkg and not module.name.startswith("_")
-            }
+            catalogue = _catalogue(solvers)
             if solver_name not in catalogue:
                 raise ValueError(
                     f"Unknown solver {solver_name!r}. Available solvers: "
@@ -135,12 +150,40 @@ class Benchmark:
         self.results = []
         return self
 
-    def run(self, discount, precision=1e-3, *, repeats=3, seed=0):
+    def add_all_solvers(self):
+        """Add all catalogue solvers with defaults, preserving existing entries.
+
+        Default VI is not duplicated under its catalogue name. Missing
+        dependencies are skipped with a warning; other errors propagate.
+        """
+        for name in sorted(_catalogue(solvers)):
+            if name in self._solvers:
+                continue
+            try:
+                constructor = import_module(f"{solvers.__name__}.{name}").Solver
+            except ModuleNotFoundError as exc:
+                warnings.warn(
+                    f"Skipping solver {name!r}: missing dependency {exc.name!r}",
+                    stacklevel=2,
+                )
+                continue
+            if any(
+                existing is constructor and not options
+                for existing, options in self._solvers.values()
+            ):
+                continue
+            self.add_solver(name, solve_function=constructor)
+        return self
+
+    def run(self, discount, precision=1e-3, *, repeats=3, seed=0, verbose=False):
         """Run every registered MDP/solver pair at a common value precision.
 
         ``precision`` is an upper bound on ||V - V*||_infinity, certified by
         ||T V - V||_infinity / (1 - discount). All failures are recorded rather
         than interrupting the remaining comparisons.
+
+        ``verbose=True`` prints trial progress, runtime and failure details
+        outside solver timing.
 
         Each solver receives an independent copy of its MDP. Seeds are paired
         across solvers and MDPs for each repeat. Global NumPy and Python RNG
@@ -169,6 +212,13 @@ class Benchmark:
             for model in self._mdps:
                 for solver_name, (constructor, kwargs) in self._solvers.items():
                     for repeat in range(repeats):
+                        if verbose:
+                            print(
+                                f"{model.name} / {solver_name} "
+                                f"[{repeat + 1}/{repeats}]: ",
+                                end="",
+                                flush=True,
+                            )
                         runtime = residual = error_bound = np.nan
                         status, error = "error", ""
                         start = None
@@ -207,9 +257,7 @@ class Benchmark:
                             residual = float(
                                 np.max(
                                     np.abs(
-                                        optimal_bellman_operator(
-                                            model, value, discount
-                                        )
+                                        optimal_bellman_operator(model, value, discount)
                                         - value
                                     )
                                 )
@@ -244,6 +292,12 @@ class Benchmark:
                                 "error": error,
                             }
                         )
+                        if verbose:
+                            print(
+                                f"{status} ({runtime:.3f} s)"
+                                + (f" — {error}" if error else ""),
+                                flush=True,
+                            )
         finally:
             np.random.set_state(numpy_state)
             random.setstate(random_state)
@@ -259,110 +313,26 @@ class Benchmark:
 
         Returns ``(figure, axes)``. Matplotlib is an optional dependency.
         """
-        if not self.results:
-            raise ValueError("No results available; call run() before plot_heat()")
-        if metric not in {"speedup", "runtime"}:
-            raise ValueError("metric must be 'speedup' or 'runtime'")
-        if reference is None:
-            reference = next(iter(self._solvers))
-        if metric == "speedup" and reference not in self._solvers:
-            raise ValueError(f"Unknown reference solver: {reference!r}")
+        from mdpforge.utils.plotting import plot_heat
 
-        import matplotlib.pyplot as plt
-        from matplotlib.colors import TwoSlopeNorm
-
-        models = [model.name for model in self._mdps]
-        solvers = list(self._solvers)
-        times = np.full((len(solvers), len(models)), np.nan)
-        failures = np.zeros_like(times, dtype=bool)
-        for i, solver in enumerate(solvers):
-            for j, model in enumerate(models):
-                rows = [
-                    row for row in self.results
-                    if row["solver"] == solver and row["model"] == model
-                ]
-                if not rows or any(row["status"] != "success" for row in rows):
-                    failures[i, j] = True
-                    continue
-                times[i, j] = float(np.median([row["runtime"] for row in rows]))
-
-        if metric == "speedup":
-            ref_times = times[solvers.index(reference)]
-            with np.errstate(divide="ignore", invalid="ignore"):
-                values = ref_times[np.newaxis, :] / times
-                colors = np.log2(values)
-            colors[~np.isfinite(colors)] = np.nan
-            finite = np.abs(colors[np.isfinite(colors)])
-            limit = max(1.0, float(finite.max())) if finite.size else 1.0
-            norm = TwoSlopeNorm(vmin=-limit, vcenter=0, vmax=limit)
-            cmap = plt.get_cmap("RdYlGn").copy()
-            color_label = f"log₂ speedup vs {reference}"
-        else:
-            values = times
-            colors = times
-            norm = None
-            cmap = plt.get_cmap("viridis_r").copy()
-            color_label = "Runtime (s)"
-
-        cmap.set_bad("#e5e7eb")
-        if ax is None:
-            fig, ax = plt.subplots(
-                figsize=(max(6, 1.4 * len(models) + 2), max(3, 0.55 * len(solvers) + 2))
-            )
-        else:
-            fig = ax.figure
-        im = ax.imshow(
-            np.ma.masked_invalid(colors), cmap=cmap, norm=norm, aspect="auto"
+        return plot_heat(
+            self.results,
+            [model.name for model in self._mdps],
+            list(self._solvers),
+            reference=reference,
+            metric=metric,
+            ax=ax,
+            show=show,
         )
-        ax.set_xticks(range(len(models)), models, rotation=35, ha="right")
-        ax.set_yticks(range(len(solvers)), solvers)
-        ax.set_xlabel("MDP")
-        ax.set_ylabel("Solver")
-        settings = self.results[0]
-        ax.set_title(
-            f"Runtime at fixed precision — γ={settings['discount']:g}, "
-            f"ε={settings['epsilon']:g}"
-        )
-        for i in range(len(solvers)):
-            for j in range(len(models)):
-                if failures[i, j]:
-                    label = "FAIL"
-                elif not np.isfinite(values[i, j]):
-                    label = "N/A"
-                elif metric == "speedup":
-                    label = f"{values[i, j]:.2f}×"
-                else:
-                    label = f"{values[i, j]:.3g} s"
-                ax.text(j, i, label, ha="center", va="center", fontsize=9)
-        fig.colorbar(im, ax=ax, label=color_label)
-        fig.tight_layout()
-        if show:
-            plt.show()
-        return fig, ax
 
     def export_csv(self, path):
         """Export the latest run without rerunning any solver."""
-        return export_csv(self.results, path)
-
-
-def benchmark(
-    model: MDPProtocol, solvers, *, discount, epsilon=1e-3, repeats=3, seed=0
-):
-    """Backward-compatible single-MDP benchmark, returning result rows."""
-    bench = Benchmark(default_solvers=False).add_mdp(model)
-    for name, constructor in solvers.items():
-        bench.add_solver(name, solve_function=constructor)
-    return bench.run(discount, precision=epsilon, repeats=repeats, seed=seed)
-
-
-def export_csv(results, path):
-    """Write benchmark measurements as CSV and return the output path."""
-    if not results:
-        raise ValueError("No benchmark measurements to export")
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=results[0].keys())
-        writer.writeheader()
-        writer.writerows(results)
-    return path
+        if not self.results:
+            raise ValueError("No benchmark measurements to export")
+        path = Path(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=self.results[0].keys())
+            writer.writeheader()
+            writer.writerows(self.results)
+        return path

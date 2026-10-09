@@ -1,16 +1,14 @@
 """
-Solver calling the MDP Toolbox Value Iteration solver.
+Solver calling MDPSolver VI with Gauss-Seidel updates.
 """
-
-import time
 
 import mdpsolver
 import numpy as np
 
-from mdpforge.core.conversion import compute_mdpsolver_args
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
+from mdpforge.utils.mdpsolver import create_mdpsolver, solve_mdpsolver
 
 
 class Solver(GenericSolver):
@@ -23,36 +21,19 @@ class Solver(GenericSolver):
         final_precision: float = 1e-3,
         parallel: bool = False,
     ):
-        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
-        self.model = model
-        self.discount = discount
+        super().__init__(model, discount, final_precision)
         self.parallel = parallel
-        assert final_precision > 0, "final_precision must be positive"
-        self.epsilon = final_precision
         self.name = "VIGS MDPSolver"
+        self.mdl = create_mdpsolver(model, discount, mdpsolver)
 
-        self.trans, self.rew = compute_mdpsolver_args(self.model)
-        self.mdl = mdpsolver.model()
-        self.mdl.mdp(
-            discount=self.discount,
-            rewards=self.rew,
-            tranMatElementwise=self.trans,
-        )
-
-    def run(self):
-        start_time = time.time()
-
-        self.mdl.solve(
+    def _solve(self) -> np.ndarray:
+        value, self.policy = solve_mdpsolver(
+            self.mdl,
             algorithm="vi",
-            tolerance=self.epsilon * (1 - self.discount),
+            tolerance=self.final_precision * (1 - self.discount),
             update="gs",
-            criterion="discounted",
             parallel=self.parallel,
             verbose=False,
         )
 
-        self.value = np.asarray(self.mdl.getValueVector(), dtype=float)
-        self.policy = np.asarray(self.mdl.getPolicy(), dtype=int)
-
-        self.value = certify_value(self.model, self.value, self.discount, self.epsilon)
-        self.runtime = time.time() - start_time
+        return certify_value(self.model, value, self.discount, self.final_precision)
