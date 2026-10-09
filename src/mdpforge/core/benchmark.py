@@ -3,11 +3,14 @@
 import csv
 import random
 from copy import deepcopy
+from importlib import import_module
 from pathlib import Path
+from pkgutil import iter_modules
 from time import perf_counter
 
 import numpy as np
 
+from mdpforge import models
 from mdpforge.core.mdp import MDP
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import optimal_bellman_operator
@@ -15,7 +18,7 @@ from mdpforge.core.validation import validate_model
 
 
 class Benchmark:
-    """Compare solvers on finite discounted MDPs supplied as matrices or objects.
+    """Compare catalogue, matrix-defined or already-built finite discounted MDPs.
 
     VI and QVI are registered by default; use default_solvers=False to select
     only your own solvers.
@@ -40,16 +43,44 @@ class Benchmark:
             self.add_solver(VI, name="VI")
             self.add_solver(QVI, name="QVI")
 
-    def add_mdp(self, model: MDPProtocol | str, *, transitions=None, rewards=None):
-        """Register a built MDP or a name with transition and reward matrices.
+    def add_mdp(
+        self, model: MDPProtocol | str, *, transitions=None, reward=None, rewards=None
+    ):
+        """Register a catalogue name, custom matrices or a built MDP.
 
-        Matrix inputs are converted to CSR and validated; dimensions are inferred
-        from rewards of shape (S, A). Each MDP name must be unique.
+        Catalogue models use Model() and create_model() with their defaults.
+        Unknown names require transitions and reward (or rewards), converted to
+        CSR and validated with dimensions inferred from rewards of shape (S, A).
+        Each built MDP name must be unique. Construction is outside solver timing.
         """
+        if reward is not None:
+            if rewards is not None:
+                raise ValueError("Provide either reward or rewards, not both.")
+            rewards = reward
         if isinstance(model, str):
-            if transitions is None or rewards is None:
-                raise ValueError("Provide both transitions and rewards for a named MDP.")
-            model = MDP.from_matrices(model, transitions, rewards)
+            if not model.strip():
+                raise ValueError("Each MDP must have a nonempty string 'name'.")
+            catalogue = {
+                module.name
+                for module in iter_modules(models.__path__)
+                if not module.ispkg and not module.name.startswith("_")
+            }
+            if model in catalogue:
+                if transitions is not None or rewards is not None:
+                    raise ValueError(
+                        f"Catalogue model {model!r} uses its generator; "
+                        "choose a custom name when supplying matrices."
+                    )
+                model = import_module(f"{models.__name__}.{model}").Model()
+                model.create_model()
+            else:
+                if transitions is None or rewards is None:
+                    raise ValueError(
+                        f"Unknown model {model!r}. Provide both transitions and rewards "
+                        "for a custom MDP. Available models: "
+                        + ", ".join(sorted(catalogue))
+                    )
+                model = MDP.from_matrices(model, transitions, rewards)
         elif transitions is not None or rewards is not None:
             raise ValueError("Pass a name when providing transitions and rewards.")
         name = getattr(model, "name", None)

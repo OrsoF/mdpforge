@@ -24,12 +24,16 @@ P = [[[1, 0], [0, 1]], [[0, 1], [1, 0]]]  # transitions[action][state][next_stat
 R = [[1, 0], [0, 2]]                       # rewards[state][action]
 
 bench = Benchmark()
-bench.add_mdp("my_mdp", transitions=P, rewards=R)
+bench.add_mdp("rooms")
+bench.add_mdp("my_mdp", transitions=P, reward=R)
 results = bench.run(discount=0.9)
 ```
 
-Supply your own dense or sparse matrices; dimensions, CSR conversion and validation
-are automatic. Add more MDPs with distinct names using `add_mdp()`.
+Select a [catalogue model](src/mdpforge/models) by module name; its `Model()` chooses
+the dimensions and `create_model()` builds or loads it before solver timing.
+Unknown names require `transitions` and `reward` (`rewards` is also accepted);
+dimensions, CSR conversion and validation are automatic. Catalogue names cannot
+be combined with matrices. Built instances are accepted with `add_mdp(model)`.
 VI and QVI run by default, comparing times at the same final precision
 (`1e-3`, three trials). Each result includes `solver`, `runtime`, `error_bound` and
 `status`; compare successful trials. Adjust with `run(discount=0.9, precision=1e-4)`.

@@ -11,9 +11,72 @@ from mdpforge import Benchmark
 from mdpforge.core.benchmark import benchmark, export_csv
 from mdpforge.core.mdp import MDP
 from mdpforge.core.model import MDPProtocol
+from mdpforge.core.validation import validate_model
 from mdpforge.solvers.personal_mpi import Solver as MPI
 from mdpforge.solvers.personal_qvi import Solver as QVI
 from mdpforge.solvers.personal_vi import Solver as VI
+
+
+def test_catalogue_model_uses_own_defaults(isolated_model_cache):
+    from mdpforge.models.rooms import Model
+
+    expected = Model()
+    bench = Benchmark().add_mdp("rooms")
+    model = bench._mdps[0]
+    assert model.name == expected.name
+    assert (model.state_dim, model.action_dim) == (
+        expected.state_dim,
+        expected.action_dim,
+    )
+    validate_model(model)
+    results = bench.run(discount=0.9, repeats=1, seed=0)
+    assert len(results) == 2
+    for row in results:
+        assert row["status"] == "success", row["error"]
+        assert row["error_bound"] <= 1e-3
+
+
+def test_unknown_model_lists_catalogue_without_importing_it(monkeypatch):
+    def fail_import(*args, **kwargs):
+        pytest.fail("Listing model names must not import model dependencies")
+
+    monkeypatch.setattr("mdpforge.core.benchmark.import_module", fail_import)
+    with pytest.raises(
+        ValueError, match="Unknown model 'roooms'.*Available models:.*rooms"
+    ):
+        Benchmark().add_mdp("roooms")
+
+
+def test_catalogue_model_rejects_matrices_and_duplicates(chain, isolated_model_cache):
+    bench = Benchmark()
+    with pytest.raises(ValueError, match="choose a custom name"):
+        bench.add_mdp(
+            "rooms", transitions=chain.transition_matrix, reward=chain.reward_matrix
+        )
+    bench.add_mdp("rooms")
+    with pytest.raises(ValueError, match="already registered"):
+        bench.add_mdp("rooms")
+
+
+@pytest.mark.parametrize("option", ["state_dim", "action_dim"])
+def test_add_mdp_leaves_dimensions_to_model(option):
+    with pytest.raises(TypeError, match="unexpected keyword argument"):
+        Benchmark().add_mdp("rooms", **{option: 10})
+
+
+def test_matrix_reward_option_and_ambiguity(chain):
+    bench = Benchmark().add_mdp(
+        "my_mdp", transitions=chain.transition_matrix, reward=chain.reward_matrix
+    )
+    model = bench._mdps[0]
+    assert_allclose(model.reward_matrix, chain.reward_matrix, rtol=0, atol=0)
+    with pytest.raises(ValueError, match="either reward or rewards"):
+        bench.add_mdp(
+            "ambiguous",
+            transitions=chain.transition_matrix,
+            reward=chain.reward_matrix,
+            rewards=chain.reward_matrix,
+        )
 
 
 @pytest.mark.parametrize("dense_input", [False, True])
