@@ -8,13 +8,17 @@ from time import perf_counter
 
 import numpy as np
 
+from mdpforge.core.mdp import MDP
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.validation import validate_model
 
 
 class Benchmark:
-    """Compare solvers on multiple already-built finite discounted MDPs.
+    """Compare solvers on finite discounted MDPs supplied as matrices or objects.
+
+    VI and QVI are registered by default; use default_solvers=False to select
+    only your own solvers.
 
     Models must expose ``name``, ``state_dim``, ``action_dim``,
     ``transition_matrix`` and ``reward_matrix``. Solver constructors must
@@ -25,13 +29,29 @@ class Benchmark:
     copying, validation and independent precision verification.
     """
 
-    def __init__(self):
+    def __init__(self, *, default_solvers=True):
         self._mdps: list[MDPProtocol] = []
         self._solvers = {}  # label -> (constructor, constructor kwargs)
         self.results = []
+        if default_solvers:
+            from mdpforge.solvers.personal_qvi import Solver as QVI
+            from mdpforge.solvers.personal_vi import Solver as VI
 
-    def add_mdp(self, model: MDPProtocol):
-        """Register a built MDP. Its nonempty ``name`` must be unique."""
+            self.add_solver(VI, name="VI")
+            self.add_solver(QVI, name="QVI")
+
+    def add_mdp(self, model: MDPProtocol | str, *, transitions=None, rewards=None):
+        """Register a built MDP or a name with transition and reward matrices.
+
+        Matrix inputs are converted to CSR and validated; dimensions are inferred
+        from rewards of shape (S, A). Each MDP name must be unique.
+        """
+        if isinstance(model, str):
+            if transitions is None or rewards is None:
+                raise ValueError("Provide both transitions and rewards for a named MDP.")
+            model = MDP.from_matrices(model, transitions, rewards)
+        elif transitions is not None or rewards is not None:
+            raise ValueError("Pass a name when providing transitions and rewards.")
         name = getattr(model, "name", None)
         if not isinstance(name, str) or not name.strip():
             raise ValueError("Each MDP must have a nonempty string 'name'.")
@@ -274,7 +294,7 @@ def benchmark(
     model: MDPProtocol, solvers, *, discount, epsilon=1e-3, repeats=3, seed=0
 ):
     """Backward-compatible single-MDP benchmark, returning result rows."""
-    bench = Benchmark().add_mdp(model)
+    bench = Benchmark(default_solvers=False).add_mdp(model)
     for name, constructor in solvers.items():
         bench.add_solver(constructor, name=name)
     return bench.run(discount, precision=epsilon, repeats=repeats, seed=seed)

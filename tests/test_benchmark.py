@@ -7,12 +7,47 @@ import pytest
 from numpy.testing import assert_allclose
 from scipy.sparse import csr_matrix
 
-from mdpforge.core.benchmark import Benchmark, benchmark, export_csv
+from mdpforge import Benchmark
+from mdpforge.core.benchmark import benchmark, export_csv
 from mdpforge.core.mdp import MDP
 from mdpforge.core.model import MDPProtocol
 from mdpforge.solvers.personal_mpi import Solver as MPI
 from mdpforge.solvers.personal_qvi import Solver as QVI
 from mdpforge.solvers.personal_vi import Solver as VI
+
+
+@pytest.mark.parametrize("dense_input", [False, True])
+def test_matrix_benchmark_uses_default_solvers(chain, dense_input):
+    transitions = chain.transition_matrix
+    if dense_input:
+        transitions = np.array([matrix.toarray() for matrix in transitions])
+    bench = Benchmark().add_mdp(
+        "my_mdp", transitions=transitions, rewards=chain.reward_matrix.tolist()
+    )
+
+    results = bench.run(discount=0.9)
+    assert len(results) == 6
+    assert {row["solver"] for row in results} == {"VI", "QVI"}
+    for row in results:
+        assert row["model"] == "my_mdp"
+        assert (row["state_dim"], row["action_dim"]) == (3, 2)
+        assert row["status"] == "success", row["error"]
+        assert row["error_bound"] <= 1e-3
+
+
+def test_matrix_benchmark_rejects_missing_matrices_and_duplicate_names(chain):
+    bench = Benchmark()
+    with pytest.raises(ValueError, match="both transitions and rewards"):
+        bench.add_mdp("incomplete", transitions=chain.transition_matrix)
+    with pytest.raises(ValueError, match="Pass a name"):
+        bench.add_mdp(chain, rewards=chain.reward_matrix)
+    bench.add_mdp(
+        "my_mdp", transitions=chain.transition_matrix, rewards=chain.reward_matrix
+    )
+    with pytest.raises(ValueError, match="already registered"):
+        bench.add_mdp(
+            "my_mdp", transitions=chain.transition_matrix, rewards=chain.reward_matrix
+        )
 
 
 @pytest.mark.parametrize("dense_input", [False, True])
@@ -30,7 +65,7 @@ def test_benchmark_accepts_generated_matrix_and_external_mdps(chain, dense_input
         transition_matrix=chain.transition_matrix,
         reward_matrix=chain.reward_matrix,
     )
-    bench = Benchmark()
+    bench = Benchmark(default_solvers=False)
     for model in (chain, matrix_mdp, external_mdp):
         bench.add_mdp(model)
     for name, constructor in (("VI", VI), ("QVI", QVI), ("MPI", MPI)):

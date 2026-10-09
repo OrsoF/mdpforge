@@ -18,35 +18,24 @@ MDPToolbox uses the official `pymdptoolbox==4.0b3` package.
 ## Run a benchmark
 
 ```python
-from mdpforge.core.benchmark import Benchmark
-from mdpforge.models.rooms import Model as Rooms
-from mdpforge.solvers.personal_vi import Solver as VI
-from mdpforge.solvers.personal_qvi import Solver as QVI
+from mdpforge import Benchmark
 
-model = Rooms()
-model.create_model(save=False)
+P = [[[1, 0], [0, 1]], [[0, 1], [1, 0]]]  # transitions[action][state][next_state]
+R = [[1, 0], [0, 2]]                       # rewards[state][action]
 
-bench = Benchmark().add_mdp(model)
-bench.add_solver(VI, name="VI").add_solver(QVI, name="QVI")
-results = bench.run(discount=0.9, precision=1e-3, repeats=3, seed=0)
-bench.export_csv("artifacts/tmp/benchmark.csv")
+bench = Benchmark()
+bench.add_mdp("my_mdp", transitions=P, rewards=R)
+results = bench.run(discount=0.9)
 ```
 
-Register more built models with `add_mdp()`; each must have a unique name.
-Every model/solver pair runs on fresh copies, returning one dictionary per trial.
-Models have modest defaults; pass dimensions such as `Rooms(100, 4)` to override
-them. Some environments determine their actual dimensions internally.
-With the `plot` extra, `bench.plot_heat(reference="VI")` compares median runtimes.
+Supply your own dense or sparse matrices; dimensions, CSR conversion and validation
+are automatic. Add more MDPs with distinct names using `add_mdp()`.
+VI and QVI run by default, comparing times at the same final precision
+(`1e-3`, three trials). Each result includes `solver`, `runtime`, `error_bound` and
+`status`; compare successful trials. Adjust with `run(discount=0.9, precision=1e-4)`.
 
-| Field | Meaning |
-| --- | --- |
-| `runtime` | Seconds for solver construction and `run()`; copying and verification excluded. |
-| `residual` | Maximum absolute difference between the final value and its optimal Bellman update. |
-| `error_bound` | Certified maximum value error: `residual / (1 - discount)`. |
-| `status` | `success`: bound ≤ precision; `imprecise`: bound too large; `error`: failed trial, explained in `error`. |
-
-Compare successful trials at fixed model, discount and precision. All solvers
-face the same final error bound; heatmaps mark `FAIL` if any repeat misses it.
+To save or plot results, use `bench.export_csv("results.csv")` or
+`bench.plot_heat(reference="VI")` (requires the `plot` extra).
 
 ## Define an MDP
 
@@ -72,10 +61,27 @@ values. Caches live under `artifacts/`; change `name` when changing model parame
 
 ## Add a solver
 
-Add `Solver` in [solvers](src/mdpforge/solvers). Its constructor accepts
-`(model, discount, final_precision=...)` plus explicit options; `run()` takes no
-options and sets NumPy `value` of length `state_dim`, `policy` (or `None`) and
-`runtime`. Register it with `bench.add_solver(Solver, name="label", **options)`.
+In [solvers](src/mdpforge/solvers), inherit from
+[`GenericSolver`](src/mdpforge/core/solver.py) and implement only the algorithm:
+
+```python
+from mdpforge.core.solver import GenericSolver
+
+class Solver(GenericSolver):
+    def _solve(self):
+        return my_algorithm(self.model, self.discount, self.final_precision)
+
+bench.add_solver(Solver, name="my_solver")
+```
+
+Replace `my_algorithm` with your algorithm, returning one value per state.
+It runs alongside VI and QVI; use `Benchmark(default_solvers=False)` to select
+only your own solvers.
+The base provides the constructor, `run()`, NumPy `value`, timing and
+`policy = None`; set `self.policy` if your algorithm computes one. The benchmark
+checks the final precision. For custom options, define a constructor calling
+`super().__init__(model, discount, final_precision)` and register with
+`bench.add_solver(Solver, **options)`.
 
 ## Development
 

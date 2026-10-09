@@ -19,6 +19,7 @@ sys.meta_path.insert(0, BlockExternalImports())
         + """
 from pathlib import Path
 
+from mdpforge import Benchmark
 from mdpforge.utils.paths import ARTIFACTS_PATH
 from mdpforge.core.validation import validate_model
 
@@ -31,6 +32,9 @@ assert (ARTIFACTS_PATH / 'saved_models' / f'{model.name}.pkl').is_file()
 matrix_model = MDP.from_matrices('matrix_chain', model.transition_matrix, model.reward_matrix)
 assert isinstance(model, MDP) and isinstance(matrix_model, MDP)
 np.testing.assert_allclose(matrix_model.optimal_value_function(0.9), [1.8, 2, 0])
+bench = Benchmark().add_mdp('chain', transitions=model.transition_matrix, rewards=model.reward_matrix)
+results = bench.run(discount=0.9, repeats=1)
+assert len(results) == 2 and all(row['status'] == 'success' for row in results)
 """
     )
     result = subprocess.run(
