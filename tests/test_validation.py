@@ -9,6 +9,12 @@ def test_accepts_valid_model(small_model):
     validate_model(small_model)
 
 
+def test_rejects_missing_name(small_model):
+    del small_model.name
+    with pytest.raises(ValueError, match="missing required attributes: name"):
+        validate_model(small_model)
+
+
 def test_rejects_wrong_reward_shape(small_model):
     small_model.reward_matrix = np.zeros(
         (small_model.state_dim, small_model.action_dim + 1)

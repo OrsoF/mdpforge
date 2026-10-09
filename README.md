@@ -62,7 +62,7 @@ the benchmark checks every solver against the same final error bound.
 - **Model:** add `Model(GenericModel)` in [models](src/mdpforge/models).
   Implement `_build_model()` and call `create_model()`. Expose `state_dim`, `action_dim`, transitions
   `transition_matrix[action]` of shape `(states, states)`, and rewards
-  `reward_matrix` of shape `(states, actions)`.
+  `reward_matrix` of shape `(states, actions)`, and `name` for benchmarks and caches.
 - **Solver:** add a `Solver` class in [solvers](src/mdpforge/solvers). Its constructor
   takes `(model, discount, final_precision=...)`; `run()` sets `value`, a vector of
   length `state_dim`. Repository tests also expect `policy` (or `None`) and `runtime`.
@@ -71,6 +71,9 @@ the benchmark checks every solver against the same final error bound.
 Transitions have one format: a list of SciPy `csr_matrix` objects, finalized by
 `create_model()` after building or loading. Rewards and values remain NumPy arrays.
 Solvers use this format directly; external backend objects are built separately.
+Solvers accept any built object exposing these five attributes, described by the
+[`MDP` protocol](src/mdpforge/core/model.py). Inheritance is optional;
+`GenericModel` provides construction and caching.
 
 ## Development
 

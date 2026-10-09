@@ -38,6 +38,7 @@ def test_aggregated_model_remains_stochastic(small_model):
     transitions, rewards = partition.compute_agg_trans_reward_q()
     validate_model(
         SimpleNamespace(
+            name=f"aggregated_{small_model.name}",
             state_dim=2,
             action_dim=small_model.action_dim,
             transition_matrix=transitions,

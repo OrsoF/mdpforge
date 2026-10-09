@@ -9,14 +9,14 @@ from marmote.core import MarmoteInterval
 from marmote.mdp import DiscountedMDP, FeedbackSolutionMDP
 
 from mdpforge.core.conversion import compute_marmote_args
-from mdpforge.core.model import GenericModel
+from mdpforge.core.model import MDP
 from mdpforge.core.solver import GenericSolver
 
 
 class Solver(GenericSolver):
     def __init__(
         self,
-        model: GenericModel,
+        model: MDP,
         discount: float,
         final_precision: float,
     ):

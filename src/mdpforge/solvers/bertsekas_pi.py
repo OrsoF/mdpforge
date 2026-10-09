@@ -8,7 +8,7 @@ import time
 
 import numpy as np
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.model import MDP
 from mdpforge.core.operators import (
     bellman_operator,
     bellman_policy_operator,
@@ -23,7 +23,7 @@ from mdpforge.utils.bellman import (
 class Solver:
     def __init__(
         self,
-        model: GenericModel,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-4,
         beta_1: float = 1e-1,

@@ -4,6 +4,8 @@ import numpy as np
 from numpy.testing import assert_allclose
 from scipy.sparse import csr_matrix
 
+from mdpforge.core.conversion import compute_mdpsolver_args
+from mdpforge.core.model import MDP
 from mdpforge.core.operators import (
     bellman_operator,
     compute_transition_reward_policy,
@@ -20,7 +22,8 @@ def test_bellman_and_policy_selection():
         ],
         dtype=float,
     )
-    model = SimpleNamespace(
+    model: MDP = SimpleNamespace(
+        name="external_mdp",
         state_dim=3,
         action_dim=2,
         transition_matrix=[csr_matrix(p) for p in transitions],
@@ -36,3 +39,23 @@ def test_bellman_and_policy_selection():
     assert_allclose(transition.toarray(), [[0, 1, 0], [0.5, 0.5, 0], [0, 0, 1]])
     assert_allclose(reward, [1, 3, 4])
     assert_allclose(reward + 0.5 * (transition @ value), [3, 4.5, 8])
+
+
+def test_mdpsolver_conversion_accepts_external_model(chain):
+    model: MDP = SimpleNamespace(
+        name=chain.name,
+        state_dim=chain.state_dim,
+        action_dim=chain.action_dim,
+        transition_matrix=chain.transition_matrix,
+        reward_matrix=chain.reward_matrix,
+    )
+    transitions, rewards = compute_mdpsolver_args(model)
+    assert transitions == [
+        [0, 0, 1, 1.0],
+        [1, 0, 2, 1.0],
+        [2, 0, 2, 1.0],
+        [0, 1, 0, 1.0],
+        [1, 1, 1, 1.0],
+        [2, 1, 2, 1.0],
+    ]
+    assert rewards == [[0.0, 0.0], [2.0, 0.0], [0.0, 0.0]]

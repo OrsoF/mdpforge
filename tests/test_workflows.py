@@ -4,6 +4,7 @@ import sys
 from copy import deepcopy
 from importlib import import_module
 from importlib.util import find_spec
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -66,6 +67,15 @@ def test_model_contract(
 def test_solver_contract(solver_module, chain, monkeypatch, request, tmp_path):
     if run_optional_test(request, tmp_path):
         return
+    # Solver input needs data attributes, without GenericModel methods.
+    chain = SimpleNamespace(
+        name=chain.name,
+        state_dim=chain.state_dim,
+        action_dim=chain.action_dim,
+        transition_matrix=chain.transition_matrix,
+        reward_matrix=chain.reward_matrix,
+    )
+    validate_model(chain)
     solver_class = import_module(solver_module).Solver
     for invalid_discount in (-0.1, 0, 1, 1.1, np.nan):
         with pytest.raises(AssertionError, match="discount"):

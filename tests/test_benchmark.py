@@ -1,5 +1,6 @@
 import csv
 import random
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -12,6 +13,13 @@ from mdpforge.solvers.personal_vi import Solver as VI
 
 
 def test_benchmark_measures_vi_and_qvi(chain):
+    chain = SimpleNamespace(
+        name=chain.name,
+        state_dim=chain.state_dim,
+        action_dim=chain.action_dim,
+        transition_matrix=chain.transition_matrix,
+        reward_matrix=chain.reward_matrix,
+    )
     results = benchmark(chain, {"VI": VI, "QVI": QVI}, discount=0.9, repeats=2)
     assert len(results) == 4
     assert [(row["solver"], row["repeat"]) for row in results] == [
@@ -21,6 +29,7 @@ def test_benchmark_measures_vi_and_qvi(chain):
         ("QVI", 2),
     ]
     for row in results:
+        assert row["model"] == chain.name
         assert row["status"] == "success"
         assert row["error"] == ""
         assert np.isfinite(row["runtime"]) and row["runtime"] >= 0

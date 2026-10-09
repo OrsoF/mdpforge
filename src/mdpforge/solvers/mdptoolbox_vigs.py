@@ -7,7 +7,7 @@ import time
 import numpy as np
 from mdptoolbox.mdp import ValueIterationGS
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.model import MDP
 from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
 
@@ -17,7 +17,7 @@ class Solver(GenericSolver):
 
     def __init__(
         self,
-        model: GenericModel,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-3,
     ):
@@ -35,8 +35,9 @@ class Solver(GenericSolver):
     def run(self):
         start_time = time.time()
 
+        transitions = np.array([matrix.toarray() for matrix in self.model.transition_matrix])
         self.vi = ValueIterationGS(
-            self.model.transition_matrix,
+            transitions,
             self.model.reward_matrix,
             discount=self.discount,
             epsilon=self.epsilon * (1 - self.discount),

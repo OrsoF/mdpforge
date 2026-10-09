@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Protocol
 
 import numpy as np
 from scipy.sparse import csr_matrix
@@ -8,6 +9,16 @@ from mdpforge.utils.persistence import (
     load_model,
     save_model,
 )
+
+
+class MDP(Protocol):
+    """Data contract for a built MDP; inheritance is not required."""
+
+    state_dim: int
+    action_dim: int
+    transition_matrix: list[csr_matrix]
+    reward_matrix: np.ndarray
+    name: str
 
 
 class GenericModel(ABC):
@@ -128,12 +139,6 @@ class GenericModel(ABC):
 
     def get_reward_density(self) -> float:
         return np.count_nonzero(self.reward_matrix) / self.state_dim / self.action_dim
-
-    def _compute_mdpsolver_args(self) -> tuple:
-        """Convert the model transition and reward to value made for MDPSolver."""
-        from mdpforge.core.conversion import compute_mdpsolver_args
-
-        return compute_mdpsolver_args(self)
 
     def _is_model_built(self) -> bool:
         return hasattr(self, "transition_matrix") and hasattr(self, "reward_matrix")

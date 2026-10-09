@@ -1,9 +1,11 @@
 import numpy as np
 from scipy.sparse import csr_matrix
 
+from mdpforge.core.model import MDP
+
 
 def validate_model(
-    model,
+    model: MDP,
     tol: float = 1e-6,
     check_stochastic: bool = True,
     check_finite: bool = True,
@@ -18,12 +20,13 @@ def validate_model(
         validate_transition_stochasticity(model, tol)
 
 
-def validate_model_attributes(model) -> None:
+def validate_model_attributes(model: MDP) -> None:
     required_attributes = [
         "state_dim",
         "action_dim",
         "transition_matrix",
         "reward_matrix",
+        "name",
     ]
 
     missing_attributes = [
@@ -48,7 +51,7 @@ def validate_model_attributes(model) -> None:
         raise ValueError("reward_matrix must be a NumPy array.")
 
 
-def validate_model_shapes(model) -> None:
+def validate_model_shapes(model: MDP) -> None:
     expected_reward_shape = (model.state_dim, model.action_dim)
     if model.reward_matrix.shape != expected_reward_shape:
         raise ValueError(
@@ -82,7 +85,7 @@ def validate_model_shapes(model) -> None:
             )
 
 
-def validate_model_finite_values(model) -> None:
+def validate_model_finite_values(model: MDP) -> None:
     if not np.all(np.isfinite(model.reward_matrix)):
         raise ValueError("Reward matrix contains NaN or infinite values.")
 
@@ -96,7 +99,7 @@ def validate_model_finite_values(model) -> None:
             )
 
 
-def validate_transition_stochasticity(model, tol: float = 1e-6) -> None:
+def validate_transition_stochasticity(model: MDP, tol: float = 1e-6) -> None:
     for action, transition in enumerate(model.transition_matrix):
         values = transition.data
         if np.any(values < 0):

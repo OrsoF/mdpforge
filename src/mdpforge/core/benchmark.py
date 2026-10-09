@@ -8,11 +8,12 @@ from time import perf_counter
 
 import numpy as np
 
+from mdpforge.core.model import MDP
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.validation import validate_model
 
 
-def benchmark(model, solvers, *, discount, epsilon=1e-3, repeats=3, seed=0):
+def benchmark(model: MDP, solvers, *, discount, epsilon=1e-3, repeats=3, seed=0):
     """Return one measurement per solver and repeat on an already built model.
 
     ``solvers`` maps labels to constructors accepting model, discount and

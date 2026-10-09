@@ -7,7 +7,8 @@ import time
 import mdpsolver
 import numpy as np
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.conversion import compute_mdpsolver_args
+from mdpforge.core.model import MDP
 from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
 
@@ -17,7 +18,7 @@ class Solver(GenericSolver):
 
     def __init__(
         self,
-        model: GenericModel,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-3,
         parallel: bool = False,
@@ -30,7 +31,7 @@ class Solver(GenericSolver):
         self.epsilon = final_precision
         self.name = "VISOR MDPSolver"
 
-        self.trans, self.rew = self.model._compute_mdpsolver_args()
+        self.trans, self.rew = compute_mdpsolver_args(self.model)
         self.mdl = mdpsolver.model()
         self.mdl.mdp(
             discount=self.discount,

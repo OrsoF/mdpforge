@@ -1,9 +1,10 @@
 import numpy as np
 
+from mdpforge.core.model import MDP
 from mdpforge.core.operators import optimal_bellman_operator
 
 
-def certify_value(model, value, discount, epsilon):
+def certify_value(model: MDP, value, discount, epsilon):
     """Center a span-based VI result and certify its absolute value error.
 
     A uniform shift preserves the greedy policy. Centering the Bellman residual

@@ -4,14 +4,14 @@ import numpy as np
 from scipy.sparse import eye
 from scipy.sparse.linalg import spsolve
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.model import MDP
 from mdpforge.core.operators import compute_transition_reward_policy
 
 
 class Solver:
     def __init__(
         self,
-        model: GenericModel,
+        model: MDP,
         discount: float,
         final_precision: float,
     ):

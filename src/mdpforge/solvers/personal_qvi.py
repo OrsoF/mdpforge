@@ -2,7 +2,7 @@ import time
 
 import numpy as np
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.model import MDP
 
 
 class Solver:
@@ -10,7 +10,7 @@ class Solver:
 
     def __init__(
         self,
-        model: GenericModel,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-3,
     ):
