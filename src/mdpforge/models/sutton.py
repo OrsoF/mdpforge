@@ -111,7 +111,7 @@ class Model(MDP):
         self,
         state_dim: int = 500,
         action_dim: int | None = 10,
-        custom_track: np.ndarray = track_L,
+        custom_track: np.ndarray = None,
     ):
         state_dim = int(np.sqrt(state_dim))
         state_dim = max(state_dim, 500)

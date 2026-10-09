@@ -10,7 +10,10 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "category": "resource_management",
     "description": "Exercise or hold an American put option over a finite horizon.",
-    "reference": None,
+    "reference": (
+        "Family reference: Cox, Ross & Rubinstein (1979). "
+        "Option Pricing: A Simplified Approach."
+    ),
 }
 
 

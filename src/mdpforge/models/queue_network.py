@@ -10,7 +10,10 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "category": "queueing",
     "description": "Service allocation in a finite queueing network.",
-    "reference": None,
+    "reference": (
+        "General reference: Puterman (1994). Markov Decision Processes: "
+        "Discrete Stochastic Dynamic Programming."
+    ),
 }
 
 

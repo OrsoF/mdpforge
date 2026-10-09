@@ -8,7 +8,10 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "category": "resource_management",
     "description": "Forest aging, fire risk and harvesting decisions.",
-    "reference": None,
+    "reference": (
+        "Family reference: Chadès et al. (2014). MDPtoolbox: a multi-platform "
+        "toolbox to solve stochastic dynamic programming problems."
+    ),
 }
 
 

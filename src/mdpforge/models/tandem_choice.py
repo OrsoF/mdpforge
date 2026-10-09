@@ -33,7 +33,11 @@ def params_match_state_dim(state_dim: int, max_index=50) -> tuple:
 METADATA = {
     "category": "queueing",
     "description": "Absolute service-capacity choices for two queues in tandem.",
-    "reference": None,
+    "reference": (
+        "Family reference: Ohno & Ichiki (1987). Computing Optimal Policies "
+        "for Controlled Tandem Queueing Systems. Operations Research "
+        "35(1), 121-126. https://doi.org/10.1287/opre.35.1.121"
+    ),
 }
 
 

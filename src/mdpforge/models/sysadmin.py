@@ -10,7 +10,10 @@ METADATA = {
     "description": (
         "Computer-network maintenance with neighboring failure dependencies."
     ),
-    "reference": None,
+    "reference": (
+        "Family reference: Guestrin, Koller, Parr & Venkataraman (2003). "
+        "Efficient Solution Algorithms for Factored MDPs."
+    ),
 }
 
 

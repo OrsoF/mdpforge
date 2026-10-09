@@ -8,7 +8,10 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "category": "resource_management",
     "description": "Machine deterioration with maintenance decisions.",
-    "reference": None,
+    "reference": (
+        "General reference: Puterman (1994). Markov Decision Processes: "
+        "Discrete Stochastic Dynamic Programming."
+    ),
 }
 
 
