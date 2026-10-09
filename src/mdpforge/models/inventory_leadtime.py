@@ -5,11 +5,11 @@ import itertools
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int):
+class Model(MDP):
+    def __init__(self, state_dim: int = 100, action_dim: int = 10):
         stock_capacity = int(np.ceil(np.sqrt(max(9, state_dim)))) - 1
         self.stock_capacity = max(2, stock_capacity)
         self.max_order = max(1, min(int(action_dim) - 1, self.stock_capacity))

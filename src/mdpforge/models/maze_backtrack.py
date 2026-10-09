@@ -4,13 +4,13 @@ from mazelib import Maze
 from mazelib.generate.BacktrackingGenerator import BacktrackingGenerator
 from scipy.sparse import dok_array
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 TEST_PARAMETERS = {"state_dim": 9, "action_dim": 4}
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int):
+class Model(MDP):
+    def __init__(self, state_dim: int = 81, action_dim: int = 10):
         self.size = int(np.sqrt(state_dim))
         self._build_maze()
         self._build_state_space()

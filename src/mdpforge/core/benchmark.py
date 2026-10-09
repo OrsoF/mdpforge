@@ -8,6 +8,7 @@ from time import perf_counter
 
 import numpy as np
 
+from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.validation import validate_model
 
@@ -25,11 +26,11 @@ class Benchmark:
     """
 
     def __init__(self):
-        self._mdps = []
+        self._mdps: list[MDPProtocol] = []
         self._solvers = {}  # label -> (constructor, constructor kwargs)
         self.results = []
 
-    def add_mdp(self, model):
+    def add_mdp(self, model: MDPProtocol):
         """Register a built MDP. Its nonempty ``name`` must be unique."""
         name = getattr(model, "name", None)
         if not isinstance(name, str) or not name.strip():
@@ -269,7 +270,9 @@ class Benchmark:
         return export_csv(self.results, path)
 
 
-def benchmark(model, solvers, *, discount, epsilon=1e-3, repeats=3, seed=0):
+def benchmark(
+    model: MDPProtocol, solvers, *, discount, epsilon=1e-3, repeats=3, seed=0
+):
     """Backward-compatible single-MDP benchmark, returning result rows."""
     bench = Benchmark().add_mdp(model)
     for name, constructor in solvers.items():

@@ -3,7 +3,7 @@
 import numpy as np
 from scipy.sparse import dok_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
 def build_track(state_dim: int, max_speed: int) -> np.ndarray:
@@ -16,11 +16,11 @@ def build_track(state_dim: int, max_speed: int) -> np.ndarray:
     return track
 
 
-class Model(GenericModel):
+class Model(MDP):
     def __init__(
         self,
-        state_dim: int,
-        action_dim: int,
+        state_dim: int = 300,
+        action_dim: int = 10,
         custom_track: np.ndarray | None = None,
     ):
         self._proba_fail_action: float = 0.1

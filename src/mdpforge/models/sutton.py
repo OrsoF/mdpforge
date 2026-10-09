@@ -3,7 +3,7 @@
 import numpy as np
 from scipy.sparse import dok_array
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 # fmt: off
 
@@ -96,11 +96,11 @@ def build_track(state_dim: int) -> np.ndarray:
     return track
 
 
-class Model(GenericModel):
+class Model(MDP):
     def __init__(
         self,
-        state_dim: int,
-        action_dim: int | None = None,
+        state_dim: int = 500,
+        action_dim: int | None = 10,
         custom_track: np.ndarray = track_L,
     ):
         state_dim = int(np.sqrt(state_dim))

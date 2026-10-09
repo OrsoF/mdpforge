@@ -7,14 +7,14 @@
 import numpy as np
 from scipy.sparse import lil_matrix, random
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 rnd_gen = np.random.default_rng(seed=0)
 TEST_PARAMETERS = {"state_dim": 20, "action_dim": 2}
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int):
+class Model(MDP):
+    def __init__(self, state_dim: int = 100, action_dim: int = 10):
         self.block_dim = state_dim // 10
         self.action_dim = action_dim
         self.sparsity_block = 0.85

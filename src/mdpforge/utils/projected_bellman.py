@@ -2,12 +2,12 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 
-from mdpforge.core.model import MDP
+from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import norminf
 
 
 def projected_optimal_bellman_operator(
-    model: MDP,
+    model: MDPProtocol,
     discount: float,
     contracted_value: np.ndarray,
     aggregated_transition: List[np.ndarray],
@@ -29,7 +29,7 @@ def projected_optimal_bellman_operator(
 
 
 def apply_pobo_until_var_small(
-    model: MDP,
+    model: MDPProtocol,
     discount: float,
     aggregated_transition: List,
     aggregated_reward: np.ndarray,
@@ -79,7 +79,7 @@ def apply_pobo_until_var_small(
 
 
 def projected_optimal_bellman_operator_residual(
-    model: MDP,
+    model: MDPProtocol,
     discount: float,
     contracted_value: np.ndarray,
     aggregated_transition: List[np.ndarray],
@@ -99,7 +99,7 @@ def projected_optimal_bellman_operator_residual(
     )
 
 
-def aggregation_norm_weights(model: MDP, partition, method: str) -> np.ndarray:
+def aggregation_norm_weights(model: MDPProtocol, partition, method: str) -> np.ndarray:
     if method == "region_size":
         return 1 / np.bincount(
             partition.state_to_region,
@@ -130,7 +130,7 @@ def aggregation_norm_weights(model: MDP, partition, method: str) -> np.ndarray:
 
 
 def projected_optimal_q_bellman_operator(
-    model: MDP,
+    model: MDPProtocol,
     discount: float,
     contracted_q_value: np.ndarray,
     aggregated_transition: List[np.ndarray],
@@ -154,7 +154,7 @@ def projected_optimal_q_bellman_operator(
 
 
 def apply_poqbo_until_var_small(
-    model: MDP,
+    model: MDPProtocol,
     discount: float,
     aggregated_transition: List[np.ndarray],
     aggregated_reward: np.ndarray,

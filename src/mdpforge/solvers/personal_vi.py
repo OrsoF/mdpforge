@@ -2,7 +2,7 @@ import time
 
 import numpy as np
 
-from mdpforge.core.model import MDP
+from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.solver import GenericSolver
 
@@ -12,7 +12,7 @@ class Solver(GenericSolver):
 
     def __init__(
         self,
-        model: MDP,
+        model: MDPProtocol,
         discount: float,
         final_precision: float = 1e-3,
         initial_value: np.ndarray = None,

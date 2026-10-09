@@ -4,11 +4,11 @@ import numpy as np
 import scipy.stats as st
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int):
+class Model(MDP):
+    def __init__(self, state_dim: int = 101, action_dim: int = 10):
         self._stock_size = (state_dim - 1) // 2  # Size of the stock
         self.max_action = action_dim - 1  # Max Number of action - 1
         self.BinomialeP = 0.4  #

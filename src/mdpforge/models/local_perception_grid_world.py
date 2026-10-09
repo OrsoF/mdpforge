@@ -4,10 +4,10 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
+class Model(MDP):
     """Aliased gridworld with local wall-bit observations.
 
     Actions: 0=N, 1=S, 2=E, 3=W.  State is the true cell.  Observations are not
@@ -15,7 +15,7 @@ class Model(GenericModel):
     Observation bit order: N,S,E,W wall-present.
     """
 
-    def __init__(self, state_dim: int, action_dim: int):
+    def __init__(self, state_dim: int = 49, action_dim: int = 10):
         self.height = max(7, int(np.sqrt(max(49, state_dim))))
         self.width = max(7, int(np.ceil(max(49, state_dim) / self.height)))
         self.action_dim = 4

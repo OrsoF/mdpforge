@@ -9,7 +9,7 @@ from marmote.core import MarmoteInterval
 from marmote.mdp import DiscountedMDP, SolutionMDP
 
 from mdpforge.core.conversion import compute_marmote_args
-from mdpforge.core.model import MDP
+from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
 
@@ -19,7 +19,7 @@ class Solver(GenericSolver):
 
     def __init__(
         self,
-        model: MDP,
+        model: MDPProtocol,
         discount: float,
         final_precision: float = 1e-3,
     ):

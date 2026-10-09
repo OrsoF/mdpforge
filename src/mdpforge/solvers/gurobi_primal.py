@@ -6,14 +6,14 @@ import time
 
 import numpy as np
 
-from mdpforge.core.model import MDP
+from mdpforge.core.model import MDPProtocol
 from mdpforge.utils.gurobi import gurobi_model_creation
 
 
 class Solver:
     def __init__(
         self,
-        env: MDP,
+        env: MDPProtocol,
         discount: float,
         final_precision: float,
     ):

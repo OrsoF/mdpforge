@@ -7,7 +7,7 @@ import time
 import numpy as np
 from mdptoolbox.mdp import ValueIteration
 
-from mdpforge.core.model import MDP
+from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
 
@@ -18,7 +18,7 @@ class Solver(GenericSolver):
 
     def __init__(
         self,
-        model: MDP,
+        model: MDPProtocol,
         discount: float,
         final_precision: float = 1e-3,
     ):

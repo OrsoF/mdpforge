@@ -66,7 +66,7 @@ def test_model_contract(
 def test_solver_contract(solver_module, chain, monkeypatch, request, tmp_path):
     if run_external_test(request, tmp_path):
         return
-    # Solver input needs data attributes, without GenericModel methods.
+    # Solver input needs data attributes, without MDP methods.
     chain = SimpleNamespace(
         name=chain.name,
         state_dim=chain.state_dim,

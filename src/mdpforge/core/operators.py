@@ -4,7 +4,7 @@ import numpy as np
 from scipy.sparse import csr_matrix, diags
 
 if TYPE_CHECKING:
-    from mdpforge.core.model import MDP
+    from mdpforge.core.model import MDPProtocol
 
 
 def norminf(value: np.ndarray) -> float:
@@ -12,7 +12,9 @@ def norminf(value: np.ndarray) -> float:
     return np.max(np.abs(value))
 
 
-def bellman_operator(model: "MDP", value: np.ndarray, discount: float) -> np.ndarray:
+def bellman_operator(
+    model: "MDPProtocol", value: np.ndarray, discount: float
+) -> np.ndarray:
     """
     Apply R + discount * T @ V.
 
@@ -27,14 +29,14 @@ def bellman_operator(model: "MDP", value: np.ndarray, discount: float) -> np.nda
 
 
 def optimal_bellman_operator(
-    model: "MDP", value: np.ndarray, discount: float
+    model: "MDPProtocol", value: np.ndarray, discount: float
 ) -> np.ndarray:
     """Apply the optimal Bellman operator to a value function."""
     return np.max(bellman_operator(model, value, discount), axis=1)
 
 
 def q_optimal_bellman_operator(
-    model: "MDP", q_value: np.ndarray, discount: float
+    model: "MDPProtocol", q_value: np.ndarray, discount: float
 ) -> np.ndarray:
     """Apply the optimal Bellman operator to a Q-value function."""
     value = q_value.max(axis=1)
@@ -51,7 +53,7 @@ def bellman_policy_operator(
     return reward_policy + discount * transition_policy.dot(value)
 
 
-def compute_transition_reward_policy(model: "MDP", policy: np.ndarray) -> tuple:
+def compute_transition_reward_policy(model: "MDPProtocol", policy: np.ndarray) -> tuple:
     """Given T, R, and a policy, return T^pi and R^pi."""
     transition_policy = csr_matrix((model.state_dim, model.state_dim))
 
@@ -68,7 +70,7 @@ def compute_transition_reward_policy(model: "MDP", policy: np.ndarray) -> tuple:
 
 
 def compact_optimal_bellman_operator(
-    model: "MDP",
+    model: "MDPProtocol",
     value: np.ndarray,
     discount: float,
     shared_reward: bool = False,

@@ -11,11 +11,11 @@
 import numpy as np
 from scipy.sparse import dok_array
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int):
+class Model(MDP):
+    def __init__(self, state_dim: int = 256, action_dim: int = 10):
         del action_dim
 
         requested = max(256, int(state_dim))

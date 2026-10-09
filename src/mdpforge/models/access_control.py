@@ -11,14 +11,14 @@ import math
 import numpy as np
 from scipy.sparse import dok_array
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
+class Model(MDP):
     REJECT = 0
     ACCEPT = 1
 
-    def __init__(self, state_dim: int, action_dim: int):
+    def __init__(self, state_dim: int = 400, action_dim: int = 10):
         del action_dim
 
         state_dim = int(np.sqrt(state_dim))

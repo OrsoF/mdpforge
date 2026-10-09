@@ -9,11 +9,11 @@ import pytest
 from scipy.sparse import csr_matrix
 
 from mdpforge import models, solvers
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 from mdpforge.utils import persistence
 
 
-class FourStateModel(GenericModel):
+class FourStateModel(MDP):
     """Small synthetic MDP for validation and partition invariants."""
 
     def _build_model(self):
@@ -24,7 +24,7 @@ class FourStateModel(GenericModel):
         self.reward_matrix = np.array([[1, 0.5], [1, 1], [2, 1.5], [3, 2]])
 
 
-class ChainModel(GenericModel):
+class ChainModel(MDP):
     """Transient rewards with known optimal value [2 * discount, 2, 0]."""
 
     def _build_model(self):
@@ -112,5 +112,5 @@ def model_script():
     # Reuse the synthetic model in isolated interpreters without importing tests.
     return (
         "import numpy as np\nfrom scipy.sparse import csr_matrix\n"
-        "from mdpforge.core.model import GenericModel\n" + inspect.getsource(ChainModel)
+        "from mdpforge.core.mdp import MDP\n" + inspect.getsource(ChainModel)
     )

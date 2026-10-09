@@ -6,11 +6,11 @@
 import numpy as np
 from scipy.sparse import csr_matrix, dok_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int):
+class Model(MDP):
+    def __init__(self, state_dim: int = 50, action_dim: int = 10):
         if state_dim < 2:
             raise ValueError("state_dim must be at least 2.")
 

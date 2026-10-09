@@ -1,10 +1,10 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
+class Model(MDP):
     """
     Admission-control CTMDP, uniformized into a finite discrete-time MDP.
 
@@ -39,7 +39,7 @@ class Model(GenericModel):
     REJECT = 0
     ACCEPT = 1
 
-    def __init__(self, state_dim: int, action_dim: int):
+    def __init__(self, state_dim: int = 108, action_dim: int = 10):
         # Default from uploaded Marmote example.
         self.S = max(5, int(round(state_dim / 18.0)) - 1)
         self.J = 5

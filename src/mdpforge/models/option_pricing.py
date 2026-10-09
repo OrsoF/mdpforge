@@ -5,11 +5,11 @@ import itertools
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int):
+class Model(MDP):
+    def __init__(self, state_dim: int = 100, action_dim: int = 10):
         grid = int(np.floor(np.sqrt(max(16, state_dim))))
         self.price_points = max(4, grid)
         self.time_points = max(4, grid)

@@ -3,11 +3,11 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int):
+class Model(MDP):
+    def __init__(self, state_dim: int = 64, action_dim: int = 10):
         machines = int(np.floor(np.log2(max(2, state_dim))))
         self.machines = max(2, machines)
         self.state_dim = 2**self.machines

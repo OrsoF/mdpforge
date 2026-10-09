@@ -3,7 +3,7 @@ import itertools
 import numpy as np
 from scipy.sparse import dok_array
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
 def space_dictionary(list_of_tuples: list):
@@ -30,7 +30,7 @@ def params_match_state_dim(state_dim: int, max_index=50) -> tuple:
     return b1, b2, k1, k2, matched_dim
 
 
-class Model(GenericModel):
+class Model(MDP):
     """
     Tandem queue model with absolute VM-choice actions.
 
@@ -45,7 +45,7 @@ class Model(GenericModel):
     Here a1 and a2 are absolute chosen VM counts, not increments.
     """
 
-    def __init__(self, state_dim: int, action_dim: int):
+    def __init__(self, state_dim: int = 100, action_dim: int = 10):
         self.arrival_rate_lambda = 0.6
         self.mu_1, self.mu_2 = 0.2, 0.2
 

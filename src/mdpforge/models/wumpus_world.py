@@ -4,17 +4,17 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
+class Model(MDP):
     """Classic 4x4 Wumpus World as a fully enumerated tabular MDP.
 
     Actions: 0=forward, 1=turn_left, 2=turn_right, 3=grab, 4=shoot, 5=climb.
     State: (cell, direction, has_gold, wumpus_alive, has_arrow, terminal).
     """
 
-    def __init__(self, state_dim: int, action_dim: int):
+    def __init__(self, state_dim: int = 1024, action_dim: int = 10):
         self.size = max(4, int(round(np.sqrt(max(16, state_dim // 32)))))
         self.n_cells = self.size * self.size
         self.action_dim = 6

@@ -4,10 +4,10 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
+class Model(MDP):
     """Hexagonal-grid soccer as an ordered-discrete tabular control problem.
 
     State: (player_cell, ball_cell, defender_cell).  Actions 0..5 move/kick in
@@ -17,7 +17,7 @@ class Model(GenericModel):
 
     HEX_DIRS = [(1, 0), (1, -1), (0, -1), (-1, 0), (-1, 1), (0, 1)]
 
-    def __init__(self, state_dim: int, action_dim: int):
+    def __init__(self, state_dim: int = 343, action_dim: int = 10):
         target = max(27, state_dim)
         radius = 1
         while (1 + 3 * radius * (radius + 1)) ** 3 <= target and radius < 4:

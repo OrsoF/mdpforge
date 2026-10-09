@@ -101,9 +101,6 @@ class Partition:
             self._weights = self.phi.T.multiply(1 / sizes[:, None]).tocsr()
         return self._weights
 
-    def get_region_index(self, state: int) -> int:
-        return int(self._labels[state])
-
     def span(self, value: np.ndarray) -> np.ndarray:
         value = np.asarray(value)
         shape = (self.n_regions,) + value.shape[1:]
@@ -187,21 +184,6 @@ class Partition:
             self.aggregate_reward_policy,
         ) = aggregate_policy(transition_policy, reward_policy, self)
         return self.aggregate_transition_policy, self.aggregate_reward_policy
-
-    def generate_random_partition(self, number_of_regions: int):
-        random = Partition.random(
-            self.model, number_of_regions, np.random.default_rng(0)
-        )
-        self._labels = random._labels
-        self._clear_cache()
-
-
-def span_by_region(value: np.ndarray, regions) -> list:
-    return [np.ptp(value[region]) for region in regions]
-
-
-def create_random_partition(model, n_regions: int) -> list[list[int]]:
-    return Partition.random(model, n_regions, np.random.default_rng(0)).states_in_region
 
 
 def aggregate_value_model(model, partition: Partition):

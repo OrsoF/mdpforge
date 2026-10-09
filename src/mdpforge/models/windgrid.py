@@ -1,10 +1,10 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
+class Model(MDP):
     """
     Windy Gridworld finite MDP.
 
@@ -30,7 +30,7 @@ class Model(GenericModel):
         0 at the absorbing goal.
     """
 
-    def __init__(self, state_dim: int, action_dim: int):
+    def __init__(self, state_dim: int = 70, action_dim: int = 10):
         # Classical Windy Gridworld is 7 x 10 = 70 states. Larger benchmark
         # requests use a square-ish grid, e.g. 100 -> 10 x 10 and 400 -> 20 x 20.
         state_dim = max(70, state_dim)

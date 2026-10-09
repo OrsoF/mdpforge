@@ -3,13 +3,13 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 TEST_PARAMETERS = {"state_dim": 512, "action_dim": 4}
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int):
+class Model(MDP):
+    def __init__(self, state_dim: int = 512, action_dim: int = 10):
         self.size = self._get_size(state_dim)
 
         self.state_dim = (

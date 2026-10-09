@@ -28,6 +28,9 @@ model.create_model()
 validate_model(model)
 np.testing.assert_allclose(model.optimal_value_function(0.9), [1.8, 2, 0])
 assert (ARTIFACTS_PATH / 'saved_models' / f'{model.name}.pkl').is_file()
+matrix_model = MDP.from_matrices('matrix_chain', model.transition_matrix, model.reward_matrix)
+assert isinstance(model, MDP) and isinstance(matrix_model, MDP)
+np.testing.assert_allclose(matrix_model.optimal_value_function(0.9), [1.8, 2, 0])
 """
     )
     result = subprocess.run(

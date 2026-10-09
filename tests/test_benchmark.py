@@ -7,9 +7,46 @@ import pytest
 from numpy.testing import assert_allclose
 from scipy.sparse import csr_matrix
 
-from mdpforge.core.benchmark import benchmark, export_csv
+from mdpforge.core.benchmark import Benchmark, benchmark, export_csv
+from mdpforge.core.mdp import MDP
+from mdpforge.core.model import MDPProtocol
+from mdpforge.solvers.personal_mpi import Solver as MPI
 from mdpforge.solvers.personal_qvi import Solver as QVI
 from mdpforge.solvers.personal_vi import Solver as VI
+
+
+@pytest.mark.parametrize("dense_input", [False, True])
+def test_benchmark_accepts_generated_matrix_and_external_mdps(chain, dense_input):
+    transitions = chain.transition_matrix
+    if dense_input:
+        transitions = np.array([matrix.toarray() for matrix in transitions])
+    matrix_mdp: MDPProtocol = MDP.from_matrices(
+        "matrix_chain", transitions, chain.reward_matrix
+    )
+    external_mdp: MDPProtocol = SimpleNamespace(
+        name="external_chain",
+        state_dim=chain.state_dim,
+        action_dim=chain.action_dim,
+        transition_matrix=chain.transition_matrix,
+        reward_matrix=chain.reward_matrix,
+    )
+    bench = Benchmark()
+    for model in (chain, matrix_mdp, external_mdp):
+        bench.add_mdp(model)
+    for name, constructor in (("VI", VI), ("QVI", QVI), ("MPI", MPI)):
+        bench.add_solver(constructor, name=name)
+
+    results = bench.run(0.9, precision=1e-4, repeats=2, seed=0)
+    assert len(results) == 18
+    for row in results:
+        assert row["status"] == "success", row["error"]
+        assert row["residual"] <= 1e-4 * (1 - 0.9)
+    for generated, matrix, external in zip(results[:6], results[6:12], results[12:]):
+        for field in ("solver", "repeat", "seed", "residual", "error_bound", "status"):
+            assert generated[field] == matrix[field] == external[field]
+    assert all(
+        isinstance(matrix, csr_matrix) for matrix in matrix_mdp.transition_matrix
+    )
 
 
 def test_benchmark_measures_vi_and_qvi(chain):

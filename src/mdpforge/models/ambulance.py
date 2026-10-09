@@ -5,13 +5,13 @@ from scipy.sparse import csr_matrix
 from scipy.stats import beta
 from tqdm import trange
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 TEST_PARAMETERS = {"state_dim": 9, "action_dim": 2}
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int):
+class Model(MDP):
+    def __init__(self, state_dim: int = 100, action_dim: int = 10):
         if state_dim < 9:
             raise ValueError(
                 "ambulance requires at least three grid points (state_dim >= 9)."

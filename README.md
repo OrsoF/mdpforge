@@ -23,7 +23,7 @@ from mdpforge.models.rooms import Model
 from mdpforge.solvers.personal_vi import Solver as VI
 from mdpforge.solvers.personal_qvi import Solver as QVI
 
-model = Model(100, 4)
+model = Model()
 model.create_model(save=False)
 
 results = benchmark(
@@ -41,6 +41,9 @@ export_csv(results, "artifacts/tmp/benchmark.csv")
 
 `benchmark()` constructs and runs each solver on a fresh copy of the built model.
 It returns one dictionary per trial; `export_csv()` writes the same measurements.
+Models provide modest default state sizes and accept `action_dim=10` by default;
+some environments determine their actual dimensions internally. Pass explicit
+dimensions, such as `Model(100, 4)`, to override the defaults.
 
 ## Read the results
 
@@ -59,7 +62,8 @@ the benchmark checks every solver against the same final error bound.
 
 ## Add a model or solver
 
-- **Model:** add `Model(GenericModel)` in [models](src/mdpforge/models).
+- **Model:** add `Model(MDP)` in [models](src/mdpforge/models), importing
+  `MDP` from `mdpforge.core.mdp`.
   Implement `_build_model()` and call `create_model()`. Expose `state_dim`, `action_dim`, transitions
   `transition_matrix[action]` of shape `(states, states)`, and rewards
   `reward_matrix` of shape `(states, actions)`, and `name` for benchmarks and caches.
@@ -72,8 +76,26 @@ Transitions have one format: a list of SciPy `csr_matrix` objects, finalized by
 `create_model()` after building or loading. Rewards and values remain NumPy arrays.
 Solvers use this format directly; external backend objects are built separately.
 Solvers accept any built object exposing these five attributes, described by the
-[`MDP` protocol](src/mdpforge/core/model.py). Inheritance is optional;
-`GenericModel` provides construction and caching.
+[`MDPProtocol`](src/mdpforge/core/model.py). This describes the shared data
+interface; `validate_model()` checks numerical validity. Inheritance is optional.
+[`MDP`](src/mdpforge/core/mdp.py) is the common class for generated models such as
+Rooms and models supplied through matrices. It provides construction, validation,
+state relabeling, density measurements and optimal-value caching. Existing model
+names and cache keys are preserved.
+
+If the matrices are already available, use `MDP.from_matrices(...)`.
+It infers the dimensions, converts transitions to CSR and validates the data.
+The returned model is ready for the benchmark without calling `create_model()`:
+
+```python
+from mdpforge.core.benchmark import Benchmark
+from mdpforge.core.mdp import MDP
+from mdpforge.solvers.personal_vi import Solver as VI
+
+model = MDP.from_matrices("my_mdp", transition_matrix, reward_matrix)
+bench = Benchmark().add_mdp(model).add_solver(VI, name="VI")
+results = bench.run(discount=0.9, precision=1e-3)
+```
 
 ## Development
 

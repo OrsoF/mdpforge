@@ -2,7 +2,7 @@ import time
 
 import numpy as np
 
-from mdpforge.core.model import MDP
+from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import q_optimal_bellman_operator
 
 
@@ -11,7 +11,7 @@ class Solver:
 
     def __init__(
         self,
-        model: MDP,
+        model: MDPProtocol,
         discount: float,
         final_precision: float = 1e-3,
     ):

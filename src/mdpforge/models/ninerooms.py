@@ -10,11 +10,11 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int):
+class Model(MDP):
+    def __init__(self, state_dim: int = 81, action_dim: int = 10):
         state_dim = max(81, state_dim)
 
         # For 9 rooms, total side length = 3 * size_of_one_room.

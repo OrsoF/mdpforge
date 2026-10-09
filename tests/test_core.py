@@ -5,13 +5,25 @@ from numpy.testing import assert_allclose
 from scipy.sparse import csr_matrix
 
 from mdpforge.core.conversion import compute_mdpsolver_args
-from mdpforge.core.model import MDP
+from mdpforge.core.mdp import MDP
+from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import (
     bellman_operator,
     compute_transition_reward_policy,
     optimal_bellman_operator,
 )
 from mdpforge.core.validation import validate_model
+
+
+def test_matrix_mdp_accepts_dense_transitions(chain):
+    transitions = np.array([matrix.toarray() for matrix in chain.transition_matrix])
+    model = MDP.from_matrices("dense_mdp", transitions, chain.reward_matrix)
+
+    assert all(isinstance(matrix, csr_matrix) for matrix in model.transition_matrix)
+    assert_allclose(
+        optimal_bellman_operator(model, np.array([2.0, 4.0, 8.0]), 0.5),
+        [2.0, 6.0, 4.0],
+    )
 
 
 def test_bellman_and_policy_selection():
@@ -22,7 +34,7 @@ def test_bellman_and_policy_selection():
         ],
         dtype=float,
     )
-    model: MDP = SimpleNamespace(
+    model: MDPProtocol = SimpleNamespace(
         name="external_mdp",
         state_dim=3,
         action_dim=2,
@@ -42,7 +54,7 @@ def test_bellman_and_policy_selection():
 
 
 def test_mdpsolver_conversion_accepts_external_model(chain):
-    model: MDP = SimpleNamespace(
+    model: MDPProtocol = SimpleNamespace(
         name=chain.name,
         state_dim=chain.state_dim,
         action_dim=chain.action_dim,

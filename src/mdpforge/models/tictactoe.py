@@ -2,7 +2,7 @@
 import numpy as np
 from scipy.sparse import dok_array
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 EMPTY = 0
 X = 1
@@ -99,8 +99,8 @@ def render_grid(board: tuple):
     print(np.array(rows))
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int) -> None:
+class Model(MDP):
+    def __init__(self, state_dim: int = 100, action_dim: int = 10) -> None:
         self.size = get_grid_size(action_dim)
         self.action_dim = self.size * self.size
         self.build_state_space()

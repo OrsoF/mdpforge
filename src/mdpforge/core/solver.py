@@ -1,12 +1,14 @@
 import numpy as np
 
-from mdpforge.core.model import MDP
+from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.utils.exact_value_function import distance_to_optimal, get_exact_value
 
 
 class GenericSolver:
-    def __init__(self, model: MDP, discount: float, final_precision: float) -> None:
+    def __init__(
+        self, model: MDPProtocol, discount: float, final_precision: float
+    ) -> None:
         assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         self.name: str
         self.model = model

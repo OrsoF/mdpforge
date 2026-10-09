@@ -7,13 +7,13 @@ import time
 import numpy as np
 from mdptoolbox.mdp import PolicyIterationModified
 
-from mdpforge.core.model import MDP
+from mdpforge.core.model import MDPProtocol
 
 
 class Solver:
     def __init__(
         self,
-        model: MDP,
+        model: MDPProtocol,
         discount: float,
         final_precision: float,
     ):

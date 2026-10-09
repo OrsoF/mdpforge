@@ -5,7 +5,7 @@ from scipy.sparse import lil_matrix
 from scipy.stats import binom, poisson
 from tqdm import trange
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
 def probability_surv(current_number, surviving_people, proba_to_stay):
@@ -74,8 +74,8 @@ def transition_function(
         )
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int):
+class Model(MDP):
+    def __init__(self, state_dim: int = 50, action_dim: int = 10):
         state_dim = int(state_dim)
         self.proba_person_stay = 0.9
         self.arrival_poisson_rate = 0.9

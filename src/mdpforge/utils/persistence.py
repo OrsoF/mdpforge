@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any
 from mdpforge.utils.paths import SAVED_MODELS_PATH, SAVED_VALUE_FUNCTIONS_PATH
 
 if TYPE_CHECKING:
-    from mdpforge.core.model import MDP
+    from mdpforge.core.model import MDPProtocol
 
 
 def save_pickle(object_instance: object, file_path: str | Path) -> None:
@@ -55,7 +55,7 @@ def model_cache_path(model_name: str) -> Path:
     return SAVED_MODELS_PATH / ensure_pickle_suffix(model_name)
 
 
-def pack_model(model: "MDP") -> tuple:
+def pack_model(model: "MDPProtocol") -> tuple:
     """Pack the persisted part of a model."""
     return (
         model.state_dim,
@@ -65,7 +65,7 @@ def pack_model(model: "MDP") -> tuple:
     )
 
 
-def restore_model(model: "MDP", payload: tuple) -> None:
+def restore_model(model: "MDPProtocol", payload: tuple) -> None:
     """Restore persisted model fields in place."""
     (
         model.state_dim,
@@ -75,12 +75,12 @@ def restore_model(model: "MDP", payload: tuple) -> None:
     ) = payload
 
 
-def save_model(model: "MDP") -> None:
+def save_model(model: "MDPProtocol") -> None:
     """Save a built model to its standard cache path."""
     save_pickle(pack_model(model), model_cache_path(model.name))
 
 
-def load_model(model: "MDP") -> bool:
+def load_model(model: "MDPProtocol") -> bool:
     """Load a model from its standard cache path. Return True if found."""
     file_path = model_cache_path(model.name)
     if not file_path.exists():

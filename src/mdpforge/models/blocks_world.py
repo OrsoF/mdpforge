@@ -4,10 +4,10 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
+class Model(MDP):
     """Small factored Blocks World / hand-eye task.
 
     There are red, blue, and green blocks.  Red and blue may cover green.  The
@@ -17,7 +17,7 @@ class Model(GenericModel):
     Actions: 0=look_red, 1=look_blue, 2=look_green, 3=pick, 4=put_aside, 5=lift_green.
     """
 
-    def __init__(self, state_dim: int, action_dim: int):
+    def __init__(self, state_dim: int = 96, action_dim: int = 10):
         self.action_dim = 6
         self.focus_values = 3  # red, blue, green
         self.cover_values = 2  # present/removed for red and blue cover blocks

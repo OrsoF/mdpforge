@@ -6,7 +6,7 @@ from typing import Tuple
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
 def index_closest_value(value: float, list_of_values) -> Tuple:
@@ -15,8 +15,8 @@ def index_closest_value(value: float, list_of_values) -> Tuple:
     return index, list_of_values[index]
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int) -> None:
+class Model(MDP):
+    def __init__(self, state_dim: int = 100, action_dim: int = 10) -> None:
         """
         params variable should contain :
         - x_axis_states_number

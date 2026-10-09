@@ -5,11 +5,11 @@ import itertools
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int):
+class Model(MDP):
+    def __init__(self, state_dim: int = 64, action_dim: int = 10):
         capacity = int(np.ceil(max(8, state_dim) ** (1.0 / 3.0))) - 1
         self.capacity = max(1, capacity)
         self.queues = 3

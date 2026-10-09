@@ -4,17 +4,17 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
+class Model(MDP):
     """M-shaped aliased maze.
 
     Actions: 0=N, 1=S, 2=E, 3=W.  Concrete state is grid position; observations
     are adjacent-wall bits plus a weak corridor parity bit to preserve aliasing.
     """
 
-    def __init__(self, state_dim: int, action_dim: int):
+    def __init__(self, state_dim: int = 81, action_dim: int = 10):
         self.height = max(7, int(np.sqrt(max(49, state_dim))))
         self.width = max(9, int(np.ceil(max(81, state_dim) / self.height)))
         self.action_dim = 4

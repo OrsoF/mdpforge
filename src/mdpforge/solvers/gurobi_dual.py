@@ -8,7 +8,7 @@ import numpy as np
 from scipy.sparse import eye
 from scipy.sparse.linalg import spsolve
 
-from mdpforge.core.model import MDP
+from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import compute_transition_reward_policy
 from mdpforge.utils.gurobi import gurobi_model_creation
 
@@ -16,7 +16,7 @@ from mdpforge.utils.gurobi import gurobi_model_creation
 class Solver:
     def __init__(
         self,
-        env: MDP,
+        env: MDPProtocol,
         discount: float,
         final_precision: float,
     ):

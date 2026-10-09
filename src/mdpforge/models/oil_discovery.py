@@ -8,10 +8,10 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
+class Model(MDP):
     """Discretized oil-discovery benchmark.
 
     States and actions are uniformly discretized on [0, 1].
@@ -24,7 +24,7 @@ class Model(GenericModel):
     kernel whose mean drifts toward the selected action.
     """
 
-    def __init__(self, state_dim: int, action_dim: int):
+    def __init__(self, state_dim: int = 50, action_dim: int = 10):
         self.state_dim = max(50, int(state_dim))
         self.action_dim = max(10, int(action_dim))
 

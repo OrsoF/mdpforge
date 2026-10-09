@@ -5,14 +5,14 @@ import pytest
 from numpy.testing import assert_allclose
 from scipy.sparse import csr_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import (
     compute_transition_reward_policy,
     optimal_bellman_operator,
 )
 
 
-class RecurrentModel(GenericModel):
+class RecurrentModel(MDP):
     def _build_model(self):
         self.transition_matrix = [csr_matrix(np.eye(2)), csr_matrix(np.eye(2))]
         self.reward_matrix = np.array([[1.0, 0.0], [2.0, 0.0]])

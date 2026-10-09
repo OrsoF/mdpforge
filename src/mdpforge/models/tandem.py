@@ -3,7 +3,7 @@ import itertools
 import numpy as np
 from scipy.sparse import dok_array
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
 def space_dictionary(list_of_tuples: list):
@@ -28,8 +28,8 @@ def get_params(state_dim: int, max_index=50) -> tuple:
     return b1, b2, k1, k2, int(np.prod([b1 + 1, b2 + 1, k1, k2]))
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int):
+class Model(MDP):
+    def __init__(self, state_dim: int = 100, action_dim: int = 10):
         # The article has exactly 9 actions:
         # (a1, a2), with a1, a2 in {-1, 0, 1}
         action_dim = 9

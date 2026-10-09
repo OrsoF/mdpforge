@@ -1,10 +1,10 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
+class Model(MDP):
     """
     Elevator control finite MDP.
 
@@ -69,7 +69,7 @@ class Model(GenericModel):
     DIR_IDLE = 0
     DIR_UP = 1
 
-    def __init__(self, state_dim: int, action_dim: int):
+    def __init__(self, state_dim: int = 2304, action_dim: int = 10):
         # The full 6-floor model in the paper is very large.
         # For benchmark use, choose 3 floors by default.
         #

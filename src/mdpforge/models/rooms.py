@@ -3,11 +3,11 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int):
+class Model(MDP):
+    def __init__(self, state_dim: int = 100, action_dim: int = 10):
         state_dim = max(100, state_dim)
         self.size_of_one_room = int(np.sqrt(state_dim) / 2.0)
         self.n_doors = 1

@@ -3,13 +3,13 @@
 import numpy as np
 from scipy.sparse import dok_array
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 param_list = [{}]
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int) -> None:
+class Model(MDP):
+    def __init__(self, state_dim: int = 100, action_dim: int = 10) -> None:
         self.state_dim = state_dim
         self.action_dim = action_dim
 

@@ -1,10 +1,10 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
+class Model(MDP):
     """
     Gambler's Problem finite MDP.
 
@@ -32,7 +32,7 @@ class Model(GenericModel):
         0 and goal are absorbing.
     """
 
-    def __init__(self, state_dim: int, action_dim: int):
+    def __init__(self, state_dim: int = 100, action_dim: int = 10):
         # Classical version has states 0, ..., 100.
         # If state_dim=100 is passed by the benchmark CLI, this gives
         # goal=100 and therefore 101 states, matching the textbook.

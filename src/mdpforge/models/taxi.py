@@ -4,14 +4,14 @@
 import numpy as np
 from scipy.sparse import dok_array
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 WEST, EAST, NORTH, SOUTH, PICKUP, DROPOFF = range(6)
 IN_TAXI = 4
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim: int, action_dim: int) -> None:
+class Model(MDP):
+    def __init__(self, state_dim: int = 500, action_dim: int = 10) -> None:
 
         self.grid_size = max(int(np.sqrt(state_dim // 20)), 1)
 

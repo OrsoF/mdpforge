@@ -9,7 +9,7 @@ from typing import Tuple
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 seed = 0
 rng_gen = np.random.default_rng(seed)
@@ -77,8 +77,8 @@ def find_closest_indices(
     return best_tuple
 
 
-class Model(GenericModel):
-    def __init__(self, state_dim=0, action_dim=0):
+class Model(MDP):
+    def __init__(self, state_dim: int = 100, action_dim: int = 10):
         self._max_dam_capa, self._n_dam = find_closest_indices(state_dim)
         self._build_action_space()
         self._build_state_space()

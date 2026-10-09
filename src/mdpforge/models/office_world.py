@@ -4,10 +4,10 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
+class Model(MDP):
     """Tabular Office World with position x {mail, coffee} flags.
 
     Actions: 0=N, 1=S, 2=E, 3=W.
@@ -16,7 +16,7 @@ class Model(GenericModel):
     style abstraction rather than a pixel/world-object simulator.
     """
 
-    def __init__(self, state_dim: int, action_dim: int):
+    def __init__(self, state_dim: int = 100, action_dim: int = 10):
         n_cells_target = max(25, int(np.ceil(max(1, state_dim) / 4.0)))
         self.height = max(5, int(np.sqrt(n_cells_target)))
         self.width = max(5, int(np.ceil(n_cells_target / self.height)))

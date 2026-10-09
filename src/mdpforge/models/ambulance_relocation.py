@@ -4,10 +4,10 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from mdpforge.core.model import GenericModel
+from mdpforge.core.mdp import MDP
 
 
-class Model(GenericModel):
+class Model(MDP):
     """Discretized one-dimensional ambulance relocation benchmark.
 
     State is current ambulance location bin.  Action is relocation target bin.
@@ -16,7 +16,7 @@ class Model(GenericModel):
     cost, with higher values being better.
     """
 
-    def __init__(self, state_dim: int, action_dim: int):
+    def __init__(self, state_dim: int = 2500, action_dim: int = 10):
         state_dim = int(np.sqrt(state_dim))
         self.state_dim = max(50, int(state_dim))
         self.action_dim = max(10, int(action_dim))
