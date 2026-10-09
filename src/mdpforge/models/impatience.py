@@ -105,7 +105,7 @@ class Model(MDP):
 
     def __init__(
         self,
-        state_dim: int = 50,
+        state_dim: int = 200,
         action_dim: int = 10,
         *,
         truncation_tol: float = 1e-8,

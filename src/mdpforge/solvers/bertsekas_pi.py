@@ -15,6 +15,7 @@ from mdpforge.core.operators import (
     compute_transition_reward_policy,
 )
 from mdpforge.core.partition import Partition
+from mdpforge.core.precision import certify_value
 from mdpforge.utils.bellman import (
     iterative_policy_evaluation,
 )
@@ -34,8 +35,9 @@ class Solver:
         assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         self.model = model
         self.discount = discount
+        self.final_precision = final_precision
         self.epsilon_policy_evaluation = final_precision / 10
-        self.epsilon_final_policy_evaluation = final_precision / 10
+        self.epsilon_final_policy_evaluation = final_precision * (1 - discount) / 10
         self.beta_1 = beta_1
         self.beta_2 = beta_2
         self.n_regions = n_regions
@@ -61,8 +63,6 @@ class Solver:
             policy_condition = np.all(new_policy == self.policy)
 
             if policy_condition:
-                if self.verbose:
-                    print("Optimal Policy Reached.")
                 transition_policy, reward_policy = compute_transition_reward_policy(
                     self.model, self.policy
                 )
@@ -74,8 +74,13 @@ class Solver:
                     self.epsilon_final_policy_evaluation,
                     self.value,
                 )
+                self.value = certify_value(
+                    self.model, self.value, self.discount, self.final_precision
+                )
 
                 self.runtime = time.time() - start_time
+                if self.verbose:
+                    print("Optimal Policy Reached.")
 
                 break
             else:

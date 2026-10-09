@@ -25,6 +25,23 @@ def recurrent_model(isolated_model_cache):
     return model
 
 
+def test_bertsekas_pi_final_value_precision(recurrent_model):
+    from mdpforge.solvers.bertsekas_pi import Solver
+
+    discount, precision = 0.99, 1e-3
+    # One aggregate region leaves state-dependent evaluation error to resolve.
+    solver = Solver(recurrent_model, discount, precision, n_regions=1)
+    solver.run()
+
+    residual = (
+        optimal_bellman_operator(recurrent_model, solver.value, discount)
+        - solver.value
+    )
+    assert np.max(np.abs(residual)) / (1 - discount) <= precision
+    assert_allclose(solver.value, [100, 200], atol=precision, rtol=0)
+    np.testing.assert_array_equal(solver.policy, [0, 0])
+
+
 @pytest.mark.parametrize(
     "module_name, options",
     [

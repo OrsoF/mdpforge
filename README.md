@@ -1,7 +1,7 @@
 # mdpforge
 
 Compare solvers on finite Markov decision processes, or benchmark a new MDP.
-Experimental, built with NumPy/SciPy; discounted problems only (`0 < discount < 1`).
+Built with NumPy/SciPy.
 
 ## Install
 
@@ -81,5 +81,14 @@ The benchmark handles copies, timing and final precision verification.
 `solver_name` labels the results and must be unique. Without `solve_function`, it
 selects a [catalogue solver](src/mdpforge/solvers). Extra options are forwarded as
 keyword arguments. Solver classes are also accepted through `solve_function`.
+
+## Limitations
+
+Experimental: APIs and the catalogue may change. Only finite discounted MDPs
+(`0 < discount < 1`) are supported. Final value accuracy is checked independently;
+compare runs with `status="success"`. External solvers require their optional
+dependencies. MDPSolver 0.10.1 has a known VI/SOR (`mdpsolver_visor`) bug on
+transient rewards; the corresponding regression test is marked as an expected
+failure.
 
 [MIT license](LICENSE).

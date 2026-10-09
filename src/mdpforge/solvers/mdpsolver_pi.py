@@ -6,6 +6,7 @@ import mdpsolver
 import numpy as np
 
 from mdpforge.core.model import MDPProtocol
+from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpsolver import create_mdpsolver, solve_mdpsolver
 
@@ -33,8 +34,8 @@ class Solver(GenericSolver):
             initValueVector=[0.0] * self.model.state_dim,
             initPolicy=[0] * self.model.state_dim,
             verbose=False,
-            postProcessing=False,
+            postProcessing=True,
             makeFinalCheck=False,
         )
 
-        return value
+        return certify_value(self.model, value, self.discount, self.final_precision)

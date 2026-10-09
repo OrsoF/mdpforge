@@ -27,7 +27,7 @@ class Model(MDP):
         Holes and goal are absorbing.
     """
 
-    def __init__(self, state_dim: int = 16, action_dim: int = 10):
+    def __init__(self, state_dim: int = 100, action_dim: int = 10):
         # Keep same style as other models: accept requested dimensions,
         # but enforce a square grid and action_dim = 4.
         side_size = int(np.sqrt(max(16, state_dim)))

@@ -32,7 +32,7 @@ class Model(MDP):
         0 and goal are absorbing.
     """
 
-    def __init__(self, state_dim: int = 100, action_dim: int = 10):
+    def __init__(self, state_dim: int = 200, action_dim: int = 10):
         # Classical version has states 0, ..., 100.
         # If state_dim=100 is passed by the benchmark CLI, this gives
         # goal=100 and therefore 101 states, matching the textbook.

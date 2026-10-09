@@ -17,7 +17,7 @@ def index_closest_value(value: float, list_of_values) -> Tuple[int, float]:
 
 
 class Model(MDP):
-    def __init__(self, state_dim: int = 256, action_dim: int = 10) -> None:
+    def __init__(self, state_dim: int = 900, action_dim: int = 10) -> None:
         """
         Discretized CartPole finite MDP.
 

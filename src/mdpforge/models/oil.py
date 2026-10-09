@@ -10,7 +10,7 @@ from mdpforge.core.mdp import MDP
 
 
 class Model(MDP):
-    def __init__(self, state_dim: int = 50, action_dim: int = 10):
+    def __init__(self, state_dim: int = 100, action_dim: int = 10):
         if state_dim < 2:
             raise ValueError("state_dim must be at least 2.")
 

@@ -130,6 +130,36 @@ def test_solver_contract(solver_module, chain, monkeypatch, request, tmp_path):
     assert np.isfinite(solver.runtime) and solver.runtime >= 0
 
 
+@pytest.mark.parametrize(
+    "solver_module",
+    [
+        pytest.param(
+            "mdptoolbox_mpi",
+            marks=pytest.mark.external(dependencies=["mdptoolbox"]),
+        ),
+        pytest.param(
+            "mdpsolver_pi",
+            marks=pytest.mark.external(dependencies=["mdpsolver"]),
+        ),
+    ],
+)
+def test_span_based_solvers_center_values(solver_module, chain, request, tmp_path):
+    if run_external_test(request, tmp_path):
+        return
+    solver_class = import_module(f"mdpforge.solvers.{solver_module}").Solver
+
+    chain.transition_matrix = [
+        csr_matrix(np.eye(chain.state_dim)) for _ in range(chain.action_dim)
+    ]
+    chain.reward_matrix = np.zeros((chain.state_dim, chain.action_dim))
+    chain.reward_matrix[:, 0] = 1
+    # A constant residual has zero span, but the exact value is 100, not 1.
+    solver = solver_class(chain, discount=0.99, final_precision=1e-3)
+    solver.run()
+    assert_allclose(solver.value, 100, atol=1e-3, rtol=0)
+    assert np.all(solver.policy == 0)
+
+
 def test_vi_final_precision(vi_module, chain, monkeypatch, request, tmp_path):
     if run_external_test(request, tmp_path):
         return

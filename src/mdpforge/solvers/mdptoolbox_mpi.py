@@ -8,6 +8,7 @@ import numpy as np
 from mdptoolbox.mdp import PolicyIterationModified
 
 from mdpforge.core.model import MDPProtocol
+from mdpforge.core.precision import certify_value
 
 
 class Solver:
@@ -38,7 +39,9 @@ class Solver:
             max_iter=self.max_step_policy_evaluation,
         )
         self.mpi.run()
-        self.runtime = time.time() - start_time
 
-        self.value = np.array(self.mpi.V)
+        self.value = certify_value(
+            self.model, np.asarray(self.mpi.V), self.gamma, self.epsilon
+        )
         self.policy = np.array(self.mpi.policy)
+        self.runtime = time.time() - start_time

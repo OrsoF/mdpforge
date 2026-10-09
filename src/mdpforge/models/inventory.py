@@ -8,7 +8,7 @@ from mdpforge.core.mdp import MDP
 
 
 class Model(MDP):
-    def __init__(self, state_dim: int = 101, action_dim: int = 10):
+    def __init__(self, state_dim: int = 500, action_dim: int = 10):
         self._stock_size = (state_dim - 1) // 2  # Size of the stock
         self.max_action = action_dim - 1  # Max Number of action - 1
         self.BinomialeP = 0.4  #
