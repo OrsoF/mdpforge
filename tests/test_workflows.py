@@ -139,8 +139,7 @@ def test_solver_accuracy_reproducibility_and_input_preservation(
                     )
                     residual = np.max(
                         np.abs(
-                            optimal_bellman_operator(reference, value, discount)
-                            - value
+                            optimal_bellman_operator(reference, value, discount) - value
                         )
                     )
                     assert residual <= precision * (1 - discount), context

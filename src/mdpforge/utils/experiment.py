@@ -21,7 +21,9 @@ from threadpoolctl import threadpool_info
 
 
 def _qualified_name(value):
-    target = value if inspect.isclass(value) or inspect.isroutine(value) else type(value)
+    target = (
+        value if inspect.isclass(value) or inspect.isroutine(value) else type(value)
+    )
     return f"{target.__module__}.{target.__qualname__}"
 
 
@@ -125,7 +127,8 @@ def _solver_metadata(constructor, options):
         positional = [
             name
             for name, parameter in parameters.items()
-            if parameter.kind in (
+            if parameter.kind
+            in (
                 inspect.Parameter.POSITIONAL_ONLY,
                 inspect.Parameter.POSITIONAL_OR_KEYWORD,
             )
@@ -198,9 +201,7 @@ def _git_metadata():
         return {
             "commit": git("rev-parse", "HEAD").decode().strip(),
             "dirty": bool(git("status", "--porcelain")),
-            "diff_sha256": hashlib.sha256(
-                git("diff", "HEAD", "--binary")
-            ).hexdigest(),
+            "diff_sha256": hashlib.sha256(git("diff", "HEAD", "--binary")).hexdigest(),
         }
     except (OSError, subprocess.SubprocessError):
         return None
@@ -239,9 +240,7 @@ def _machine_metadata():
         "architecture": platform.machine(),
         "processor": processor or None,
         "logical_cpu_count": os.cpu_count(),
-        "thread_environment": {
-            name: os.environ.get(name) for name in thread_variables
-        },
+        "thread_environment": {name: os.environ.get(name) for name in thread_variables},
         "thread_pools": threadpool_info(),
         "capture_scope": "benchmark process before solver execution",
         "numpy_build": _json_value(getattr(np.__config__, "CONFIG", None)),

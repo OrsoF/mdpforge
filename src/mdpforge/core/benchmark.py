@@ -339,7 +339,12 @@ class Benchmark:
         try:
             self.experiment = None
             self.experiment = capture_experiment(
-                self._mdps, self._solvers, discount, precision, repeats, seed,
+                self._mdps,
+                self._solvers,
+                discount,
+                precision,
+                repeats,
+                seed,
                 timeout=timeout,
             )
             for model in self._mdps:
