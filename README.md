@@ -140,7 +140,8 @@ to select recipes. Each stage runs in a subprocess with a 60-second timeout by
 default. Results append to `artifacts/results/model_size_<mode>.csv`; reruns resume
 completed cases. The modes are `dimensions`, `build` and `runtimes`.
 Changed model source or settings create new cases. Use a different `--output` to
-repeat unchanged cases. A nonzero exit code reports unavailable/failed presets
+repeat unchanged cases, including after modifying a solver: backend source changes
+do not invalidate completed cases. A nonzero exit code reports unavailable/failed presets
 or successful solves above the 1 / 5 / 30 second size budget.
 These commands read current `METADATA`, including configured presets; the older
 `inferred_environment_sizes.json` is a historical calibration snapshot.

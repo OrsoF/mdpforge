@@ -10,11 +10,37 @@ from mdptoolbox.mdp import ValueIteration
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
+from mdpforge.core.validation import validate_model
+
+
+class _SparseValueIteration(ValueIteration):
+    """Initialize pymdptoolbox 4.0b3 without its dense input checks/iteration cap.
+
+    The inherited Bellman operator, run loop and span threshold are unchanged.
+    Its automatic cap was already discarded by this adapter; computing it is
+    quadratic in the state count and fails for zero reward spans or mixing rows.
+    Repository validation checks CSR data directly and tolerates roundoff in
+    stochastic rows, without changing the supplied probabilities.
+    """
+
+    def __init__(self, model, discount, epsilon, max_iter):
+        validate_model(model)
+        self.discount = float(discount)
+        self.epsilon = float(epsilon)
+        self.max_iter = int(max_iter)
+        self.S, self.A = model.state_dim, model.action_dim
+        self.P = self._computeTransition(model.transition_matrix)
+        self.R = self._computeReward(model.reward_matrix, self.P)
+        self.verbose = False
+        self.time = None
+        self.iter = 0
+        self.V = np.zeros(self.S)
+        self.policy = None
+        self.thresh = self.epsilon * (1 - self.discount) / self.discount
 
 
 class Solver(GenericSolver):
     solver_type = "vi"
-    supports_constant_rewards = False
 
     def __init__(
         self,
@@ -26,9 +52,6 @@ class Solver(GenericSolver):
         self.model = model
         self.discount = discount
         assert final_precision > 0, "final_precision must be positive"
-        assert np.ptp(model.reward_matrix.max(axis=1)) > 0, (
-            "MDPToolbox VI requires nonconstant maximum immediate rewards across states"
-        )
         self.epsilon = final_precision
         self.name = "VI MDPToolbox"
         self.max_iter = int(1e8)
@@ -39,16 +62,12 @@ class Solver(GenericSolver):
     def run(self):
         start_time = time.time()
 
-        self.vi = ValueIteration(
-            self.model.transition_matrix,
-            self.model.reward_matrix,
+        self.vi = _SparseValueIteration(
+            self.model,
             discount=self.discount,
             epsilon=self.epsilon * (1 - self.discount),
             max_iter=self.max_iter,
         )
-        # Toolbox's automatic cap targets policy accuracy, not the absolute
-        # value precision certified below. Let its span criterion finish.
-        self.vi.max_iter = self.max_iter
         self.vi.run()
 
         self.value = np.array(self.vi.V)

@@ -20,10 +20,9 @@ METADATA = {
             "source": "measured",
         },
         "large": {
-            "state_dim": None,
-            "parameters": None,
-            "source": "unavailable",
-            "reason": "Aucun palier supérieur ne respecte la marge et les limites d'extrapolation.",
+            "state_dim": 50653,
+            "parameters": {"state_dim": 50653},
+            "source": "measured",
         },
     },
     "category": "games",

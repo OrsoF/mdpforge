@@ -278,7 +278,8 @@ enregistrés progressivement dans des CSV distincts par mode, avec la dimension
 attendue, la dimension obtenue, la qualité de solution et le respect du budget.
 Le script retourne un code non nul si une configuration est indisponible, échoue
 ou dépasse son budget. Il reprend les cas déjà terminés ; choisir un autre
-`--output` pour refaire les mêmes mesures.
+`--output` pour refaire les mêmes mesures, notamment après une modification d'un
+solveur : sa source ne fait pas partie de l'identifiant des cas enregistrés.
 
 ## 6. Dépendances et vérifications
 
