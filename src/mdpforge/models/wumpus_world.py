@@ -7,6 +7,24 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["navigation", "grid-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 1024,
+            "parameters": {"state_dim": 512},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 2304,
+            "parameters": {"state_dim": 1024},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 6400,
+            "parameters": {"state_dim": 2915},
+            "source": "inferred",
+        },
+    },
     "category": "navigation",
     "description": (
         "Tabular Wumpus World with movement, gold collection and arrow actions."

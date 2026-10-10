@@ -7,6 +7,24 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["resource-management", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 50,
+            "parameters": {"state_dim": 2500},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 200,
+            "parameters": {"state_dim": 40000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 360,
+            "parameters": {"state_dim": 129600},
+            "source": "inferred",
+        },
+    },
     "category": "resource_management",
     "description": "Ambulance relocation with response and movement costs.",
     "reference": (

@@ -87,8 +87,39 @@ Dimensions, CSR conversion and validation are automatic. Use unique names;
 select [catalogue models](src/mdpforge/models) by module name.
 Use `from mdpforge import list_models`, then `list_models(category="navigation")`
 to browse descriptions and declared references without building models.
-Each recipe may expose a literal `METADATA` dict with `category`, `description`
-and `reference`; missing fields are `None`. Dimensions come from built instances.
+Each recipe exposes a literal `METADATA` dict with `category`, `description`,
+`reference`, `tags` and `sizes`. Each size preset contains its expected actual
+`state_dim`, constructor `parameters`, and `source` (`measured`, `inferred` or
+`unavailable`). Constructor inputs can differ from the resulting dimensions.
+Unavailable presets have `parameters=None` and a reason. Missing tags/sizes in
+new recipes default to empty collections; other missing fields are `None`.
+
+```python
+from mdpforge import Benchmark, list_models, load_model
+
+presets = list_models(size="small", type="random")  # Metadata only
+bench = Benchmark()
+for model in load_model(size="small", type="random"):
+    bench.add_mdp(model)
+```
+
+`load_model` returns an iterator and builds one model per iteration, using
+`create_model()` and the existing matrix cache. `size` accepts `small`, `medium`
+or `large`; omitted size uses constructor defaults. `type` matches a category or
+a tag, including `random`, `maze`, `real-world`, `navigation` and `control`;
+omitted type selects all models. `random` describes random model generation,
+not merely stochastic transitions. `real-world` describes simulated applications
+inspired by real systems. Unknown size/type labels raise `ValueError`.
+Unavailable presets are excluded; dependency and construction errors propagate.
+Use `save=False` to avoid writing newly built matrices (existing caches are read).
+
+Small and medium presets use the recorded calibration sizes; 45 large presets
+are extrapolated from those measurements at discount `0.99`, precision `1e-3`
+and one thread. Large presets aim at a 30-second solver budget with a 15-second
+forecast margin. These timings are hardware dependent and do not cover failed
+backends or algorithms other than the measured VI variants. The existing
+`utils.persistence.load_model(model)` remains the internal cache loader.
+
 `MDP.get_config()` captures public parameters; override it for a custom configuration.
 Objects that cannot be serialized are identified by type in the manifest.
 

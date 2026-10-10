@@ -5,6 +5,24 @@ from scipy.sparse import dok_array
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["navigation", "grid-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 75,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 972,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 6348,
+            "parameters": {"state_dim": 6482},
+            "source": "inferred",
+        },
+    },
     "category": "navigation",
     "description": "Grid navigation beside a cliff with penalties for unsafe moves.",
     "reference": (

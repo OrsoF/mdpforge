@@ -10,6 +10,24 @@ WEST, EAST, NORTH, SOUTH, PICKUP, DROPOFF = range(6)
 IN_TAXI = 4
 
 METADATA = {
+    "tags": ["navigation", "real-world", "grid-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 81,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 981,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 5781,
+            "parameters": {"state_dim": 5869},
+            "source": "inferred",
+        },
+    },
     "category": "navigation",
     "description": "Taxi navigation with passenger pickup and drop-off decisions.",
     "reference": (

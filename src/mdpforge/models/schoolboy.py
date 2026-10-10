@@ -6,6 +6,24 @@ from scipy.sparse import csr_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["navigation"],
+    "sizes": {
+        "small": {
+            "state_dim": 100,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 1000,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 8000,
+            "parameters": {"state_dim": 8000},
+            "source": "inferred",
+        },
+    },
     "category": "navigation",
     "description": (
         "Choose transport modes with uncertain travel times to reach school."

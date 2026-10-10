@@ -4,6 +4,24 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["navigation", "grid-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 100,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 961,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 6084,
+            "parameters": {"state_dim": 6192},
+            "source": "inferred",
+        },
+    },
     "category": "navigation",
     "description": "FrozenLake grid navigation with holes and a goal.",
     "reference": "Gymnasium FrozenLake-v1 / OpenAI Gym FrozenLake.",

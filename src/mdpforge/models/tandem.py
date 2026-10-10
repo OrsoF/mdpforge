@@ -29,6 +29,24 @@ def get_params(state_dim: int, max_index=50) -> tuple:
 
 
 METADATA = {
+    "tags": ["queueing", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 100,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 900,
+            "parameters": {"state_dim": 900},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 4624,
+            "parameters": {"state_dim": 4500},
+            "source": "inferred",
+        },
+    },
     "category": "queueing",
     "description": "Service-capacity adjustments for two queues in tandem.",
     "reference": (

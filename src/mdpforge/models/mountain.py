@@ -16,6 +16,24 @@ def index_closest_value(value: float, list_of_values) -> Tuple:
 
 
 METADATA = {
+    "tags": ["control", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 100,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 961,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 7569,
+            "parameters": {"state_dim": 7665},
+            "source": "inferred",
+        },
+    },
     "category": "control",
     "description": "Discretized MountainCar position and velocity control.",
     "reference": (

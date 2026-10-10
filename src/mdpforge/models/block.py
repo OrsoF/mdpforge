@@ -13,6 +13,24 @@ rnd_gen = np.random.default_rng(seed=0)
 TEST_PARAMETERS = {"state_dim": 20, "action_dim": 2}
 
 METADATA = {
+    "tags": ["synthetic", "random"],
+    "sizes": {
+        "small": {
+            "state_dim": 100,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 400,
+            "parameters": {"state_dim": 400},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 1200,
+            "parameters": {"state_dim": 1200},
+            "source": "inferred",
+        },
+    },
     "category": "synthetic",
     "description": "Random transition blocks with weak connections between blocks.",
     "reference": (

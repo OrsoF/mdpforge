@@ -13,6 +13,24 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["navigation", "grid-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 81,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 900,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 7056,
+            "parameters": {"state_dim": 7130},
+            "source": "inferred",
+        },
+    },
     "category": "navigation",
     "description": "Navigation through nine connected rooms with uncertain movement.",
     "reference": (

@@ -21,76 +21,25 @@ from scipy.stats import poisson
 
 from mdpforge.core.mdp import MDP
 
-
-def _build_base_kernel(N: int, p: float, lam: float, eps: float) -> csr_matrix:
-    """Build sparse P[n, z] = Pr(X_next=z | n customers after service).
-
-    The recurrence is the convolution with Bernoulli(p): P[n+1] is
-    obtained from P[n] with one shift and weighted addition. Small tails
-    are folded into their nearest retained endpoint, giving stochastic
-    rows rather than adding missing probability to an arbitrary state.
-
-    Total variation error per row is at most eps (up to floating-point
-    rounding): each update moves at most 2 * eps / (2 * (N+1)) mass,
-    and Markov kernels contract total variation distance.
-    """
-    tail_tol = eps / (2 * (N + 1))
-
-    # Distribution for n=0: capped Poisson, initially trimmed via quantiles.
-    lo = min(N, max(0, int(poisson.ppf(tail_tol, lam))))
-    hi = min(N, max(lo, int(poisson.isf(tail_tol, lam))))
-
-    if lo == hi:
-        probs = np.array([1.0])
-    else:
-        probs = poisson.pmf(np.arange(lo, hi + 1), lam)
-        probs[0] = poisson.cdf(lo, lam)  # Move omitted lower tail to lo.
-        probs[-1] = poisson.sf(hi - 1, lam)  # Include full upper tail at hi.
-
-    data = []
-    indices = []
-    indptr = np.empty(N + 2, dtype=np.int64)
-    indptr[0] = 0
-
-    for n in range(N + 1):
-        data.append(probs)
-        indices.append(np.arange(lo, lo + len(probs), dtype=np.int32))
-        indptr[n + 1] = indptr[n] + len(probs)
-
-        if n == N:
-            break
-
-        # Convolve current row with Bernoulli(p) in linear time in its width.
-        nxt = np.empty(len(probs) + 1)
-        nxt[0] = (1 - p) * probs[0]
-        nxt[-1] = p * probs[-1]
-        nxt[1:-1] = (1 - p) * probs[1:] + p * probs[:-1]
-
-        # Preserve the exact finite-capacity boundary during the update.
-        if lo + len(nxt) - 1 > N:
-            nxt[-2] += nxt[-1]
-            nxt = nxt[:-1]
-
-        # Trim at most tail_tol mass on each side, folding it into the
-        # nearest retained state. No artificial self-transition is added.
-        left = int(np.searchsorted(np.cumsum(nxt), tail_tol, side="right"))
-        right = int(np.searchsorted(np.cumsum(nxt[::-1]), tail_tol, side="right"))
-        end = len(nxt) - right
-
-        probs = nxt[left:end].copy()
-        if left:
-            probs[0] += nxt[:left].sum()
-        if right:
-            probs[-1] += nxt[end:].sum()
-        lo += left
-
-    return csr_matrix(
-        (np.concatenate(data), np.concatenate(indices), indptr),
-        shape=(N + 1, N + 1),
-    )
-
-
 METADATA = {
+    "tags": ["queueing", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 100,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 300,
+            "parameters": {"state_dim": 300},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 1800,
+            "parameters": {"state_dim": 1800},
+            "source": "inferred",
+        },
+    },
     "category": "queueing",
     "description": (
         "Batch service of an impatient queue with a truncated transition kernel."
@@ -166,3 +115,70 @@ class Model(MDP):
         self.transition_matrix = [
             base_transition_matrix[np.maximum(0, states - q)] for q in actions
         ]
+
+def _build_base_kernel(N: int, p: float, lam: float, eps: float) -> csr_matrix:
+    """Build sparse P[n, z] = Pr(X_next=z | n customers after service).
+
+    The recurrence is the convolution with Bernoulli(p): P[n+1] is
+    obtained from P[n] with one shift and weighted addition. Small tails
+    are folded into their nearest retained endpoint, giving stochastic
+    rows rather than adding missing probability to an arbitrary state.
+
+    Total variation error per row is at most eps (up to floating-point
+    rounding): each update moves at most 2 * eps / (2 * (N+1)) mass,
+    and Markov kernels contract total variation distance.
+    """
+    tail_tol = eps / (2 * (N + 1))
+
+    # Distribution for n=0: capped Poisson, initially trimmed via quantiles.
+    lo = min(N, max(0, int(poisson.ppf(tail_tol, lam))))
+    hi = min(N, max(lo, int(poisson.isf(tail_tol, lam))))
+
+    if lo == hi:
+        probs = np.array([1.0])
+    else:
+        probs = poisson.pmf(np.arange(lo, hi + 1), lam)
+        probs[0] = poisson.cdf(lo, lam)  # Move omitted lower tail to lo.
+        probs[-1] = poisson.sf(hi - 1, lam)  # Include full upper tail at hi.
+
+    data = []
+    indices = []
+    indptr = np.empty(N + 2, dtype=np.int64)
+    indptr[0] = 0
+
+    for n in range(N + 1):
+        data.append(probs)
+        indices.append(np.arange(lo, lo + len(probs), dtype=np.int32))
+        indptr[n + 1] = indptr[n] + len(probs)
+
+        if n == N:
+            break
+
+        # Convolve current row with Bernoulli(p) in linear time in its width.
+        nxt = np.empty(len(probs) + 1)
+        nxt[0] = (1 - p) * probs[0]
+        nxt[-1] = p * probs[-1]
+        nxt[1:-1] = (1 - p) * probs[1:] + p * probs[:-1]
+
+        # Preserve the exact finite-capacity boundary during the update.
+        if lo + len(nxt) - 1 > N:
+            nxt[-2] += nxt[-1]
+            nxt = nxt[:-1]
+
+        # Trim at most tail_tol mass on each side, folding it into the
+        # nearest retained state. No artificial self-transition is added.
+        left = int(np.searchsorted(np.cumsum(nxt), tail_tol, side="right"))
+        right = int(np.searchsorted(np.cumsum(nxt[::-1]), tail_tol, side="right"))
+        end = len(nxt) - right
+
+        probs = nxt[left:end].copy()
+        if left:
+            probs[0] += nxt[:left].sum()
+        if right:
+            probs[-1] += nxt[end:].sum()
+        lo += left
+
+    return csr_matrix(
+        (np.concatenate(data), np.concatenate(indices), indptr),
+        shape=(N + 1, N + 1),
+    )

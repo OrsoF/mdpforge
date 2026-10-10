@@ -17,6 +17,24 @@ def build_track(state_dim: int, max_speed: int) -> np.ndarray:
 
 
 METADATA = {
+    "tags": ["navigation", "racetrack"],
+    "sizes": {
+        "small": {
+            "state_dim": 146,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 726,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 3856,
+            "parameters": {"state_dim": 4385},
+            "source": "inferred",
+        },
+    },
     "category": "navigation",
     "description": "Racetrack navigation with velocity-dependent actions.",
     "reference": (

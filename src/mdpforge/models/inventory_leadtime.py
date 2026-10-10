@@ -8,6 +8,24 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["resource-management", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 100,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 1000,
+            "parameters": {"state_dim": 10000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 4600,
+            "parameters": {"state_dim": 211600},
+            "source": "inferred",
+        },
+    },
     "category": "resource_management",
     "description": "Inventory replenishment with a one-period delivery delay.",
     "reference": (

@@ -10,6 +10,24 @@ from mdpforge.core.mdp import MDP
 TEST_PARAMETERS = {"state_dim": 9, "action_dim": 2}
 
 METADATA = {
+    "tags": ["resource-management", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 100,
+            "parameters": {"state_dim": 10000},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 200,
+            "parameters": {"state_dim": 40000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 400,
+            "parameters": {"state_dim": 160000},
+            "source": "inferred",
+        },
+    },
     "category": "resource_management",
     "description": "One-dimensional ambulance positioning under random demand.",
     "reference": (

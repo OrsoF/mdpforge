@@ -7,6 +7,27 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["resource-management", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": None,
+            "parameters": None,
+            "source": "unavailable",
+            "reason": "Le script lit state_dim avant create_model(), alors que cette recette le définit pendant la construction. Aucune mesure exploitable.",
+        },
+        "medium": {
+            "state_dim": None,
+            "parameters": None,
+            "source": "unavailable",
+            "reason": "Le script lit state_dim avant create_model(), alors que cette recette le définit pendant la construction. Aucune mesure exploitable.",
+        },
+        "large": {
+            "state_dim": None,
+            "parameters": None,
+            "source": "unavailable",
+            "reason": "Le script lit state_dim avant create_model(), alors que cette recette le définit pendant la construction. Aucune mesure exploitable.",
+        },
+    },
     "category": "resource_management",
     "description": "Stock replenishment under random demand.",
     "reference": (
@@ -20,6 +41,8 @@ class Model(MDP):
     def __init__(self, state_dim: int = 500, action_dim: int = 10):
         self._stock_size = (state_dim - 1) // 2  # Size of the stock
         self.max_action = action_dim - 1  # Max Number of action - 1
+        self.state_dim = 2 * self._stock_size + 1
+        self.action_dim = self.max_action + 1
         self.BinomialeP = 0.4  #
         self.BinomialeQ = 2  # Size of the demand
         self._holding_cost = 4  # holding cost

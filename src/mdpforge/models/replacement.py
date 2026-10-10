@@ -8,6 +8,24 @@ from mdpforge.core.mdp import MDP
 param_list = [{}]
 
 METADATA = {
+    "tags": ["resource-management", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 100,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 1000,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 4200,
+            "parameters": {"state_dim": 4200},
+            "source": "inferred",
+        },
+    },
     "category": "resource_management",
     "description": "Replacement decisions for equipment with aging-related costs.",
     "reference": (

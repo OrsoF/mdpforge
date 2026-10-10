@@ -7,6 +7,26 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["games", "puzzle"],
+    "sizes": {
+        "small": {
+            "state_dim": 96,
+            "parameters": {"state_dim": 96},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": None,
+            "parameters": None,
+            "source": "unavailable",
+            "reason": "Dimension fixe : un seul point exploitable.",
+        },
+        "large": {
+            "state_dim": None,
+            "parameters": None,
+            "source": "unavailable",
+            "reason": "Dimension fixe : un seul point exploitable.",
+        },
+    },
     "category": "games",
     "description": (
         "Factored block manipulation with looking, picking and lifting actions."

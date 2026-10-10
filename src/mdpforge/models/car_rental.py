@@ -17,6 +17,24 @@ from scipy.sparse import dok_array
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["resource-management", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 25,
+            "parameters": {"state_dim": 625},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 64,
+            "parameters": {"state_dim": 4096},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 400,
+            "parameters": {"state_dim": 147456},
+            "source": "inferred",
+        },
+    },
     "category": "resource_management",
     "description": "Overnight car transfers between two locations with rental demand.",
     "reference": (

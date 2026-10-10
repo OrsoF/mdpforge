@@ -4,6 +4,24 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["navigation", "grid-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 100,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 1023,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 7482,
+            "parameters": {"state_dim": 7451},
+            "source": "inferred",
+        },
+    },
     "category": "navigation",
     "description": "Grid navigation under column-dependent wind.",
     "reference": (

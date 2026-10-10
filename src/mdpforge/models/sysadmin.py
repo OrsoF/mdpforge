@@ -6,6 +6,24 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["resource-management", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 64,
+            "parameters": {"state_dim": 64},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 512,
+            "parameters": {"state_dim": 512},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 2048,
+            "parameters": {"state_dim": 2048},
+            "source": "inferred",
+        },
+    },
     "category": "resource_management",
     "description": (
         "Computer-network maintenance with neighboring failure dependencies."

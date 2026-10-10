@@ -4,6 +4,24 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["queueing", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 108,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 1008,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 7866,
+            "parameters": {"state_dim": 7872},
+            "source": "inferred",
+        },
+    },
     "category": "queueing",
     "description": "Admission control with customer classes and service phases.",
     "reference": (

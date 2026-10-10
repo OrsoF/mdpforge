@@ -14,6 +14,24 @@ from scipy.sparse import dok_array
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["control", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 257,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 1297,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 6562,
+            "parameters": {"state_dim": 5231},
+            "source": "inferred",
+        },
+    },
     "category": "control",
     "description": "Discretized control of an underactuated two-link pendulum.",
     "reference": (

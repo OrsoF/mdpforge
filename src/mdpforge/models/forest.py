@@ -6,6 +6,24 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["resource-management", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 100,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 1000,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 8000,
+            "parameters": {"state_dim": 8000},
+            "source": "inferred",
+        },
+    },
     "category": "resource_management",
     "description": "Forest aging, fire risk and harvesting decisions.",
     "reference": (

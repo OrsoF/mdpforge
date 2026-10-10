@@ -8,6 +8,24 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["resource-management", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 101,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 962,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 7570,
+            "parameters": {"state_dim": 7727},
+            "source": "inferred",
+        },
+    },
     "category": "resource_management",
     "description": "Exercise or hold an American put option over a finite horizon.",
     "reference": (

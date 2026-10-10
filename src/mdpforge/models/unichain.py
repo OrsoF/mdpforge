@@ -6,6 +6,24 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["synthetic"],
+    "sizes": {
+        "small": {
+            "state_dim": 100,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 1000,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 8000,
+            "parameters": {"state_dim": 8000},
+            "source": "inferred",
+        },
+    },
     "category": "synthetic",
     "description": "Two-action chain with a zero-cost boundary state.",
     "reference": (

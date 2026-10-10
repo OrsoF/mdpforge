@@ -14,6 +14,24 @@ from scipy.sparse import dok_array
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["queueing", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 100,
+            "parameters": {"state_dim": 10000},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 500,
+            "parameters": {"state_dim": 250000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 1300,
+            "parameters": {"state_dim": 1690000},
+            "source": "inferred",
+        },
+    },
     "category": "queueing",
     "description": "Accept or reject priority requests with limited free servers.",
     "reference": (

@@ -4,6 +4,25 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["control", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 272,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 2176,
+            "parameters": {"state_dim": 20000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": None,
+            "parameters": None,
+            "source": "unavailable",
+            "reason": "Le constructeur ne propose que 3 ou 4 étages ; medium est déjà le maximum.",
+        },
+    },
     "category": "control",
     "description": (
         "Elevator movement and pickup decisions with passenger destination masks."

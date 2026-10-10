@@ -11,6 +11,24 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["resource-management", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 100,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 300,
+            "parameters": {"state_dim": 300},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 840,
+            "parameters": {"state_dim": 840},
+            "source": "inferred",
+        },
+    },
     "category": "resource_management",
     "description": (
         "Oil exploration with drilling costs and evolving reservoir position."

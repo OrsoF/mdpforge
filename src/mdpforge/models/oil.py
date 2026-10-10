@@ -9,6 +9,24 @@ from scipy.sparse import csr_matrix, dok_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["resource-management", "real-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 100,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 1000,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 4800,
+            "parameters": {"state_dim": 4800},
+            "source": "inferred",
+        },
+    },
     "category": "resource_management",
     "description": (
         "Survey-location decisions with distance-dependent exploration rewards."

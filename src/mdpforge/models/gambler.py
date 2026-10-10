@@ -4,6 +4,24 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["games"],
+    "sizes": {
+        "small": {
+            "state_dim": 101,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 1001,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 4628,
+            "parameters": {"state_dim": 4627},
+            "source": "inferred",
+        },
+    },
     "category": "games",
     "description": "Stake selection to reach a capital target before ruin.",
     "reference": (

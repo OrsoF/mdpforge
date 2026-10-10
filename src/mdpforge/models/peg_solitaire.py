@@ -8,6 +8,26 @@ from mdpforge.core.mdp import MDP
 TEST_PARAMETERS = {"state_dim": 512, "action_dim": 4}
 
 METADATA = {
+    "tags": ["games", "puzzle"],
+    "sizes": {
+        "small": {
+            "state_dim": None,
+            "parameters": None,
+            "source": "unavailable",
+            "reason": "Un seul point exploitable ; le prochain plateau passe de 511 à 65 535 états.",
+        },
+        "medium": {
+            "state_dim": 511,
+            "parameters": {"state_dim": 512},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": None,
+            "parameters": None,
+            "source": "unavailable",
+            "reason": "Un seul point exploitable ; le prochain plateau passe de 511 à 65 535 états.",
+        },
+    },
     "category": "games",
     "description": (
         "Peg-jumping puzzle with board configurations represented as states."

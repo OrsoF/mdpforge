@@ -1,0 +1,5040 @@
+{
+  "schema_version": 1,
+  "source": "artifacts/results/model_sizes.csv",
+  "source_sha256": "f1c3ac3438c0fc1144253cb46a9a64ba1e876551ce42247fdc8db21c6aef7083",
+  "settings": {
+    "discount": 0.99,
+    "precision": 0.001,
+    "model_seed": 0,
+    "threads": 1
+  },
+  "method": {
+    "target_seconds": 30.0,
+    "forecast_limit_seconds": 15.0,
+    "max_state_factor_from_medium": 8,
+    "max_states": 25000,
+    "max_actions": 128,
+    "max_matrix_bytes": 268435456,
+    "large_rows_ignored": 67,
+    "new_solver_runs": 0,
+    "dimensions_resolved_by": "constructors only, no matrices",
+    "limitations": "Two samples, one trial per point: heuristic forecasts, not confidence intervals or runtime guarantees. No guarantee for failed/unfitted solvers, other algorithms, discounts, precisions or hardware.",
+    "selection": "Largest admissible constructor size among sampled candidates; state targets increase by 20% of medium, integer track sides for Sutton."
+  },
+  "libraries": {
+    "small": {
+      "access_control": {
+        "state_dim": 10000
+      },
+      "acrobot": {
+        "state_dim": 100
+      },
+      "admission": {
+        "state_dim": 100
+      },
+      "ambulance": {
+        "state_dim": 10000
+      },
+      "ambulance_relocation": {
+        "state_dim": 2500
+      },
+      "barto": {
+        "state_dim": 100
+      },
+      "block": {
+        "state_dim": 100
+      },
+      "blocks_world": {
+        "state_dim": 96
+      },
+      "car_rental": {
+        "state_dim": 625
+      },
+      "cartpole": {
+        "state_dim": 100
+      },
+      "chain_walk": {
+        "state_dim": 100
+      },
+      "cliff": {
+        "state_dim": 100
+      },
+      "dam": {
+        "state_dim": 16
+      },
+      "elevator": {
+        "state_dim": 100
+      },
+      "forest": {
+        "state_dim": 100
+      },
+      "frozen": {
+        "state_dim": 100
+      },
+      "gambler": {
+        "state_dim": 100
+      },
+      "garnet": {
+        "state_dim": 100
+      },
+      "hexagonal_grid_soccer": {
+        "state_dim": 343
+      },
+      "impatience": {
+        "state_dim": 100
+      },
+      "inventory": null,
+      "inventory_leadtime": {
+        "state_dim": 100
+      },
+      "local_perception_grid_world": {
+        "state_dim": 100
+      },
+      "lqr": {
+        "state_dim": 100
+      },
+      "m_maze": {
+        "state_dim": 100
+      },
+      "maintenance": {
+        "state_dim": 100
+      },
+      "maze_backtrack": {
+        "state_dim": 100
+      },
+      "maze_prims": {
+        "state_dim": 100
+      },
+      "maze_wilson": {
+        "state_dim": 100
+      },
+      "mountain": {
+        "state_dim": 100
+      },
+      "ninerooms": {
+        "state_dim": 100
+      },
+      "office_world": {
+        "state_dim": 100
+      },
+      "oil": {
+        "state_dim": 100
+      },
+      "oil_discovery": {
+        "state_dim": 100
+      },
+      "option_pricing": {
+        "state_dim": 100
+      },
+      "peg_solitaire": null,
+      "queue_network": {
+        "state_dim": 100
+      },
+      "random_walk": {
+        "state_dim": 100
+      },
+      "replacement": {
+        "state_dim": 100
+      },
+      "rooms": {
+        "state_dim": 100
+      },
+      "schoolboy": {
+        "state_dim": 100
+      },
+      "sutton": {
+        "custom_track": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            0
+          ]
+        ],
+        "state_dim": 100
+      },
+      "swim": {
+        "state_dim": 100
+      },
+      "sysadmin": {
+        "state_dim": 64
+      },
+      "tandem": {
+        "state_dim": 100
+      },
+      "tandem_choice": {
+        "state_dim": 36
+      },
+      "taxi": {
+        "state_dim": 100
+      },
+      "unichain": {
+        "state_dim": 100
+      },
+      "windgrid": {
+        "state_dim": 100
+      },
+      "wumpus_world": {
+        "state_dim": 512
+      }
+    },
+    "medium": {
+      "access_control": {
+        "state_dim": 250000
+      },
+      "acrobot": {
+        "state_dim": 1000
+      },
+      "admission": {
+        "state_dim": 1000
+      },
+      "ambulance": {
+        "state_dim": 40000
+      },
+      "ambulance_relocation": {
+        "state_dim": 40000
+      },
+      "barto": {
+        "state_dim": 1000
+      },
+      "block": {
+        "state_dim": 400
+      },
+      "blocks_world": null,
+      "car_rental": {
+        "state_dim": 4096
+      },
+      "cartpole": {
+        "state_dim": 1000
+      },
+      "chain_walk": {
+        "state_dim": 1000
+      },
+      "cliff": {
+        "state_dim": 1000
+      },
+      "dam": {
+        "state_dim": 81
+      },
+      "elevator": {
+        "state_dim": 20000
+      },
+      "forest": {
+        "state_dim": 1000
+      },
+      "frozen": {
+        "state_dim": 1000
+      },
+      "gambler": {
+        "state_dim": 1000
+      },
+      "garnet": {
+        "state_dim": 200
+      },
+      "hexagonal_grid_soccer": {
+        "state_dim": 6859
+      },
+      "impatience": {
+        "state_dim": 300
+      },
+      "inventory": null,
+      "inventory_leadtime": {
+        "state_dim": 10000
+      },
+      "local_perception_grid_world": {
+        "state_dim": 1000
+      },
+      "lqr": {
+        "state_dim": 1000
+      },
+      "m_maze": {
+        "state_dim": 1000
+      },
+      "maintenance": {
+        "state_dim": 1000
+      },
+      "maze_backtrack": {
+        "state_dim": 1000
+      },
+      "maze_prims": {
+        "state_dim": 1000
+      },
+      "maze_wilson": {
+        "state_dim": 1000
+      },
+      "mountain": {
+        "state_dim": 1000
+      },
+      "ninerooms": {
+        "state_dim": 1000
+      },
+      "office_world": {
+        "state_dim": 1000
+      },
+      "oil": {
+        "state_dim": 1000
+      },
+      "oil_discovery": {
+        "state_dim": 300
+      },
+      "option_pricing": {
+        "state_dim": 1000
+      },
+      "peg_solitaire": {
+        "state_dim": 512
+      },
+      "queue_network": {
+        "state_dim": 1000
+      },
+      "random_walk": {
+        "state_dim": 1000
+      },
+      "replacement": {
+        "state_dim": 1000
+      },
+      "rooms": {
+        "state_dim": 1000
+      },
+      "schoolboy": {
+        "state_dim": 1000
+      },
+      "sutton": {
+        "custom_track": [
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            0
+          ]
+        ],
+        "state_dim": 1000
+      },
+      "swim": {
+        "state_dim": 1000
+      },
+      "sysadmin": {
+        "state_dim": 512
+      },
+      "tandem": {
+        "state_dim": 900
+      },
+      "tandem_choice": {
+        "state_dim": 100
+      },
+      "taxi": {
+        "state_dim": 1000
+      },
+      "unichain": {
+        "state_dim": 1000
+      },
+      "windgrid": {
+        "state_dim": 1000
+      },
+      "wumpus_world": {
+        "state_dim": 1024
+      }
+    },
+    "large": {
+      "access_control": {
+        "state_dim": 1690000
+      },
+      "acrobot": {
+        "state_dim": 5231
+      },
+      "admission": {
+        "state_dim": 7872
+      },
+      "ambulance": {
+        "state_dim": 160000
+      },
+      "ambulance_relocation": {
+        "state_dim": 129600
+      },
+      "barto": {
+        "state_dim": 4385
+      },
+      "block": {
+        "state_dim": 1200
+      },
+      "blocks_world": null,
+      "car_rental": {
+        "state_dim": 147456
+      },
+      "cartpole": {
+        "state_dim": 4555
+      },
+      "chain_walk": {
+        "state_dim": 8000
+      },
+      "cliff": {
+        "state_dim": 6482
+      },
+      "dam": {
+        "state_dim": 454
+      },
+      "elevator": null,
+      "forest": {
+        "state_dim": 8000
+      },
+      "frozen": {
+        "state_dim": 6192
+      },
+      "gambler": {
+        "state_dim": 4627
+      },
+      "garnet": {
+        "state_dim": 400
+      },
+      "hexagonal_grid_soccer": null,
+      "impatience": {
+        "state_dim": 1800
+      },
+      "inventory": null,
+      "inventory_leadtime": {
+        "state_dim": 211600
+      },
+      "local_perception_grid_world": {
+        "state_dim": 6674
+      },
+      "lqr": {
+        "state_dim": 4600
+      },
+      "m_maze": {
+        "state_dim": 6674
+      },
+      "maintenance": {
+        "state_dim": 7000
+      },
+      "maze_backtrack": {
+        "state_dim": 7033
+      },
+      "maze_prims": {
+        "state_dim": 7454
+      },
+      "maze_wilson": {
+        "state_dim": 7454
+      },
+      "mountain": {
+        "state_dim": 7665
+      },
+      "ninerooms": {
+        "state_dim": 7130
+      },
+      "office_world": {
+        "state_dim": 6885
+      },
+      "oil": {
+        "state_dim": 4800
+      },
+      "oil_discovery": {
+        "state_dim": 840
+      },
+      "option_pricing": {
+        "state_dim": 7727
+      },
+      "peg_solitaire": null,
+      "queue_network": {
+        "state_dim": 5943
+      },
+      "random_walk": {
+        "state_dim": 8000
+      },
+      "replacement": {
+        "state_dim": 4200
+      },
+      "rooms": {
+        "state_dim": 6767
+      },
+      "schoolboy": {
+        "state_dim": 8000
+      },
+      "sutton": {
+        "state_dim": 1000,
+        "custom_track": [
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0
+          ]
+        ]
+      },
+      "swim": {
+        "state_dim": 8000
+      },
+      "sysadmin": {
+        "state_dim": 2048
+      },
+      "tandem": {
+        "state_dim": 4500
+      },
+      "tandem_choice": {
+        "state_dim": 620
+      },
+      "taxi": {
+        "state_dim": 5869
+      },
+      "unichain": {
+        "state_dim": 8000
+      },
+      "windgrid": {
+        "state_dim": 7451
+      },
+      "wumpus_world": {
+        "state_dim": 2915
+      }
+    }
+  },
+  "models": {
+    "access_control": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 2,
+          "nnz": 10784,
+          "bytes": 131816,
+          "build_seconds": 0.11444439995102584,
+          "times": {
+            "marmote_vi": 0.089473299914971,
+            "mdpforge_vi": 0.023996699834242463,
+            "mdpsolver_vi": 0.07796959998086095,
+            "mdptoolbox_vi": 0.015911499969661236
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "3ea07307912b2be3090b5df30731210b979f357470784c7192a1ec7a4baf8440"
+        },
+        "medium": {
+          "states": 500,
+          "actions": 2,
+          "nnz": 253984,
+          "bytes": 3059816,
+          "build_seconds": 2.7128432001918554,
+          "times": {
+            "marmote_vi": 2.0796672001015395,
+            "mdpforge_vi": 0.15144329983741045,
+            "mdpsolver_vi": 1.8714286000467837
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1
+          },
+          "source_sha256": "3ea07307912b2be3090b5df30731210b979f357470784c7192a1ec7a4baf8440"
+        }
+      },
+      "failures": [
+        {
+          "size": "medium",
+          "solver": "mdptoolbox_vi",
+          "status": "error",
+          "error": "StochasticError: 'PyMDPToolbox - The transition probability matrix is not stochastic.'"
+        }
+      ],
+      "large": {
+        "parameters": {
+          "state_dim": 1690000
+        },
+        "state_dim": 1300,
+        "action_dim": 2,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 13.569250707640169,
+          "mdpforge_vi": 0.9881254574702194,
+          "mdpsolver_vi": 12.34856001694619
+        },
+        "predicted_max_runtime_seconds": 13.569250707640169,
+        "predicted_matrix_bytes": 19793267,
+        "predicted_build_seconds": 17.76851909559862
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.9629261211826152,
+          "raw_time_power": 0.9958265439406979,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.9629261211826152,
+          "raw_time_power": 0.5831509499943512,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.9629261211826152,
+          "raw_time_power": 1.0059922143424431,
+          "time_power": 1.0059922143424431
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.9629261211826152,
+        "memory_state_power": 1.9539138648153227,
+        "build_state_power": 1.9669372615708653
+      },
+      "reason": "Extrapolation prudente, non mesurée. Budget valable seulement pour les solveurs ajustables ayant réussi aux deux tailles."
+    },
+    "acrobot": {
+      "measurements": {
+        "small": {
+          "states": 257,
+          "actions": 3,
+          "nnz": 771,
+          "bytes": 18516,
+          "build_seconds": 0.027623100206255913,
+          "times": {
+            "marmote_vi": 0.012482899939641356,
+            "mdpforge_vi": 0.036169900093227625,
+            "mdpsolver_vi": 0.015228400006890297,
+            "mdptoolbox_vi": 0.08138579991646111
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "ea23194257c12e0b0556508bb89718249df6bf2ba9e0db7c7a63f69c732c141e"
+        },
+        "medium": {
+          "states": 1297,
+          "actions": 3,
+          "nnz": 3891,
+          "bytes": 93396,
+          "build_seconds": 0.11460079997777939,
+          "times": {
+            "marmote_vi": 0.0890703999903053,
+            "mdpforge_vi": 0.07260829978622496,
+            "mdpsolver_vi": 0.08900409983471036,
+            "mdptoolbox_vi": 0.47688050009310246
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "ea23194257c12e0b0556508bb89718249df6bf2ba9e0db7c7a63f69c732c141e"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 5231
+        },
+        "state_dim": 6562,
+        "action_dim": 3,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.6374906125872001,
+          "mdpforge_vi": 0.3673520919022422,
+          "mdpsolver_vi": 0.5216196369434125,
+          "mdptoolbox_vi": 12.206806610029416
+        },
+        "predicted_max_runtime_seconds": 12.206806610029416,
+        "predicted_matrix_bytes": 472525,
+        "predicted_build_seconds": 0.5798075940279015
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 1.2139539038094966,
+          "time_power": 1.2139539038094966
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.4304921879057223,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 1.090680315878554,
+          "time_power": 1.090680315878554
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5461262040760171,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "admission": {
+      "measurements": {
+        "small": {
+          "states": 108,
+          "actions": 2,
+          "nnz": 1864,
+          "bytes": 24968,
+          "build_seconds": 0.012667600065469742,
+          "times": {
+            "marmote_vi": 0.017479300033301115,
+            "mdpforge_vi": 0.02007079985924065,
+            "mdpsolver_vi": 0.01938099996186793,
+            "mdptoolbox_vi": 0.015510400058701634
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "c79839f7e9bf6be5d96a2a990e890373a4196a1a83dacbe57c40c29be2301641"
+        },
+        "medium": {
+          "states": 1008,
+          "actions": 2,
+          "nnz": 17314,
+          "bytes": 231968,
+          "build_seconds": 0.11536439997144043,
+          "times": {
+            "marmote_vi": 0.15590390004217625,
+            "mdpforge_vi": 0.0524057000875473,
+            "mdpsolver_vi": 0.2067646998912096,
+            "mdptoolbox_vi": 0.2114875998813659
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "c79839f7e9bf6be5d96a2a990e890373a4196a1a83dacbe57c40c29be2301641"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 7872
+        },
+        "state_dim": 7866,
+        "action_dim": 2,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 1.2166072199719826,
+          "mdpforge_vi": 0.40895162389746736,
+          "mdpsolver_vi": 1.8246508047784604,
+          "mdptoolbox_vi": 12.878691154893039
+        },
+        "predicted_max_runtime_seconds": 12.878691154893039,
+        "predicted_matrix_bytes": 1810179,
+        "predicted_build_seconds": 0.9002543354914191
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.979687538944186,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.429688705475068,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 1.0598569450893207,
+          "time_power": 1.0598569450893207
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5848550983824143,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "ambulance": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 10,
+          "nnz": 98000,
+          "bytes": 1188040,
+          "build_seconds": 0.008913500001654029,
+          "times": {
+            "marmote_vi": 0.7633768999949098,
+            "mdpforge_vi": 0.09835290000773966,
+            "mdpsolver_vi": 0.6850888000335544
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1
+          },
+          "source_sha256": "de9ee5bbc27878dec6dcc3470d5ef4c9411c407ccda15ace56730e47af97810d"
+        },
+        "medium": {
+          "states": 200,
+          "actions": 10,
+          "nnz": 396000,
+          "bytes": 4776040,
+          "build_seconds": 0.011969799874350429,
+          "times": {
+            "marmote_vi": 3.163262400077656,
+            "mdpforge_vi": 0.21647979994304478,
+            "mdpsolver_vi": 2.7409729999490082
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1
+          },
+          "source_sha256": "de9ee5bbc27878dec6dcc3470d5ef4c9411c407ccda15ace56730e47af97810d"
+        }
+      },
+      "failures": [
+        {
+          "size": "small",
+          "solver": "mdptoolbox_vi",
+          "status": "error",
+          "error": "ValueError: math domain error"
+        },
+        {
+          "size": "medium",
+          "solver": "mdptoolbox_vi",
+          "status": "error",
+          "error": "ValueError: math domain error"
+        }
+      ],
+      "large": {
+        "parameters": {
+          "state_dim": 160000
+        },
+        "state_dim": 400,
+        "action_dim": 10,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 13.107848838249854,
+          "mdpforge_vi": 0.874755109973936,
+          "mdpsolver_vi": 11.075768448773543
+        },
+        "predicted_max_runtime_seconds": 13.107848838249854,
+        "predicted_matrix_bytes": 19200160,
+        "predicted_build_seconds": 0.023939599748700857
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 2.014646775964401,
+          "raw_time_power": 1.0180175623269923,
+          "time_power": 1.0180175623269923
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 2.014646775964401,
+          "raw_time_power": 0.5649590427409483,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 2.014646775964401,
+          "raw_time_power": 0.9928912779256297,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 2.014646775964401,
+        "memory_state_power": 2.0072315085136307,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée. Budget valable seulement pour les solveurs ajustables ayant réussi aux deux tailles."
+    },
+    "ambulance_relocation": {
+      "measurements": {
+        "small": {
+          "states": 50,
+          "actions": 10,
+          "nnz": 25000,
+          "bytes": 306040,
+          "build_seconds": 0.03801939985714853,
+          "times": {
+            "marmote_vi": 0.2328894000966102,
+            "mdpforge_vi": 0.07239709980785847,
+            "mdpsolver_vi": 0.19421370001509786,
+            "mdptoolbox_vi": 0.02643299987539649
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "07497c206ed8d36b2f0a503369f956bcb66683f6b4752bb1d182c2c624d03c15"
+        },
+        "medium": {
+          "states": 200,
+          "actions": 10,
+          "nnz": 400000,
+          "bytes": 4824040,
+          "build_seconds": 0.548850700026378,
+          "times": {
+            "marmote_vi": 3.8730818999465555,
+            "mdpforge_vi": 0.2339771999977529,
+            "mdpsolver_vi": 3.2786733999382704
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1
+          },
+          "source_sha256": "07497c206ed8d36b2f0a503369f956bcb66683f6b4752bb1d182c2c624d03c15"
+        }
+      },
+      "failures": [
+        {
+          "size": "medium",
+          "solver": "mdptoolbox_vi",
+          "status": "error",
+          "error": "ValueError: math domain error"
+        }
+      ],
+      "large": {
+        "parameters": {
+          "state_dim": 129600
+        },
+        "state_dim": 360,
+        "action_dim": 10,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 12.756141927040506,
+          "mdpforge_vi": 0.7580861279927195,
+          "mdpsolver_vi": 10.867298989416213
+        },
+        "predicted_max_runtime_seconds": 12.756141927040506,
+        "predicted_matrix_bytes": 15531211,
+        "predicted_build_seconds": 1.7023889450026801
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 1.013941281644859,
+          "time_power": 1.013941281644859
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.42309103568343914,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 1.0193488296268158,
+          "time_power": 1.0193488296268158
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 2.0,
+        "memory_state_power": 1.9892248682705758,
+        "build_state_power": 1.9258030461923457
+      },
+      "reason": "Extrapolation prudente, non mesurée. Budget valable seulement pour les solveurs ajustables ayant réussi aux deux tailles."
+    },
+    "barto": {
+      "measurements": {
+        "small": {
+          "states": 146,
+          "actions": 9,
+          "nnz": 1456,
+          "bytes": 33276,
+          "build_seconds": 0.027476799907162786,
+          "times": {
+            "marmote_vi": 0.01151039986871183,
+            "mdpforge_vi": 0.0007686000317335129,
+            "mdpsolver_vi": 0.010616299929097295,
+            "mdptoolbox_vi": 0.06256509991362691
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "35331ecf5afac5dd9ad38ae719445d6b0268cc83c14b71d189f59ae3cacf3a3c"
+        },
+        "medium": {
+          "states": 726,
+          "actions": 9,
+          "nnz": 15654,
+          "bytes": 266292,
+          "build_seconds": 0.28503939998336136,
+          "times": {
+            "marmote_vi": 0.11524239997379482,
+            "mdpforge_vi": 0.0009496000129729509,
+            "mdpsolver_vi": 0.10826039989478886,
+            "mdptoolbox_vi": 0.40506980009377
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "35331ecf5afac5dd9ad38ae719445d6b0268cc83c14b71d189f59ae3cacf3a3c"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 4385
+        },
+        "state_dim": 3856,
+        "action_dim": 9,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 1.3659985452127095,
+          "mdpforge_vi": 0.011255859271847713,
+          "mdpsolver_vi": 1.28323905779518,
+          "mdptoolbox_vi": 11.426959146625995
+        },
+        "predicted_max_runtime_seconds": 11.426959146625995,
+        "predicted_matrix_bytes": 2321085,
+        "predicted_build_seconds": 3.255216138402778
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.480746475094402,
+          "raw_time_power": 0.9700017906783419,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.480746475094402,
+          "raw_time_power": 0.0,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.480746475094402,
+          "raw_time_power": 0.9777330976500842,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5822686115078727,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.480746475094402,
+        "memory_state_power": 1.296652390331079,
+        "build_state_power": 1.458458831801619
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "block": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 10,
+          "nnz": 10306,
+          "bytes": 135712,
+          "build_seconds": 0.139984899898991,
+          "times": {
+            "marmote_vi": 0.09371859999373555,
+            "mdpforge_vi": 0.08035720000043511,
+            "mdpsolver_vi": 0.08081700000911951,
+            "mdptoolbox_vi": 0.05820670002140105
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "ae45ee7011f40495375bdbe1bfe00d693373ddb09516f7c0779f07385e873e78"
+        },
+        "medium": {
+          "states": 400,
+          "actions": 10,
+          "nnz": 152997,
+          "bytes": 1884004,
+          "build_seconds": 0.7503501998726279,
+          "times": {
+            "marmote_vi": 1.3851276000496,
+            "mdpforge_vi": 0.21750839985907078,
+            "mdpsolver_vi": 1.3992079000454396,
+            "mdptoolbox_vi": 0.3545979999471456
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "ae45ee7011f40495375bdbe1bfe00d693373ddb09516f7c0779f07385e873e78"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 1200
+        },
+        "state_dim": 1200,
+        "action_dim": 10,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 11.747760714361098,
+          "mdpforge_vi": 1.8447662401763103,
+          "mdpsolver_vi": 13.405246419648389,
+          "mdptoolbox_vi": 3.1913819995243102
+        },
+        "predicted_max_runtime_seconds": 13.405246419648389,
+        "predicted_matrix_bytes": 15151749,
+        "predicted_build_seconds": 2.838753670331355
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.9459734808931577,
+          "raw_time_power": 0.9983537059394564,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.9459734808931577,
+          "raw_time_power": 0.3691139500967915,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.9459734808931577,
+          "raw_time_power": 1.0570050855275515,
+          "time_power": 1.0570050855275515
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.6517318165758595,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.9459734808931577,
+        "memory_state_power": 1.8975909148609902,
+        "build_state_power": 1.211146433885993
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "blocks_world": {
+      "measurements": {
+        "small": {
+          "states": 96,
+          "actions": 6,
+          "nnz": 576,
+          "bytes": 13848,
+          "build_seconds": 0.0027433999348431826,
+          "times": {
+            "marmote_vi": 0.010722599923610687,
+            "mdpforge_vi": 0.047982499934732914,
+            "mdpsolver_vi": 0.012421799823641777,
+            "mdptoolbox_vi": 0.08924139989539981
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "f4083caa1ab6b4b78bb6d9e858e4d4a72d33fb55bec3467f7d63fbe366dd8e6f"
+        }
+      },
+      "failures": [
+        {
+          "size": "medium",
+          "solver": "",
+          "status": "unavailable_size",
+          "error": "No distinct usable size specified for this recipe"
+        }
+      ],
+      "large": null,
+      "reason": "Dimension fixe : un seul point exploitable."
+    },
+    "car_rental": {
+      "measurements": {
+        "small": {
+          "states": 25,
+          "actions": 9,
+          "nnz": 5625,
+          "bytes": 70236,
+          "build_seconds": 0.06732530007138848,
+          "times": {
+            "marmote_vi": 0.051873600110411644,
+            "mdpforge_vi": 0.08225300000049174,
+            "mdpsolver_vi": 0.042326100170612335,
+            "mdptoolbox_vi": 0.015268899966031313
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "792c92db809683d5634cbc175a4c1c1199672b0f9260d037c412c59818e00a31"
+        },
+        "medium": {
+          "states": 64,
+          "actions": 9,
+          "nnz": 36864,
+          "bytes": 449316,
+          "build_seconds": 0.5220373999327421,
+          "times": {
+            "marmote_vi": 0.35275479988195,
+            "mdpforge_vi": 0.10936010000295937,
+            "mdpsolver_vi": 0.28463770006783307,
+            "mdptoolbox_vi": 0.048778200056403875
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "792c92db809683d5634cbc175a4c1c1199672b0f9260d037c412c59818e00a31"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 147456
+        },
+        "state_dim": 400,
+        "action_dim": 9,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 14.808684226654492,
+          "mdpforge_vi": 4.2718789063656,
+          "mdpsolver_vi": 11.692181762874228,
+          "mdptoolbox_vi": 1.9053984397032764
+        },
+        "predicted_max_runtime_seconds": 14.808684226654492,
+        "predicted_matrix_bytes": 16744242,
+        "predicted_build_seconds": 28.30496616283435
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 1.0196534058627142,
+          "time_power": 1.0196534058627142
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.1515127894651323,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 1.01372260982274,
+          "time_power": 1.01372260982274
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.6177959822461014,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 2.0,
+        "memory_state_power": 1.9743096763674417,
+        "build_state_power": 2.1789226821914887
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "cartpole": {
+      "measurements": {
+        "small": {
+          "states": 256,
+          "actions": 2,
+          "nnz": 512,
+          "bytes": 12296,
+          "build_seconds": 0.007810299983248115,
+          "times": {
+            "marmote_vi": 0.009969600010663271,
+            "mdpforge_vi": 0.02355640009045601,
+            "mdpsolver_vi": 0.004694599891081452
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1
+          },
+          "source_sha256": "fcfb565b295e740478a262ccc435858bf9c48188964bae22b402698cd280dc39"
+        },
+        "medium": {
+          "states": 625,
+          "actions": 2,
+          "nnz": 1250,
+          "bytes": 30008,
+          "build_seconds": 0.024679800029844046,
+          "times": {
+            "marmote_vi": 0.030811999924480915,
+            "mdpforge_vi": 0.03499670000746846,
+            "mdpsolver_vi": 0.01712790015153587
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1
+          },
+          "source_sha256": "fcfb565b295e740478a262ccc435858bf9c48188964bae22b402698cd280dc39"
+        }
+      },
+      "failures": [
+        {
+          "size": "small",
+          "solver": "mdptoolbox_vi",
+          "status": "error",
+          "error": "AssertionError: MDPToolbox VI requires nonconstant maximum immediate rewards across states"
+        },
+        {
+          "size": "medium",
+          "solver": "mdptoolbox_vi",
+          "status": "error",
+          "error": "AssertionError: MDPToolbox VI requires nonconstant maximum immediate rewards across states"
+        }
+      ],
+      "large": {
+        "parameters": {
+          "state_dim": 4555
+        },
+        "state_dim": 4096,
+        "action_dim": 2,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.33180864608428506,
+          "mdpforge_vi": 0.22935437316894533,
+          "mdpsolver_vi": 0.26161212366954717
+        },
+        "predicted_max_runtime_seconds": 0.33180864608428506,
+        "predicted_matrix_bytes": 196660,
+        "predicted_build_seconds": 0.27848171355483103
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 1.2641680114850162,
+          "time_power": 1.2641680114850162
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.4434995091972623,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 1.4500708459753289,
+          "time_power": 1.4500708459753289
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.289015206185426
+      },
+      "reason": "Extrapolation prudente, non mesurée. Budget valable seulement pour les solveurs ajustables ayant réussi aux deux tailles."
+    },
+    "chain_walk": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 2,
+          "nnz": 400,
+          "bytes": 7208,
+          "build_seconds": 0.007808299968019128,
+          "times": {
+            "marmote_vi": 0.005973000079393387,
+            "mdpforge_vi": 0.019782799994572997,
+            "mdpsolver_vi": 0.0036552001256495714,
+            "mdptoolbox_vi": 0.01574179995805025
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "af23104961c0a358603b793e11344b449fd1d0b5169d6a578325bf4c29ddf68f"
+        },
+        "medium": {
+          "states": 1000,
+          "actions": 2,
+          "nnz": 4000,
+          "bytes": 72008,
+          "build_seconds": 0.062274600146338344,
+          "times": {
+            "marmote_vi": 0.06271290010772645,
+            "mdpforge_vi": 0.04267950006760657,
+            "mdpsolver_vi": 0.05078990012407303,
+            "mdptoolbox_vi": 0.2018860001116991
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "af23104961c0a358603b793e11344b449fd1d0b5169d6a578325bf4c29ddf68f"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 8000
+        },
+        "state_dim": 8000,
+        "action_dim": 2,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.5242762656296118,
+          "mdpforge_vi": 0.34143600054085255,
+          "mdpsolver_vi": 0.5468753892035063,
+          "mdptoolbox_vi": 12.920704007148743
+        },
+        "predicted_max_runtime_seconds": 12.920704007148743,
+        "predicted_matrix_bytes": 576064,
+        "predicted_build_seconds": 0.49819680117070675
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 1.0211643643197168,
+          "time_power": 1.0211643643197168
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.33393156334116514,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 1.1428661988331925,
+          "time_power": 1.1428661988331925
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5540259071997038,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "cliff": {
+      "measurements": {
+        "small": {
+          "states": 75,
+          "actions": 4,
+          "nnz": 300,
+          "bytes": 6016,
+          "build_seconds": 0.0037911999970674515,
+          "times": {
+            "marmote_vi": 0.003530000103637576,
+            "mdpforge_vi": 0.0007639999967068434,
+            "mdpsolver_vi": 0.003318500006571412,
+            "mdptoolbox_vi": 0.02049349993467331
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "7fd9a9962fcfabb7b71c6cd30763c7f8f59d7d9059280d701d74a62368560f68"
+        },
+        "medium": {
+          "states": 972,
+          "actions": 4,
+          "nnz": 3888,
+          "bytes": 77776,
+          "build_seconds": 0.024439699947834015,
+          "times": {
+            "marmote_vi": 0.03158490010537207,
+            "mdpforge_vi": 0.003329299855977297,
+            "mdpsolver_vi": 0.02919350005686283,
+            "mdptoolbox_vi": 0.25170749984681606
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "7fd9a9962fcfabb7b71c6cd30763c7f8f59d7d9059280d701d74a62368560f68"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 6482
+        },
+        "state_dim": 6348,
+        "action_dim": 4,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.20627669328076326,
+          "mdpforge_vi": 0.02174320523224679,
+          "mdpsolver_vi": 0.1906587843219807,
+          "mdptoolbox_vi": 10.735875394700937
+        },
+        "predicted_max_runtime_seconds": 10.735875394700937,
+        "predicted_matrix_bytes": 507944,
+        "predicted_build_seconds": 0.1596123613877061
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.855384245283639,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.1989231722118904,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.8487687384566623,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.4895178521210452,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "dam": {
+      "measurements": {
+        "small": {
+          "states": 16,
+          "actions": 4,
+          "nnz": 128,
+          "bytes": 2320,
+          "build_seconds": 0.001617999980226159,
+          "times": {
+            "marmote_vi": 0.001972600119188428,
+            "mdpforge_vi": 0.02404649998061359,
+            "mdpsolver_vi": 0.0014118999242782593,
+            "mdptoolbox_vi": 0.004562699934467673
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "20e63b83a82c8d671406a34b32544eae019987a44f2f6a9a1c60126896caabcf"
+        },
+        "medium": {
+          "states": 81,
+          "actions": 9,
+          "nnz": 2187,
+          "bytes": 35028,
+          "build_seconds": 0.013810300035402179,
+          "times": {
+            "marmote_vi": 0.02392329997383058,
+            "mdpforge_vi": 0.053892800118774176,
+            "mdpsolver_vi": 0.015067700063809752,
+            "mdptoolbox_vi": 0.03437149990350008
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "20e63b83a82c8d671406a34b32544eae019987a44f2f6a9a1c60126896caabcf"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 454
+        },
+        "state_dim": 625,
+        "action_dim": 25,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.8545989073870659,
+          "mdpforge_vi": 1.9251829031912346,
+          "mdpsolver_vi": 0.5382551748903229,
+          "mdptoolbox_vi": 5.684417665754169
+        },
+        "predicted_max_runtime_seconds": 5.684417665754169,
+        "predicted_matrix_bytes": 1070750,
+        "predicted_build_seconds": 0.1575564583814556
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.2499999999999998,
+          "raw_time_power": 0.8743770507188908,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.2499999999999998,
+          "raw_time_power": 0.2843321760417013,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.2499999999999998,
+          "raw_time_power": 0.7114955016849116,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.4980239113628437,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.2499999999999998,
+        "memory_state_power": 1.1737448560293882,
+        "build_state_power": 1.191389514126918
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "elevator": {
+      "measurements": {
+        "small": {
+          "states": 272,
+          "actions": 5,
+          "nnz": 1424,
+          "bytes": 33428,
+          "build_seconds": 0.006538499845191836,
+          "times": {
+            "marmote_vi": 0.02220020000822842,
+            "mdpforge_vi": 0.04102239990606904,
+            "mdpsolver_vi": 0.02364309993572533,
+            "mdptoolbox_vi": 0.1205974998883903
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "f0a70e86c6002738363eb675bce59ab84305365f58862a5c7e52a97e1af87c38"
+        },
+        "medium": {
+          "states": 2176,
+          "actions": 5,
+          "nnz": 11968,
+          "bytes": 274196,
+          "build_seconds": 0.051535499980673194,
+          "times": {
+            "marmote_vi": 0.18848340003751218,
+            "mdpforge_vi": 0.10282070003449917,
+            "mdpsolver_vi": 0.20474530011415482,
+            "mdptoolbox_vi": 1.1136348000727594
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "f0a70e86c6002738363eb675bce59ab84305365f58862a5c7e52a97e1af87c38"
+        }
+      },
+      "failures": [],
+      "large": null,
+      "reason": "Le constructeur ne propose que 3 ou 4 étages ; medium est déjà le maximum."
+    },
+    "forest": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 2,
+          "nnz": 300,
+          "bytes": 6008,
+          "build_seconds": 0.0009996998123824596,
+          "times": {
+            "marmote_vi": 0.004330999916419387,
+            "mdpforge_vi": 0.016123399836942554,
+            "mdpsolver_vi": 0.0025707001332193613,
+            "mdptoolbox_vi": 0.011690200073644519
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "d20bb8e3688202cf53cdd8075dc1c06d339dadafc8f69ed23de6f36eb0090c76"
+        },
+        "medium": {
+          "states": 1000,
+          "actions": 2,
+          "nnz": 3000,
+          "bytes": 60008,
+          "build_seconds": 0.005841800011694431,
+          "times": {
+            "marmote_vi": 0.03897179989144206,
+            "mdpforge_vi": 0.03437189990654588,
+            "mdpsolver_vi": 0.024014699971303344,
+            "mdptoolbox_vi": 0.13604069990105927
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "d20bb8e3688202cf53cdd8075dc1c06d339dadafc8f69ed23de6f36eb0090c76"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 8000
+        },
+        "state_dim": 8000,
+        "action_dim": 2,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.3117743991315365,
+          "mdpforge_vi": 0.274975199252367,
+          "mdpsolver_vi": 0.19211759977042675,
+          "mdptoolbox_vi": 8.706604793667793
+        },
+        "predicted_max_runtime_seconds": 8.706604793667793,
+        "predicted_matrix_bytes": 480064,
+        "predicted_build_seconds": 0.04673440009355545
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.9541622885622627,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.32874691443402865,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.9704257450753586,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5329234567994907,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "frozen": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 4,
+          "nnz": 1130,
+          "bytes": 18376,
+          "build_seconds": 0.003695199964568019,
+          "times": {
+            "marmote_vi": 0.010830999817699194,
+            "mdpforge_vi": 0.00531200016848743,
+            "mdpsolver_vi": 0.011156600201502442,
+            "mdptoolbox_vi": 0.02867479994893074
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "fd7fd518ad4c53ab1fe800673829ffb56eeda04bcd38d8bc6d3b621fca29a7d7"
+        },
+        "medium": {
+          "states": 961,
+          "actions": 4,
+          "nnz": 10862,
+          "bytes": 176488,
+          "build_seconds": 0.03929349989630282,
+          "times": {
+            "marmote_vi": 0.10875519993714988,
+            "mdpforge_vi": 0.019353199983015656,
+            "mdpsolver_vi": 0.13383019994944334,
+            "mdptoolbox_vi": 0.3607059000059962
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "fd7fd518ad4c53ab1fe800673829ffb56eeda04bcd38d8bc6d3b621fca29a7d7"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 6192
+        },
+        "state_dim": 6084,
+        "action_dim": 4,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.7136064879222331,
+          "mdpforge_vi": 0.12254812063781174,
+          "mdpsolver_vi": 1.0152127217411924,
+          "mdptoolbox_vi": 14.457223049884465
+        },
+        "predicted_max_runtime_seconds": 14.457223049884465,
+        "predicted_matrix_bytes": 1117329,
+        "predicted_build_seconds": 0.2701704596334598
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0001098654066836,
+          "raw_time_power": 1.0192811590214061,
+          "time_power": 1.0192811590214061
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0001098654066836,
+          "raw_time_power": 0.571303206159609,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0001098654066836,
+          "raw_time_power": 1.097871217695199,
+          "time_power": 1.097871217695199
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5594925607495272,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0001098654066836,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.0447322015749847
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "gambler": {
+      "measurements": {
+        "small": {
+          "states": 101,
+          "actions": 10,
+          "nnz": 2000,
+          "bytes": 36160,
+          "build_seconds": 0.004868500167503953,
+          "times": {
+            "marmote_vi": 0.017780099995434284,
+            "mdpforge_vi": 0.004896899918094277,
+            "mdpsolver_vi": 0.016124800080433488,
+            "mdptoolbox_vi": 0.054906100034713745
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "f00927d7735b4352c4e837768f1c096ab5b1b7c921cb2ab66300ac504238bab7"
+        },
+        "medium": {
+          "states": 1001,
+          "actions": 10,
+          "nnz": 20000,
+          "bytes": 360160,
+          "build_seconds": 0.055886900052428246,
+          "times": {
+            "marmote_vi": 0.16421449999324977,
+            "mdpforge_vi": 0.014205199899151921,
+            "mdpsolver_vi": 0.15725530008785427,
+            "mdptoolbox_vi": 0.6707663000561297
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "f00927d7735b4352c4e837768f1c096ab5b1b7c921cb2ab66300ac504238bab7"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 4627
+        },
+        "state_dim": 4628,
+        "action_dim": 10,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.763775558194133,
+          "mdpforge_vi": 0.06606958875543868,
+          "mdpsolver_vi": 0.7314077295764013,
+          "mdptoolbox_vi": 14.33803977127908
+        },
+        "predicted_max_runtime_seconds": 14.33803977127908,
+        "predicted_matrix_bytes": 1670679,
+        "predicted_build_seconds": 0.28501037878642577
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0039024663463259,
+          "raw_time_power": 0.9654773031733412,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0039024663463259,
+          "raw_time_power": 0.4625261215221198,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0039024663463259,
+          "raw_time_power": 0.9891109528595111,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5455962132043555,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0039024663463259,
+        "memory_state_power": 1.0021627594432316,
+        "build_state_power": 1.0640511134118447
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "garnet": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 10,
+          "nnz": 85145,
+          "bytes": 1033780,
+          "build_seconds": 0.3588914000429213,
+          "times": {
+            "marmote_vi": 0.7601095999125391,
+            "mdpforge_vi": 0.10370149998925626,
+            "mdpsolver_vi": 0.6420228001661599,
+            "mdptoolbox_vi": 0.06125150015577674
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "234741720b61efeac1b90f913a6fbd5570541feb39016625c07e1b52190e9acd"
+        },
+        "medium": {
+          "states": 200,
+          "actions": 10,
+          "nnz": 340337,
+          "bytes": 4108084,
+          "build_seconds": 0.808002500096336,
+          "times": {
+            "marmote_vi": 3.2440331999678165,
+            "mdpforge_vi": 0.2168560998979956,
+            "mdpsolver_vi": 2.7021559001877904,
+            "mdptoolbox_vi": 0.2208658999297768
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "234741720b61efeac1b90f913a6fbd5570541feb39016625c07e1b52190e9acd"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 400
+        },
+        "state_dim": 400,
+        "action_dim": 10,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 13.845044719477734,
+          "mdpforge_vi": 0.8668055020375138,
+          "mdpsolver_vi": 11.372877267022252,
+          "mdptoolbox_vi": 0.8834635997191072
+        },
+        "predicted_max_runtime_seconds": 13.845044719477734,
+        "predicted_matrix_bytes": 16324899,
+        "predicted_build_seconds": 1.819124225556395
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.9989702859237797,
+          "raw_time_power": 1.0472938186407819,
+          "time_power": 1.0472938186407819
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.9989702859237797,
+          "raw_time_power": 0.5324247540703992,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.9989702859237797,
+          "raw_time_power": 1.03724126854767,
+          "time_power": 1.03724126854767
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.925176805306588,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.9989702859237797,
+        "memory_state_power": 1.990536484846242,
+        "build_state_power": 1.170812404026123
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "hexagonal_grid_soccer": {
+      "measurements": {
+        "small": {
+          "states": 343,
+          "actions": 6,
+          "nnz": 2058,
+          "bytes": 49416,
+          "build_seconds": 0.01162289991043508,
+          "times": {
+            "marmote_vi": 0.04950110008940101,
+            "mdpforge_vi": 0.07301319995895028,
+            "mdpsolver_vi": 0.0429704999551177,
+            "mdptoolbox_vi": 0.22764990013092756
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "ae5a9fba4a80c68a6d3aa400a70c963661c8b491488a63fac9314478ab41a00b"
+        },
+        "medium": {
+          "states": 6859,
+          "actions": 6,
+          "nnz": 41154,
+          "bytes": 987720,
+          "build_seconds": 0.2660860000178218,
+          "times": {
+            "marmote_vi": 0.8085451000370085,
+            "mdpforge_vi": 0.34050579997710884,
+            "mdpsolver_vi": 0.8394128999207169,
+            "mdptoolbox_vi": 9.177720899926499
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "ae5a9fba4a80c68a6d3aa400a70c963661c8b491488a63fac9314478ab41a00b"
+        }
+      },
+      "failures": [],
+      "large": null,
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.9324523179276399,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.5140201820118706,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.9921893077359989,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.617028630896358,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.045151689888325
+      },
+      "reason": "Aucun palier supérieur ne respecte la marge et les limites d'extrapolation."
+    },
+    "impatience": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 10,
+          "nnz": 30315,
+          "bytes": 375820,
+          "build_seconds": 0.007332500070333481,
+          "times": {
+            "marmote_vi": 0.2570305000990629,
+            "mdpforge_vi": 0.07073319982737303,
+            "mdpsolver_vi": 0.2123807999305427,
+            "mdptoolbox_vi": 0.06114610005170107
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "c152107a11b1a8cd55bdd5ae96b5e44ed1a27fd6e0dd8ef49dc989e7acee3dca"
+        },
+        "medium": {
+          "states": 300,
+          "actions": 10,
+          "nnz": 142279,
+          "bytes": 1743388,
+          "build_seconds": 0.0052017997950315475,
+          "times": {
+            "marmote_vi": 1.1774816999677569,
+            "mdpforge_vi": 0.1331834001466632,
+            "mdpsolver_vi": 1.0079232999123633,
+            "mdptoolbox_vi": 0.20682490011677146
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "c152107a11b1a8cd55bdd5ae96b5e44ed1a27fd6e0dd8ef49dc989e7acee3dca"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 1800
+        },
+        "state_dim": 1800,
+        "action_dim": 10,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 14.658723313978046,
+          "mdpforge_vi": 1.6580288363022702,
+          "mdpsolver_vi": 12.777480521857711,
+          "mdptoolbox_vi": 7.4456964042037725
+        },
+        "predicted_max_runtime_seconds": 14.658723313978046,
+        "predicted_matrix_bytes": 21294563,
+        "predicted_build_seconds": 0.031210798770189285
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.407363903612985,
+          "raw_time_power": 0.984342532949784,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.407363903612985,
+          "raw_time_power": 0.4092831810397855,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.407363903612985,
+          "raw_time_power": 1.0071915437279024,
+          "time_power": 1.0071915437279024
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.554611700306383,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.407363903612985,
+        "memory_state_power": 1.3967396286374147,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "inventory": {
+      "measurements": {},
+      "failures": [
+        {
+          "size": "small",
+          "solver": "",
+          "status": "build_error",
+          "error": "AttributeError: 'Model' object has no attribute 'state_dim'"
+        },
+        {
+          "size": "medium",
+          "solver": "",
+          "status": "build_error",
+          "error": "AttributeError: 'Model' object has no attribute 'state_dim'"
+        }
+      ],
+      "large": null,
+      "reason": "Le script lit state_dim avant create_model(), alors que cette recette le définit pendant la construction. Aucune mesure exploitable."
+    },
+    "inventory_leadtime": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 10,
+          "nnz": 2960,
+          "bytes": 47560,
+          "build_seconds": 0.008792599895969033,
+          "times": {
+            "marmote_vi": 0.030795800033956766,
+            "mdpforge_vi": 0.055199099937453866,
+            "mdpsolver_vi": 0.021300300024449825,
+            "mdptoolbox_vi": 0.047771100187674165
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "6bfbdc5c8d2a74a687ed969457fdea0ea3a549f62f9060faa324d6d3636c59e5"
+        },
+        "medium": {
+          "states": 1000,
+          "actions": 10,
+          "nnz": 29960,
+          "bytes": 479560,
+          "build_seconds": 0.07410920015536249,
+          "times": {
+            "marmote_vi": 0.3027010001242161,
+            "mdpforge_vi": 0.10520590003579855,
+            "mdpsolver_vi": 0.2256420999765396,
+            "mdptoolbox_vi": 0.6843714001588523
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "6bfbdc5c8d2a74a687ed969457fdea0ea3a549f62f9060faa324d6d3636c59e5"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 211600
+        },
+        "state_dim": 4600,
+        "action_dim": 10,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 1.4036254403658357,
+          "mdpforge_vi": 0.48784007223707304,
+          "mdpsolver_vi": 1.0783747672971051,
+          "mdptoolbox_vi": 14.481298827361313
+        },
+        "predicted_max_runtime_seconds": 14.481298827361313,
+        "predicted_matrix_bytes": 2218132,
+        "predicted_build_seconds": 0.3409023207146674
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0052500979684902,
+          "raw_time_power": 0.9873387397898078,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0052500979684902,
+          "raw_time_power": 0.27864518529001353,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0052500979684902,
+          "raw_time_power": 1.0196809871107466,
+          "time_power": 1.0196809871107466
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5780633043658582,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0052500979684902,
+        "memory_state_power": 1.0036011055782716,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "local_perception_grid_world": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 4,
+          "nnz": 400,
+          "bytes": 9616,
+          "build_seconds": 0.0014615000691264868,
+          "times": {
+            "marmote_vi": 0.006910600000992417,
+            "mdpforge_vi": 0.02706269989721477,
+            "mdpsolver_vi": 0.00774330017156899,
+            "mdptoolbox_vi": 0.05351809994317591
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "8007308415b12daade539ad877ba593cff80ed4bd8cdc14693611d9df7b2a335"
+        },
+        "medium": {
+          "states": 1023,
+          "actions": 4,
+          "nnz": 4092,
+          "bytes": 98224,
+          "build_seconds": 0.00956850009970367,
+          "times": {
+            "marmote_vi": 0.06452529993839562,
+            "mdpforge_vi": 0.05115119996480644,
+            "mdpsolver_vi": 0.06616670009680092,
+            "mdptoolbox_vi": 0.34106200002133846
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "8007308415b12daade539ad877ba593cff80ed4bd8cdc14693611d9df7b2a335"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 6674
+        },
+        "state_dim": 6723,
+        "action_dim": 4,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.4240504315599548,
+          "mdpforge_vi": 0.3361578859857221,
+          "mdpsolver_vi": 0.43483746309950405,
+          "mdptoolbox_vi": 14.730187993990109
+        },
+        "predicted_max_runtime_seconds": 14.730187993990109,
+        "predicted_matrix_bytes": 645513,
+        "predicted_build_seconds": 0.06288272352913761
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.9607264931595433,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.27378094442942835,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.9226021002410968,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.3982335157807026,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "lqr": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 10,
+          "nnz": 2916,
+          "bytes": 47032,
+          "build_seconds": 0.009179699933156371,
+          "times": {
+            "marmote_vi": 0.027531399857252836,
+            "mdpforge_vi": 0.02963080001063645,
+            "mdpsolver_vi": 0.021064499858766794,
+            "mdptoolbox_vi": 0.05038010003045201
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "9c203f1ce20fb33d4820d6f29703d1f051c3c21800e020e73befaf5ba85bb73d"
+        },
+        "medium": {
+          "states": 1000,
+          "actions": 10,
+          "nnz": 29250,
+          "bytes": 471040,
+          "build_seconds": 0.09516349993646145,
+          "times": {
+            "marmote_vi": 0.273235899861902,
+            "mdpforge_vi": 0.05262289987877011,
+            "mdpsolver_vi": 0.21714080008678138,
+            "mdptoolbox_vi": 0.6762781001161784
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "9c203f1ce20fb33d4820d6f29703d1f051c3c21800e020e73befaf5ba85bb73d"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 4600
+        },
+        "state_dim": 4600,
+        "action_dim": 10,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 1.2594548231203744,
+          "mdpforge_vi": 0.24256023857917156,
+          "mdpsolver_vi": 1.019157319553462,
+          "mdptoolbox_vi": 14.310044598458333
+        },
+        "predicted_max_runtime_seconds": 14.310044598458333,
+        "predicted_matrix_bytes": 2168982,
+        "predicted_build_seconds": 0.4483271537988906
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0013383507722622,
+          "raw_time_power": 0.9953773017473979,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0013383507722622,
+          "raw_time_power": 0.2490980191728588,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0013383507722622,
+          "raw_time_power": 1.0118360901122847,
+          "time_power": 1.0118360901122847
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5639331492264079,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0013383507722622,
+        "memory_state_power": 1.0006643411403606,
+        "build_state_power": 1.0156419210251182
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "m_maze": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 4,
+          "nnz": 563,
+          "bytes": 11572,
+          "build_seconds": 0.0025297999382019043,
+          "times": {
+            "marmote_vi": 0.008108099922537804,
+            "mdpforge_vi": 0.026459199842065573,
+            "mdpsolver_vi": 0.008869899902492762,
+            "mdptoolbox_vi": 0.054053799947723746
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "df60e899b26581a8787aee4ad93891dba38d45dcd13c93e6ffe16cbca632f387"
+        },
+        "medium": {
+          "states": 1023,
+          "actions": 4,
+          "nnz": 7310,
+          "bytes": 136840,
+          "build_seconds": 0.02075730008073151,
+          "times": {
+            "marmote_vi": 0.0902231999207288,
+            "mdpforge_vi": 0.05340219987556338,
+            "mdpsolver_vi": 0.10364260012283921,
+            "mdptoolbox_vi": 0.3465466999914497
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "df60e899b26581a8787aee4ad93891dba38d45dcd13c93e6ffe16cbca632f387"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 6674
+        },
+        "state_dim": 6723,
+        "action_dim": 4,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.7191769361580606,
+          "mdpforge_vi": 0.425673557625441,
+          "mdpsolver_vi": 0.8261441367329908,
+          "mdptoolbox_vi": 14.967067686378343
+        },
+        "predicted_max_runtime_seconds": 14.967067686378343,
+        "predicted_matrix_bytes": 1011239,
+        "predicted_build_seconds": 0.1364138107944848
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.1025208896404204,
+          "raw_time_power": 0.939815602929557,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.1025208896404204,
+          "raw_time_power": 0.2739177125093106,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.1025208896404204,
+          "raw_time_power": 0.9588745897623603,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.3995222335730839,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.1025208896404204,
+        "memory_state_power": 1.0623136203352102,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "maintenance": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 4,
+          "nnz": 893,
+          "bytes": 15532,
+          "build_seconds": 0.0024924997705966234,
+          "times": {
+            "marmote_vi": 0.01032090000808239,
+            "mdpforge_vi": 0.027951000025495887,
+            "mdpsolver_vi": 0.006620500003919005,
+            "mdptoolbox_vi": 0.021565299946814775
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "3b3a0eddfd1c86e7efdaa94087ed09e5aec574cba4361ea181c5aede27cdeae9"
+        },
+        "medium": {
+          "states": 1000,
+          "actions": 4,
+          "nnz": 8993,
+          "bytes": 155932,
+          "build_seconds": 0.01849400019273162,
+          "times": {
+            "marmote_vi": 0.10298559977672994,
+            "mdpforge_vi": 0.05517180007882416,
+            "mdpsolver_vi": 0.07932300004176795,
+            "mdptoolbox_vi": 0.2895833000075072
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "3b3a0eddfd1c86e7efdaa94087ed09e5aec574cba4361ea181c5aede27cdeae9"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 7000
+        },
+        "state_dim": 7000,
+        "action_dim": 4,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.7251948990305787,
+          "mdpforge_vi": 0.38850390806325785,
+          "mdpsolver_vi": 0.646910821694699,
+          "mdptoolbox_vi": 14.189581700367853
+        },
+        "predicted_max_runtime_seconds": 14.189581700367853,
+        "predicted_matrix_bytes": 1095158,
+        "predicted_build_seconds": 0.12945800134912133
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0030531345249132,
+          "raw_time_power": 0.996017955315049,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0030531345249132,
+          "raw_time_power": 0.2944208966154057,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0030531345249132,
+          "raw_time_power": 1.0752255327602476,
+          "time_power": 1.0752255327602476
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5640090049363163,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0030531345249132,
+        "memory_state_power": 1.0017078673579682,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "maze_backtrack": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 4,
+          "nnz": 400,
+          "bytes": 7216,
+          "build_seconds": 0.006948099937289953,
+          "times": {
+            "marmote_vi": 0.0037508001551032066,
+            "mdpforge_vi": 0.0020256000570952892,
+            "mdpsolver_vi": 0.0035463999956846237,
+            "mdptoolbox_vi": 0.021948899840936065
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "4403eb9d36b31c980a625df425346163fbb44f1e97246d147f823dffa321fac0"
+        },
+        "medium": {
+          "states": 961,
+          "actions": 4,
+          "nnz": 3844,
+          "bytes": 69208,
+          "build_seconds": 0.060520000057294965,
+          "times": {
+            "marmote_vi": 0.04169939993880689,
+            "mdpforge_vi": 0.025149900000542402,
+            "mdpsolver_vi": 0.04252970009110868,
+            "mdptoolbox_vi": 0.2836718000471592
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "4403eb9d36b31c980a625df425346163fbb44f1e97246d147f823dffa321fac0"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 7033
+        },
+        "state_dim": 6889,
+        "action_dim": 4,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.33935028233654035,
+          "mdpforge_vi": 0.2253289592967275,
+          "mdpsolver_vi": 0.36969887833068127,
+          "mdptoolbox_vi": 14.577456652621754
+        },
+        "predicted_max_runtime_seconds": 14.577456652621754,
+        "predicted_matrix_bytes": 496123,
+        "predicted_build_seconds": 0.4338421231994849
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 1.0643950202881203,
+          "time_power": 1.0643950202881203
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 1.1132151485654667,
+          "time_power": 1.1132151485654667
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 1.0978721133163725,
+          "time_power": 1.0978721133163725
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5654711293956075,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "maze_prims": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 4,
+          "nnz": 400,
+          "bytes": 9616,
+          "build_seconds": 0.007092599989846349,
+          "times": {
+            "marmote_vi": 0.0036293999291956425,
+            "mdpforge_vi": 0.0006301999092102051,
+            "mdpsolver_vi": 0.003348700003698468,
+            "mdptoolbox_vi": 0.01996780000627041
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "6d888a96c5ffdcea33a0c599152e72e828c793ee8de05fe1f6776d6a4284375f"
+        },
+        "medium": {
+          "states": 961,
+          "actions": 4,
+          "nnz": 3844,
+          "bytes": 92272,
+          "build_seconds": 0.06666000001132488,
+          "times": {
+            "marmote_vi": 0.0315140001475811,
+            "mdpforge_vi": 0.003605599980801344,
+            "mdpsolver_vi": 0.03132879990153015,
+            "mdptoolbox_vi": 0.24699970008805394
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "6d888a96c5ffdcea33a0c599152e72e828c793ee8de05fe1f6776d6a4284375f"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 7454
+        },
+        "state_dim": 7396,
+        "action_dim": 4,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.24253646731686768,
+          "mdpforge_vi": 0.027749237729455506,
+          "mdpsolver_vi": 0.24111113847213006,
+          "mdptoolbox_vi": 14.629970673727856
+        },
+        "predicted_max_runtime_seconds": 14.629970673727856,
+        "predicted_matrix_bytes": 710139,
+        "predicted_build_seconds": 0.5130253486823714
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.9551708223012534,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.260447192259953,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.9881392143896242,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5557851891112053,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "maze_wilson": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 4,
+          "nnz": 400,
+          "bytes": 9616,
+          "build_seconds": 0.008394500007852912,
+          "times": {
+            "marmote_vi": 0.003694700077176094,
+            "mdpforge_vi": 0.0012684999965131283,
+            "mdpsolver_vi": 0.003305800026282668,
+            "mdptoolbox_vi": 0.01999130006879568
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "cfd81a14c65e925cb89307e98f2a50a54bf2f04aacb526ee71ce4dde09260ce8"
+        },
+        "medium": {
+          "states": 961,
+          "actions": 4,
+          "nnz": 3844,
+          "bytes": 92272,
+          "build_seconds": 0.08307570009492338,
+          "times": {
+            "marmote_vi": 0.032393999863415956,
+            "mdpforge_vi": 0.005545600084587932,
+            "mdpsolver_vi": 0.03096809983253479,
+            "mdptoolbox_vi": 0.2486126001458615
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "cfd81a14c65e925cb89307e98f2a50a54bf2f04aacb526ee71ce4dde09260ce8"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 7454
+        },
+        "state_dim": 7396,
+        "action_dim": 4,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.2493090769925332,
+          "mdpforge_vi": 0.042679769225403064,
+          "mdpsolver_vi": 0.23833513669243217,
+          "mdptoolbox_vi": 14.725503909342986
+        },
+        "predicted_max_runtime_seconds": 14.725503909342986,
+        "predicted_matrix_bytes": 710139,
+        "predicted_build_seconds": 0.6565251836448548
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.959461633049543,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.45070521120394247,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.9887197066488032,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5569634911965773,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.0129800394388684
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "mountain": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 3,
+          "nnz": 330,
+          "bytes": 7572,
+          "build_seconds": 0.0031235001515597105,
+          "times": {
+            "marmote_vi": 0.005128900054842234,
+            "mdpforge_vi": 0.02209970005787909,
+            "mdpsolver_vi": 0.0027028999757021666,
+            "mdptoolbox_vi": 0.015051600057631731
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "d7b4f9d55737414ed32e823dd776cb5534c94fca35835430785384a57b243dfe"
+        },
+        "medium": {
+          "states": 961,
+          "actions": 3,
+          "nnz": 3255,
+          "bytes": 73668,
+          "build_seconds": 0.0390468998812139,
+          "times": {
+            "marmote_vi": 0.0483304001390934,
+            "mdpforge_vi": 0.04021669994108379,
+            "mdpsolver_vi": 0.02492110012099147,
+            "mdptoolbox_vi": 0.18546999990940094
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "d7b4f9d55737414ed32e823dd776cb5534c94fca35835430785384a57b243dfe"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 7665
+        },
+        "state_dim": 7569,
+        "action_dim": 3,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.38981127177792396,
+          "mdpforge_vi": 0.32436981497416395,
+          "mdpsolver_vi": 0.20100238575121568,
+          "mdptoolbox_vi": 11.505457880740774
+        },
+        "predicted_max_runtime_seconds": 11.505457880740774,
+        "predicted_matrix_bytes": 586771,
+        "predicted_build_seconds": 0.3909129964556975
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0115125634535054,
+          "raw_time_power": 0.9800400816247377,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0115125634535054,
+          "raw_time_power": 0.26157983817314084,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0115125634535054,
+          "raw_time_power": 0.970524421266422,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5549328607928424,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0115125634535054,
+        "memory_state_power": 1.0054388513946921,
+        "build_state_power": 1.116229695243512
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "ninerooms": {
+      "measurements": {
+        "small": {
+          "states": 81,
+          "actions": 4,
+          "nnz": 561,
+          "bytes": 10636,
+          "build_seconds": 0.0021516999695450068,
+          "times": {
+            "marmote_vi": 0.004673700081184506,
+            "mdpforge_vi": 0.0009723000694066286,
+            "mdpsolver_vi": 0.004453900037333369,
+            "mdptoolbox_vi": 0.016121200053021312
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "3864e4730c0b416ff70323f76b3d788822fa22aa82f9405b03aa53e1b9f9508d"
+        },
+        "medium": {
+          "states": 900,
+          "actions": 4,
+          "nnz": 6861,
+          "bytes": 125548,
+          "build_seconds": 0.01182490005157888,
+          "times": {
+            "marmote_vi": 0.05578089994378388,
+            "mdpforge_vi": 0.003943500109016895,
+            "mdpsolver_vi": 0.049145600060001016,
+            "mdptoolbox_vi": 0.2234036000445485
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "3864e4730c0b416ff70323f76b3d788822fa22aa82f9405b03aa53e1b9f9508d"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 7130
+        },
+        "state_dim": 7056,
+        "action_dim": 4,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.4747168292720142,
+          "mdpforge_vi": 0.033560696759517956,
+          "mdpsolver_vi": 0.418247885148258,
+          "mdptoolbox_vi": 13.7316363188982
+        },
+        "predicted_max_runtime_seconds": 13.7316363188982,
+        "predicted_matrix_bytes": 1036561,
+        "predicted_build_seconds": 0.09270721640437841
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0398439101662424,
+          "raw_time_power": 0.9902523068172524,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0398439101662424,
+          "raw_time_power": 0.2711469584862526,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0398439101662424,
+          "raw_time_power": 0.9589117413226046,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5458688129349047,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0398439101662424,
+        "memory_state_power": 1.0251243521939577,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "office_world": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 4,
+          "nnz": 400,
+          "bytes": 9616,
+          "build_seconds": 0.0012763000559061766,
+          "times": {
+            "marmote_vi": 0.0036308998242020607,
+            "mdpforge_vi": 0.0004181000404059887,
+            "mdpsolver_vi": 0.003271199995651841,
+            "mdptoolbox_vi": 0.0195333999581635
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "745ef389582c8ae1ba6d1e96e7bf94c0d675f9fdd8f980e091ed666c16c5be7e"
+        },
+        "medium": {
+          "states": 1020,
+          "actions": 4,
+          "nnz": 4080,
+          "bytes": 97936,
+          "build_seconds": 0.00828550010919571,
+          "times": {
+            "marmote_vi": 0.0657389999832958,
+            "mdpforge_vi": 0.04873159993439913,
+            "mdpsolver_vi": 0.06833419995382428,
+            "mdptoolbox_vi": 0.3211896000429988
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "745ef389582c8ae1ba6d1e96e7bf94c0d675f9fdd8f980e091ed666c16c5be7e"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 6885
+        },
+        "state_dim": 6888,
+        "action_dim": 4,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.7116562126891975,
+          "mdpforge_vi": 0.6734833306187837,
+          "mdpsolver_vi": 0.8321005303923213,
+          "mdptoolbox_vi": 14.646957046888174
+        },
+        "predicted_max_runtime_seconds": 14.646957046888174,
+        "predicted_matrix_bytes": 661356,
+        "predicted_build_seconds": 0.05595149485503926
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 1.2470836924042952,
+          "time_power": 1.2470836924042952
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 1.3749558183137502,
+          "time_power": 1.3749558183137502
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 1.3086761772586726,
+          "time_power": 1.3086761772586726
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.6028075673805956,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "oil": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 10,
+          "nnz": 1000,
+          "bytes": 24040,
+          "build_seconds": 0.00824199989438057,
+          "times": {
+            "marmote_vi": 0.014702700078487396,
+            "mdpforge_vi": 0.051154099870473146,
+            "mdpsolver_vi": 0.007324500009417534,
+            "mdptoolbox_vi": 0.04354529990814626
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "41158c3138697bd1d8023abef8c5383716a4cbb4b1adcf05a77bf4eb61d72b03"
+        },
+        "medium": {
+          "states": 1000,
+          "actions": 10,
+          "nnz": 10000,
+          "bytes": 240040,
+          "build_seconds": 0.062240999890491366,
+          "times": {
+            "marmote_vi": 0.1417936000507325,
+            "mdpforge_vi": 0.08577640005387366,
+            "mdpsolver_vi": 0.07355919992551208,
+            "mdptoolbox_vi": 0.6298207000363618
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "41158c3138697bd1d8023abef8c5383716a4cbb4b1adcf05a77bf4eb61d72b03"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 4800
+        },
+        "state_dim": 4800,
+        "action_dim": 10,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.680609280243516,
+          "mdpforge_vi": 0.4117267202585935,
+          "mdpsolver_vi": 0.35411528308601503,
+          "mdptoolbox_vi": 14.511068928837776
+        },
+        "predicted_max_runtime_seconds": 14.511068928837776,
+        "predicted_matrix_bytes": 1152192,
+        "predicted_build_seconds": 0.29875679947435857
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.984259531000578,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.2244873683618831,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 1.0018590130432472,
+          "time_power": 1.0018590130432472
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5801378221491263,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "oil_discovery": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 10,
+          "nnz": 20520,
+          "bytes": 258280,
+          "build_seconds": 0.031250699888914824,
+          "times": {
+            "marmote_vi": 0.17676139995455742,
+            "mdpforge_vi": 0.07962509989738464,
+            "mdpsolver_vi": 0.1818582999985665,
+            "mdptoolbox_vi": 0.08072339999489486
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "8df0f243ec8fea77c53b58e5c71c9b043cb4bf74345e76619d44602fc326459c"
+        },
+        "medium": {
+          "states": 300,
+          "actions": 10,
+          "nnz": 185608,
+          "bytes": 2263336,
+          "build_seconds": 0.11013759998604655,
+          "times": {
+            "marmote_vi": 1.523325600195676,
+            "mdpforge_vi": 0.18075649999082088,
+            "mdpsolver_vi": 1.670747600030154,
+            "mdptoolbox_vi": 0.3014479000121355
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "8df0f243ec8fea77c53b58e5c71c9b043cb4bf74345e76619d44602fc326459c"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 840
+        },
+        "state_dim": 840,
+        "action_dim": 10,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 11.999106938745525,
+          "mdpforge_vi": 1.4238036654702122,
+          "mdpsolver_vi": 13.353680675771466,
+          "mdptoolbox_vi": 2.3633515360951423
+        },
+        "predicted_max_runtime_seconds": 13.353680675771466,
+        "predicted_matrix_bytes": 17306463,
+        "predicted_build_seconds": 0.35863700160542833
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 2.004562415043379,
+          "raw_time_power": 0.978028438229683,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 2.004562415043379,
+          "raw_time_power": 0.372267603075713,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 2.004562415043379,
+          "raw_time_power": 1.0070663401127928,
+          "time_power": 1.0070663401127928
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5996513584480719,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 2.004562415043379,
+        "memory_state_power": 1.975720520075699,
+        "build_state_power": 1.1466180868702918
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "option_pricing": {
+      "measurements": {
+        "small": {
+          "states": 101,
+          "actions": 2,
+          "nnz": 247,
+          "bytes": 5396,
+          "build_seconds": 0.001433399971574545,
+          "times": {
+            "marmote_vi": 0.00290939980186522,
+            "mdpforge_vi": 0.00016540009528398514,
+            "mdpsolver_vi": 0.0021148999221622944,
+            "mdptoolbox_vi": 0.01086320006288588
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "7684657bfb89d2db91940f6fcf4ec495cf3e570a6d16931f0be2450ca5008111"
+        },
+        "medium": {
+          "states": 962,
+          "actions": 2,
+          "nnz": 2794,
+          "bytes": 56624,
+          "build_seconds": 0.009697100147604942,
+          "times": {
+            "marmote_vi": 0.021458499832078815,
+            "mdpforge_vi": 0.0011638000141829252,
+            "mdpsolver_vi": 0.0208684999961406,
+            "mdptoolbox_vi": 0.13009680015966296
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "7684657bfb89d2db91940f6fcf4ec495cf3e570a6d16931f0be2450ca5008111"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 7727
+        },
+        "state_dim": 7570,
+        "action_dim": 2,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.19763736232768278,
+          "mdpforge_vi": 0.010718846465501064,
+          "mdpsolver_vi": 0.1922033379428897,
+          "mdptoolbox_vi": 8.05579173182761
+        },
+        "predicted_max_runtime_seconds": 8.05579173182761,
+        "predicted_matrix_bytes": 486891,
+        "predicted_build_seconds": 0.07630670282470833
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0762889800553834,
+          "raw_time_power": 0.8237035551082923,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0762889800553834,
+          "raw_time_power": 0.0,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0762889800553834,
+          "raw_time_power": 0.9436863998175283,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5508018404341243,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0762889800553834,
+        "memory_state_power": 1.0429838556194886,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "peg_solitaire": {
+      "measurements": {
+        "medium": {
+          "states": 511,
+          "actions": 36,
+          "nnz": 18396,
+          "bytes": 441648,
+          "build_seconds": 0.03859560005366802,
+          "times": {
+            "marmote_vi": 0.2847071001306176,
+            "mdpforge_vi": 0.23473790008574724,
+            "mdpsolver_vi": 0.2846717000938952,
+            "mdptoolbox_vi": 1.3019040999934077
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "cde27e9377ceda3576b17c11cb66f15bfc0a469337de82869ab5e77c3876dec2"
+        }
+      },
+      "failures": [
+        {
+          "size": "small",
+          "solver": "",
+          "status": "unavailable_size",
+          "error": "No distinct usable size specified for this recipe"
+        }
+      ],
+      "large": null,
+      "reason": "Un seul point exploitable ; le prochain plateau passe de 511 à 65 535 états."
+    },
+    "queue_network": {
+      "measurements": {
+        "small": {
+          "states": 125,
+          "actions": 3,
+          "nnz": 1439,
+          "bytes": 21780,
+          "build_seconds": 0.00309220002964139,
+          "times": {
+            "marmote_vi": 0.01463720016181469,
+            "mdpforge_vi": 0.02613059990108013,
+            "mdpsolver_vi": 0.011669700033962727,
+            "mdptoolbox_vi": 0.022848099935799837
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "8841f1d055c0e304abda51a7ebc9ef680b022dcf8095fa7a24b4454af8a7cf5a"
+        },
+        "medium": {
+          "states": 1000,
+          "actions": 3,
+          "nnz": 13179,
+          "bytes": 194160,
+          "build_seconds": 0.025286799995228648,
+          "times": {
+            "marmote_vi": 0.1294058000203222,
+            "mdpforge_vi": 0.05618979991413653,
+            "mdpsolver_vi": 0.12560909986495972,
+            "mdptoolbox_vi": 0.2488240001257509
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "8841f1d055c0e304abda51a7ebc9ef680b022dcf8095fa7a24b4454af8a7cf5a"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 5943
+        },
+        "state_dim": 6859,
+        "action_dim": 3,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 1.0060047786693613,
+          "mdpforge_vi": 0.4368212801684271,
+          "mdpsolver_vi": 1.1340097005060465,
+          "mdptoolbox_vi": 11.706144299860062
+        },
+        "predicted_max_runtime_seconds": 11.706144299860062,
+        "predicted_matrix_bytes": 1472155,
+        "predicted_build_seconds": 0.17700490068547353
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.06503413602454,
+          "raw_time_power": 0.984065721961585,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.06503413602454,
+          "raw_time_power": 0.34570660836896266,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.06503413602454,
+          "raw_time_power": 1.0729238581204315,
+          "time_power": 1.0729238581204315
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5741632577281369,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.06503413602454,
+        "memory_state_power": 1.0520567181447424,
+        "build_state_power": 1.0105596415522897
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "random_walk": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 2,
+          "nnz": 396,
+          "bytes": 7160,
+          "build_seconds": 0.002885800087824464,
+          "times": {
+            "marmote_vi": 0.003655599895864725,
+            "mdpforge_vi": 0.003539200173690915,
+            "mdpsolver_vi": 0.0036787998396903276,
+            "mdptoolbox_vi": 0.014473799848929048
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "c30f07f593f166280e3fe1e4c2f12c8e0f1d9c2e72d882aaa692ee5fbea87df6"
+        },
+        "medium": {
+          "states": 1000,
+          "actions": 2,
+          "nnz": 3996,
+          "bytes": 71960,
+          "build_seconds": 0.02304619993083179,
+          "times": {
+            "marmote_vi": 0.04267290001735091,
+            "mdpforge_vi": 0.02367449994198978,
+            "mdpsolver_vi": 0.04748090007342398,
+            "mdptoolbox_vi": 0.16640009987168014
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "c30f07f593f166280e3fe1e4c2f12c8e0f1d9c2e72d882aaa692ee5fbea87df6"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 8000
+        },
+        "state_dim": 8000,
+        "action_dim": 2,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.3925761611685945,
+          "mdpforge_vi": 0.19095024077375988,
+          "mdpsolver_vi": 0.4782806886685178,
+          "mdptoolbox_vi": 10.649606391787529
+        },
+        "predicted_max_runtime_seconds": 10.649606391787529,
+        "predicted_matrix_bytes": 578293,
+        "predicted_build_seconds": 0.18436959944665432
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0039302936284324,
+          "raw_time_power": 1.0630155386982905,
+          "time_power": 1.0630155386982905
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0039302936284324,
+          "raw_time_power": 0.8221444189347892,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0039302936284324,
+          "raw_time_power": 1.10646405556447,
+          "time_power": 1.10646405556447
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5302855099637882,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0039302936284324,
+        "memory_state_power": 1.0021781323656582,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "replacement": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 10,
+          "nnz": 1791,
+          "bytes": 33532,
+          "build_seconds": 0.021667999913915992,
+          "times": {
+            "marmote_vi": 0.02332799998112023,
+            "mdpforge_vi": 0.08300659991800785,
+            "mdpsolver_vi": 0.015968600055202842,
+            "mdptoolbox_vi": 0.06689699995331466
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "79f99626f0f3675912c6b549df4896a726571f528aa238b883114b184740ebf2"
+        },
+        "medium": {
+          "states": 1000,
+          "actions": 10,
+          "nnz": 17991,
+          "bytes": 335932,
+          "build_seconds": 0.2152611999772489,
+          "times": {
+            "marmote_vi": 0.23091029981151223,
+            "mdpforge_vi": 0.14575559995137155,
+            "mdpsolver_vi": 0.2577628998551518,
+            "mdptoolbox_vi": 0.7812761999666691
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "79f99626f0f3675912c6b549df4896a726571f528aa238b883114b184740ebf2"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 4200
+        },
+        "state_dim": 4200,
+        "action_dim": 10,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.972554590834484,
+          "mdpforge_vi": 0.6138975956821895,
+          "mdpsolver_vi": 1.4590716235571668,
+          "mdptoolbox_vi": 13.781712167412042
+        },
+        "predicted_max_runtime_seconds": 13.781712167412042,
+        "predicted_matrix_bytes": 1412519,
+        "predicted_build_seconds": 0.9040970399044455
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.00195971770841,
+          "raw_time_power": 0.9936185869362872,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.00195971770841,
+          "raw_time_power": 0.24403438606686484,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.00195971770841,
+          "raw_time_power": 1.205590947206678,
+          "time_power": 1.205590947206678
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5336989763249715,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.00195971770841,
+        "memory_state_power": 1.000791918077176,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "rooms": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 4,
+          "nnz": 725,
+          "bytes": 13516,
+          "build_seconds": 0.001830599969252944,
+          "times": {
+            "marmote_vi": 0.005827999906614423,
+            "mdpforge_vi": 0.0009275998454540968,
+            "mdpsolver_vi": 0.005598999792709947,
+            "mdptoolbox_vi": 0.0201641998719424
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "3b428355ea6a8c2c22efbff422c1daf523528c866cffe0c2497c143937ec1336"
+        },
+        "medium": {
+          "states": 900,
+          "actions": 4,
+          "nnz": 6965,
+          "bytes": 126796,
+          "build_seconds": 0.011134300148114562,
+          "times": {
+            "marmote_vi": 0.05539669981226325,
+            "mdpforge_vi": 0.003922600066289306,
+            "mdpsolver_vi": 0.052255199989303946,
+            "mdptoolbox_vi": 0.2440615000668913
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "3b428355ea6a8c2c22efbff422c1daf523528c866cffe0c2497c143937ec1336"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 6767
+        },
+        "state_dim": 6724,
+        "action_dim": 4,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.4393476062382499,
+          "mdpforge_vi": 0.031109884798095837,
+          "mdpsolver_vi": 0.41443257642794495,
+          "mdptoolbox_vi": 13.622903081294199
+        },
+        "predicted_max_runtime_seconds": 13.622903081294199,
+        "predicted_matrix_bytes": 983964,
+        "predicted_build_seconds": 0.0831855935510248
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0296995831450806,
+          "raw_time_power": 0.9952993723359718,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0296995831450806,
+          "raw_time_power": 0.2977295573762498,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0296995831450806,
+          "raw_time_power": 0.9872132431054373,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5674229935849666,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0296995831450806,
+        "memory_state_power": 1.0188787027069617,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "schoolboy": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 3,
+          "nnz": 489,
+          "bytes": 9480,
+          "build_seconds": 0.001628299942240119,
+          "times": {
+            "marmote_vi": 0.004302300047129393,
+            "mdpforge_vi": 0.0003381997812539339,
+            "mdpsolver_vi": 0.0045785000547766685,
+            "mdptoolbox_vi": 0.015551500022411346
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "21b7053060ee1fa7a1846a6d1c76cc14f337488e786ad38a02cb68752d73c546"
+        },
+        "medium": {
+          "states": 1000,
+          "actions": 3,
+          "nnz": 4903,
+          "bytes": 94848,
+          "build_seconds": 0.0040040998719632626,
+          "times": {
+            "marmote_vi": 0.03827590006403625,
+            "mdpforge_vi": 0.00033359997905790806,
+            "mdpsolver_vi": 0.035929000005126,
+            "mdptoolbox_vi": 0.199045600136742
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "21b7053060ee1fa7a1846a6d1c76cc14f337488e786ad38a02cb68752d73c546"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 8000
+        },
+        "state_dim": 8000,
+        "action_dim": 3,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.3069422642954413,
+          "mdpforge_vi": 0.0026752064032363946,
+          "mdpsolver_vi": 0.28812199313390524,
+          "mdptoolbox_vi": 12.738918408751488
+        },
+        "predicted_max_runtime_seconds": 12.738918408751488,
+        "predicted_matrix_bytes": 759131,
+        "predicted_build_seconds": 0.0320327989757061
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.001153034122558,
+          "raw_time_power": 0.9481314887550834,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.001153034122558,
+          "raw_time_power": 0.0,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.001153034122558,
+          "raw_time_power": 0.8936914494049746,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5535901483533676,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.001153034122558,
+        "memory_state_power": 1.0002198402891302,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "sutton": {
+      "measurements": {
+        "small": {
+          "states": 283,
+          "actions": 9,
+          "nnz": 4445,
+          "bytes": 83940,
+          "build_seconds": 0.13172229984775186,
+          "times": {
+            "marmote_vi": 0.03377000009641051,
+            "mdpforge_vi": 0.0006940001621842384,
+            "mdpsolver_vi": 0.030789899872615933,
+            "mdptoolbox_vi": 0.12859079986810684
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "50f3be3cbd904556104211a1505db20e940f0968c93adae82b77c445378f3554"
+        },
+        "medium": {
+          "states": 1231,
+          "actions": 9,
+          "nnz": 32257,
+          "bytes": 520068,
+          "build_seconds": 0.8201377000659704,
+          "times": {
+            "marmote_vi": 0.24087529978714883,
+            "mdpforge_vi": 0.0014445001725107431,
+            "mdpsolver_vi": 0.23204030003398657,
+            "mdptoolbox_vi": 0.9224926999304444
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "50f3be3cbd904556104211a1505db20e940f0968c93adae82b77c445378f3554"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 1000,
+          "custom_track": [
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              0
+            ]
+          ]
+        },
+        "state_dim": 4211,
+        "action_dim": 9,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 1.2643667748681566,
+          "mdpforge_vi": 0.007582255324758479,
+          "mdpsolver_vi": 1.257090232502056,
+          "mdptoolbox_vi": 10.794867476372497
+        },
+        "predicted_max_runtime_seconds": 10.794867476372497,
+        "predicted_matrix_bytes": 2391669,
+        "predicted_build_seconds": 3.7871706944383767
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.3481448281143926,
+          "raw_time_power": 0.991297143908074,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.3481448281143926,
+          "raw_time_power": 0.0,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.3481448281143926,
+          "raw_time_power": 1.0190565097314983,
+          "time_power": 1.0190565097314983
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.670157464331757,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.3481448281143926,
+        "memory_state_power": 1.2406051354616012,
+        "build_state_power": 1.2439511006093862
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "swim": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 2,
+          "nnz": 398,
+          "bytes": 5984,
+          "build_seconds": 0.0026228001806885004,
+          "times": {
+            "marmote_vi": 0.005379999987781048,
+            "mdpforge_vi": 0.016658599954098463,
+            "mdpsolver_vi": 0.00399480015039444,
+            "mdptoolbox_vi": 0.016959400149062276
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "9c6bee9617e5caae6deb306ac6e993112509b18712d368b7875dcbde74d3d72b"
+        },
+        "medium": {
+          "states": 1000,
+          "actions": 2,
+          "nnz": 3998,
+          "bytes": 59984,
+          "build_seconds": 0.02218379988335073,
+          "times": {
+            "marmote_vi": 0.04602889996021986,
+            "mdpforge_vi": 0.037617400055751204,
+            "mdpsolver_vi": 0.05176130007021129,
+            "mdptoolbox_vi": 0.17344760010018945
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "9c6bee9617e5caae6deb306ac6e993112509b18712d368b7875dcbde74d3d72b"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 8000
+        },
+        "state_dim": 8000,
+        "action_dim": 2,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.3697348471135589,
+          "mdpforge_vi": 0.3021680655076059,
+          "mdpsolver_vi": 0.5232411892159254,
+          "mdptoolbox_vi": 11.100646406412125
+        },
+        "predicted_max_runtime_seconds": 11.100646406412125,
+        "predicted_matrix_bytes": 480915,
+        "predicted_build_seconds": 0.17747039906680584
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.00195971770841,
+          "raw_time_power": 0.9304249509276997,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.00195971770841,
+          "raw_time_power": 0.3530583820154727,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.00195971770841,
+          "raw_time_power": 1.1103341767152888,
+          "time_power": 1.1103341767152888
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5048789039246714,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.00195971770841,
+        "memory_state_power": 1.0010438382210705,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "sysadmin": {
+      "measurements": {
+        "small": {
+          "states": 64,
+          "actions": 6,
+          "nnz": 2448,
+          "bytes": 34008,
+          "build_seconds": 0.0074865000788122416,
+          "times": {
+            "marmote_vi": 0.02222119993530214,
+            "mdpforge_vi": 0.04220919986255467,
+            "mdpsolver_vi": 0.01716699986718595,
+            "mdptoolbox_vi": 0.02041070000268519
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "1322aad26e4577045706809f59e3d70402a0a0f149c1425849ef9aa2ab1b5c6f"
+        },
+        "medium": {
+          "states": 512,
+          "actions": 9,
+          "nnz": 41472,
+          "bytes": 552996,
+          "build_seconds": 0.12773440009914339,
+          "times": {
+            "marmote_vi": 0.3829680001363158,
+            "mdpforge_vi": 0.10644409991800785,
+            "mdpsolver_vi": 0.29788420000113547,
+            "mdptoolbox_vi": 0.27931029978208244
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "1322aad26e4577045706809f59e3d70402a0a0f149c1425849ef9aa2ab1b5c6f"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 2048
+        },
+        "state_dim": 2048,
+        "action_dim": 11,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 2.3823108705664344,
+          "mdpforge_vi": 0.6548974628154571,
+          "mdpsolver_vi": 1.8611555548491678,
+          "mdptoolbox_vi": 5.46206808462739
+        },
+        "predicted_max_runtime_seconds": 5.46206808462739,
+        "predicted_matrix_bytes": 3310589,
+        "predicted_build_seconds": 0.8465654994944647
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.1658332198236057,
+          "raw_time_power": 1.0060632674882655,
+          "time_power": 1.0060632674882655
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.1658332198236057,
+          "raw_time_power": 0.32687788553739544,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.1658332198236057,
+          "raw_time_power": 1.0084702818307538,
+          "time_power": 1.0084702818307538
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5731955509030078,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.1658332198236057,
+        "memory_state_power": 1.1461201583638516,
+        "build_state_power": 1.3642372930022388
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "tandem": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 9,
+          "nnz": 2602,
+          "bytes": 42060,
+          "build_seconds": 0.0505648001562804,
+          "times": {
+            "marmote_vi": 0.027973500080406666,
+            "mdpforge_vi": 0.05615260009653866,
+            "mdpsolver_vi": 0.019307399867102504,
+            "mdptoolbox_vi": 0.044349199859425426
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "07cf8ba1f7424264fb38cdd4f25c5da09a336300a76f310609d4400ece6e0bb0"
+        },
+        "medium": {
+          "states": 900,
+          "actions": 9,
+          "nnz": 23722,
+          "bytes": 381900,
+          "build_seconds": 0.4034434000495821,
+          "times": {
+            "marmote_vi": 0.2426932998932898,
+            "mdpforge_vi": 0.09474570001475513,
+            "mdpsolver_vi": 0.18837890005670488,
+            "mdptoolbox_vi": 0.5555251999758184
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "07cf8ba1f7424264fb38cdd4f25c5da09a336300a76f310609d4400ece6e0bb0"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 4500
+        },
+        "state_dim": 4624,
+        "action_dim": 9,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 1.2589411397115549,
+          "mdpforge_vi": 0.491481469046698,
+          "mdpsolver_vi": 1.0278428901873833,
+          "mdptoolbox_vi": 14.664065652047118
+        },
+        "predicted_max_runtime_seconds": 14.664065652047118,
+        "predicted_matrix_bytes": 1975075,
+        "predicted_build_seconds": 2.0728025353658532
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0058701009963158,
+          "raw_time_power": 0.9775661132510729,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0058701009963158,
+          "raw_time_power": 0.23669433361746384,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0058701009963158,
+          "raw_time_power": 1.0306971298830194,
+          "time_power": 1.0306971298830194
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5752300724117427,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0058701009963158,
+        "memory_state_power": 1.0040219132408443,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "tandem_choice": {
+      "measurements": {
+        "small": {
+          "states": 36,
+          "actions": 9,
+          "nnz": 954,
+          "bytes": 15372,
+          "build_seconds": 0.021059100050479174,
+          "times": {
+            "marmote_vi": 0.010233300039544702,
+            "mdpforge_vi": 0.05163950007408857,
+            "mdpsolver_vi": 0.008141499944031239,
+            "mdptoolbox_vi": 0.020331599982455373
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "a94dceb1488873ab25395b807b5c1eac28dad9695668b2568cd47c6c862c86f7"
+        },
+        "medium": {
+          "states": 100,
+          "actions": 25,
+          "nnz": 7450,
+          "bytes": 119500,
+          "build_seconds": 0.11912799999117851,
+          "times": {
+            "marmote_vi": 0.07828240003436804,
+            "mdpforge_vi": 0.13063049991615117,
+            "mdpsolver_vi": 0.05490370001643896,
+            "mdptoolbox_vi": 0.12244009994901717
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "a94dceb1488873ab25395b807b5c1eac28dad9695668b2568cd47c6c862c86f7"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 620
+        },
+        "state_dim": 625,
+        "action_dim": 25,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.49991337946610875,
+          "mdpforge_vi": 0.8342096645703276,
+          "mdpsolver_vi": 0.35061641196950344,
+          "mdptoolbox_vi": 4.782816404258483
+        },
+        "predicted_max_runtime_seconds": 4.782816404258483,
+        "predicted_matrix_bytes": 756945,
+        "predicted_build_seconds": 2.6664872816707117
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0117487693480063,
+          "raw_time_power": 0.9899625874076767,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0117487693480063,
+          "raw_time_power": 0.4515561206449636,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0117487693480063,
+          "raw_time_power": 0.9286240807132572,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5857985979779741,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0117487693480063,
+        "memory_state_power": 1.007307976790555,
+        "build_state_power": 1.6961421779232526
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "taxi": {
+      "measurements": {
+        "small": {
+          "states": 81,
+          "actions": 6,
+          "nnz": 486,
+          "bytes": 11688,
+          "build_seconds": 0.0035186000168323517,
+          "times": {
+            "marmote_vi": 0.008262499934062362,
+            "mdpforge_vi": 0.034495400032028556,
+            "mdpsolver_vi": 0.003930300008505583,
+            "mdptoolbox_vi": 0.024459899868816137
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "954af3c17248e67acaef254a7e3b3333b021e7b998d31573f05a8603b7b17acb"
+        },
+        "medium": {
+          "states": 981,
+          "actions": 6,
+          "nnz": 5886,
+          "bytes": 141288,
+          "build_seconds": 0.035298600094392896,
+          "times": {
+            "marmote_vi": 0.09630559990182519,
+            "mdpforge_vi": 0.06272339983843267,
+            "mdpsolver_vi": 0.04154290002770722,
+            "mdptoolbox_vi": 0.397449400043115
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "954af3c17248e67acaef254a7e3b3333b021e7b998d31573f05a8603b7b17acb"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 5869
+        },
+        "state_dim": 5781,
+        "action_dim": 6,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.5675256605835386,
+          "mdpforge_vi": 0.36962688528642124,
+          "mdpsolver_vi": 0.2448109123956936,
+          "mdptoolbox_vi": 13.802246193387202
+        },
+        "predicted_max_runtime_seconds": 13.802246193387202,
+        "predicted_matrix_bytes": 832605,
+        "predicted_build_seconds": 0.20801346294157524
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.9846342663525451,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.23972696027695817,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.9454267410403218,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5589203606038828,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "unichain": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 2,
+          "nnz": 200,
+          "bytes": 4808,
+          "build_seconds": 0.0006808999460190535,
+          "times": {
+            "marmote_vi": 0.00229530013166368,
+            "mdpforge_vi": 0.0015984999481588602,
+            "mdpsolver_vi": 0.0019563999958336353,
+            "mdptoolbox_vi": 0.011751299956813455
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "f594d3dfcf249479aa8c9805630818509ba58661f55d8c298d48adfc4974ee01"
+        },
+        "medium": {
+          "states": 1000,
+          "actions": 2,
+          "nnz": 2000,
+          "bytes": 48008,
+          "build_seconds": 0.003115599974989891,
+          "times": {
+            "marmote_vi": 0.0248472997918725,
+            "mdpforge_vi": 0.030558000085875392,
+            "mdpsolver_vi": 0.02821900020353496,
+            "mdptoolbox_vi": 0.17162780021317303
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "f594d3dfcf249479aa8c9805630818509ba58661f55d8c298d48adfc4974ee01"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 8000
+        },
+        "state_dim": 8000,
+        "action_dim": 2,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.21353612221183912,
+          "mdpforge_vi": 0.3584835276749657,
+          "mdpsolver_vi": 0.308073301643749,
+          "mdptoolbox_vi": 10.984179213643074
+        },
+        "predicted_max_runtime_seconds": 10.984179213643074,
+        "predicted_matrix_bytes": 384064,
+        "predicted_build_seconds": 0.02492479979991913
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 1.0344397183465763,
+          "time_power": 1.0344397183465763
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 1.1840949321163132,
+          "time_power": 1.1840949321163132
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 1.1495116270151684,
+          "time_power": 1.1495116270151684
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.5822508620641228,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "windgrid": {
+      "measurements": {
+        "small": {
+          "states": 100,
+          "actions": 4,
+          "nnz": 400,
+          "bytes": 9616,
+          "build_seconds": 0.0013615000061690807,
+          "times": {
+            "marmote_vi": 0.003607099875807762,
+            "mdpforge_vi": 0.000622499966993928,
+            "mdpsolver_vi": 0.0033898998517543077,
+            "mdptoolbox_vi": 0.020090699894353747
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "7b9212ed5536fd71cd1fec8e75a93f08cf2cb9200b9b81b2276bb04debc9d91f"
+        },
+        "medium": {
+          "states": 1023,
+          "actions": 4,
+          "nnz": 4092,
+          "bytes": 98224,
+          "build_seconds": 0.009213299956172705,
+          "times": {
+            "marmote_vi": 0.03285349998623133,
+            "mdpforge_vi": 0.002175400033593178,
+            "mdpsolver_vi": 0.03053290001116693,
+            "mdptoolbox_vi": 0.2707605001050979
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "7b9212ed5536fd71cd1fec8e75a93f08cf2cb9200b9b81b2276bb04debc9d91f"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 7451
+        },
+        "state_dim": 7482,
+        "action_dim": 4,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.24028336940076517,
+          "mdpforge_vi": 0.015910403764754794,
+          "mdpsolver_vi": 0.2233110047737546,
+          "mdptoolbox_vi": 14.483364075229078
+        },
+        "predicted_max_runtime_seconds": 14.483364075229078,
+        "predicted_matrix_bytes": 718389,
+        "predicted_build_seconds": 0.06738407651230124
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.9500412165231215,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.03615211024057766,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.9452462814765924,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.559271955606853,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    },
+    "wumpus_world": {
+      "measurements": {
+        "small": {
+          "states": 1024,
+          "actions": 6,
+          "nnz": 6144,
+          "bytes": 147480,
+          "build_seconds": 0.011445999843999743,
+          "times": {
+            "marmote_vi": 0.09501669998280704,
+            "mdpforge_vi": 0.06583119998686016,
+            "mdpsolver_vi": 0.09871029993519187,
+            "mdptoolbox_vi": 0.4886681002099067
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "fa3af006728594d39e59e5a6d412583380be0f176caf5adb6e369cd17ad1d1fc"
+        },
+        "medium": {
+          "states": 2304,
+          "actions": 6,
+          "nnz": 13824,
+          "bytes": 331800,
+          "build_seconds": 0.024528900161385536,
+          "times": {
+            "marmote_vi": 0.10778990015387535,
+            "mdpforge_vi": 0.0027427999302744865,
+            "mdpsolver_vi": 0.09888300020247698,
+            "mdptoolbox_vi": 1.3373225999530405
+          },
+          "trial_counts": {
+            "marmote_vi": 1,
+            "mdpforge_vi": 1,
+            "mdpsolver_vi": 1,
+            "mdptoolbox_vi": 1
+          },
+          "source_sha256": "fa3af006728594d39e59e5a6d412583380be0f176caf5adb6e369cd17ad1d1fc"
+        }
+      },
+      "failures": [],
+      "large": {
+        "parameters": {
+          "state_dim": 2915
+        },
+        "state_dim": 6400,
+        "action_dim": 6,
+        "predicted_runtime_seconds": {
+          "marmote_vi": 0.2994163893163204,
+          "mdpforge_vi": 0.007618888695206907,
+          "mdpsolver_vi": 0.27467500056243604,
+          "mdptoolbox_vi": 10.31884722185988
+        },
+        "predicted_max_runtime_seconds": 10.31884722185988,
+        "predicted_matrix_bytes": 921667,
+        "predicted_build_seconds": 0.06813583378162649
+      },
+      "fits": {
+        "marmote_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.15553902854329402,
+          "time_power": 1.0
+        },
+        "mdpforge_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": -3.9190975441844005,
+          "time_power": 1.0
+        },
+        "mdpsolver_vi": {
+          "workload_state_power": 1.0,
+          "raw_time_power": 0.002155596243999486,
+          "time_power": 1.0
+        },
+        "mdptoolbox_vi": {
+          "workload_state_power": 2.0,
+          "raw_time_power": 0.6207323928354086,
+          "time_power": 1.0
+        }
+      },
+      "assumptions": {
+        "transition_state_power": 1.0,
+        "memory_state_power": 1.0,
+        "build_state_power": 1.0
+      },
+      "reason": "Extrapolation prudente, non mesurée."
+    }
+  }
+}

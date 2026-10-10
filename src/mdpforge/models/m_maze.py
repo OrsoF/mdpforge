@@ -7,6 +7,24 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["navigation", "maze"],
+    "sizes": {
+        "small": {
+            "state_dim": 100,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 1023,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 6723,
+            "parameters": {"state_dim": 6674},
+            "source": "inferred",
+        },
+    },
     "category": "navigation",
     "description": "M-shaped maze with aliased local observations.",
     "reference": "McCallum (1996), U-Tree / UDM aliased maze variants.",

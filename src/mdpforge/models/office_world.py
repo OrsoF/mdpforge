@@ -7,6 +7,24 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["navigation", "grid-world"],
+    "sizes": {
+        "small": {
+            "state_dim": 100,
+            "parameters": {"state_dim": 100},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 1020,
+            "parameters": {"state_dim": 1000},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 6888,
+            "parameters": {"state_dim": 6885},
+            "source": "inferred",
+        },
+    },
     "category": "navigation",
     "description": "Collect mail and coffee before reaching an office destination.",
     "reference": (

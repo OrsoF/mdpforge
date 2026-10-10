@@ -97,6 +97,56 @@ def build_track(state_dim: int) -> np.ndarray:
 
 
 METADATA = {
+    "tags": ["navigation", "racetrack"],
+    "sizes": {
+        "small": {
+            "state_dim": 283,
+            "parameters": {
+                "custom_track": [
+                    [1, 1, 1],
+                    [1, 1, 1],
+                    [1, 1, 0],
+                ],
+                "state_dim": 100,
+            },
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 1231,
+            "parameters": {
+                "custom_track": [
+                    [1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 0],
+                ],
+                "state_dim": 1000,
+            },
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": 4211,
+            "parameters": {
+                "state_dim": 1000,
+                "custom_track": [
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                ],
+            },
+            "source": "inferred",
+        },
+    },
     "category": "navigation",
     "description": "Grid racetrack navigation with position and velocity states.",
     "reference": (

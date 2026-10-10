@@ -1,7 +1,8 @@
-"""Measure catalogue models at three requested sizes and append trials to CSV.
+"""Measure catalogue models at small and medium sizes and append trials to CSV.
 
 Run from the repository: conda run -n benchmark python benchmark_sizes.py
 Edit STATE_DIM_REQUESTS to change individual recipes after examining the CSV.
+Large sizes will be inferred later from these measurements, not benchmarked here.
 Timings include solver construction/backend conversion and run(), but exclude
 model copying, generation and independent Bellman-residual verification.
 """
@@ -22,8 +23,8 @@ from tempfile import TemporaryDirectory
 from time import perf_counter
 
 ROOT = Path(__file__).resolve().parent
-SIZES = ("small", "medium", "large")
-DEFAULT_STATE_DIMS = (100, 1000, 5000)
+SIZES = ("small", "medium")
+DEFAULT_STATE_DIMS = (100, 1000)
 DEFAULT_SOLVERS = (
     "mdpforge_vi", "mdptoolbox_vi", "marmote_vi", "mdpsolver_vi"
 )
@@ -31,24 +32,24 @@ DEFAULT_SOLVERS = (
 # Constructor inputs, NOT guaranteed actual dimensions. None records an
 # unavailable size rather than inventing a scaled version of a fixed model.
 STATE_DIM_REQUESTS = {
-    "access_control": (10000, 250000, 1000000),
-    "ambulance": (10000, 40000, 160000),
-    "ambulance_relocation": (2500, 40000, 160000),
-    "block": (100, 400, 1200),
-    "blocks_world": (96, None, None),
-    "car_rental": (625, 4096, 20736),
-    "dam": (16, 81, 256),
-    "elevator": (100, 20000, None),
-    "garnet": (100, 200, 400),
-    "hexagonal_grid_soccer": (343, 6859, 50653),
-    "impatience": (100, 300, 1000),
-    "inventory_leadtime": (100, 10000, 250000),
-    "oil_discovery": (100, 300, 1000),
-    "peg_solitaire": (None, 512, None),
-    "sysadmin": (64, 512, 4096),
-    "tandem": (100, 900, 3600),
-    "tandem_choice": (36, 100, 400),
-    "wumpus_world": (512, 1024, 4096),
+    "access_control": (10000, 250000),
+    "ambulance": (10000, 40000),
+    "ambulance_relocation": (2500, 40000),
+    "block": (100, 400),
+    "blocks_world": (96, None),
+    "car_rental": (625, 4096),
+    "dam": (16, 81),
+    "elevator": (100, 20000),
+    "garnet": (100, 200),
+    "hexagonal_grid_soccer": (343, 6859),
+    "impatience": (100, 300),
+    "inventory_leadtime": (100, 10000),
+    "oil_discovery": (100, 300),
+    "peg_solitaire": (None, 512),
+    "sysadmin": (64, 512),
+    "tandem": (100, 900),
+    "tandem_choice": (36, 100),
+    "wumpus_world": (512, 1024),
 }
 
 FIELDS = (
@@ -244,14 +245,14 @@ def main(args):
                 (Path(models.__file__).parent / f"{name}.py").read_bytes()
             ).hexdigest()
             requests = STATE_DIM_REQUESTS.get(name, DEFAULT_STATE_DIMS)
-            for index, requested in enumerate(requests):
+            for size, requested in zip(SIZES, requests):
                 options = {"state_dim": requested}
                 if name == "sutton":
-                    side = (3, 6, 10)[index]
+                    side = {"small": 3, "medium": 6}[size]
                     options["custom_track"] = [[1] * side for _ in range(side)]
                     options["custom_track"][-1][-1] = 0
                 base = {
-                    "model": name, "size": SIZES[index],
+                    "model": name, "size": size,
                     "requested_state_dim": requested,
                     "constructor_options": json.dumps(options, sort_keys=True),
                     "model_seed": args.seed, "source_sha256": source_hash,
@@ -277,7 +278,7 @@ def main(args):
                           "error": "No distinct usable size specified for this recipe"})
                     continue
                 print(
-                    f"Building {name} / {SIZES[index]} (request={requested})",
+                    f"Building {name} / {size} (request={requested})",
                     flush=True,
                 )
                 with TemporaryDirectory(prefix="size-scan-", dir=scratch) as directory:

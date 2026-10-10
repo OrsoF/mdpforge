@@ -7,6 +7,25 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
+    "tags": ["games"],
+    "sizes": {
+        "small": {
+            "state_dim": 343,
+            "parameters": {"state_dim": 343},
+            "source": "measured",
+        },
+        "medium": {
+            "state_dim": 6859,
+            "parameters": {"state_dim": 6859},
+            "source": "measured",
+        },
+        "large": {
+            "state_dim": None,
+            "parameters": None,
+            "source": "unavailable",
+            "reason": "Aucun palier supérieur ne respecte la marge et les limites d'extrapolation.",
+        },
+    },
     "category": "games",
     "description": "Single-agent soccer on a hexagonal grid with a defending opponent.",
     "reference": (
