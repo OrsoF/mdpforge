@@ -1,26 +1,31 @@
+from array import array
+from itertools import combinations
+from typing import Optional
+
 import numpy as np
-from scipy.sparse import lil_matrix
+from scipy.sparse import csr_matrix
 
 from mdpforge.core.mdp import MDP
+
+TEST_PARAMETERS = {"state_dim": 176, "action_dim": 5}
 
 METADATA = {
     "tags": ["control", "real-world"],
     "sizes": {
         "small": {
-            "state_dim": 272,
-            "parameters": {"state_dim": 100},
-            "source": "measured",
+            "state_dim": 176,
+            "parameters": {"state_dim": 176},
+            "source": "analytical",
         },
         "medium": {
-            "state_dim": 2176,
-            "parameters": {"state_dim": 20000},
-            "source": "measured",
+            "state_dim": 1664,
+            "parameters": {"state_dim": 1664},
+            "source": "analytical",
         },
         "large": {
-            "state_dim": None,
-            "parameters": None,
-            "source": "unavailable",
-            "reason": "Le constructeur ne propose que 3 ou 4 étages ; medium est déjà le maximum.",
+            "state_dim": 14592,
+            "parameters": {"state_dim": 14592},
+            "source": "analytical",
         },
     },
     "category": "control",
@@ -32,6 +37,7 @@ METADATA = {
         "Elevator Control."
     ),
 }
+
 
 
 class Model(MDP):
@@ -84,9 +90,21 @@ class Model(MDP):
         4 = wait
 
     Notes:
-        This is a compact benchmark implementation, not a full traffic simulator.
-        It includes stochastic destination choice when a passenger is picked up,
-        but does not inject new exogenous hall calls after initialization.
+        This is a benchmark, not a full traffic simulator: calls are not created
+        after initialization. state_dim is the EXACT number of states, including
+        for sizes that do not correspond to a complete floor configuration.
+
+        Floors are chosen to accommodate the requested size. States are selected
+        by increasing number of pending requests, so the smallest models capture
+        simpler traffic first. For a partial state space, an outcome that leaves
+        the selected states is converted to a penalized self-loop, preserving
+        stochastic row sums. Thus non-complete sizes define finite, truncated
+        MDPs, NOT exact versions of the full-floor model.
+
+        Complete state spaces (with no truncated transitions) have sizes
+        176, 1664, 14592, 122880, ... for 3, 4, 5, 6 floors, respectively.
+        Storage of the transition matrices is sparse, O(state_dim * n_floors),
+        rather than quadratic in state_dim.
     """
 
     MOVE_UP = 0
@@ -99,19 +117,50 @@ class Model(MDP):
     DIR_IDLE = 0
     DIR_UP = 1
 
-    def __init__(self, state_dim: int = 2304, action_dim: int = 10):
-        # The full 6-floor model in the paper is very large.
-        # For benchmark use, choose 3 floors by default.
-        #
-        # n=3 gives at most: 3 * 3 * 2^(4*(3-1)) = 2304 raw states.
-        # n=4 gives at most: 4 * 3 * 2^(12) = 49152 raw states.
-        if state_dim >= 20000:
-            self.n_floors = 4
-        else:
-            self.n_floors = 3
+    @staticmethod
+    def _full_state_count(n_floors: int) -> int:
+        """Valid states, excluding meaningless moving directions with no riders."""
+        if n_floors < 1:
+            raise ValueError("n_floors must be positive")
+        # Each of 2(n-1) hall bits is independent. For each floor: one idle
+        # state, and one state per NONEMPTY subset of upward/downward car calls.
+        return (1 << (2 * (n_floors - 1))) * (
+            (1 << (n_floors + 1)) - n_floors - 2
+        )
 
+    def __init__(
+        self,
+        state_dim: int = 2304,
+        action_dim: int = 5,
+        n_floors: Optional[int] = None,
+    ):
+        if isinstance(state_dim, (bool, np.bool_)) or not isinstance(
+            state_dim, (int, np.integer)
+        ) or state_dim < 1:
+            raise ValueError("state_dim must be a positive integer")
+        if action_dim != 5:
+            raise ValueError("The elevator has exactly 5 actions (action_dim=5)")
+        if n_floors is None:
+            # At least two floors unless a one-state model is requested.
+            n_floors = 1 if state_dim == 1 else 2
+            while self._full_state_count(n_floors) < state_dim:
+                n_floors += 1
+        elif (
+            isinstance(n_floors, (bool, np.bool_))
+            or not isinstance(n_floors, (int, np.integer))
+            or n_floors < 1
+        ):
+            raise ValueError("n_floors must be a positive integer")
+
+        self.n_floors = int(n_floors)
+        if state_dim > self._full_state_count(self.n_floors):
+            raise ValueError(
+                f"{self.n_floors} floors have only "
+                f"{self._full_state_count(self.n_floors)} valid states"
+            )
+
+        self.state_dim = int(state_dim)
         self.action_dim = 5
-
         self.dt = 1.0
         self.invalid_penalty = 10.0
         self.car_wait_penalty = 2.0
@@ -119,91 +168,142 @@ class Model(MDP):
 
         self.states = []
         self.state_to_id = {}
-
         self._enumerate_states()
-
-        self.state_dim = len(self.states)
-        self.name = "{}_{}_elevator".format(self.state_dim, self.action_dim)
+        assert len(self.states) == self.state_dim
+        self.name = f"{self.state_dim}_{self.action_dim}_elevator"
 
     def _build_model(self):
-        self.reward_matrix = np.zeros((self.state_dim, self.action_dim))
+        """Build one CSR matrix at a time, never a dense S x S matrix.
 
-        self.transition_matrix = [
-            lil_matrix((self.state_dim, self.state_dim)) for _ in range(self.action_dim)
-        ]
+        Missing next states can occur ONLY when the requested state_dim is
+        smaller than the complete space of the chosen number of floors.
+        Their probability is redirected to the current state with a penalty.
+        """
+        n = self.state_dim
+        self.reward_matrix = np.empty((n, self.action_dim), dtype=np.float64)
+        self.transition_matrix = []
 
-        for s_id, state in enumerate(self.states):
-            for action in range(self.action_dim):
-                transitions = self._transitions(state, action)
+        for action in range(self.action_dim):
+            indptr = np.empty(n + 1, dtype=np.int64)
+            indptr[0] = 0
+            indices = array("q")  # 64-bit index, even for large state spaces.
+            probabilities = array("d")
 
+            for sid, state in enumerate(self.states):
+                row = {}
                 expected_reward = 0.0
-                for next_state, prob, reward in transitions:
-                    next_id = self.state_to_id[next_state]
-                    self.transition_matrix[action][s_id, next_id] += prob
+                for next_state, prob, reward in self._transitions(state, action):
+                    next_id = self.state_to_id.get(next_state)
+                    if next_id is None:
+                        next_id = sid
+                        reward -= self.invalid_penalty
+                    row[next_id] = row.get(next_id, 0.0) + prob
                     expected_reward += prob * reward
 
-                self.reward_matrix[s_id, action] = expected_reward
+                # Aggregate duplicate destinations before constructing CSR.
+                for next_id, prob in sorted(row.items()):
+                    indices.append(next_id)
+                    probabilities.append(prob)
+                indptr[sid + 1] = len(indices)
+                self.reward_matrix[sid, action] = expected_reward
 
-        self.transition_matrix = [matrix.tocsr() for matrix in self.transition_matrix]
+            self.transition_matrix.append(
+                csr_matrix(
+                    (
+                        np.asarray(probabilities),
+                        np.asarray(indices),
+                        indptr,
+                    ),
+                    shape=(n, n),
+                )
+            )
+
+    @staticmethod
+    def _mask_combinations(positions, count):
+        """Enumerate masks with exactly `count` set bits at given positions."""
+        for selected in combinations(positions, count):
+            mask = 0
+            for bit in selected:
+                mask |= 1 << bit
+            yield mask
 
     def _enumerate_states(self):
-        n = self.n_floors
-        mask_size = n - 1
-        max_mask = 1 << mask_size
+        """Generate only requested states, never a Cartesian mask product.
 
-        for floor in range(n):
-            for direction in (self.DIR_DOWN, self.DIR_IDLE, self.DIR_UP):
-                for up_car in range(max_mask):
-                    for down_car in range(max_mask):
-                        for up_hall in range(max_mask):
-                            for down_hall in range(max_mask):
-                                state = (
+        All states have consistent direction and onboard passenger requests.
+        Ordering by pending-call count provides useful low-load states even
+        when state_dim is much smaller than a full n-floor configuration.
+        """
+        n = self.n_floors
+        hall_bits = n - 1
+        hall_positions = range(2 * hall_bits)
+        hall_split_mask = (1 << hall_bits) - 1
+
+        def add(state):
+            self.state_to_id[state] = len(self.states)
+            self.states.append(state)
+            return len(self.states) == self.state_dim
+
+        # At most 2(n-1) hall requests plus n-1 car destinations.
+        for n_calls in range(3 * hall_bits + 1):
+            for floor in range(n):
+                # Idle: no onboard passengers. Prioritize all floors first.
+                if n_calls <= 2 * hall_bits:
+                    for hall_mask in self._mask_combinations(
+                        hall_positions, n_calls
+                    ):
+                        if add((floor, self.DIR_IDLE, 0, 0,
+                                hall_mask & hall_split_mask,
+                                hall_mask >> hall_bits)):
+                            return
+
+                # Moving: at least one onboard destination in the indicated
+                # direction, and every destination must be ahead of the car.
+                for direction, car_positions in (
+                    (self.DIR_UP, range(floor, hall_bits)),
+                    (self.DIR_DOWN, range(floor)),
+                ):
+                    for n_car in range(1, min(n_calls, len(car_positions)) + 1):
+                        n_hall = n_calls - n_car
+                        if n_hall > 2 * hall_bits:
+                            continue
+                        for car_mask in self._mask_combinations(
+                            car_positions, n_car
+                        ):
+                            for hall_mask in self._mask_combinations(
+                                hall_positions, n_hall
+                            ):
+                                if add((
                                     floor,
                                     direction,
-                                    up_car,
-                                    down_car,
-                                    up_hall,
-                                    down_hall,
-                                )
+                                    car_mask if direction == self.DIR_UP else 0,
+                                    car_mask if direction == self.DIR_DOWN else 0,
+                                    hall_mask & hall_split_mask,
+                                    hall_mask >> hall_bits,
+                                )):
+                                    return
 
-                                if self._is_valid_state(state):
-                                    self.state_to_id[state] = len(self.states)
-                                    self.states.append(state)
+        raise RuntimeError("State enumeration ended before state_dim was reached")
 
     def _is_valid_state(self, state):
         floor, direction, up_car, down_car, up_hall, down_hall = state
-
-        if not (0 <= floor < self.n_floors):
+        n = self.n_floors
+        mask_limit = 1 << (n - 1)
+        if not (0 <= floor < n):
             return False
-
-        if direction not in (self.DIR_DOWN, self.DIR_IDLE, self.DIR_UP):
+        if any(mask < 0 or mask >= mask_limit for mask in (
+            up_car, down_car, up_hall, down_hall
+        )):
             return False
-
-        # Idle car should not contain passengers / car calls.
-        if direction == self.DIR_IDLE and (up_car != 0 or down_car != 0):
-            return False
-
-        # Moving up cannot have down-car passengers.
-        if direction == self.DIR_UP and down_car != 0:
-            return False
-
-        # Moving down cannot have up-car passengers.
-        if direction == self.DIR_DOWN and up_car != 0:
-            return False
-
-        # If moving up, only destinations above current floor are admissible.
+        if direction == self.DIR_IDLE:
+            return up_car == down_car == 0
         if direction == self.DIR_UP:
-            for dest in self._up_car_destinations(up_car):
-                if dest <= floor:
-                    return False
-
-        # If moving down, only destinations below current floor are admissible.
+            # No downward riders, no upward destinations at/below floor.
+            return down_car == 0 and up_car != 0 and up_car % (1 << floor) == 0
         if direction == self.DIR_DOWN:
-            for dest in self._down_car_destinations(down_car):
-                if dest >= floor:
-                    return False
-
-        return True
+            # No upward riders, no downward destinations at/above floor.
+            return up_car == 0 and down_car != 0 and down_car < (1 << floor)
+        return False
 
     def _transitions(self, state, action):
         if action == self.MOVE_UP:
@@ -394,34 +494,13 @@ class Model(MDP):
 
     def _normalize_state(self, state):
         floor, direction, up_car, down_car, up_hall, down_hall = state
-
         if up_car == 0 and down_car == 0:
             direction = self.DIR_IDLE
-
-        if direction == self.DIR_IDLE:
-            up_car = 0
-            down_car = 0
-
         normalized = (
-            floor,
-            direction,
-            up_car,
-            down_car,
-            up_hall,
-            down_hall,
+            floor, direction, up_car, down_car, up_hall, down_hall
         )
-
-        if normalized not in self.state_to_id:
-            # Conservative fallback: make the car idle and drop invalid car calls.
-            normalized = (
-                floor,
-                self.DIR_IDLE,
-                0,
-                0,
-                up_hall,
-                down_hall,
-            )
-
+        if not self._is_valid_state(normalized):
+            raise ValueError(f"Invalid transition target: {normalized}")
         return normalized
 
     def _up_car_destinations(self, up_car):

@@ -80,6 +80,10 @@ and terminates the worker only, not subprocesses launched by a custom solver.
 
 ## Define an MDP
 
+For a new catalogue recipe, follow the
+[model contribution requirements](docs/adding-a-model.md): scientific definition,
+construction interface, metadata, size presets, reproducibility and validation.
+
 - `transitions[action]`: an `(S, S)` matrix, dense or sparse.
 - `reward[state, action]`: expected immediate rewards, shape `(S, A)`.
 
@@ -89,8 +93,10 @@ Use `from mdpforge import list_models`, then `list_models(category="navigation")
 to browse descriptions and declared references without building models.
 Each recipe exposes a literal `METADATA` dict with `category`, `description`,
 `reference`, `tags` and `sizes`. Each size preset contains its expected actual
-`state_dim`, constructor `parameters`, and `source` (`measured`, `inferred` or
-`unavailable`). Constructor inputs can differ from the resulting dimensions.
+`state_dim`, constructor `parameters`, and `source` (`measured`, `inferred`,
+`configured`, `analytical`, `parameterized` or `unavailable`). Configured,
+analytical and parameterized sizes describe dimension choices without measured
+solver runtimes. Constructor inputs can differ from the resulting dimensions.
 Unavailable presets have `parameters=None` and a reason. Missing tags/sizes in
 new recipes default to empty collections; other missing fields are `None`.
 
@@ -113,12 +119,31 @@ inspired by real systems. Unknown size/type labels raise `ValueError`.
 Unavailable presets are excluded; dependency and construction errors propagate.
 Use `save=False` to avoid writing newly built matrices (existing caches are read).
 
-Small and medium presets use the recorded calibration sizes; 45 large presets
-are extrapolated from those measurements at discount `0.99`, precision `1e-3`
-and one thread. Large presets aim at a 30-second solver budget with a 15-second
-forecast margin. These timings are hardware dependent and do not cover failed
-backends or algorithms other than the measured VI variants. The existing
+Calibrated presets use measurements at discount `0.99`, precision `1e-3`
+and one thread. Inferred large presets aim at a 30-second solver budget with a
+15-second forecast margin. These timings are hardware dependent and do not cover
+failed backends or algorithms other than the measured VI variants. The existing
 `utils.persistence.load_model(model)` remains the internal cache loader.
+
+Check current presets from the repository root:
+
+```text
+conda run -n benchmark python check_model_sizes.py --dimensions-only
+conda run -n benchmark python check_model_sizes.py --sizes large
+```
+
+The first command checks constructor dimensions for all three sizes without
+building matrices. The second validates large matrices and measures the four
+calibration solvers, sequentially, with an independent Bellman residual check.
+Use `--build-only` to validate matrices without running solvers, or `--models`
+to select recipes. Each stage runs in a subprocess with a 60-second timeout by
+default. Results append to `artifacts/results/model_size_<mode>.csv`; reruns resume
+completed cases. The modes are `dimensions`, `build` and `runtimes`.
+Changed model source or settings create new cases. Use a different `--output` to
+repeat unchanged cases. A nonzero exit code reports unavailable/failed presets
+or successful solves above the 1 / 5 / 30 second size budget.
+These commands read current `METADATA`, including configured presets; the older
+`inferred_environment_sizes.json` is a historical calibration snapshot.
 
 `MDP.get_config()` captures public parameters; override it for a custom configuration.
 Objects that cannot be serialized are identified by type in the manifest.

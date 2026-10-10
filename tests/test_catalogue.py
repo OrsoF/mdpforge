@@ -70,7 +70,13 @@ def test_catalogue_metadata_is_returned_independently():
                 assert preset["source"] == "unavailable" and preset["reason"]
             else:
                 assert preset["state_dim"] > 0
-                assert preset["source"] in {"measured", "inferred"}
+                assert preset["source"] in {
+                    "measured",
+                    "inferred",
+                    "configured",
+                    "analytical",
+                    "parameterized",
+                }
         assert entry["reference"] is None or isinstance(entry["reference"], str)
 
 

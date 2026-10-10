@@ -1,0 +1,46 @@
+{
+  "model": "inventory",
+  "source": "artifacts/results/model_sizes.csv",
+  "source_sha256": "870aa8068644f73f5f856d85dc185305f003d425ea8ba9f96b11f23de1349e4e",
+  "calibration_case_ids": {
+    "small": "562504f3fb706f0a7627fd6d",
+    "medium": "d5f8708374b2fc4a3bc77e9e"
+  },
+  "settings": {
+    "discount": "0.99",
+    "precision": "0.001",
+    "model_seed": "0",
+    "threads": "1"
+  },
+  "sizes": {
+    "small": {
+      "state_dim": 99,
+      "parameters": {
+        "state_dim": 100
+      },
+      "source": "measured"
+    },
+    "medium": {
+      "state_dim": 999,
+      "parameters": {
+        "state_dim": 1000
+      },
+      "source": "measured"
+    },
+    "large": {
+      "state_dim": 4595,
+      "parameters": {
+        "state_dim": 4595
+      },
+      "source": "inferred"
+    }
+  },
+  "large_forecast_seconds": {
+    "mdpforge_vi": 0.8318693576414651,
+    "mdptoolbox_vi": 14.496686747197398,
+    "marmote_vi": 1.610714233376024,
+    "mdpsolver_vi": 1.1056000405638067
+  },
+  "method": "Two-point power fit; transition-count workload except quadratic states for mdptoolbox; time exponent >= 1; 15 s forecast cap for 30 s budget, <= 8x medium states; candidate increments 20% of medium.",
+  "limitations": "One trial per point; heuristic extrapolation, large has not been timed."
+}

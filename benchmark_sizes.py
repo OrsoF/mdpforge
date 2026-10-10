@@ -78,13 +78,25 @@ def build_model(request):
         options["custom_track"] = np.asarray(options["custom_track"])
     start = perf_counter()
     model = module.Model(**options)
+    dimensions = {"state_dim": int(model.state_dim), "action_dim": int(model.action_dim)}
+    expected = request.get("expected_state_dim")
+    if expected is not None and model.state_dim != expected:
+        return {**dimensions, "status": "dimension_mismatch",
+                "error": f"Preset expects {expected} states, constructor gives {model.state_dim}"}
     if model.state_dim > request["max_states"]:
         return {"status": "size_limit", "state_dim": int(model.state_dim),
                 "action_dim": int(model.action_dim),
                 "error": f"Actual states exceed --max-states={request['max_states']}"}
+    if request.get("dimensions_only"):
+        return {**dimensions, "status": "success",
+                "build_seconds": perf_counter() - start}
     # A distinct name prevents loading reference caches or stale model parameters.
     model.name = f"size_scan_{request['case_id']}_{model.name}"
     model.create_model(save=False)
+    if expected is not None and model.state_dim != expected:
+        return {"status": "dimension_mismatch", "state_dim": int(model.state_dim),
+                "action_dim": int(model.action_dim),
+                "error": f"Preset expects {expected} states, built model gives {model.state_dim}"}
     build_seconds = perf_counter() - start
     model.test_model()
     digest = hashlib.sha256()

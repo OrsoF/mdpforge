@@ -16,6 +16,9 @@ changes that preserve scientific behavior and keep the project easy to extend.
 
 ## Preserve the scientific contract
 
+- When adding a catalogue model, follow [docs/adding-a-model.md](docs/adding-a-model.md).
+  Declare size presets and tags, justify unavailable sizes, and add a small test
+  instance with scientific validation. Preserve the validation execution rules below.
 - Keep numerical conventions, stopping criteria, reward scales, and RNG behavior
   unless the requested change requires otherwise.
 - Models expose `state_dim`, `action_dim`, `transition_matrix[action]`, and

@@ -1,5 +1,11 @@
 # Tailles large inférées
 
+**Archive de la première inférence.** Les recettes ont évolué depuis ce calcul,
+notamment Blocks World, Elevator, Peg Solitaire et Inventory. Les configurations
+actuelles sont celles de `METADATA` dans les fichiers modèles ; utiliser
+`check_model_sizes.py` pour les vérifier. Le JSON associé est conservé comme
+résultat historique, pas comme configuration de chargement actuelle.
+
 Source : [model_sizes.csv](model_sizes.csv). Les anciennes lignes large sont exclues.
 
 Cible : 30 s, prévision plafonnée à 15 s pour garder une marge. Même γ = 0,99, précision 10⁻³ et un thread. Les paramètres small/medium restent ceux mesurés ; ils ne sont pas recalibrés ici.
