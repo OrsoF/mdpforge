@@ -116,6 +116,7 @@ class Model(MDP):
             base_transition_matrix[np.maximum(0, states - q)] for q in actions
         ]
 
+
 def _build_base_kernel(N: int, p: float, lam: float, eps: float) -> csr_matrix:
     """Build sparse P[n, z] = Pr(X_next=z | n customers after service).
 

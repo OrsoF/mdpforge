@@ -25,9 +25,7 @@ from time import perf_counter
 ROOT = Path(__file__).resolve().parent
 SIZES = ("small", "medium")
 DEFAULT_STATE_DIMS = (100, 1000)
-DEFAULT_SOLVERS = (
-    "mdpforge_vi", "mdptoolbox_vi", "marmote_vi", "mdpsolver_vi"
-)
+DEFAULT_SOLVERS = ("mdpforge_vi", "mdptoolbox_vi", "marmote_vi", "mdpsolver_vi")
 
 # Constructor inputs, NOT guaranteed actual dimensions. None records an
 # unavailable size rather than inventing a scaled version of a fixed model.
@@ -54,12 +52,36 @@ STATE_DIM_REQUESTS = {
 }
 
 FIELDS = (
-    "case_id", "model", "size", "requested_state_dim", "constructor_options",
-    "model_seed", "source_sha256", "fingerprint", "state_dim", "action_dim",
-    "nnz", "matrix_bytes", "density", "build_seconds", "solver", "repeat",
-    "seed", "discount", "precision", "threads", "runtime", "wall_seconds",
-    "timeout_seconds", "build_timeout_seconds", "max_states", "max_matrix_mib",
-    "residual", "error_bound", "status", "error",
+    "case_id",
+    "model",
+    "size",
+    "requested_state_dim",
+    "constructor_options",
+    "model_seed",
+    "source_sha256",
+    "fingerprint",
+    "state_dim",
+    "action_dim",
+    "nnz",
+    "matrix_bytes",
+    "density",
+    "build_seconds",
+    "solver",
+    "repeat",
+    "seed",
+    "discount",
+    "precision",
+    "threads",
+    "runtime",
+    "wall_seconds",
+    "timeout_seconds",
+    "build_timeout_seconds",
+    "max_states",
+    "max_matrix_mib",
+    "residual",
+    "error_bound",
+    "status",
+    "error",
 )
 
 
@@ -71,40 +93,60 @@ def build_model(request):
     random.seed(request["model_seed"])
     for key, generator in list(vars(module).items()):
         if isinstance(generator, np.random.Generator):
-            setattr(module, key, np.random.Generator(
-                type(generator.bit_generator)(request["model_seed"])
-            ))
+            setattr(
+                module,
+                key,
+                np.random.Generator(
+                    type(generator.bit_generator)(request["model_seed"])
+                ),
+            )
     options = json.loads(request["constructor_options"])
     if "custom_track" in options:
         options["custom_track"] = np.asarray(options["custom_track"])
     start = perf_counter()
     model = module.Model(**options)
-    dimensions = {"state_dim": int(model.state_dim), "action_dim": int(model.action_dim)}
+    dimensions = {
+        "state_dim": int(model.state_dim),
+        "action_dim": int(model.action_dim),
+    }
     expected = request.get("expected_state_dim")
     if expected is not None and model.state_dim != expected:
-        return {**dimensions, "status": "dimension_mismatch",
-                "error": f"Preset expects {expected} states, constructor gives {model.state_dim}"}
+        return {
+            **dimensions,
+            "status": "dimension_mismatch",
+            "error": f"Preset expects {expected} states, constructor gives {model.state_dim}",
+        }
     if model.state_dim > request["max_states"]:
-        return {"status": "size_limit", "state_dim": int(model.state_dim),
-                "action_dim": int(model.action_dim),
-                "error": f"Actual states exceed --max-states={request['max_states']}"}
+        return {
+            "status": "size_limit",
+            "state_dim": int(model.state_dim),
+            "action_dim": int(model.action_dim),
+            "error": f"Actual states exceed --max-states={request['max_states']}",
+        }
     if request.get("dimensions_only"):
-        return {**dimensions, "status": "success",
-                "build_seconds": perf_counter() - start}
+        return {
+            **dimensions,
+            "status": "success",
+            "build_seconds": perf_counter() - start,
+        }
     # A distinct name prevents loading reference caches or stale model parameters.
     model.name = f"size_scan_{request['case_id']}_{model.name}"
     model.create_model(save=False)
     if expected is not None and model.state_dim != expected:
-        return {"status": "dimension_mismatch", "state_dim": int(model.state_dim),
-                "action_dim": int(model.action_dim),
-                "error": f"Preset expects {expected} states, built model gives {model.state_dim}"}
+        return {
+            "status": "dimension_mismatch",
+            "state_dim": int(model.state_dim),
+            "action_dim": int(model.action_dim),
+            "error": f"Preset expects {expected} states, built model gives {model.state_dim}",
+        }
     build_seconds = perf_counter() - start
     model.test_model()
     digest = hashlib.sha256()
     digest.update(f"{model.state_dim},{model.action_dim}".encode())
     arrays = [model.reward_matrix] + [
         getattr(matrix, field)
-        for matrix in model.transition_matrix for field in ("data", "indices", "indptr")
+        for matrix in model.transition_matrix
+        for field in ("data", "indices", "indptr")
     ]
     for array in arrays:
         digest.update(str((array.shape, array.dtype.str)).encode())
@@ -112,15 +154,21 @@ def build_model(request):
     nnz = sum(matrix.nnz for matrix in model.transition_matrix)
     matrix_bytes = sum(array.nbytes for array in arrays)
     metadata = {
-        "status": "success", "build_seconds": build_seconds,
-        "state_dim": int(model.state_dim), "action_dim": int(model.action_dim),
-        "nnz": int(nnz), "matrix_bytes": int(matrix_bytes),
-        "density": nnz / (model.state_dim ** 2 * model.action_dim),
+        "status": "success",
+        "build_seconds": build_seconds,
+        "state_dim": int(model.state_dim),
+        "action_dim": int(model.action_dim),
+        "nnz": int(nnz),
+        "matrix_bytes": int(matrix_bytes),
+        "density": nnz / (model.state_dim**2 * model.action_dim),
         "fingerprint": digest.hexdigest(),
     }
-    if matrix_bytes > request["max_matrix_mib"] * 1024 ** 2:
-        return {**metadata, "status": "memory_limit",
-                "error": "Built matrices exceed --max-matrix-mib"}
+    if matrix_bytes > request["max_matrix_mib"] * 1024**2:
+        return {
+            **metadata,
+            "status": "memory_limit",
+            "error": "Built matrices exceed --max-matrix-mib",
+        }
     with Path(request["model_path"]).open("wb") as handle:
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
     return metadata
@@ -149,20 +197,31 @@ def solve_model(request):
         )
         solver.run()
     except Exception as exc:
-        return {"status": "error", "runtime": perf_counter() - start,
-                "error": f"{type(exc).__name__}: {exc}"}
+        return {
+            "status": "error",
+            "runtime": perf_counter() - start,
+            "error": f"{type(exc).__name__}: {exc}",
+        }
     runtime = perf_counter() - start
     value = np.asarray(solver.value)
     if value.shape != (reference.state_dim,) or not np.all(np.isfinite(value)):
-        return {"status": "invalid_value", "runtime": runtime,
-                "error": "Value must be a finite vector of actual state_dim"}
-    residual = float(np.max(np.abs(optimal_bellman_operator(
-        reference, value, request["discount"]
-    ) - value)))
+        return {
+            "status": "invalid_value",
+            "runtime": runtime,
+            "error": "Value must be a finite vector of actual state_dim",
+        }
+    residual = float(
+        np.max(
+            np.abs(
+                optimal_bellman_operator(reference, value, request["discount"]) - value
+            )
+        )
+    )
     error_bound = residual / (1 - request["discount"])
     success = np.isfinite(error_bound) and error_bound <= request["precision"]
     return {
-        "runtime": runtime, "residual": residual if np.isfinite(residual) else None,
+        "runtime": runtime,
+        "residual": residual if np.isfinite(residual) else None,
         "error_bound": error_bound if np.isfinite(error_bound) else None,
         "status": "success" if success else "imprecise",
         "error": "" if success else "Bellman residual exceeds target precision",
@@ -185,29 +244,47 @@ def run_worker(stage, request, folder, timeout):
     start = perf_counter()
     with (folder / f"{stem}.log").open("w", encoding="utf-8") as log:
         process = subprocess.Popen(
-            [sys.executable, str(Path(__file__).resolve()), "--worker",
-             stage, str(input_path), str(result_path)],
-            cwd=ROOT, stdout=log, stderr=subprocess.STDOUT,
-            env={**os.environ, "OPENBLAS_NUM_THREADS": str(request["threads"]),
-                 "OMP_NUM_THREADS": str(request["threads"]),
-                 "MKL_NUM_THREADS": str(request["threads"])},
+            [
+                sys.executable,
+                str(Path(__file__).resolve()),
+                "--worker",
+                stage,
+                str(input_path),
+                str(result_path),
+            ],
+            cwd=ROOT,
+            stdout=log,
+            stderr=subprocess.STDOUT,
+            env={
+                **os.environ,
+                "OPENBLAS_NUM_THREADS": str(request["threads"]),
+                "OMP_NUM_THREADS": str(request["threads"]),
+                "MKL_NUM_THREADS": str(request["threads"]),
+            },
         )
         try:
             process.wait(timeout=timeout)
         except subprocess.TimeoutExpired:
-            return {"status": f"{stage}_timeout",
-                    "wall_seconds": perf_counter() - start,
-                    "error": f"Process exceeded {timeout:g} s"}
+            return {
+                "status": f"{stage}_timeout",
+                "wall_seconds": perf_counter() - start,
+                "error": f"Process exceeded {timeout:g} s",
+            }
         finally:
             if process.poll() is None:
                 process.kill()
                 process.wait()
     if process.returncode or not result_path.exists():
-        return {"status": "process_error", "wall_seconds": perf_counter() - start,
-                "error": f"Exit code {process.returncode}: " +
-                (folder / f"{stem}.log").read_text(encoding="utf-8")[-2000:]}
-    return {**json.loads(result_path.read_text(encoding="utf-8")),
-            "wall_seconds": perf_counter() - start}
+        return {
+            "status": "process_error",
+            "wall_seconds": perf_counter() - start,
+            "error": f"Exit code {process.returncode}: "
+            + (folder / f"{stem}.log").read_text(encoding="utf-8")[-2000:],
+        }
+    return {
+        **json.loads(result_path.read_text(encoding="utf-8")),
+        "wall_seconds": perf_counter() - start,
+    }
 
 
 def main(args):
@@ -216,10 +293,15 @@ def main(args):
     from mdpforge import list_models, models, solvers
 
     catalogue = {entry["name"] for entry in list_models()}
-    names = sorted(catalogue) if args.models is None else list(dict.fromkeys(args.models))
+    names = (
+        sorted(catalogue) if args.models is None else list(dict.fromkeys(args.models))
+    )
     args.solvers = list(dict.fromkeys(args.solvers))
-    solver_names = {m.name for m in iter_modules(solvers.__path__)
-                    if not m.ispkg and not m.name.startswith("_")}
+    solver_names = {
+        m.name
+        for m in iter_modules(solvers.__path__)
+        if not m.ispkg and not m.name.startswith("_")
+    }
     if set(names) - catalogue or set(args.solvers) - solver_names:
         raise ValueError("Unknown model or solver name; use catalogue module names")
     output = args.output.resolve()
@@ -245,9 +327,9 @@ def main(args):
             writer.writerow(row)
             handle.flush()
             os.fsync(handle.fileno())
-            completed.add((
-                row["case_id"], row.get("solver", ""), str(row.get("repeat", ""))
-            ))
+            completed.add(
+                (row["case_id"], row.get("solver", ""), str(row.get("repeat", "")))
+            )
             label = f"{row['model']} / {row['size']} / {row.get('solver', 'build')}"
             seconds = row.get("runtime")
             timing = "" if seconds is None else f" ({seconds:.3f} s)"
@@ -261,11 +343,14 @@ def main(args):
             for size, requested in zip(SIZES, requests):
                 options = {"state_dim": requested}
                 base = {
-                    "model": name, "size": size,
+                    "model": name,
+                    "size": size,
                     "requested_state_dim": requested,
                     "constructor_options": json.dumps(options, sort_keys=True),
-                    "model_seed": args.seed, "source_sha256": source_hash,
-                    "discount": args.discount, "precision": args.precision,
+                    "model_seed": args.seed,
+                    "source_sha256": source_hash,
+                    "discount": args.discount,
+                    "precision": args.precision,
                     "threads": args.threads,
                     "timeout_seconds": args.timeout,
                     "build_timeout_seconds": args.build_timeout,
@@ -277,14 +362,22 @@ def main(args):
                 ).hexdigest()[:24]
                 if (base["case_id"], "", "") in completed:
                     continue
-                pending = [(solver, repeat) for solver in args.solvers
-                           for repeat in range(1, args.repeats + 1)
-                           if (base["case_id"], solver, str(repeat)) not in completed]
+                pending = [
+                    (solver, repeat)
+                    for solver in args.solvers
+                    for repeat in range(1, args.repeats + 1)
+                    if (base["case_id"], solver, str(repeat)) not in completed
+                ]
                 if not pending:
                     continue
                 if requested is None:
-                    save({**base, "status": "unavailable_size",
-                          "error": "No distinct usable size specified for this recipe"})
+                    save(
+                        {
+                            **base,
+                            "status": "unavailable_size",
+                            "error": "No distinct usable size specified for this recipe",
+                        }
+                    )
                     continue
                 print(
                     f"Building {name} / {size} (request={requested})",
@@ -292,21 +385,40 @@ def main(args):
                 )
                 with TemporaryDirectory(prefix="size-scan-", dir=scratch) as directory:
                     folder = Path(directory)
-                    request = {**base, "model_path": str(folder / "model.pkl"),
-                               "max_states": args.max_states,
-                               "max_matrix_mib": args.max_matrix_mib}
+                    request = {
+                        **base,
+                        "model_path": str(folder / "model.pkl"),
+                        "max_states": args.max_states,
+                        "max_matrix_mib": args.max_matrix_mib,
+                    }
                     metadata = run_worker("build", request, folder, args.build_timeout)
                     if metadata["status"] != "success":
                         save({**base, **metadata})
                         continue
-                    base.update({key: value for key, value in metadata.items()
-                                 if key not in {"status", "wall_seconds"}})
+                    base.update(
+                        {
+                            key: value
+                            for key, value in metadata.items()
+                            if key not in {"status", "wall_seconds"}
+                        }
+                    )
                     for solver, repeat in pending:
-                        trial = {**request, "solver": solver, "repeat": repeat,
-                                 "seed": args.seed + repeat - 1}
+                        trial = {
+                            **request,
+                            "solver": solver,
+                            "repeat": repeat,
+                            "seed": args.seed + repeat - 1,
+                        }
                         result = run_worker("solve", trial, folder, args.timeout)
-                        save({**base, "solver": solver, "repeat": repeat,
-                              "seed": trial["seed"], **result})
+                        save(
+                            {
+                                **base,
+                                "solver": solver,
+                                "repeat": repeat,
+                                "seed": trial["seed"],
+                                **result,
+                            }
+                        )
     print(f"CSV: {output}", flush=True)
 
 
@@ -334,12 +446,18 @@ def parse_args():
     args = parser.parse_args()
     if not args.worker:
         positive = (
-            args.precision, args.timeout, args.build_timeout, args.max_matrix_mib
+            args.precision,
+            args.timeout,
+            args.build_timeout,
+            args.max_matrix_mib,
         )
-        if (not math.isfinite(args.discount) or not 0 < args.discount < 1
+        if (
+            not math.isfinite(args.discount)
+            or not 0 < args.discount < 1
             or any(not math.isfinite(x) or x <= 0 for x in positive)
             or min(args.repeats, args.threads, args.max_states) < 1
-            or not 0 <= args.seed < 2**32 - args.repeats):
+            or not 0 <= args.seed < 2**32 - args.repeats
+        ):
             parser.error("Invalid discount, seed, precision, counts or limits")
     return args
 

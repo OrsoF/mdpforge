@@ -35,7 +35,6 @@ class Solver(GenericSolver):
         self.transitions, self.rewards = compute_marmote_args(self.model)
 
     def run(self):
-
         self.state_space = MarmoteInterval(0, int(self.model.state_dim - 1))
         self.action_space = MarmoteInterval(0, int(self.model.action_dim - 1))
 

@@ -48,7 +48,6 @@ class Model(MDP):
         self.name = "{}_{}_replacement".format(self.state_dim, self.action_dim)
 
     def _build_model(self):
-
         self.transition_matrix: list = [
             dok_array((self.state_dim, self.state_dim)) for _ in range(self.action_dim)
         ]

@@ -53,16 +53,15 @@ def list_models(
     if type is not None and not any(
         entry["category"] == type or type in entry["tags"] for entry in entries
     ):
-        raise ValueError(f"Unknown model type {type!r}; use list_models() to browse tags")
+        raise ValueError(
+            f"Unknown model type {type!r}; use list_models() to browse tags"
+        )
     return [
         entry
         for entry in entries
         if (category is None or entry["category"] == category)
         and (type is None or entry["category"] == type or type in entry["tags"])
-        and (
-            size is None
-            or entry["sizes"].get(size, {}).get("parameters") is not None
-        )
+        and (size is None or entry["sizes"].get(size, {}).get("parameters") is not None)
     ]
 
 

@@ -142,7 +142,9 @@ class Model(MDP):
         rewards = np.zeros(n_states, dtype=float)
         if final_state_index < n_states:
             rewards[final_state_index] = 1.0
-        self.reward_matrix = np.broadcast_to(rewards[:, None], (n_states, self.action_dim))
+        self.reward_matrix = np.broadcast_to(
+            rewards[:, None], (n_states, self.action_dim)
+        )
 
     def _is_action_valid(
         self, state: np.ndarray, direction: int, row: int, col: int

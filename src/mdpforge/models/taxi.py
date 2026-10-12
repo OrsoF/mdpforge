@@ -39,7 +39,6 @@ METADATA = {
 
 class Model(MDP):
     def __init__(self, state_dim: int = 500, action_dim: int = 10) -> None:
-
         self.grid_size = max(int(np.sqrt(state_dim // 20)), 1)
 
         self.base_state_dim = self.grid_size**2 * 20

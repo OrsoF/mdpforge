@@ -39,7 +39,6 @@ METADATA = {
 }
 
 
-
 class Model(MDP):
     """
     Elevator control finite MDP.
@@ -124,9 +123,7 @@ class Model(MDP):
             raise ValueError("n_floors must be positive")
         # Each of 2(n-1) hall bits is independent. For each floor: one idle
         # state, and one state per NONEMPTY subset of upward/downward car calls.
-        return (1 << (2 * (n_floors - 1))) * (
-            (1 << (n_floors + 1)) - n_floors - 2
-        )
+        return (1 << (2 * (n_floors - 1))) * ((1 << (n_floors + 1)) - n_floors - 2)
 
     def __init__(
         self,
@@ -134,9 +131,11 @@ class Model(MDP):
         action_dim: int = 5,
         n_floors: Optional[int] = None,
     ):
-        if isinstance(state_dim, (bool, np.bool_)) or not isinstance(
-            state_dim, (int, np.integer)
-        ) or state_dim < 1:
+        if (
+            isinstance(state_dim, (bool, np.bool_))
+            or not isinstance(state_dim, (int, np.integer))
+            or state_dim < 1
+        ):
             raise ValueError("state_dim must be a positive integer")
         if action_dim != 5:
             raise ValueError("The elevator has exactly 5 actions (action_dim=5)")
@@ -249,12 +248,17 @@ class Model(MDP):
             for floor in range(n):
                 # Idle: no onboard passengers. Prioritize all floors first.
                 if n_calls <= 2 * hall_bits:
-                    for hall_mask in self._mask_combinations(
-                        hall_positions, n_calls
-                    ):
-                        if add((floor, self.DIR_IDLE, 0, 0,
+                    for hall_mask in self._mask_combinations(hall_positions, n_calls):
+                        if add(
+                            (
+                                floor,
+                                self.DIR_IDLE,
+                                0,
+                                0,
                                 hall_mask & hall_split_mask,
-                                hall_mask >> hall_bits)):
+                                hall_mask >> hall_bits,
+                            )
+                        ):
                             return
 
                 # Moving: at least one onboard destination in the indicated
@@ -267,20 +271,20 @@ class Model(MDP):
                         n_hall = n_calls - n_car
                         if n_hall > 2 * hall_bits:
                             continue
-                        for car_mask in self._mask_combinations(
-                            car_positions, n_car
-                        ):
+                        for car_mask in self._mask_combinations(car_positions, n_car):
                             for hall_mask in self._mask_combinations(
                                 hall_positions, n_hall
                             ):
-                                if add((
-                                    floor,
-                                    direction,
-                                    car_mask if direction == self.DIR_UP else 0,
-                                    car_mask if direction == self.DIR_DOWN else 0,
-                                    hall_mask & hall_split_mask,
-                                    hall_mask >> hall_bits,
-                                )):
+                                if add(
+                                    (
+                                        floor,
+                                        direction,
+                                        car_mask if direction == self.DIR_UP else 0,
+                                        car_mask if direction == self.DIR_DOWN else 0,
+                                        hall_mask & hall_split_mask,
+                                        hall_mask >> hall_bits,
+                                    )
+                                ):
                                     return
 
         raise RuntimeError("State enumeration ended before state_dim was reached")
@@ -291,9 +295,10 @@ class Model(MDP):
         mask_limit = 1 << (n - 1)
         if not (0 <= floor < n):
             return False
-        if any(mask < 0 or mask >= mask_limit for mask in (
-            up_car, down_car, up_hall, down_hall
-        )):
+        if any(
+            mask < 0 or mask >= mask_limit
+            for mask in (up_car, down_car, up_hall, down_hall)
+        ):
             return False
         if direction == self.DIR_IDLE:
             return up_car == down_car == 0
@@ -496,9 +501,7 @@ class Model(MDP):
         floor, direction, up_car, down_car, up_hall, down_hall = state
         if up_car == 0 and down_car == 0:
             direction = self.DIR_IDLE
-        normalized = (
-            floor, direction, up_car, down_car, up_hall, down_hall
-        )
+        normalized = (floor, direction, up_car, down_car, up_hall, down_hall)
         if not self._is_valid_state(normalized):
             raise ValueError(f"Invalid transition target: {normalized}")
         return normalized

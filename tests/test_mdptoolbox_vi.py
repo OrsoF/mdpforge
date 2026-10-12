@@ -44,7 +44,9 @@ def test_sparse_vi_accuracy_and_preservation(discount, case, monkeypatch):
     solver = Solver(model, discount, final_precision=1e-5)
     solver.run()
     assert_allclose(solver.value, expected, atol=1e-5, rtol=0)
-    residual = optimal_bellman_operator(reference, solver.value, discount) - solver.value
+    residual = (
+        optimal_bellman_operator(reference, solver.value, discount) - solver.value
+    )
     assert np.abs(residual).max() <= 1e-5 * (1 - discount)
     assert_array_equal(solver.policy, np.zeros(2, dtype=int))
     assert_array_equal(model.reward_matrix, reference.reward_matrix)

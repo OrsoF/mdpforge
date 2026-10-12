@@ -126,9 +126,8 @@ class Model(MDP):
                 if a == 5 and self.n_levels > 1:
                     advance = (levels > 0) & (base_reward[a, local_ids] == 50.0)
                     next_states[:world_end][advance] = (
-                        (levels[advance] - 1) * self._LEVEL_SIZE
-                        + self._start_local
-                    )
+                        levels[advance] - 1
+                    ) * self._LEVEL_SIZE + self._start_local
 
             if self.n_preparation:
                 next_states[world_end:] = prep_ids
@@ -138,9 +137,8 @@ class Model(MDP):
                     # Enter the actual puzzle, not an arbitrary local state.
                     if self.n_levels:
                         next_states[world_end] = (
-                            (self.n_levels - 1) * self._LEVEL_SIZE
-                            + self._start_local
-                        )
+                            self.n_levels - 1
+                        ) * self._LEVEL_SIZE + self._start_local
                 # Below 96 states, the preparation chain ends in state 0.
                 if not self.n_levels:
                     next_states[0] = 0
@@ -170,9 +168,7 @@ class Model(MDP):
         focus, red_cover, blue_cover, holding, done = self._decode(local)
         if done:
             return s, 0.0
-        next_tuple, reward = self._step(
-            focus, red_cover, blue_cover, holding, action
-        )
+        next_tuple, reward = self._step(focus, red_cover, blue_cover, holding, action)
         if level > 0 and next_tuple[-1]:
             return (level - 1) * self._LEVEL_SIZE + self._start_local, reward
         return level * self._LEVEL_SIZE + self._encode(*next_tuple), reward

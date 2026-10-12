@@ -32,7 +32,9 @@ def preset_catalogue(tmp_path, monkeypatch):
             },
         },
     }
-    (tmp_path / "unichain.py").write_text(f"METADATA = {metadata!r}\n", encoding="utf-8")
+    (tmp_path / "unichain.py").write_text(
+        f"METADATA = {metadata!r}\n", encoding="utf-8"
+    )
     (tmp_path / "unavailable.py").write_text(
         "import missing_model_dependency\n"
         "METADATA = {'category': 'navigation', 'tags': ['maze']}\n",
@@ -49,7 +51,9 @@ def test_size_and_type_filters_do_not_import_models(preset_catalogue):
     assert [m["name"] for m in list_models(type="maze")] == ["unavailable"]
 
 
-@pytest.mark.parametrize("options", [{"size": "huge"}, {"type": "unknown"}, {"type": []}])
+@pytest.mark.parametrize(
+    "options", [{"size": "huge"}, {"type": "unknown"}, {"type": []}]
+)
 def test_bad_filters_fail_before_iteration(preset_catalogue, options):
     with pytest.raises(ValueError):
         load_model(**options)

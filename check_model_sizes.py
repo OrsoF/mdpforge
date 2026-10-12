@@ -89,7 +89,9 @@ def evaluate(case, args, completed):
             return
         base = {
             **case,
-            **{k: v for k, v in metadata.items() if k not in {"status", "wall_seconds"}},
+            **{
+                k: v for k, v in metadata.items() if k not in {"status", "wall_seconds"}
+            },
         }
         for solver, repeat in pending:
             trial = {
@@ -116,7 +118,9 @@ def main(args):
     from mdpforge import list_models, models, solvers
 
     catalogue = {entry["name"]: entry for entry in list_models()}
-    names = sorted(catalogue) if args.models is None else list(dict.fromkeys(args.models))
+    names = (
+        sorted(catalogue) if args.models is None else list(dict.fromkeys(args.models))
+    )
     if set(names) - catalogue.keys():
         raise ValueError(f"Unknown models: {sorted(set(names) - catalogue.keys())}")
     available_solvers = {
@@ -125,7 +129,9 @@ def main(args):
         if not module.ispkg and not module.name.startswith("_")
     }
     if set(args.solvers) - available_solvers:
-        raise ValueError(f"Unknown solvers: {sorted(set(args.solvers) - available_solvers)}")
+        raise ValueError(
+            f"Unknown solvers: {sorted(set(args.solvers) - available_solvers)}"
+        )
     output = args.output.resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
     completed = set()
@@ -148,7 +154,9 @@ def main(args):
             if parameters is not None and (
                 not isinstance(preset.get("state_dim"), int) or preset["state_dim"] <= 0
             ):
-                raise ValueError(f"{name}/{size}: missing or invalid expected state_dim")
+                raise ValueError(
+                    f"{name}/{size}: missing or invalid expected state_dim"
+                )
             case = {
                 "model": name,
                 "size": size,
@@ -163,7 +171,9 @@ def main(args):
                 "mode": (
                     "dimensions"
                     if args.dimensions_only
-                    else "build" if args.build_only else "solve"
+                    else "build"
+                    if args.build_only
+                    else "solve"
                 ),
                 "model_seed": args.seed,
                 "discount": args.discount,
@@ -194,7 +204,10 @@ def main(args):
                 completed.add((row["case_id"], row["solver"], row["repeat"]))
                 if row["case_id"] in selected and (
                     not row["solver"]
-                    or (row["solver"] in args.solvers and int(row["repeat"]) <= args.repeats)
+                    or (
+                        row["solver"] in args.solvers
+                        and int(row["repeat"]) <= args.repeats
+                    )
                 ):
                     account(row)
     with output.open("a", encoding="utf-8", newline="") as handle:
@@ -262,7 +275,9 @@ def parse_args():
     parser.add_argument("--build-timeout", type=float, default=60)
     parser.add_argument("--max-states", type=int, default=100000)
     parser.add_argument("--max-matrix-mib", type=float, default=256)
-    parser.add_argument("--jobs", type=int, default=4, help="Parallel constructor checks only")
+    parser.add_argument(
+        "--jobs", type=int, default=4, help="Parallel constructor checks only"
+    )
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     args.sizes = list(
@@ -272,7 +287,11 @@ def parse_args():
     )
     args.solvers = list(dict.fromkeys(args.solvers))
     suffix = (
-        "dimensions" if args.dimensions_only else "build" if args.build_only else "runtimes"
+        "dimensions"
+        if args.dimensions_only
+        else "build"
+        if args.build_only
+        else "runtimes"
     )
     args.output = args.output or ROOT / f"artifacts/results/model_size_{suffix}.csv"
     if (
@@ -281,7 +300,10 @@ def parse_args():
         or any(
             not math.isfinite(x) or x <= 0
             for x in (
-                args.precision, args.timeout, args.build_timeout, args.max_matrix_mib
+                args.precision,
+                args.timeout,
+                args.build_timeout,
+                args.max_matrix_mib,
             )
         )
         or min(args.repeats, args.threads, args.jobs, args.max_states) < 1

@@ -82,9 +82,7 @@ class Solver:
             )
         self.switch_to_vi_ratio = switch_to_vi_ratio
         self.stop_criterion = stop_criterion
-        self.shared_reward = np.all(
-            model.reward_matrix == model.reward_matrix[:, [0]]
-        )
+        self.shared_reward = np.all(model.reward_matrix == model.reward_matrix[:, [0]])
         self.partition = Partition(model)
         self.name = "EnvelopeVItiles" if refinement == "tiles" else "EnvelopeVI"
 
@@ -147,13 +145,15 @@ class Solver:
             y *= self.discount
             y += self._rewards[:, 0]
         else:
-            y = self._rewards[:, 0] + self.discount * np.asarray(
-                self._transitions[0] @ x
-            ).ravel()
+            y = (
+                self._rewards[:, 0]
+                + self.discount * np.asarray(self._transitions[0] @ x).ravel()
+            )
             for a in range(1, self._A):
-                z = self._rewards[:, a] + self.discount * np.asarray(
-                    self._transitions[a] @ x
-                ).ravel()
+                z = (
+                    self._rewards[:, a]
+                    + self.discount * np.asarray(self._transitions[a] @ x).ravel()
+                )
                 np.maximum(y, z, out=y)
         return y
 
@@ -184,7 +184,7 @@ class Solver:
     def _refine(self, signal: np.ndarray) -> bool:
         old_K = self.partition.n_regions
         if self.refinement == "tiles":
-            tiles = self.n_tiles or max(2, int(self.model.state_dim ** 0.25))
+            tiles = self.n_tiles or max(2, int(self.model.state_dim**0.25))
             self.partition.refine_by_tiles(signal, tiles)
         else:
             self.partition.refine_by_width(signal, self.refinement_width)
@@ -240,7 +240,9 @@ class Solver:
             lo = np.maximum(lo, r_lo)
             hi = np.minimum(hi, r_hi)
             if np.any(lo > hi + 1e-8):
-                raise FloatingPointError("Inconsistent certified bounds; check P and rewards")
+                raise FloatingPointError(
+                    "Inconsistent certified bounds; check P and rewards"
+                )
         else:
             self.residual_error_bound = None
 
@@ -249,7 +251,9 @@ class Solver:
         self.value = value
         # The estimate can differ from the envelope midpoint after polishing.
         # Its error is bounded by the furthest endpoint, not half the width.
-        interval_error = float(np.max(np.maximum(np.abs(value - lo), np.abs(value - hi))))
+        interval_error = float(
+            np.max(np.maximum(np.abs(value - lo), np.abs(value - hi)))
+        )
         self.certified_error = (
             interval_error
             if self.residual_error_bound is None
@@ -257,9 +261,9 @@ class Solver:
         )
         if self.certified_error > self.epsilon * (1 + 1e-10):
             raise ArithmeticError("Solver failed to meet its precision certificate")
-        self.policy = bellman_operator(
-            self.model, self.value, self.discount
-        ).argmax(axis=1)
+        self.policy = bellman_operator(self.model, self.value, self.discount).argmax(
+            axis=1
+        )
         self.runtime = perf_counter() - start
 
     def _ground_fallback(self, lo: np.ndarray, hi: np.ndarray):
@@ -312,7 +316,7 @@ class Solver:
             K = self._K
             self.region_history.append((K, gap))
             if self.verbose:
-                print(f"K={K:5d} gap={gap:.3e}, certificate={gap/2:.3e}")
+                print(f"K={K:5d} gap={gap:.3e}, certificate={gap / 2:.3e}")
 
             if K >= self.switch_to_vi_ratio * n:
                 ground_lo, ground_hi = self._ground_fallback(
@@ -349,9 +353,7 @@ class Solver:
             # Avoid building a nearly-full compressed model only to abandon
             # it at the next batch check.
             if self.partition.n_regions >= self.switch_to_vi_ratio * n:
-                ground_lo, ground_hi = self._ground_fallback(
-                    ground_lo, ground_hi
-                )
+                ground_lo, ground_hi = self._ground_fallback(ground_lo, ground_hi)
                 self._finish(ground_lo, ground_hi, start)
                 return
             self._precompute()
