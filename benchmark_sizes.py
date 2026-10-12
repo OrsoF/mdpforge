@@ -46,6 +46,7 @@ STATE_DIM_REQUESTS = {
     "inventory_leadtime": (100, 10000),
     "oil_discovery": (100, 300),
     "peg_solitaire": (None, 512),
+    "sutton": (315, 1260),
     "sysadmin": (64, 512),
     "tandem": (100, 900),
     "tandem_choice": (36, 100),
@@ -259,10 +260,6 @@ def main(args):
             requests = STATE_DIM_REQUESTS.get(name, DEFAULT_STATE_DIMS)
             for size, requested in zip(SIZES, requests):
                 options = {"state_dim": requested}
-                if name == "sutton":
-                    side = {"small": 3, "medium": 6}[size]
-                    options["custom_track"] = [[1] * side for _ in range(side)]
-                    options["custom_track"][-1][-1] = 0
                 base = {
                     "model": name, "size": size,
                     "requested_state_dim": requested,
