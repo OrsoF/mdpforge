@@ -213,23 +213,8 @@ def test_solver_contract(solver_module, chain, monkeypatch, request, tmp_path):
     monkeypatch.setattr(np.random, "randint", np.random.RandomState(0).randint)
     solver = solver_class(chain, discount, final_precision=1e-4)
     assert_model_unchanged(chain, reference_model)
-    known_sor_bug = solver_module == "mdpforge.solvers.mdpsolver_visor"
-    if known_sor_bug:
-        request.applymarker(
-            pytest.mark.xfail(
-                reason="Upstream MDPSolver VI/SOR bug on transient rewards",
-                raises=RuntimeError,
-                strict=True,
-            )
-        )
     try:
         solver.run()
-    except RuntimeError as exc:
-        if known_sor_bug:
-            assert str(exc) == ("VI precision not reached: error bound 91 > 0.0001"), (
-                f"Unexpected VISOR failure: {exc}"
-            )
-        raise
     finally:
         assert_model_unchanged(chain, reference_model)
     assert solver.value.shape == (chain.state_dim,)

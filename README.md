@@ -163,8 +163,6 @@ Custom names must be unique; extra keyword options are forwarded to the solver.
 Experimental: APIs and the catalogue may change. Only finite discounted MDPs
 (`0 < discount < 1`) are supported. Final value accuracy is checked independently;
 compare runs with `status="success"`. External solvers require their optional
-dependencies. MDPSolver 0.10.1 has a known VI/SOR (`mdpsolver_visor`) bug on
-transient rewards; the corresponding regression test is marked as an expected
-failure.
+dependencies. The MDPSolver integration requires version 0.10.2 or later.
 
 [MIT license](LICENSE).

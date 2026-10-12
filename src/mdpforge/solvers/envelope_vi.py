@@ -46,7 +46,7 @@ class Solver:
         stop_criterion: str = "residual",
     ):
         if not 0 < discount < 1:
-            raise ValueError("discount must belong to (0, 1)")
+            raise AssertionError("discount must belong to (0, 1)")
         if final_precision <= 0:
             raise ValueError("final_precision must be positive")
         if projected_steps < 1:
