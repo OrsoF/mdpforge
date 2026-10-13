@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-10-13T10:29:57.879141+00:00",
+  "design": "one-factor-at-a-time",
+  "anchor": {
+    "discount": 0.99,
+    "precision": 0.001
+  },
+  "discounts": [
+    0.5,
+    0.9,
+    0.95,
+    0.99,
+    0.995
+  ],
+  "precisions": [
+    0.01,
+    0.001,
+    0.0001,
+    1e-05
+  ],
+  "repeats": 3,
+  "seed": 0,
+  "model_seed": 0,
+  "threads": 1,
+  "timeout": null,
+  "models": [
+    {
+      "module": "garnet",
+      "parameters": {
+        "state_dim": 100,
+        "action_dim": 5
+      },
+      "label": "Garnet",
+      "name": "100_5_garnet_0.85_1.0",
+      "state_dim": 100,
+      "action_dim": 5
+    },
+    {
+      "module": "chain_walk",
+      "parameters": {
+        "state_dim": 100
+      },
+      "label": "Chain Walk",
+      "name": "100_2_chain_walk",
+      "state_dim": 100,
+      "action_dim": 2
+    },
+    {
+      "module": "rooms",
+      "parameters": {
+        "state_dim": 100
+      },
+      "label": "Rooms",
+      "name": "100_4_rooms",
+      "state_dim": 100,
+      "action_dim": 4
+    }
+  ],
+  "solvers": [
+    {
+      "module": "mdpforge_vi",
+      "family": "VI-like",
+      "label": "VI",
+      "color": "#2563eb",
+      "linestyle": "-",
+      "marker": "o"
+    },
+    {
+      "module": "aggregated_vi",
+      "family": "VI-like",
+      "label": "Aggregated VI",
+      "color": "#4c8bbb",
+      "linestyle": "--",
+      "marker": "s"
+    },
+    {
+      "module": "envelope_vi",
+      "family": "VI-like",
+      "label": "Envelope VI",
+      "color": "#153d8a",
+      "linestyle": ":",
+      "marker": "^"
+    },
+    {
+      "module": "mdpforge_pi",
+      "family": "PI",
+      "label": "PI \u00b7 sparse evaluation",
+      "color": "#008c87",
+      "linestyle": "-",
+      "marker": "D"
+    },
+    {
+      "module": "mdpforge_mpi",
+      "family": "MPI-like",
+      "label": "MPI",
+      "color": "#ce7611",
+      "linestyle": "-",
+      "marker": "o"
+    },
+    {
+      "module": "aggregated_mpi",
+      "family": "MPI-like",
+      "label": "Aggregated MPI",
+      "color": "#8a4b12",
+      "linestyle": "--",
+      "marker": "s"
+    },
+    {
+      "module": "gurobi_primal",
+      "family": "LP",
+      "label": "LP primal \u00b7 Gurobi",
+      "dependency": "gurobipy",
+      "color": "#875ac5",
+      "linestyle": "-",
+      "marker": "o"
+    },
+    {
+      "module": "gurobi_dual",
+      "family": "LP",
+      "label": "LP dual \u00b7 Gurobi",
+      "dependency": "gurobipy",
+      "color": "#533280",
+      "linestyle": "--",
+      "marker": "s"
+    }
+  ],
+  "omitted_solvers": [],
+  "runs": [
+    {
+      "file": "setting_00.csv",
+      "experiment_id": "cc7bd3f2-b495-4618-ab65-69c2cf1cc3c8",
+      "discount": 0.95,
+      "precision": 0.001
+    },
+    {
+      "file": "setting_01.csv",
+      "experiment_id": "64a39f5e-781a-4278-b155-a497859bd15a",
+      "discount": 0.995,
+      "precision": 0.001
+    },
+    {
+      "file": "setting_02.csv",
+      "experiment_id": "31399583-3b24-4f2b-9eca-64f1099d090a",
+      "discount": 0.99,
+      "precision": 0.001
+    },
+    {
+      "file": "setting_03.csv",
+      "experiment_id": "1c5ba3d1-c6e7-41c5-a4d5-59784eec4c3a",
+      "discount": 0.99,
+      "precision": 0.0001
+    },
+    {
+      "file": "setting_04.csv",
+      "experiment_id": "8a101ad4-03cf-473d-b1ae-406b1266991a",
+      "discount": 0.99,
+      "precision": 0.01
+    },
+    {
+      "file": "setting_05.csv",
+      "experiment_id": "ec791429-add5-471d-8dfd-faa1c3a3bdf5",
+      "discount": 0.5,
+      "precision": 0.001
+    },
+    {
+      "file": "setting_06.csv",
+      "experiment_id": "8767f541-08d8-4d5b-ae34-59d317c3dd68",
+      "discount": 0.9,
+      "precision": 0.001
+    },
+    {
+      "file": "setting_07.csv",
+      "experiment_id": "95b3ebcf-d049-47cb-ac64-dcd11e873c24",
+      "discount": 0.99,
+      "precision": 1e-05
+    }
+  ],
+  "warmup": {
+    "file": "warmup.csv",
+    "experiment_id": "f0636b4a-3931-4b2a-abe0-548eac116d62"
+  },
+  "complete": true
+}

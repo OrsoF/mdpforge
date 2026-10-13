@@ -7,11 +7,21 @@ A Python toolkit for comparing finite discounted MDP solvers at a shared target 
 [![CI](https://github.com/OrsoF/mdpforge/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/OrsoF/mdpforge/actions/workflows/ci.yml)
 [![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-![Median solver runtime relative to VI on Garnet, Chain Walk and Rooms](artifacts/figures/readme_heatmap.png)
+Bring an MDP to challenge existing solvers, or bring a solver to challenge existing MDPs.
 
-Compare runtime at the same target accuracy. Lower is faster; `FAIL` means a
-trial failed or missed the target. Discount `0.99`, precision `1e-3`, three trials,
-seed `0`. Timings depend on hardware; [trial results](artifacts/results/readme_benchmark.csv).
+| Your starting point | Try it | Share it |
+| --- | --- | --- |
+| A new MDP | [Benchmark your transition and reward matrices](#define-an-mdp) against catalogue solvers | [Contribute a reproducible model recipe](docs/adding-a-model.md) |
+| A new solver | [Register your solve function](#define-a-solver) and compare at a shared accuracy | Share the implementation, trial CSV and experiment manifest |
+
+![Paired trial speedups versus VI on Garnet, Chain Walk and Rooms, with repeat spread](artifacts/figures/readme_speedups.png)
+
+Compare runtime at the same target accuracy. Above 1× is faster than VI; large
+points show median paired trial speedups and bars show the observed min–max.
+Discount `0.99`, precision `1e-3`, three trials, seed `0`. These three small MDPs
+illustrate different winners, not a universal ranking. Timings depend on hardware;
+[trial results](artifacts/results/readme_benchmark.csv) ·
+[reproduce the figures](notebooks/visualize_results.ipynb).
 
 ## Install
 
@@ -64,6 +74,69 @@ provenance. Metadata is captured before timing. Model generation seeds are separ
 from trial seeds; fingerprints identify the actual data, without storing matrices.
 `Benchmark()` includes VI by default; use `verbose=True` to show progress.
 [Explore the notebook](notebooks/benchmark.ipynb) for catalogue comparisons and plots.
+
+## Explore the results
+
+[Open the visual gallery](notebooks/visualize_results.ipynb) to plot existing CSVs
+without running a benchmark. It exports PNG and SVG figures and explains how each
+view handles failed trials.
+
+| View | What it answers |
+| --- | --- |
+| Speedup with repeat spread | On which MDPs does my solver beat the reference? |
+| Performance profile | On what fraction of models is it within 2× of the fastest? |
+| Outcome breakdown | How many models pass every repeat, and where do trials fail? |
+| Runtime vs value-error bound | Do faster runs still meet the requested accuracy? |
+
+![Runtime versus certified value-error bound divided by target precision, for three MDPs](artifacts/figures/readme_accuracy.png)
+
+The dashed line is the accuracy target. Every point below it meets the requested
+value-error bound; that bound is not the unknown actual error. This uses the same
+saved trials as the speedup figure. The gallery's larger backend example is a
+**historical export with MDPSolver 0.10.1**, before the VISOR fix; rerun
+[the backend notebook](notebooks/benchmark_backends.ipynb) for current results.
+
+<details>
+<summary>See the original runtime heatmap</summary>
+
+![Median solver runtime relative to VI on Garnet, Chain Walk and Rooms](artifacts/figures/readme_heatmap.png)
+
+This saved heatmap shows median runtime / median VI runtime: lower is faster.
+Its ratio of medians differs from the median of paired trial speedups above.
+For a new run, use `bench.plot_heat(reference="VI")`; the current API displays
+speedup (higher is faster) by default and marks any failed repeat as `FAIL`.
+
+</details>
+
+See the [visualization roadmap](docs/visualization-roadmap.md) for suggested next
+experiments and contribution examples.
+
+## Study method, discount and precision
+
+[The sensitivity notebook](notebooks/solver_sensitivity.ipynb) compares eight
+implementations from four families: VI-like, PI, MPI-like and linear programming.
+It then varies discount at fixed precision, and precision at fixed discount,
+reusing the exact same matrices, native rewards and paired trial seeds.
+
+![Median runtimes on a fixed 100-state Garnet MDP while varying discount or final precision](artifacts/figures/readme_sensitivity.png)
+
+This illustration selects plain VI, PI, MPI and primal LP on one Garnet instance;
+the notebook retains all eight implementations and all three MDPs. The saved
+study contains 576 trials, three repeats per setting, with one thread. Every trial
+passed the independent Bellman-residual value-error check. The plots show medians
+and observed min–max spread, not confidence intervals or a universal family ranking.
+
+PI's sparse policy evaluation and the LP wrappers do not use `final_precision`
+as an iterative stopping tolerance; their achieved bounds can be much tighter
+than requested. Inspect the notebook's achieved-bound and failure tables when
+interpreting flat precision curves. Set `FULL_GRID=True` in a **new study** to
+investigate discount × precision interactions; the demo varies one factor at a time.
+
+[Raw trials and experiment manifests](artifacts/results/solver_sensitivity/study.json) ·
+[all methods at the shared accuracy target](artifacts/figures/sensitivity_methods.png) ·
+[all discount and precision sweeps](artifacts/figures/sensitivity_sweeps.png)
+
+## Limit each trial's runtime
 
 Use `bench.run(discount=0.9, timeout=60)` to limit each trial to 60 seconds in
 a dedicated process. The deadline includes child startup, model copying, solver

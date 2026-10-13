@@ -1,0 +1,303 @@
+{
+  "schema_version": 1,
+  "experiment_id": "1c5ba3d1-c6e7-41c5-a4d5-59784eec4c3a",
+  "created_at_utc": "2026-10-13T10:30:08.715574+00:00",
+  "settings": {
+    "discount": 0.99,
+    "precision": 0.0001,
+    "repeats": 3,
+    "seed": 0,
+    "trial_seeds": [
+      0,
+      1,
+      2
+    ],
+    "seed_scope": "solver trials; model generation is not reseeded",
+    "timeout": null,
+    "execution_mode": "in_process"
+  },
+  "models": {
+    "100_5_garnet_0.85_1.0": {
+      "class": "mdpforge.models.garnet.Model",
+      "source_sha256": "c9744ff8a5d0f9f3cd244e4ca9aa49be0e60b753ffa733f66b4ccffa0ae74853",
+      "state_dim": 100,
+      "action_dim": 5,
+      "config": {
+        "state_dim": 100,
+        "action_dim": 5,
+        "sparsity_transition": 0.85,
+        "reward_std": 1.0
+      },
+      "transition_sha256": [
+        "7c1a3f8f0dc6cb7c7bf71cd6fa4d5a0c2c2952b662c8c63dc8b132b57627df92",
+        "c0395c6eb4f4411515736a96960604c28dc5412e9034ca76fd06ba666d4b7574",
+        "0e1b6cb595c3e51fc4a34169d1d687b0c2723433146bb330be6d004e5fd9419b",
+        "714ebab078bcbd42173cd8ef5e9a274dbb833c97529062cb47554180e164051f",
+        "52a7271282615b1da11ca908fd1e35b1bc59499bd9e8db3a5d242ba5c20802c0"
+      ],
+      "reward_sha256": "b95728e077a8ce07443056990e858d01ee108696cb3b29bbb5244c5e1a3dde93",
+      "data_sha256": "fb82bef79d8b578229761249db5d471a1370cf048ab3824e32ed3203812869e6"
+    },
+    "100_2_chain_walk": {
+      "class": "mdpforge.models.chain_walk.Model",
+      "source_sha256": "41fb6035dc3d93f2623c9d30b14d942cec49bf1a8ec3e485e8c54e0d01083edf",
+      "state_dim": 100,
+      "action_dim": 2,
+      "config": {
+        "state_dim": 100,
+        "action_dim": 2,
+        "success_probability": 0.9
+      },
+      "transition_sha256": [
+        "ea853ca9fb23f870719bfa37a9538e802d91103aee874c5ebf50a16c5f2bf8fe",
+        "acd158c50569948b3a33647199d9a02ae5a2124fc0e560cade1e52df82578bf2"
+      ],
+      "reward_sha256": "0cc5bd892a7b71df9fba05a6ad70dd25c832a5d695708243fa52f028c59e633a",
+      "data_sha256": "86c6df59639257959575b3a75c725212b0450ae7d6a61b77c35797000a7e6a5e"
+    },
+    "100_4_rooms": {
+      "class": "mdpforge.models.rooms.Model",
+      "source_sha256": "aeb951ef8861e20df9d77d7f4c9962d71aa9802494f9e005986d89ed1a2f7132",
+      "state_dim": 100,
+      "action_dim": 4,
+      "config": {
+        "size_of_one_room": 5,
+        "n_doors": 1,
+        "action_dim": 4,
+        "state_dim": 100,
+        "side_size": 10,
+        "door_step": 2.5,
+        "doors_indices": [
+          2,
+          7
+        ]
+      },
+      "transition_sha256": [
+        "14e9bcc1f5b806bf6e219fab39aefcd3a88202d829e9ff8109133572a7551af0",
+        "555cbaaef1a1cde80c4bc977b47df693dbf377fcd9e73304fd03289681ee3c41",
+        "c7d093f000d7dc6ad86b0e2d29365a8d32d8524dd3b2d81c46e55b16d88bb94d",
+        "56c7759e6bda27b4ef039bf376d69bf73583b46ceef5521c0e561250cba0742b"
+      ],
+      "reward_sha256": "263f089aa241fbe135fc0fcc84ce9aef80a56c087ef64c151020121b15df501e",
+      "data_sha256": "fc18c0dd38602fb83fa4e9d985af9a8d1fa24d937f0fdcfacc5bae9c20b839d4"
+    }
+  },
+  "solvers": {
+    "mdpforge_vi": {
+      "callable": "mdpforge.solvers.mdpforge_vi.Solver",
+      "source_sha256": "793453e8e001c40026b5af8dac257e624aecbfe6e9b551c3102f1ee5fc4e27cb",
+      "options": {},
+      "parameters": {
+        "initial_value": null
+      }
+    },
+    "aggregated_vi": {
+      "callable": "mdpforge.solvers.aggregated_vi.Solver",
+      "source_sha256": "d254575fb4a0a58826aa8b64a1bb55d7a673ef125249b3035be38fe2037545ae",
+      "options": {},
+      "parameters": {
+        "verbose": false,
+        "bellman_updates": 10,
+        "refinement": "width",
+        "norm_method": "region_size",
+        "with_norm_weights": false,
+        "n_tiles": null,
+        "projected_steps": 100
+      }
+    },
+    "envelope_vi": {
+      "callable": "mdpforge.solvers.envelope_vi.Solver",
+      "source_sha256": "c51045c4b009f29a9c88b6f730ea3e2861a5ebdaff44e12583186f300de76d41",
+      "options": {},
+      "parameters": {
+        "verbose": false,
+        "refinement": "width",
+        "n_tiles": null,
+        "projected_steps": 100,
+        "refinement_width": null,
+        "switch_to_vi_ratio": 0.9,
+        "stop_criterion": "residual"
+      }
+    },
+    "mdpforge_pi": {
+      "callable": "mdpforge.solvers.mdpforge_pi.Solver",
+      "source_sha256": "b94873859fbbdd6093b5758a37b0b9c55e1512ce23b2a7725806393bbc238063",
+      "options": {},
+      "parameters": {}
+    },
+    "mdpforge_mpi": {
+      "callable": "mdpforge.solvers.mdpforge_mpi.Solver",
+      "source_sha256": "453364c97df1f8cf1398c26ecf0433b872872e65537d19ce15f577fcd7d92767",
+      "options": {},
+      "parameters": {}
+    },
+    "aggregated_mpi": {
+      "callable": "mdpforge.solvers.aggregated_mpi.Solver",
+      "source_sha256": "978a41abc258c4bf34ff581f036eebb3c3a9969fd1e14d77489f05852957a48b",
+      "options": {},
+      "parameters": {
+        "verbose": false,
+        "bellman_updates": 10,
+        "split_method": "width",
+        "n_tiles": null,
+        "projected_steps": 100
+      }
+    },
+    "gurobi_primal": {
+      "callable": "mdpforge.solvers.gurobi_primal.Solver",
+      "source_sha256": "f7208029467615ce522c300ceafd4c8ccf82d04ffc2209bb9679885ef3f7647e",
+      "options": {},
+      "parameters": {}
+    },
+    "gurobi_dual": {
+      "callable": "mdpforge.solvers.gurobi_dual.Solver",
+      "source_sha256": "39cb886974bb3ba70a9b5ad82444a07a3573c85b1267a2541cf545939959544f",
+      "options": {},
+      "parameters": {}
+    }
+  },
+  "environment": {
+    "python": "3.12.12",
+    "mdpforge": "0.1.0",
+    "numpy": "2.4.2",
+    "scipy": "1.17.0",
+    "threadpoolctl": "3.7.0",
+    "backends": {
+      "gurobipy": {
+        "distribution": "gurobipy",
+        "version": "13.0.1"
+      }
+    }
+  },
+  "machine": {
+    "os": "Windows",
+    "os_release": "11",
+    "architecture": "AMD64",
+    "processor": "Intel(R) Core(TM) i5-14600K",
+    "logical_cpu_count": 20,
+    "thread_environment": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null,
+      "BLIS_NUM_THREADS": null,
+      "VECLIB_MAXIMUM_THREADS": null,
+      "NUMEXPR_NUM_THREADS": null
+    },
+    "thread_pools": [
+      {
+        "user_api": "blas",
+        "internal_api": "mkl",
+        "num_threads": 1,
+        "prefix": "mkl_rt",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\mkl_rt.2.dll",
+        "version": "2025.3-Product",
+        "threading_layer": "intel"
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 1,
+        "prefix": "libiomp",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\libiomp5md.dll",
+        "version": null
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 1,
+        "prefix": "libomp",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\libomp.dll",
+        "version": null
+      },
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "num_threads": 1,
+        "prefix": "libscipy_openblas",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Lib\\site-packages\\scipy.libs\\libscipy_openblas-64eda39e79589aedb16f58e5547eb599.dll",
+        "version": "0.3.30",
+        "threading_layer": "pthreads",
+        "architecture": "Haswell"
+      }
+    ],
+    "capture_scope": "benchmark process before solver execution",
+    "numpy_build": {
+      "Compilers": {
+        "c": {
+          "name": "msvc",
+          "linker": "link",
+          "version": "19.44.35222",
+          "commands": "cl.exe"
+        },
+        "cython": {
+          "name": "cython",
+          "linker": "cython",
+          "version": "3.2.4",
+          "commands": "cython"
+        },
+        "c++": {
+          "name": "msvc",
+          "linker": "link",
+          "version": "19.44.35222",
+          "commands": "cl.exe"
+        }
+      },
+      "Machine Information": {
+        "host": {
+          "cpu": "x86_64",
+          "family": "x86_64",
+          "endian": "little",
+          "system": "windows"
+        },
+        "build": {
+          "cpu": "x86_64",
+          "family": "x86_64",
+          "endian": "little",
+          "system": "windows"
+        }
+      },
+      "Build Dependencies": {
+        "blas": {
+          "name": "blas",
+          "found": true,
+          "version": "3.9.0",
+          "detection method": "pkgconfig",
+          "include directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/include",
+          "lib directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib",
+          "openblas configuration": "unknown",
+          "pc file directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib/pkgconfig"
+        },
+        "lapack": {
+          "name": "lapack",
+          "found": true,
+          "version": "3.9.0",
+          "detection method": "pkgconfig",
+          "include directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/include",
+          "lib directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib",
+          "openblas configuration": "unknown",
+          "pc file directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib/pkgconfig"
+        }
+      },
+      "Python Information": {
+        "path": "C:/Users/orsof/anaconda3/envs/benchmark/python.exe",
+        "version": "3.12"
+      },
+      "SIMD Extensions": {
+        "baseline": [
+          "X86_V2"
+        ],
+        "found": [
+          "X86_V3"
+        ]
+      }
+    }
+  },
+  "code": {
+    "git": {
+      "commit": "7e955912f1440a24a03991ab18bda8e876aeba9c",
+      "dirty": true,
+      "diff_sha256": "6aa21202780d252cf9b4e6334ab345bfc84fb8f7ca2b6371cfa4c525aad2943c"
+    }
+  },
+  "results_file": "setting_03.csv"
+}
