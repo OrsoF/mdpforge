@@ -42,7 +42,6 @@ class Model(MDP):
     """
 
     def __init__(self, state_dim: int = 2500, action_dim: int = 10):
-        state_dim = int(np.sqrt(state_dim))
         self.state_dim = max(50, int(state_dim))
         self.action_dim = max(10, int(action_dim))
         self.name = f"{self.state_dim}_{self.action_dim}_ambulance_relocation"

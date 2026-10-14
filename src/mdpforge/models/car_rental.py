@@ -45,7 +45,6 @@ METADATA = {
 
 class Model(MDP):
     def __init__(self, state_dim: int = 625, action_dim: int = 10):
-        state_dim = int(np.sqrt(state_dim))
         requested_states = max(25, int(state_dim))
         side = max(5, int(round(np.sqrt(requested_states))))
 

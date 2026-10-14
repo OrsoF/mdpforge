@@ -45,7 +45,6 @@ class Model(MDP):
         if action_dim < 2:
             raise ValueError("ambulance requires at least two actions.")
 
-        self.state_dim = int(np.sqrt(state_dim))
         self.action_dim = action_dim
 
         self.name = "{}_{}_ambulance".format(self.state_dim, self.action_dim)
