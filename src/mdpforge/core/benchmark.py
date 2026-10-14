@@ -1,6 +1,5 @@
 """Benchmark finite discounted MDP solvers at a fixed value precision."""
 
-import csv
 import inspect
 import multiprocessing
 import pickle
@@ -20,9 +19,10 @@ from mdpforge import models, solvers
 from mdpforge.core.mdp import MDP
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import optimal_bellman_operator
+from mdpforge.core.result import BenchmarkResult
 from mdpforge.core.validation import validate_model
 from mdpforge.solvers import list_solvers
-from mdpforge.utils.experiment import capture_experiment, export_experiment
+from mdpforge.utils.experiment import capture_experiment
 
 
 def _catalogue(package):
@@ -206,25 +206,19 @@ class Benchmark:
         self._default_solvers = default_solvers
         self._mdps: list[MDPProtocol] = []
         self._solvers = {}  # label -> (solver class/function, options)
-        self._clear_results()
         if default_solvers:
             from mdpforge.solvers.mdpforge_vi import Solver as VI
 
             self.add_solver("VI", solve_function=VI)
 
-    def _clear_results(self):
-        """Invalidate measurements and their matching experiment manifest together."""
-        self.results = []
-        self.experiment = None
-
     def reset(self, *, models=True, solvers=True):
-        """Reset registrations and always clear results/experiment; return self.
+        """Reset registrations; previously returned BenchmarkResult objects are kept.
 
         models: True removes all registered MDPs; False keeps them.
         solvers: True restores VI alone if constructed with default_solvers=True,
             otherwise removes all solvers. False keeps solvers and their options.
 
-        Only in-memory state is reset; cached models and exported files are kept.
+        Return self for chaining. Cached models and exported files are kept.
         """
         if models:
             self._mdps.clear()
@@ -234,7 +228,6 @@ class Benchmark:
                 from mdpforge.solvers.mdpforge_vi import Solver as VI
 
                 self.add_solver("VI", solve_function=VI)
-        self._clear_results()
         return self
 
     def add_mdp(
@@ -306,7 +299,6 @@ class Benchmark:
         if any(existing.name == name for existing in self._mdps):
             raise ValueError(f"An MDP named {name!r} is already registered.")
         self._mdps.append(model)
-        self._clear_results()
         return self
 
     def _add_catalogue_model(self, name, *, preset=None, grouped=False):
@@ -428,7 +420,6 @@ class Benchmark:
         if not callable(solve_function):
             raise TypeError("solve_function must be a callable function or class.")
         self._solvers[solver_name] = (solve_function, options)
-        self._clear_results()
         return self
 
     def _add_solver_group(self, entries, options):
@@ -455,7 +446,6 @@ class Benchmark:
             pending[name] = (constructor, options.copy())
         if pending:
             self._solvers.update(pending)
-            self._clear_results()
         return self
 
     def add_all_solvers(self):
@@ -487,8 +477,8 @@ class Benchmark:
         seed=0,
         verbose=False,
         timeout=None,
-    ):
-        """Run every registered MDP/solver pair at a common value precision.
+    ) -> BenchmarkResult:
+        """Run each MDP/solver pair and return an independent BenchmarkResult.
 
         ``precision`` is an upper bound on ||V - V*||_infinity, certified by
         ||T V - V||_infinity / (1 - discount). All failures are recorded rather
@@ -516,7 +506,7 @@ class Benchmark:
         callables are unsupported in this mode. Only the dedicated worker is
         terminated, not any descendant processes started by a custom solver.
 
-        ``experiment`` captures model fingerprints, configurations, versions and
+        The result's ``experiment`` captures fingerprints, versions and
         machine information before solver timing. Each row includes its ID.
         """
         if not np.isfinite(discount) or not 0 < discount < 1:
@@ -542,10 +532,10 @@ class Benchmark:
         for model in self._mdps:
             validate_model(model)
 
-        self._clear_results()
+        rows = []
         numpy_state, random_state = np.random.get_state(), random.getstate()
         try:
-            self.experiment = capture_experiment(
+            experiment = capture_experiment(
                 self._mdps,
                 self._solvers,
                 discount,
@@ -614,9 +604,9 @@ class Benchmark:
                         except Exception as exc:
                             status = "error"
                             error = f"{type(exc).__name__}: {exc}"
-                        self.results.append(
+                        rows.append(
                             {
-                                "experiment_id": self.experiment["experiment_id"],
+                                "experiment_id": experiment["experiment_id"],
                                 "model": model.name,
                                 "state_dim": model.state_dim,
                                 "action_dim": model.action_dim,
@@ -641,69 +631,4 @@ class Benchmark:
         finally:
             np.random.set_state(numpy_state)
             random.setstate(random_state)
-        return self.results
-
-    def plot_heat(self, *, reference=None, metric="speedup", ax=None, show=True):
-        """Plot a solver-by-MDP heatmap from the last run.
-
-        ``metric='speedup'`` shows median reference runtime / median solver
-        runtime; ``metric='runtime'`` shows median runtime in seconds.
-        A cell is only plotted when *all* repeats met the target precision.
-        Failed/imprecise trials are marked FAIL, not silently discarded.
-
-        Rows are grouped by family (VI, PI, MPI, LP), method, backend and variant.
-        The default reference remains the first registered solver.
-        Returns ``(figure, axes)``. Matplotlib is an optional dependency.
-        """
-        from mdpforge.utils.plotting import plot_heat
-
-        solver_names = list(self._solvers)
-        if reference is None and solver_names:
-            reference = solver_names[0]
-        metadata = {
-            name: record.get("metadata") or {}
-            for name, record in (self.experiment or {}).get("solvers", {}).items()
-        }
-        labels = {
-            name: fields.get("display_name") or name
-            for name, fields in metadata.items()
-        }
-
-        def solver_order(name):
-            fields = metadata.get(name, {})
-            family = {"vi": 0, "pi": 1, "mpi": 2, "lp": 3}.get(fields.get("family"), 4)
-            if family == 4:
-                return (family, "", "", ())
-            parts = labels[name].split(" · ")
-            return (
-                family,
-                parts[0].casefold(),
-                (fields.get("backend") or "").casefold(),
-                tuple(part.casefold() for part in parts[2:]),
-            )
-
-        return plot_heat(
-            self.results,
-            [model.name for model in self._mdps],
-            sorted(solver_names, key=solver_order),
-            reference=reference,
-            metric=metric,
-            solver_labels=labels,
-            ax=ax,
-            show=show,
-        )
-
-    def export_csv(self, path):
-        """Export the latest run and its matching <basename>.experiment.json."""
-        if not self.results:
-            raise ValueError("No benchmark measurements to export")
-        if self.experiment is None:
-            raise ValueError("No experiment manifest available; call run() first")
-        path = Path(path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        with path.open("w", encoding="utf-8", newline="") as handle:
-            writer = csv.DictWriter(handle, fieldnames=self.results[0].keys())
-            writer.writeheader()
-            writer.writerows(self.results)
-        export_experiment(self.experiment, path)
-        return path
+        return BenchmarkResult(rows=rows, experiment=experiment)

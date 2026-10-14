@@ -310,12 +310,3 @@ def capture_experiment(
         "machine": _machine_metadata(),
         "code": {"git": _git_metadata()},
     }
-
-
-def export_experiment(manifest, csv_path):
-    """Write the captured manifest next to the CSV, using the same basename."""
-    path = Path(csv_path).with_suffix(".experiment.json")
-    payload = manifest | {"results_file": Path(csv_path).name}
-    text = json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False)
-    path.write_text(text + "\n", encoding="utf-8")
-    return path

@@ -7,18 +7,18 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 100,
-            "parameters": {"state_dim": 100},
-            "source": "measured",
-        },
-        "medium": {
             "state_dim": 200,
             "parameters": {"state_dim": 200},
             "source": "measured",
         },
+        "medium": {
+            "state_dim": 500,
+            "parameters": {"state_dim": 500},
+            "source": "measured",
+        },
         "large": {
-            "state_dim": 400,
-            "parameters": {"state_dim": 400},
+            "state_dim": 1000,
+            "parameters": {"state_dim": 1000},
             "source": "inferred",
         },
     },

@@ -5,18 +5,18 @@ import numpy as np
 
 def plot_heat(
     results,
-    model_names,
-    solver_names,
+    experiment=None,
     *,
     reference=None,
     metric="speedup",
-    solver_labels=None,
     ax=None,
     show=True,
 ):
     """Plot median runtimes or speedups, marking failed repeats as FAIL.
 
-    Optional display labels do not change the technical solver IDs in results.
+    Model/solver names are derived from the measurements.
+    Display labels and family/method/backend/variant sorting use the manifest.
+    Without a manifest, technical IDs and their original order are preserved.
     Duplicate display labels are disambiguated with their registered IDs.
     Abbreviations in catalogue labels are explained beneath the plot.
     """
@@ -24,11 +24,35 @@ def plot_heat(
         raise ValueError("No results available; call run() before plot_heat()")
     if metric not in {"speedup", "runtime"}:
         raise ValueError("metric must be 'speedup' or 'runtime'")
+    model_names = list(dict.fromkeys(row["model"] for row in results))
+    solver_names = list(dict.fromkeys(row["solver"] for row in results))
     if reference is None:
-        reference = next(iter(solver_names))
+        reference = solver_names[0]
+    metadata = {
+        name: record.get("metadata") or {}
+        for name, record in (experiment or {}).get("solvers", {}).items()
+    }
+    solver_labels = {
+        name: fields.get("display_name") or name for name, fields in metadata.items()
+    }
+
+    def solver_order(name):
+        fields = metadata.get(name, {})
+        family = {"vi": 0, "pi": 1, "mpi": 2, "lp": 3}.get(fields.get("family"), 4)
+        if family == 4:
+            return (family, "", "", ())
+        parts = solver_labels[name].split(" · ")
+        return (
+            family,
+            parts[0].casefold(),
+            (fields.get("backend") or "").casefold(),
+            tuple(part.casefold() for part in parts[2:]),
+        )
+
+    solver_names = sorted(solver_names, key=solver_order)
     if metric == "speedup" and reference not in solver_names:
         raise ValueError(f"Unknown reference solver: {reference!r}")
-    labels = [(solver_labels or {}).get(name, name) for name in solver_names]
+    labels = [solver_labels.get(name, name) for name in solver_names]
     labels = [
         f"{label} [{name}]" if labels.count(label) > 1 else label
         for name, label in zip(solver_names, labels)

@@ -13,6 +13,9 @@ changes that preserve scientific behavior and keep the project easy to extend.
   or solvers, or modify baseline algorithms, unless the task calls for it.
 - Verify paths and interfaces before documenting them. Update only documentation
   affected by the change.
+- Keep function and method docstrings very short: one sentence by default.
+  For public options, list each keyword, its accepted values and a brief meaning.
+  Include only essential constraints; put longer explanations in dedicated docs.
 
 ## Preserve the scientific contract
 
