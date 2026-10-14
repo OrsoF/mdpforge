@@ -12,18 +12,18 @@ TEST_PARAMETERS = {"state_dim": 9, "action_dim": 2}
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 100,
-            "parameters": {"state_dim": 10000},
+            "state_dim": 500,
+            "parameters": {"state_dim": 500},
             "source": "measured",
         },
         "medium": {
-            "state_dim": 200,
-            "parameters": {"state_dim": 40000},
+            "state_dim": 1500,
+            "parameters": {"state_dim": 1500},
             "source": "measured",
         },
         "large": {
-            "state_dim": 400,
-            "parameters": {"state_dim": 160000},
+            "state_dim": 3000,
+            "parameters": {"state_dim": 3000},
             "source": "inferred",
         },
     },
@@ -45,6 +45,7 @@ class Model(MDP):
         if action_dim < 2:
             raise ValueError("ambulance requires at least two actions.")
 
+        self.state_dim = state_dim
         self.action_dim = action_dim
 
         self.name = "{}_{}_ambulance".format(self.state_dim, self.action_dim)
