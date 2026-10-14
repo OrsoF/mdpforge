@@ -63,7 +63,7 @@ def test_custom_options_and_policy_work_with_benchmark(chain):
     bench = Benchmark(default_solvers=False).add_mdp(chain)
     bench.add_solver("PolicySolver", solve_function=PolicySolver, policy_action=0)
     results = bench.run(0.9, precision=1e-4, repeats=1, seed=0)
-    assert len(results) == 1
-    assert results[0]["solver"] == "PolicySolver"
-    assert results[0]["status"] == "success", results[0]["error"]
-    assert results[0]["error_bound"] <= 1e-4
+    assert len(results.rows) == 1
+    assert results.rows[0]["solver"] == "PolicySolver"
+    assert results.rows[0]["status"] == "success", results.rows[0]["error"]
+    assert results.rows[0]["error_bound"] <= 1e-4

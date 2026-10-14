@@ -1,6 +1,8 @@
+from copy import deepcopy
+
 import pytest
 
-from mdpforge import Benchmark
+from mdpforge import Benchmark, BenchmarkResult
 from mdpforge.solvers.mdpforge_vi import Solver as VI
 from mdpforge.utils.plotting import plot_heat
 
@@ -23,10 +25,13 @@ def test_heatmap_display_labels_preserve_ids_and_disambiguate_aliases():
     ]
     fig, ax = plot_heat(
         rows,
-        ["chain"],
-        ["VI", "warm VI", "custom"],
+        experiment={
+            "solvers": {
+                name: {"metadata": {"display_name": "VI · mdpforge"}}
+                for name in ("VI", "warm VI")
+            }
+        },
         reference="VI",
-        solver_labels={"VI": "VI · mdpforge", "warm VI": "VI · mdpforge"},
         show=False,
     )
     try:
@@ -41,25 +46,26 @@ def test_heatmap_display_labels_preserve_ids_and_disambiguate_aliases():
         plt.close(fig)
 
 
-def test_benchmark_plot_uses_recorded_metadata_labels(chain):
+def test_result_plot_uses_recorded_metadata_labels(chain):
     matplotlib = pytest.importorskip("matplotlib")
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
     bench = Benchmark(default_solvers=False).add_mdp(chain)
     bench.add_solver("mdpforge_vi", solve_function=VI)
-    bench.run(0.9, repeats=1)
-    metadata = bench.experiment["solvers"]["mdpforge_vi"]["metadata"]
+    result = bench.run(0.9, repeats=1)
+    metadata = result.experiment["solvers"]["mdpforge_vi"]["metadata"]
     metadata["display_name"] = "Saved label"
-    fig, ax = bench.plot_heat(reference="mdpforge_vi", show=False)
+    bench.reset()
+    fig, ax = result.plot_heat(reference="mdpforge_vi", show=False)
     try:
         assert [label.get_text() for label in ax.get_yticklabels()] == ["Saved label"]
-        assert bench.results[0]["solver"] == "mdpforge_vi"
+        assert result.rows[0]["solver"] == "mdpforge_vi"
     finally:
         plt.close(fig)
 
 
-def test_benchmark_plot_sorts_rows_without_changing_reference_or_results(chain):
+def test_result_plot_sorts_rows_without_changing_reference_or_measurements(chain):
     matplotlib = pytest.importorskip("matplotlib")
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -75,10 +81,7 @@ def test_benchmark_plot_sorts_rows_without_changing_reference_or_results(chain):
         ("custom_z", None, None, "custom_z", 1.0),
         ("custom_a", None, None, "custom_a", 0.5),
     ]
-    bench = Benchmark(default_solvers=False).add_mdp(chain)
-    for name, *_ in entries:
-        bench.add_solver(name, solve_function=VI)
-    bench.results = [
+    rows = [
         {
             "model": chain.name,
             "solver": name,
@@ -89,7 +92,7 @@ def test_benchmark_plot_sorts_rows_without_changing_reference_or_results(chain):
         }
         for name, _, _, _, runtime in entries
     ]
-    bench.experiment = {
+    experiment = {
         "solvers": {
             name: {
                 "metadata": {
@@ -101,9 +104,9 @@ def test_benchmark_plot_sorts_rows_without_changing_reference_or_results(chain):
             for name, family, backend, label, _ in entries
         }
     }
-    results = bench.results.copy()
-    registrations = list(bench._solvers)
-    fig, ax = bench.plot_heat(show=False)
+    result = BenchmarkResult(rows=rows, experiment=experiment)
+    snapshot = deepcopy((rows, experiment))
+    fig, ax = result.plot_heat(show=False)
     try:
         assert [label.get_text() for label in ax.get_yticklabels()] == [
             "Envelope VI · mdpforge",
@@ -129,7 +132,6 @@ def test_benchmark_plot_sorts_rows_without_changing_reference_or_results(chain):
         ]
         assert fig.axes[-1].get_ylabel() == "log₂ speedup vs LP · Gurobi · dual"
         assert "GS = Gauss-Seidel" in fig.texts[0].get_text()
-        assert bench.results == results
-        assert list(bench._solvers) == registrations
+        assert (result.rows, result.experiment) == snapshot
     finally:
         plt.close(fig)

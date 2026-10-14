@@ -39,7 +39,7 @@ include `mdpsolver`, `gurobi`, `marmote` and `maze`.
 
 ```python
 import numpy as np
-from mdpforge import Benchmark
+from mdpforge import Benchmark, BenchmarkResult
 
 P = [[[1, 0], [0, 1]], [[0, 1], [1, 0]]]
 R = [[1, 0], [0, 2]]
@@ -64,10 +64,16 @@ bench.add_solver("mdpforge_mpi")  # Existing solver
 bench.add_solver("my_solver", solve_function=my_solver)  # New solver
 
 results = bench.run(discount=0.9, precision=1e-3)
-bench.export_csv("results.csv")  # Also writes results.experiment.json
+results.export_csv("results.csv")  # Also writes results.experiment.json
+loaded = BenchmarkResult.from_csv("results.csv")
 ```
 
-Each pair runs three trials. Results contain `runtime`, `error_bound` and `status`.
+Each pair runs three trials. `run()` returns a `BenchmarkResult`; its `rows`
+contain `runtime`, `error_bound` and `status`, and its `experiment` holds the
+captured manifest. Results remain independent of later benchmark registrations
+or resets. Save or plot them with `results.export_csv()` and `results.plot_heat()`.
+Reload an export with `BenchmarkResult.from_csv("results.csv")`, importing
+`BenchmarkResult` from `mdpforge`.
 Each run has an `experiment_id`; its manifest records model configurations and
 matrix fingerprints, solver options/defaults, versions, machine details and Git
 provenance. Metadata is captured before timing. Model generation seeds are separate
@@ -81,12 +87,12 @@ Reuse a benchmark with `reset()`; it returns the same object for chaining:
 bench.reset()  # Clear MDPs; restore initial solver defaults
 bench.reset(models=False)  # Keep MDPs; restore initial solver defaults
 bench.reset(solvers=False)  # Clear MDPs; keep solvers and their options
-bench.reset(models=False, solvers=False)  # Clear only results and experiment metadata
+bench.reset(models=False, solvers=False)  # Keep all registrations; no change
 ```
 
-Every reset clears results and the experiment manifest. Resetting solvers restores
-VI alone for `Benchmark()`, or no solvers for `Benchmark(default_solvers=False)`.
-Cached models and exported files are preserved.
+Resetting solvers restores VI alone for `Benchmark()`, or no solvers for
+`Benchmark(default_solvers=False)`. Previously returned results, their experiment
+manifests, cached models and exported files are preserved.
 
 ## Explore the results
 
@@ -116,7 +122,7 @@ saved trials as the speedup figure. The gallery's larger backend example is a
 
 This saved heatmap shows median runtime / median VI runtime: lower is faster.
 Its ratio of medians differs from the median of paired trial speedups above.
-For a new run, use `bench.plot_heat(reference="VI")`; the current API displays
+For a new run, use `results.plot_heat(reference="VI")`; the current API displays
 speedup (higher is faster) by default and marks any failed repeat as `FAIL`.
 
 </details>
@@ -328,7 +334,7 @@ Distinct methods retain their names, such as `Aggregated VI` and `Envelope VI`.
 `reward init` denotes initialization from rewards; `eval budget` denotes the
 policy-evaluation budget variant. QVI denotes Q-value iteration.
 
-`bench.plot_heat()` uses recorded display names, adding IDs when labels collide,
+`results.plot_heat()` uses recorded display names, adding IDs when labels collide,
 and sorts rows by family (VI, PI, MPI, LP), method, backend and variant. Custom
 callables without family metadata follow in registration order. Its `reference`
 argument always uses the registered ID; the default remains the first registered

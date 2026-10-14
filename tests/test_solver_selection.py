@@ -26,9 +26,10 @@ def test_filtered_pi_solvers_preserve_solution_quality(chain):
     assert bench.add_solver(family="pi", backend="mdpforge") is bench
     expected = {e["name"] for e in list_solvers(family="pi", backend="mdpforge")}
     assert set(bench._solvers) == expected
-    for result in bench.run(discount=0.9, precision=1e-4, repeats=1):
-        assert result["status"] == "success", result["error"]
-        assert result["error_bound"] <= 1e-4
+    result = bench.run(discount=0.9, precision=1e-4, repeats=1)
+    for row in result.rows:
+        assert row["status"] == "success", row["error"]
+        assert row["error_bound"] <= 1e-4
     for constructor, options in bench._solvers.values():
         solver = constructor(chain, 0.9, final_precision=1e-4, **options)
         solver.run()
@@ -42,12 +43,8 @@ def test_filtered_addition_preserves_default_vi_and_is_idempotent():
     assert "mdpforge_vi" not in bench._solvers
     assert sum(constructor is VI for constructor, _ in bench._solvers.values()) == 1
     original = bench._solvers.copy()
-    results, manifest = ["saved"], {"saved": True}
-    bench.results, bench.experiment = results, manifest
     bench.add_solver(family="vi", backend="mdpforge")
     assert bench._solvers == original
-    assert bench.results is results
-    assert bench.experiment is manifest
 
 
 def test_group_options_are_forwarded_and_checked_before_registration(monkeypatch):
@@ -57,18 +54,13 @@ def test_group_options_are_forwarded_and_checked_before_registration(monkeypatch
 
     select_fake_solvers(monkeypatch, {"a_budget": WithBudget, "b_plain": VI})
     bench = Benchmark(default_solvers=False)
-    results, manifest = ["saved"], {"saved": True}
-    bench.results, bench.experiment = results, manifest
     with pytest.raises(TypeError, match="Invalid options for solver 'b_plain'.*budget"):
         bench.add_solver(family="vi", budget=4)
     assert bench._solvers == {}
-    assert bench.results is results
-    assert bench.experiment is manifest
 
     select_fake_solvers(monkeypatch, {"a_budget": WithBudget})
     bench.add_solver(family="vi", budget=4)
     assert bench._solvers == {"a_budget": (WithBudget, {"budget": 4})}
-    assert bench.results == [] and bench.experiment is None
 
 
 def test_group_array_options_deduplicate_and_conflicts_preserve_state(monkeypatch):
@@ -129,8 +121,8 @@ def test_group_function_options_follow_the_function_calling_convention(
     bench.add_solver(family="vi", budget=4)
     results = bench.run(0.9, precision=1e-4, repeats=1)
     assert calls == [4]
-    assert results[0]["status"] == "success"
-    assert results[0]["error_bound"] <= 1e-4
+    assert results.rows[0]["status"] == "success"
+    assert results.rows[0]["error_bound"] <= 1e-4
 
 
 def test_import_errors_do_not_leave_partial_group_registration(monkeypatch):

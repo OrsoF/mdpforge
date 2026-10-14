@@ -9,7 +9,6 @@ from copy import deepcopy
 from importlib import import_module
 from importlib.util import find_spec
 from pathlib import Path
-from pkgutil import iter_modules
 from tempfile import TemporaryDirectory
 from time import perf_counter
 
@@ -23,15 +22,6 @@ from mdpforge.core.result import BenchmarkResult
 from mdpforge.core.validation import validate_model
 from mdpforge.solvers import list_solvers
 from mdpforge.utils.experiment import capture_experiment
-
-
-def _catalogue(package):
-    """List public catalogue modules without importing their dependencies."""
-    return {
-        module.name
-        for module in iter_modules(package.__path__)
-        if not module.ispkg and not module.name.startswith("_")
-    }
 
 
 def _load_solver(name, *, backend=None):
@@ -403,7 +393,7 @@ class Benchmark:
         if grouped:
             return self._add_solver_group(list_solvers(**filters), options)
         if solve_function is None:
-            catalogue = _catalogue(solvers)
+            catalogue = {entry["name"] for entry in list_solvers()}
             if solver_name not in catalogue:
                 raise ValueError(
                     f"Unknown solver {solver_name!r}. Available solvers: "
@@ -454,10 +444,11 @@ class Benchmark:
         Default VI is not duplicated under its catalogue name. Missing
         dependencies are skipped with a warning; other errors propagate.
         """
+        # Pass names only to preserve the existing backend checks.
         entries = (
-            {"name": name}
-            for name in sorted(_catalogue(solvers))
-            if name not in self._solvers
+            {"name": entry["name"]}
+            for entry in list_solvers()
+            if entry["name"] not in self._solvers
         )
         for name, constructor in _available_solvers(entries):
             if any(

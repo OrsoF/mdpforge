@@ -92,7 +92,8 @@ def test_timeout_stops_trial_and_continues(
     )
     bench.add_solver("mdpforge_vi")
     start = time.perf_counter()
-    failed, successful = bench.run(0.9, repeats=1, timeout=10)
+    results = bench.run(0.9, repeats=1, timeout=10)
+    failed, successful = results.rows
     assert time.perf_counter() - start < 30
     assert marker.is_file(), "The deadline must allow the solver to start"
     assert failed["status"] == "timeout"
@@ -108,7 +109,7 @@ def test_timeout_stops_trial_and_continues(
     ):
         for field in ("data", "indices", "indptr"):
             assert_array_equal(getattr(actual, field), getattr(expected, field))
-    path = bench.export_csv(tmp_path / "timeouts.csv")
+    path = results.export_csv(tmp_path / "timeouts.csv")
     with path.open(newline="", encoding="utf-8") as handle:
         statuses = [row["status"] for row in csv.DictReader(handle)]
     assert statuses == ["timeout", "success"]
@@ -125,7 +126,7 @@ def test_isolated_failures_are_recorded_and_inputs_preserved(
     bench = Benchmark(default_solvers=False).add_mdp(matrix_chain)
     bench.add_solver("broken", solve_function=constructor, outcome=outcome)
     bench.add_solver("mdpforge_vi")
-    failed, successful = bench.run(0.9, repeats=1, timeout=10)
+    failed, successful = bench.run(0.9, repeats=1, timeout=10).rows
     assert failed["status"] == (
         "imprecise" if outcome in {"imprecise", "mutate"} else "error"
     )
@@ -159,7 +160,7 @@ def test_spawn_reproduces_paired_seeds_and_restores_parent_rng(
     bench.add_solver("second", solve_function=constructor, outcome="success")
     direct = bench.run(0.9, precision=1e-4, repeats=2, seed=7)
     isolated = bench.run(0.9, precision=1e-4, repeats=2, seed=7, timeout=10)
-    for local, child in zip(direct, isolated):
+    for local, child in zip(direct.rows, isolated.rows):
         for field in (
             "solver",
             "repeat",
@@ -172,9 +173,9 @@ def test_spawn_reproduces_paired_seeds_and_restores_parent_rng(
             assert child[field] == local[field]
         assert child["status"] == "success", child["error"]
         assert np.isfinite(child["runtime"]) and child["runtime"] >= 0
-    assert isolated[0]["residual"] == isolated[2]["residual"]
-    assert isolated[1]["residual"] == isolated[3]["residual"]
-    assert isolated[0]["residual"] != isolated[1]["residual"]
+    assert isolated.rows[0]["residual"] == isolated.rows[2]["residual"]
+    assert isolated.rows[1]["residual"] == isolated.rows[3]["residual"]
+    assert isolated.rows[0]["residual"] != isolated.rows[1]["residual"]
     current = np.random.get_state()
     assert current[0] == numpy_state[0]
     assert_array_equal(current[1], numpy_state[1])
@@ -188,7 +189,7 @@ def test_large_result_does_not_block_worker_exit():
     )
     bench = Benchmark(default_solvers=False).add_mdp(model)
     bench.add_solver("constant", solve_function=constant_reward_trial)
-    row = bench.run(0.9, repeats=1, timeout=10)[0]
+    row = bench.run(0.9, repeats=1, timeout=10).rows[0]
     assert row["status"] == "success", row["error"]
     assert row["error_bound"] <= 1e-3
 
@@ -200,7 +201,7 @@ def test_unpickleable_solver_is_reported_and_next_trial_runs(matrix_chain):
     bench = Benchmark(default_solvers=False).add_mdp(matrix_chain)
     bench.add_solver("local", solve_function=local_solver)
     bench.add_solver("mdpforge_vi")
-    failed, successful = bench.run(0.9, repeats=1, timeout=10)
+    failed, successful = bench.run(0.9, repeats=1, timeout=10).rows
     assert failed["status"] == "error"
     assert "pickle" in failed["error"].lower()
     assert np.isnan(failed["runtime"])

@@ -9,7 +9,7 @@ a compact comparison with repeat spread, and a link to an executed visual galler
 [`notebooks/visualize_results.ipynb`](../notebooks/visualize_results.ipynb) reads
 saved benchmark exports without executing solvers. Its functions are intentionally
 local to this notebook while the designs are explored; the library's existing
-`Benchmark.plot_heat()` is unchanged.
+`BenchmarkResult.plot_heat()` offers the library's runtime/speedup heatmap.
 
 | View | Best use | Interpretation |
 | --- | --- | --- |

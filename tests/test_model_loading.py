@@ -1,3 +1,4 @@
+from copy import deepcopy
 from types import SimpleNamespace
 
 import numpy as np
@@ -138,21 +139,19 @@ def test_benchmark_selects_catalogue_models(
     )
     if expected_states == 4:
         results = bench.run(discount=0.9, precision=1e-4, repeats=1)
-        assert len(results) == 1
-        assert results[0]["status"] == "success", results[0]["error"]
-        assert results[0]["error_bound"] <= 1e-4
+        assert len(results.rows) == 1
+        assert results.rows[0]["status"] == "success", results.rows[0]["error"]
+        assert results.rows[0]["error_bound"] <= 1e-4
 
 
-def test_benchmark_selection_preserves_existing_instances_and_results(
+def test_benchmark_selection_preserves_existing_instances_and_previous_result(
     preset_catalogue, isolated_model_cache, monkeypatch
 ):
     existing = Unichain(state_dim=4)
     existing.create_model()
     bench = Benchmark().add_mdp(existing)
-    results = [{"existing": "result"}]
-    experiment = {"existing": "experiment"}
-    bench.results = results
-    bench.experiment = experiment
+    result = bench.run(0.9, repeats=1)
+    snapshot = deepcopy((result.rows, result.experiment))
 
     def fail_build(self):
         pytest.fail("Already-registered models must not build or load matrices")
@@ -162,8 +161,7 @@ def test_benchmark_selection_preserves_existing_instances_and_results(
         assert bench.add_mdp(size="small", category="abstract") is bench
     assert len(bench._mdps) == 1
     assert bench._mdps[0] is existing
-    assert bench.results is results
-    assert bench.experiment is experiment
+    assert (result.rows, result.experiment) == snapshot
     with pytest.raises(ValueError, match="already registered"):
         bench.add_mdp(existing)
 
@@ -200,8 +198,8 @@ def test_catalogue_additions_check_duplicates_before_building(
     assert bench._mdps[0] is existing
 
 
-def test_benchmark_selection_adds_multiple_models_and_clears_results(
-    preset_catalogue, isolated_model_cache, tmp_path, monkeypatch
+def test_benchmark_selection_adds_multiple_models_and_preserves_previous_result(
+    preset_catalogue, chain, tmp_path, monkeypatch
 ):
     (tmp_path / "other.py").write_text(
         f"METADATA = {preset_catalogue!r}\n", encoding="utf-8"
@@ -216,16 +214,16 @@ def test_benchmark_selection_adds_multiple_models_and_clears_results(
         return SimpleNamespace(Model=build)
 
     monkeypatch.setattr("mdpforge.core.benchmark.import_module", import_recipe)
-    bench = Benchmark()
-    bench.results = [{"existing": "result"}]
-    bench.experiment = {"existing": "experiment"}
+    bench = Benchmark().add_mdp(chain)
+    result = bench.run(0.9, repeats=1)
+    snapshot = deepcopy((result.rows, result.experiment))
     bench.add_mdp(size="small", category="abstract")
     assert [model.name for model in bench._mdps] == [
+        chain.name,
         "other_4_2_unichain",
         "unichain_4_2_unichain",
     ]
-    assert bench.results == []
-    assert bench.experiment is None
+    assert (result.rows, result.experiment) == snapshot
     for model in bench._mdps:
         validate_model(model)
 
@@ -331,9 +329,9 @@ def test_collective_additions_continue_after_missing_dependencies(
     validate_model(model)
     np.testing.assert_allclose(model.reward_matrix, chain.reward_matrix)
     results = bench.run(discount=0.9, precision=1e-4, repeats=1)
-    assert len(results) == 1
-    assert results[0]["status"] == "success", results[0]["error"]
-    assert results[0]["error_bound"] <= 1e-4
+    assert len(results.rows) == 1
+    assert results.rows[0]["status"] == "success", results.rows[0]["error"]
+    assert results.rows[0]["error_bound"] <= 1e-4
 
 
 @pytest.mark.parametrize("add_all", [False, True])

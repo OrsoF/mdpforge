@@ -1,5 +1,6 @@
 import csv
 import random
+from copy import deepcopy
 from types import SimpleNamespace
 
 import numpy as np
@@ -7,7 +8,7 @@ import pytest
 from numpy.testing import assert_allclose
 from scipy.sparse import csr_matrix
 
-from mdpforge import Benchmark
+from mdpforge import Benchmark, BenchmarkResult
 from mdpforge.core.mdp import MDP
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.validation import validate_model
@@ -28,13 +29,16 @@ def test_reset_preserves_selected_registrations_and_allows_reuse(
     bench = Benchmark(default_solvers=default_solvers).add_mdp(chain)
     bench.add_solver("custom", solve_function=VI, initial_value=initial_value)
     results = bench.run(discount=0.9, precision=1e-4, repeats=1)
-    assert all(row["status"] == "success" for row in results)
-    assert bench.experiment is not None
+    assert isinstance(results, BenchmarkResult)
+    assert all(row["status"] == "success" for row in results.rows)
+    assert results.experiment is not None
+    snapshot = deepcopy((results.rows, results.experiment))
+    assert not hasattr(bench, "results")
+    assert not hasattr(bench, "experiment")
     registered_solvers = bench._solvers.copy()
 
     assert bench.reset(**reset_options) is bench
-    assert bench.results == []
-    assert bench.experiment is None
+    assert (results.rows, results.experiment) == snapshot
     if reset_options.get("models", True):
         assert bench._mdps == []
         bench.add_mdp(chain)
@@ -52,16 +56,21 @@ def test_reset_preserves_selected_registrations_and_allows_reuse(
 
     new_results = bench.run(discount=0.9, precision=1e-4, repeats=1)
     assert new_results is not results
-    assert len(new_results) == len(registered_solvers)
-    assert all(row["status"] == "success" for row in new_results)
-    assert all(row["error_bound"] <= 1e-4 for row in new_results)
+    assert new_results.rows is not results.rows
+    assert (
+        new_results.experiment["experiment_id"] != results.experiment["experiment_id"]
+    )
+    assert (results.rows, results.experiment) == snapshot
+    assert len(new_results.rows) == len(registered_solvers)
+    assert all(row["status"] == "success" for row in new_results.rows)
+    assert all(row["error_bound"] <= 1e-4 for row in new_results.rows)
 
 
 def test_reset_keeps_cached_models_and_exported_results(chain, tmp_path):
     persistence.save_model(chain)
     bench = Benchmark().add_mdp(chain)
-    bench.run(discount=0.9, repeats=1)
-    bench.export_csv(tmp_path / "results.csv")
+    results = bench.run(discount=0.9, repeats=1)
+    results.export_csv(tmp_path / "results.csv")
     saved_files = {
         path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()
     }
@@ -78,10 +87,10 @@ def test_catalogue_solver_loads_class_and_forwards_options(chain):
     bench = Benchmark(default_solvers=False).add_mdp(chain)
     bench.add_solver(solver_name="mdpforge_vi", initial_value=np.array([1.8, 2.0, 0.0]))
     results = bench.run(discount=0.9, precision=1e-4, repeats=1)
-    assert len(results) == 1
-    assert results[0]["solver"] == "mdpforge_vi"
-    assert results[0]["status"] == "success", results[0]["error"]
-    assert results[0]["error_bound"] <= 1e-4
+    assert len(results.rows) == 1
+    assert results.rows[0]["solver"] == "mdpforge_vi"
+    assert results.rows[0]["status"] == "success", results.rows[0]["error"]
+    assert results.rows[0]["error_bound"] <= 1e-4
 
 
 def test_add_all_models_builds_defaults_and_preserves_existing(chain, monkeypatch):
@@ -123,8 +132,8 @@ def test_add_all_solvers_preserves_default_vi_and_skips_missing(monkeypatch):
         return SimpleNamespace(Solver={"baseline": VI, "other": MPI}[name])
 
     monkeypatch.setattr(
-        "mdpforge.core.benchmark._catalogue",
-        lambda package: {"other", "baseline", "missing"},
+        "mdpforge.core.benchmark.list_solvers",
+        lambda: [{"name": name} for name in ("baseline", "missing", "other")],
     )
     monkeypatch.setattr("mdpforge.core.benchmark.import_module", import_catalogue)
     for _ in range(2):
@@ -137,7 +146,7 @@ def test_add_all_solvers_preserves_default_vi_and_skips_missing(monkeypatch):
     assert bench._solvers["other"] == (MPI, {})
 
 
-def test_add_all_solvers_keeps_configured_entries_and_noop_results(monkeypatch):
+def test_add_all_solvers_keeps_configured_entries_and_is_idempotent(monkeypatch):
     initial_value = np.array([1.8, 2.0, 0.0])
     bench = Benchmark(default_solvers=False)
     bench.add_solver("configured", solve_function=VI, initial_value=initial_value)
@@ -149,7 +158,8 @@ def test_add_all_solvers_keeps_configured_entries_and_noop_results(monkeypatch):
         return SimpleNamespace(Solver=VI)
 
     monkeypatch.setattr(
-        "mdpforge.core.benchmark._catalogue", lambda package: {"configured", "default"}
+        "mdpforge.core.benchmark.list_solvers",
+        lambda: [{"name": name} for name in ("configured", "default")],
     )
     monkeypatch.setattr("mdpforge.core.benchmark.import_module", import_catalogue)
     assert bench.add_all_solvers() is bench
@@ -157,12 +167,10 @@ def test_add_all_solvers_keeps_configured_entries_and_noop_results(monkeypatch):
     assert bench._solvers["configured"] is registration
     assert bench._solvers["default"] == (VI, {})
 
-    results, manifest = ["saved"], {"saved": True}
-    bench.results, bench.experiment = results, manifest
+    registrations = bench._solvers.copy()
     assert bench.add_all_solvers() is bench
     assert imported == ["default"]
-    assert bench.results is results
-    assert bench.experiment is manifest
+    assert bench._solvers == registrations
 
 
 def test_unknown_solver_lists_catalogue_without_importing_it(monkeypatch):
@@ -188,8 +196,8 @@ def test_custom_solver_takes_priority_and_rejects_duplicates(chain, monkeypatch)
     bench = Benchmark(default_solvers=False).add_mdp(chain)
     bench.add_solver("mdpforge_vi", solve_function=custom_solver)
     results = bench.run(discount=0.9, repeats=1)
-    assert results[0]["solver"] == "mdpforge_vi"
-    assert results[0]["status"] == "success", results[0]["error"]
+    assert results.rows[0]["solver"] == "mdpforge_vi"
+    assert results.rows[0]["status"] == "success", results.rows[0]["error"]
     with pytest.raises(ValueError, match="already registered"):
         bench.add_solver("mdpforge_vi")
     with pytest.raises(TypeError, match="solve_function must be a callable"):
@@ -222,10 +230,10 @@ def test_function_solver_receives_matrices_and_options_alongside_classes(chain):
     bench = Benchmark().add_mdp(chain)
     bench.add_solver(solver_name="mon_solver", solve_function=mon_solver, scale=1.0)
     results = bench.run(discount=0.9, precision=1e-4, repeats=2)
-    assert len(results) == 4
-    assert {row["solver"] for row in results} == {"VI", "mon_solver"}
+    assert len(results.rows) == 4
+    assert {row["solver"] for row in results.rows} == {"VI", "mon_solver"}
     assert calls == [(0.9, 1e-4, 1.0)] * 2
-    for row in results:
+    for row in results.rows:
         assert row["status"] == "success", row["error"]
         assert row["error_bound"] <= 1e-4
 
@@ -249,16 +257,16 @@ def test_function_solver_failures_are_recorded_and_trials_isolated(chain, outcom
     bench.add_solver("VI", solve_function=VI)
     results = bench.run(discount=0.9, repeats=2)
     expected = "imprecise" if outcome == "imprecise" else "error"
-    statuses = [row["status"] for row in results]
+    statuses = [row["status"] for row in results.rows]
     assert statuses == [expected, expected, "success", "success"]
     if outcome == "exception":
         assert all(
-            "RuntimeError: broken function" in row["error"] for row in results[:2]
+            "RuntimeError: broken function" in row["error"] for row in results.rows[:2]
         )
     elif outcome == "invalid":
-        assert all("finite vector" in row["error"] for row in results[:2])
+        assert all("finite vector" in row["error"] for row in results.rows[:2])
     else:
-        assert results[0]["error_bound"] == pytest.approx(20)
+        assert results.rows[0]["error_bound"] == pytest.approx(20)
     assert_allclose(chain.reward_matrix, rewards, rtol=0, atol=0)
     for matrix, original in zip(chain.transition_matrix, transitions):
         assert_allclose(matrix.toarray(), original.toarray(), rtol=0, atol=0)
@@ -277,8 +285,8 @@ def test_catalogue_model_uses_own_defaults(isolated_model_cache):
     )
     validate_model(model)
     results = bench.run(discount=0.9, repeats=1, seed=0)
-    assert len(results) == 1
-    for row in results:
+    assert len(results.rows) == 1
+    for row in results.rows:
         assert row["status"] == "success", row["error"]
         assert row["error_bound"] <= 1e-3
 
@@ -335,9 +343,9 @@ def test_matrix_benchmark_uses_default_solvers(chain, dense_input):
     )
 
     results = bench.run(discount=0.9)
-    assert len(results) == 3
-    assert {row["solver"] for row in results} == {"VI"}
-    for row in results:
+    assert len(results.rows) == 3
+    assert {row["solver"] for row in results.rows} == {"VI"}
+    for row in results.rows:
         assert row["model"] == "my_mdp"
         assert (row["state_dim"], row["action_dim"]) == (3, 2)
         assert row["status"] == "success", row["error"]
@@ -381,11 +389,13 @@ def test_benchmark_accepts_generated_matrix_and_external_mdps(chain, dense_input
         bench.add_solver(name, solve_function=constructor)
 
     results = bench.run(0.9, precision=1e-4, repeats=2, seed=0)
-    assert len(results) == 12
-    for row in results:
+    assert len(results.rows) == 12
+    for row in results.rows:
         assert row["status"] == "success", row["error"]
         assert row["residual"] <= 1e-4 * (1 - 0.9)
-    for generated, matrix, external in zip(results[:4], results[4:8], results[8:]):
+    for generated, matrix, external in zip(
+        results.rows[:4], results.rows[4:8], results.rows[8:]
+    ):
         for field in ("solver", "repeat", "seed", "residual", "error_bound", "status"):
             assert generated[field] == matrix[field] == external[field]
     assert all(
@@ -405,14 +415,14 @@ def test_benchmark_measures_vi_and_mpi(chain):
     bench.add_solver("VI", solve_function=VI)
     bench.add_solver("MPI", solve_function=MPI)
     results = bench.run(discount=0.9, repeats=2)
-    assert len(results) == 4
-    assert [(row["solver"], row["repeat"]) for row in results] == [
+    assert len(results.rows) == 4
+    assert [(row["solver"], row["repeat"]) for row in results.rows] == [
         ("VI", 1),
         ("VI", 2),
         ("MPI", 1),
         ("MPI", 2),
     ]
-    for row in results:
+    for row in results.rows:
         assert row["model"] == chain.name
         assert row["status"] == "success"
         assert row["error"] == ""
@@ -440,14 +450,14 @@ def test_benchmark_checks_original_model_and_isolates_trials(chain):
     bench.add_solver("mutating", solve_function=MutatingSolver)
     bench.add_solver("VI", solve_function=VI)
     results = bench.run(discount=0.9, repeats=2)
-    assert [row["status"] for row in results] == [
+    assert [row["status"] for row in results.rows] == [
         "imprecise",
         "imprecise",
         "success",
         "success",
     ]
-    assert results[0]["residual"] == 2
-    assert results[0]["error_bound"] == pytest.approx(20)
+    assert results.rows[0]["residual"] == 2
+    assert results.rows[0]["error_bound"] == pytest.approx(20)
     for matrix, original in zip(chain.transition_matrix, transitions):
         assert_allclose(matrix.toarray(), original.toarray(), rtol=0, atol=0)
     assert_allclose(chain.reward_matrix, rewards, rtol=0, atol=0)
@@ -467,7 +477,7 @@ def test_benchmark_records_exceptions_and_continues(chain, fail_in_constructor):
     bench.add_solver("broken", solve_function=BrokenSolver)
     bench.add_solver("VI", solve_function=VI)
     results = bench.run(discount=0.9, repeats=1)
-    failed, successful = results
+    failed, successful = results.rows
     assert failed["status"] == "error"
     assert "RuntimeError: broken" in failed["error"]
     assert np.isfinite(failed["runtime"])
@@ -486,7 +496,7 @@ def test_benchmark_rejects_invalid_values(chain, value):
 
     bench = Benchmark(default_solvers=False).add_mdp(chain)
     bench.add_solver("invalid", solve_function=InvalidSolver)
-    row = bench.run(discount=0.9, repeats=1)[0]
+    row = bench.run(discount=0.9, repeats=1).rows[0]
     assert row["status"] == "error"
     assert "finite vector" in row["error"]
 
@@ -506,7 +516,7 @@ def test_benchmark_pairs_seeds_and_restores_rng_states(chain):
     results = bench.run(discount=0.9, repeats=2, seed=7)
     assert samples[:2] == samples[2:]
     assert samples[0] != samples[1]
-    assert [row["seed"] for row in results] == [7, 8, 7, 8]
+    assert [row["seed"] for row in results.rows] == [7, 8, 7, 8]
     current = np.random.get_state()
     assert current[0] == numpy_state[0]
     assert np.array_equal(current[1], numpy_state[1])
@@ -517,10 +527,14 @@ def test_benchmark_pairs_seeds_and_restores_rng_states(chain):
 def test_export_csv_round_trip(chain, tmp_path):
     bench = Benchmark().add_mdp(chain)
     results = bench.run(discount=0.9, repeats=1)
-    path = bench.export_csv(tmp_path / "nested" / "benchmark.csv")
+    path = results.export_csv(tmp_path / "nested" / "benchmark.csv")
     with path.open(encoding="utf-8", newline="") as handle:
         rows = list(csv.DictReader(handle))
     assert len(rows) == 1
     assert rows[0]["solver"] == "VI"
     assert rows[0]["status"] == "success"
-    assert float(rows[0]["runtime"]) == results[0]["runtime"]
+    assert float(rows[0]["runtime"]) == results.rows[0]["runtime"]
+    bench.reset()
+    loaded = BenchmarkResult.from_csv(path)
+    assert loaded.rows == results.rows
+    assert loaded.experiment == results.experiment | {"results_file": path.name}
