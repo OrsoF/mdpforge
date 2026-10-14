@@ -6,19 +6,16 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 108,
-            "parameters": {"state_dim": 100},
-            "source": "measured",
+            "requested_state_dim": 100,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 1008,
-            "parameters": {"state_dim": 1000},
-            "source": "measured",
+            "requested_state_dim": 1000,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 7866,
-            "parameters": {"state_dim": 7872},
-            "source": "inferred",
+            "requested_state_dim": 7872,
+            "parameters": {},
         },
     },
     "category": "service_operations",
@@ -67,6 +64,7 @@ class Model(MDP):
 
     def __init__(self, state_dim: int = 108, action_dim: int = 10):
         # Default from uploaded Marmote example.
+        self.requested_state_dim = int(state_dim)
         self.S = max(5, int(round(state_dim / 18.0)) - 1)
         self.J = 5
         self.K = 3

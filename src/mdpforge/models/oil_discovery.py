@@ -13,19 +13,16 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 100,
-            "parameters": {"state_dim": 100},
-            "source": "measured",
+            "requested_state_dim": 100,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 300,
-            "parameters": {"state_dim": 300},
-            "source": "measured",
+            "requested_state_dim": 300,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 840,
-            "parameters": {"state_dim": 840},
-            "source": "inferred",
+            "requested_state_dim": 840,
+            "parameters": {},
         },
     },
     "category": "asset_management",
@@ -53,6 +50,7 @@ class Model(MDP):
     """
 
     def __init__(self, state_dim: int = 50, action_dim: int = 10):
+        self.requested_state_dim = int(state_dim)
         self.state_dim = max(50, int(state_dim))
         self.action_dim = max(10, int(action_dim))
 

@@ -14,7 +14,7 @@ class ScalingBenchmark(Benchmark):
         """Register one size sweep constructed by ``factory(size, model_seed)``.
 
         factory: callable returning a built MDP or an MDP with create_model().
-        sizes: distinct, positive integer state dimensions.
+        sizes: distinct, positive integer targets passed to the factory.
         instances: positive number of independent models per size.
         seed: first model-generation seed, independent of Benchmark.run(seed=...).
         family: optional human-readable label for the manifest.
@@ -44,9 +44,9 @@ class ScalingBenchmark(Benchmark):
                 model = factory(size, model_seed)
                 if not hasattr(model, "create_model"):
                     raise TypeError("factory must return a model with create_model()")
-                if model.state_dim != size:
+                if type(model.state_dim) is not int or model.state_dim < 1:
                     raise ValueError(
-                        f"Factory returned {model.state_dim} states; expected {size}"
+                        "Factory must provide a positive integer state_dim"
                     )
                 if action_dim is None:
                     action_dim = model.action_dim
@@ -62,9 +62,19 @@ class ScalingBenchmark(Benchmark):
                     )
                 # Avoid saving an entire sweep to the shared model cache. The
                 # factory must use seed in its generation and name for provenance.
+                expected_states, expected_actions = model.state_dim, model.action_dim
                 model.create_model(save=False)
+                if (model.state_dim, model.action_dim) != (
+                    expected_states,
+                    expected_actions,
+                ):
+                    raise ValueError(
+                        "Model dimensions changed during matrix construction"
+                    )
+                model.requested_state_dim = size
                 metadata[name] = {
-                    "state_dim": size,
+                    "state_dim": model.state_dim,
+                    "requested_state_dim": size,
                     "instance": instance,
                     "model_seed": model_seed,
                 }
@@ -76,7 +86,8 @@ class ScalingBenchmark(Benchmark):
             "type": "scaling",
             "variable": "state_dim",
             "family": family,
-            "sizes": sizes,
+            "sizes": sorted({entry["state_dim"] for entry in metadata.values()}),
+            "requested_state_dims": sizes,
             "instances": instances,
             "seed": seed,
             "models": metadata,

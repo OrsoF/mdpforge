@@ -8,11 +8,14 @@ from mdpforge.models.sutton import METADATA, TEST_PARAMETERS, Model, build_track
 from mdpforge.solvers.mdpforge_vi import Solver
 
 
-@pytest.mark.parametrize("size", ["small", "medium", "large"])
-def test_generated_track_preserves_preset_dimensions(size):
+@pytest.mark.parametrize(
+    "size, actual", [("small", 283), ("medium", 1231), ("large", 4211)]
+)
+def test_generated_track_preserves_preset_dimensions(size, actual):
     preset = METADATA["sizes"][size]
-    model = Model(**preset["parameters"])
-    assert model.state_dim == preset["state_dim"]
+    model = Model(state_dim=preset["requested_state_dim"], **preset["parameters"])
+    assert model.requested_state_dim == preset["requested_state_dim"]
+    assert model.state_dim == actual
     assert model.action_dim == 9
 
 

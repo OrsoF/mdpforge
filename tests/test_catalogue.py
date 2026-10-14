@@ -66,9 +66,9 @@ def test_catalogue_metadata_is_returned_independently():
     assert entries
     original_category = entries[0]["category"]
     entries[0]["category"] = "changed"
-    entries[0]["sizes"]["small"]["parameters"]["state_dim"] = -1
+    entries[0]["sizes"]["small"]["requested_state_dim"] = -1
     assert list_models()[0]["category"] == original_category
-    assert list_models()[0]["sizes"]["small"]["parameters"]["state_dim"] > 0
+    assert list_models()[0]["sizes"]["small"]["requested_state_dim"] > 0
     for entry in list_models():
         assert entry["category"] in {
             "abstract",
@@ -82,18 +82,14 @@ def test_catalogue_metadata_is_returned_independently():
         assert set(entry) == {"name", "category", "description", "reference", "sizes"}
         assert set(entry["sizes"]) == {"small", "medium", "large"}
         for preset in entry["sizes"].values():
+            assert "source" not in preset and "state_dim" not in preset
             if preset["parameters"] is None:
-                assert preset["state_dim"] is None
-                assert preset["source"] == "unavailable" and preset["reason"]
+                assert preset["requested_state_dim"] is None
+                assert preset["reason"]
             else:
-                assert preset["state_dim"] > 0
-                assert preset["source"] in {
-                    "measured",
-                    "inferred",
-                    "configured",
-                    "analytical",
-                    "parameterized",
-                }
+                assert type(preset["requested_state_dim"]) is int
+                assert preset["requested_state_dim"] > 0
+                assert "state_dim" not in preset["parameters"]
         assert entry["reference"] is None or isinstance(entry["reference"], str)
 
 

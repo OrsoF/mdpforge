@@ -229,6 +229,7 @@ class Benchmark:
         reward=None,
         size: str | None = None,
         category: str | None = None,
+        verbose=False,
     ):
         """Add named, matrix-defined or built MDPs, or filtered groups; return self.
 
@@ -243,6 +244,7 @@ class Benchmark:
         category: "abstract", "navigation", "physical_control",
             "service_operations", "asset_management" or "games_and_puzzles".
             None accepts all task families; a named model must match the category.
+        verbose: True prints model-loading progress; False keeps additions quiet.
 
         size/category combine with AND and can constrain a catalogue ID, but
         cannot accompany built objects or matrices. Custom names must be unique.
@@ -288,11 +290,15 @@ class Benchmark:
                     )
                 for name in names:
                     preset = selected[name]["sizes"][size] if size is not None else None
-                    self._add_catalogue_model(name, preset=preset, grouped=named_group)
+                    self._add_catalogue_model(
+                        name, preset=preset, grouped=named_group, verbose=verbose
+                    )
                 return self
             for entry in entries:
                 preset = entry["sizes"][size] if size is not None else None
-                self._add_catalogue_model(entry["name"], preset=preset, grouped=True)
+                self._add_catalogue_model(
+                    entry["name"], preset=preset, grouped=True, verbose=verbose
+                )
             return self
         if model is None:
             raise ValueError(
@@ -309,7 +315,7 @@ class Benchmark:
                         f"Catalogue model {model!r} uses its generator; "
                         "choose a custom name when supplying matrices."
                     )
-                return self._add_catalogue_model(model)
+                return self._add_catalogue_model(model, verbose=verbose)
             else:
                 if transitions is None or reward is None:
                     raise ValueError(
@@ -317,6 +323,8 @@ class Benchmark:
                         "for a custom MDP. Available models: "
                         + ", ".join(sorted(catalogue))
                     )
+                if verbose:
+                    print(f"Creating MDP {model!r} from matrices...", flush=True)
                 model = MDP.from_matrices(model, transitions, reward)
         elif transitions is not None or reward is not None:
             raise ValueError("Pass a name when providing transitions and reward.")
@@ -326,26 +334,48 @@ class Benchmark:
         if any(existing.name == name for existing in self._mdps):
             raise ValueError(f"An MDP named {name!r} is already registered.")
         self._mdps.append(model)
+        if verbose:
+            print(f"Added MDP {name!r}", flush=True)
         return self
 
-    def _add_catalogue_model(self, name, *, preset=None, grouped=False):
+    def _add_catalogue_model(self, name, *, preset=None, grouped=False, verbose=False):
         """Build a recipe; groups skip duplicates and missing dependencies."""
+        if verbose:
+            start = perf_counter()
+            print(f"Loading/building model {name!r}...", flush=True)
         try:
             options = dict(preset["parameters"]) if preset is not None else {}
+            if preset is not None:
+                options["state_dim"] = preset["requested_state_dim"]
             if "custom_track" in options:
                 options["custom_track"] = np.asarray(options["custom_track"]).copy()
             model = import_module(f"{models.__name__}.{name}").Model(**options)
             if any(existing.name == model.name for existing in self._mdps):
                 if grouped:
+                    if verbose:
+                        print(
+                            f"Skipping MDP {model.name!r}: already registered",
+                            flush=True,
+                        )
                     return self
                 raise ValueError(f"An MDP named {model.name!r} is already registered.")
+            expected_states, expected_actions = model.state_dim, model.action_dim
             model.create_model()
-            if preset is not None and model.state_dim != preset["state_dim"]:
+            if (model.state_dim, model.action_dim) != (expected_states, expected_actions):
                 raise ValueError(
-                    f"{name}: expected {preset['state_dim']} states, "
-                    f"got {model.state_dim}; check the preset and cached matrices"
+                    f"{name}: expected {expected_states} states, got {model.state_dim}; "
+                    f"expected {expected_actions} actions, got {model.action_dim}; "
+                    "check the cached matrices"
                 )
-            return self.add_mdp(model)
+            self.add_mdp(model)
+            if verbose:
+                print(
+                    f"Added MDP {model.name!r} "
+                    f"({model.state_dim} states, {model.action_dim} actions) "
+                    f"in {perf_counter() - start:.3f} s",
+                    flush=True,
+                )
+            return self
         except ModuleNotFoundError as exc:
             if not grouped:
                 raise
@@ -355,15 +385,18 @@ class Benchmark:
             )
             return self
 
-    def add_all_mdps(self, *, size: str | None = None):
+    def add_all_mdps(self, *, size: str | None = None, verbose=False):
         """Add all catalogue MDPs for an optional size preset; return self.
 
         size: "small", "medium" or "large"; None uses recipe defaults.
+        verbose: True prints model-loading progress; False keeps additions quiet.
         Unavailable sizes, duplicates and missing dependencies are skipped.
         """
         for entry in models.list_models(size=size):
             preset = entry["sizes"][size] if size is not None else None
-            self._add_catalogue_model(entry["name"], preset=preset, grouped=True)
+            self._add_catalogue_model(
+                entry["name"], preset=preset, grouped=True, verbose=verbose
+            )
         return self
 
     def add_solver(
@@ -639,6 +672,9 @@ class Benchmark:
                                 "experiment_id": experiment["experiment_id"],
                                 "model": model.name,
                                 "state_dim": model.state_dim,
+                                "requested_state_dim": getattr(
+                                    model, "requested_state_dim", None
+                                ),
                                 "action_dim": model.action_dim,
                                 "solver": solver_name,
                                 "repeat": repeat + 1,

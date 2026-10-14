@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 from scipy.sparse import csr_matrix
 
-from mdpforge import Benchmark, list_models, models
+from mdpforge import Benchmark, BenchmarkResult, list_models, models
 from mdpforge.core.mdp import MDP
 from mdpforge.core.validation import validate_model
 from mdpforge.models.unichain import Model as Unichain
@@ -20,14 +20,12 @@ def preset_catalogue(tmp_path, monkeypatch):
         "category": "abstract",
         "sizes": {
             "small": {
-                "state_dim": 4,
-                "parameters": {"state_dim": 4},
-                "source": "measured",
+                "requested_state_dim": 4,
+                "parameters": {},
             },
             "large": {
-                "state_dim": None,
+                "requested_state_dim": None,
                 "parameters": None,
-                "source": "unavailable",
                 "reason": "No calibration",
             },
         },
@@ -80,6 +78,40 @@ def test_stale_dimension_cache_is_reported(preset_catalogue, isolated_model_cach
     with pytest.raises(ValueError, match="expected 4 states, got 2"):
         bench.add_mdp(size="small", category="abstract")
     assert bench._mdps == []
+
+
+@pytest.mark.parametrize(
+    "name, requested, actual",
+    [
+        ("rooms", 110, 100),
+        ("sysadmin", 7, 4),
+        ("car_rental", 30, 25),
+        ("access_control", 21, 20),
+    ],
+)
+def test_rounded_presets_use_actual_dimensions(
+    isolated_model_cache, monkeypatch, tmp_path, name, requested, actual
+):
+    entry = {
+        "name": name,
+        "sizes": {"small": {"requested_state_dim": requested, "parameters": {}}},
+    }
+    monkeypatch.setattr(models, "list_models", lambda **kwargs: [entry])
+    bench = Benchmark(default_solvers=False).add_mdp(name, size="small")
+    model = bench._mdps[0]
+    assert model.requested_state_dim == requested
+    assert model.state_dim == actual
+    validate_model(model)
+    bench.add_solver("mdpforge_vi")
+    result = bench.run(0.9, repeats=1)
+    assert result.rows[0]["status"] == "success"
+    assert result.rows[0]["error_bound"] <= 1e-3
+    assert result.rows[0]["requested_state_dim"] == requested
+    assert result.rows[0]["state_dim"] == actual
+    restored = BenchmarkResult.from_csv(result.export_csv(tmp_path / "rounded.csv"))
+    assert restored.rows[0]["requested_state_dim"] == requested
+    assert restored.experiment["models"][model.name]["state_dim"] == actual
+    assert restored.experiment["models"][model.name]["requested_state_dim"] == requested
 
 
 def test_custom_track_is_converted_without_mutating_metadata(
@@ -439,7 +471,10 @@ def test_collective_additions_continue_after_missing_dependencies(
     chain, monkeypatch, selection
 ):
     entries = [
-        {"name": name, "sizes": {"small": {"state_dim": 3, "parameters": {}}}}
+        {
+            "name": name,
+            "sizes": {"small": {"requested_state_dim": 3, "parameters": {}}},
+        }
         for name in ("missing", "chain")
     ]
     monkeypatch.setattr(models, "list_models", lambda **kwargs: entries)
@@ -449,7 +484,7 @@ def test_collective_additions_continue_after_missing_dependencies(
         imports.append(name)
         if name.endswith(".missing"):
             raise ModuleNotFoundError("Missing dependency", name="missing_backend")
-        return SimpleNamespace(Model=lambda: type(chain)(3, 2))
+        return SimpleNamespace(Model=lambda state_dim: type(chain)(state_dim, 2))
 
     monkeypatch.setattr("mdpforge.core.benchmark.import_module", import_recipe)
     bench = Benchmark()

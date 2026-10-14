@@ -33,19 +33,16 @@ def params_match_state_dim(state_dim: int, max_index=50) -> tuple:
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 5000,
-            "parameters": {"state_dim": 5000},
-            "source": "measured",
+            "requested_state_dim": 1000,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 15000,
-            "parameters": {"state_dim": 15000},
-            "source": "measured",
+            "requested_state_dim": 5000,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 50000,
-            "parameters": {"state_dim": 50000},
-            "source": "inferred",
+            "requested_state_dim": 10000,
+            "parameters": {},
         },
     },
     "category": "service_operations",
@@ -74,6 +71,7 @@ class Model(MDP):
     """
 
     def __init__(self, state_dim: int = 100, action_dim: int = 10):
+        self.requested_state_dim = int(state_dim)
         self.arrival_rate_lambda = 0.6
         self.mu_1, self.mu_2 = 0.2, 0.2
 

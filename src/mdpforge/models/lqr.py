@@ -8,19 +8,16 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 5000,
-            "parameters": {"state_dim": 5000},
-            "source": "measured",
+            "requested_state_dim": 5000,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 15000,
-            "parameters": {"state_dim": 15000},
-            "source": "measured",
+            "requested_state_dim": 15000,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 30000,
-            "parameters": {"state_dim": 30000},
-            "source": "inferred",
+            "requested_state_dim": 30000,
+            "parameters": {},
         },
     },
     "category": "physical_control",
@@ -36,6 +33,7 @@ METADATA = {
 
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10):
+        self.requested_state_dim = int(state_dim)
         self.state_dim = max(5, int(state_dim))
         self.action_dim = max(3, int(action_dim))
 

@@ -11,19 +11,16 @@ TEST_PARAMETERS = {"state_dim": 9, "action_dim": 4}
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 100,
-            "parameters": {"state_dim": 100},
-            "source": "measured",
+            "requested_state_dim": 100,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 961,
-            "parameters": {"state_dim": 1000},
-            "source": "measured",
+            "requested_state_dim": 1000,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 6889,
-            "parameters": {"state_dim": 7033},
-            "source": "inferred",
+            "requested_state_dim": 7033,
+            "parameters": {},
         },
     },
     "category": "navigation",
@@ -36,6 +33,7 @@ METADATA = {
 
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10):
+        self.requested_state_dim = int(state_dim)
         self.size = int(np.sqrt(state_dim))
         self._build_maze()
         self._build_state_space()

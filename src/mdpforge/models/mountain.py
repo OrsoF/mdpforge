@@ -18,19 +18,16 @@ def index_closest_value(value: float, list_of_values) -> Tuple:
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 4900,
-            "parameters": {"state_dim": 4900},
-            "source": "measured",
+            "requested_state_dim": 4900,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 14884,
-            "parameters": {"state_dim": 14884},
-            "source": "measured",
+            "requested_state_dim": 14884,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 49729,
-            "parameters": {"state_dim": 49729},
-            "source": "inferred",
+            "requested_state_dim": 49729,
+            "parameters": {},
         },
     },
     "category": "physical_control",
@@ -49,6 +46,7 @@ class Model(MDP):
         - x_axis_states_number
         - speed_states_number
         """
+        self.requested_state_dim = int(state_dim)
 
         state_dim = max(state_dim, 100)
         self.x_axis_states_number = int(np.floor(np.sqrt(state_dim)))

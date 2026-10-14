@@ -8,19 +8,16 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 5000,
-            "parameters": {"state_dim": 5000},
-            "source": "measured",
+            "requested_state_dim": 5000,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 15000,
-            "parameters": {"state_dim": 15000},
-            "source": "measured",
+            "requested_state_dim": 15000,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 50000,
-            "parameters": {"state_dim": 50000},
-            "source": "inferred",
+            "requested_state_dim": 50000,
+            "parameters": {},
         },
     },
     "category": "asset_management",
@@ -36,6 +33,7 @@ METADATA = {
 
 class Model(MDP):
     def __init__(self, state_dim: int = 64, action_dim: int = 10):
+        self.requested_state_dim = int(state_dim)
         machines = int(np.floor(np.log2(max(2, state_dim))))
         self.machines = max(2, machines)
         self.state_dim = 2**self.machines

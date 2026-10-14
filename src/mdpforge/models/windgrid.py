@@ -6,19 +6,16 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 5000,
-            "parameters": {"state_dim": 5000},
-            "source": "measured",
+            "requested_state_dim": 5000,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 15000,
-            "parameters": {"state_dim": 15000},
-            "source": "measured",
+            "requested_state_dim": 15000,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 50000,
-            "parameters": {"state_dim": 50000},
-            "source": "inferred",
+            "requested_state_dim": 50000,
+            "parameters": {},
         },
     },
     "category": "navigation",
@@ -59,6 +56,7 @@ class Model(MDP):
     def __init__(self, state_dim: int = 70, action_dim: int = 10):
         # Classical Windy Gridworld is 7 x 10 = 70 states. Larger benchmark
         # requests use a square-ish grid, e.g. 100 -> 10 x 10 and 400 -> 20 x 20.
+        self.requested_state_dim = int(state_dim)
         state_dim = max(70, state_dim)
 
         if state_dim == 70:

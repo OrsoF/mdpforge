@@ -24,19 +24,16 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 100,
-            "parameters": {"state_dim": 100},
-            "source": "measured",
+            "requested_state_dim": 100,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 300,
-            "parameters": {"state_dim": 300},
-            "source": "measured",
+            "requested_state_dim": 300,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 1800,
-            "parameters": {"state_dim": 1800},
-            "source": "inferred",
+            "requested_state_dim": 1800,
+            "parameters": {},
         },
     },
     "category": "service_operations",
@@ -70,6 +67,7 @@ class Model(MDP):
         *,
         truncation_tol: float = 1e-8,
     ):
+        self.requested_state_dim = int(state_dim)
         self.state_dim = int(state_dim)
         self.action_dim = int(action_dim)
         if self.state_dim < 1 or self.action_dim < 1:

@@ -16,19 +16,16 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 500,
-            "parameters": {"state_dim": 500},
-            "source": "measured",
+            "requested_state_dim": 500,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 2000,
-            "parameters": {"state_dim": 2000},
-            "source": "measured",
+            "requested_state_dim": 2000,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 8000,
-            "parameters": {"state_dim": 8000},
-            "source": "inferred",
+            "requested_state_dim": 8000,
+            "parameters": {},
         },
     },
     "category": "service_operations",
@@ -45,6 +42,7 @@ class Model(MDP):
     ACCEPT = 1
 
     def __init__(self, state_dim: int = 400, action_dim: int = 10):
+        self.requested_state_dim = int(state_dim)
         del action_dim
         requested = max(20, int(state_dim))
         self.num_priorities = 4
@@ -106,4 +104,25 @@ class Model(MDP):
                                 release_probability * priority_probability
                             )
 
-        self.transition_matrix = [matrix.tocsr() for matrix in matrices]
+        self.transition_matrix = []
+        for matrix in matrices:
+            matrix = matrix.tocsr()
+            row_sums = np.asarray(matrix.sum(axis=1)).ravel()
+            if np.any(row_sums <= 0):
+                raise ValueError("Transition matrix contains an empty row.")
+
+            # PyMDPToolbox requires row sums accurate to ~2e-15.
+            # Normalize in place without allocating an array of size nnz.
+            for state, total in enumerate(row_sums):
+                start, end = matrix.indptr[state : state + 2]
+                matrix.data[start:end] /= total
+
+            # Compensate any residual accumulation error in CSR row sums.
+            residuals = 1.0 - np.asarray(matrix.sum(axis=1)).ravel()
+            for state, residual in enumerate(residuals):
+                if residual:
+                    start, end = matrix.indptr[state : state + 2]
+                    largest = start + np.argmax(matrix.data[start:end])
+                    matrix.data[largest] += residual
+
+            self.transition_matrix.append(matrix)

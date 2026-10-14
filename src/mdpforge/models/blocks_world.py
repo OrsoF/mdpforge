@@ -11,19 +11,16 @@ TEST_PARAMETERS = {"state_dim": 96, "action_dim": 6}
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 1000,
-            "parameters": {"state_dim": 1000},
-            "source": "measured",
+            "requested_state_dim": 5000,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 10000,
-            "parameters": {"state_dim": 10000},
-            "source": "parameterized",
+            "requested_state_dim": 10000,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 30000,
-            "parameters": {"state_dim": 30000},
-            "source": "parameterized",
+            "requested_state_dim": 30000,
+            "parameters": {},
         },
     },
     "category": "games_and_puzzles",
@@ -55,6 +52,7 @@ class Model(MDP):
     _LEVEL_SIZE = 96
 
     def __init__(self, state_dim: int = 96, action_dim: int = 6):
+        self.requested_state_dim = int(state_dim)
         if isinstance(state_dim, (bool, np.bool_)) or not isinstance(
             state_dim, (int, np.integer)
         ):

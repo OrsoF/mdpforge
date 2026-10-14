@@ -22,19 +22,16 @@ def build_track(state_dim: int) -> np.ndarray:
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 283,
-            "parameters": {"state_dim": 315},
-            "source": "measured",
+            "requested_state_dim": 315,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 1231,
-            "parameters": {"state_dim": 1260},
-            "source": "measured",
+            "requested_state_dim": 1260,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 4211,
-            "parameters": {"state_dim": 4235},
-            "source": "inferred",
+            "requested_state_dim": 4235,
+            "parameters": {},
         },
     },
     "category": "navigation",
@@ -48,6 +45,7 @@ METADATA = {
 
 class Model(MDP):
     def __init__(self, state_dim: int = 500, action_dim: int = 10):
+        self.requested_state_dim = int(state_dim)
         self.track = build_track(state_dim)
         self.p_fail = 0.1
 

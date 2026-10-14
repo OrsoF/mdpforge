@@ -29,6 +29,15 @@ def _zero_solver(transitions, rewards, discount, precision):
     return np.zeros(rewards.shape[0])
 
 
+def _rounded_zero_family(size, seed):
+    actual = size // 2 * 2
+    return MDP.from_matrices(
+        f"rounded_{size}_{seed}",
+        [eye(actual, format="csr")],
+        np.zeros((actual, 1)),
+    )
+
+
 def _scaling_result():
     rows = []
     sizes = {"a": 2, "b": 2, "c": 4, "d": 4}
@@ -123,6 +132,42 @@ def test_scaling_benchmark_returns_standard_result():
     assert result.experiment["study"]["sizes"] == [2, 3]
     assert result.experiment["study"]["models"]["zero_2_17"]["model_seed"] == 17
     assert result.experiment["models"]["zero_3_19"]["nnz"] == 3
+
+
+def test_scaling_merges_rounded_requests_at_actual_dimensions(tmp_path):
+    pytest.importorskip("pandas")
+    bench = ScalingBenchmark(default_solvers=False)
+    bench.add_family(_rounded_zero_family, [5, 6, 7], instances=2)
+    bench.add_solver("zeros", solve_function=_zero_solver)
+    result = bench.run(0.9, repeats=1)
+    study = result.experiment["study"]
+    assert study["sizes"] == [4, 6]
+    assert study["requested_state_dims"] == [5, 6, 7]
+    assert [row["state_dim"] for row in result.rows] == [4, 4, 6, 6, 6, 6]
+    assert [row["requested_state_dim"] for row in result.rows] == [5, 5, 6, 6, 7, 7]
+    table = result.scaling_summary().set_index("state_dim")
+    assert table.loc[4, "n_instances"] == 2
+    assert table.loc[6, "n_instances"] == 4
+    assert table.loc[6, "success_rate"] == 1
+    restored = BenchmarkResult.from_csv(result.export_csv(tmp_path / "rounded.csv"))
+    assert restored.experiment["study"] == study
+    assert restored.scaling_summary().equals(result.scaling_summary())
+
+
+def test_scaling_plot_uses_actual_dimensions():
+    matplotlib = pytest.importorskip("matplotlib")
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    bench = ScalingBenchmark(default_solvers=False)
+    bench.add_family(_rounded_zero_family, [5, 6, 7], instances=1)
+    bench.add_solver("zeros", solve_function=_zero_solver)
+    result = bench.run(0.9, repeats=1)
+    fig, ax = result.plot_scaling(show=False)
+    try:
+        np.testing.assert_array_equal(ax.lines[0].get_xdata(), [4, 6])
+    finally:
+        plt.close(fig)
 
 
 def test_scaling_summary_aggregates_instances_after_repeats():

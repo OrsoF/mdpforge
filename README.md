@@ -134,15 +134,19 @@ result.plot_scaling(x="nnz", metric="speedup", reference="mdpforge_vi")
 result.export_csv("scaling.csv")
 ```
 
-The manifest records each model's size, instance index, model-generation seed,
-and the number of nonzero transition entries (`nnz`). `scaling_summary()` requires
+The manifest records each model's actual `state_dim`, `requested_state_dim`,
+instance index, model-generation seed, and nonzero transition entries (`nnz`).
+`scaling_summary()` requires
 pandas and reports model success coverage, median and quartile runtimes across
 successful instances, and paired geometric speedup on jointly completed
 instances. An instance contributes only if all expected solver repeats succeed.
 `plot_scaling()` requires Matplotlib; log-log curves annotate partial coverage
 with `completed/total` (or `paired/total` for speedups) and show sizes
 without an eligible estimate with a cross near the axis.
-The `nnz` x-coordinate is the median across instances at a given size. The
+Constructors may adapt a requested size to the model's admissible dimensions.
+Plots and summaries group instances by actual `state_dim`; requests that produce
+the same actual size are combined, with their requests retained in the manifest.
+The `nnz` x-coordinate is the median across instances at a given actual size. The
 estimated scaling is empirical, and sweep designs should control action counts,
 sparsity, discount, precision and hardware. Generation is outside solver timing.
 
@@ -270,12 +274,13 @@ Each recipe exposes a literal `METADATA` dict with `category`, `description`,
 
 These categories describe tasks, not expected solver performance. Classification
 rules and boundary cases are documented in [the model guide](docs/adding-a-model.md).
-Each size preset contains its expected actual
-`state_dim`, constructor `parameters`, and `source` (`measured`, `inferred`,
-`configured`, `analytical`, `parameterized` or `unavailable`). Configured,
-analytical and parameterized sizes describe dimension choices without measured
-solver runtimes. Constructor inputs can differ from the resulting dimensions.
-Unavailable presets have `parameters=None` and a reason. A missing or unknown
+Each size preset contains one `requested_state_dim`, passed to the constructor
+as `state_dim`, and `parameters` for its other options (an empty dict by default).
+The constructor adapts the request to an admissible size and exposes the actual
+count as `model.state_dim`, retaining the target as `model.requested_state_dim`.
+Results and plots use actual counts. For example, Rooms requested at 5,000 states
+has 4,900 states. Unavailable presets have `requested_state_dim=None`,
+`parameters=None` and a reason. A missing or unknown
 category raises `ValueError`; missing sizes default to an empty dict and other
 optional fields to `None`.
 
@@ -284,7 +289,7 @@ from mdpforge import Benchmark, list_models
 
 presets = list_models(size="small", category="abstract")  # Metadata only
 bench = Benchmark()
-bench.add_mdp(size="small", category="abstract")
+bench.add_mdp(size="small", category="abstract", verbose=True)
 ```
 
 `bench.add_mdp(size=..., category=...)` builds and registers matching models using
@@ -305,6 +310,10 @@ to its defaults. Without a model, at least one filter is required;
 use `bench.add_all_mdps()` to add the entire catalogue with defaults, or
 `bench.add_all_mdps(size="small")` for all available small presets.
 
+Pass `verbose=True` to `add_mdp()` or `add_all_mdps()` to print each model before
+loading or building it, then its dimensions and elapsed time once registered.
+Progress is flushed immediately, so a slow model remains visible during construction.
+
 `size` accepts `small`, `medium` or `large`; omitted size uses constructor defaults.
 `category` selects exactly one of the six task families; omitted category selects
 all families. Unknown size/category labels raise `ValueError`. Both APIs use
@@ -318,10 +327,9 @@ For use outside a benchmark, construct the recipe directly, for example
 caches are read). The catalogue `load_model()` API has been removed; use
 `bench.add_mdp(size=..., category=...)` for benchmark selections.
 
-Calibrated presets use measurements at discount `0.99`, precision `1e-3`
-and one thread. Inferred large presets aim at a 30-second solver budget with a
-15-second forecast margin. These timings are hardware dependent and do not cover
-failed backends or algorithms other than the measured VI variants. The existing
+Presets specify target sizes; they do not guarantee a solver runtime.
+Runtime validation uses discount `0.99`, precision `1e-3` and one thread by default.
+Measurements depend on hardware and the selected solver. The existing
 `utils.persistence.load_model(model)` remains the internal cache loader.
 
 Check current presets from the repository root:
@@ -338,6 +346,8 @@ Use `--build-only` to validate matrices without running solvers, or `--models`
 to select recipes. Each stage runs in a subprocess with a 60-second timeout by
 default. Results append to `artifacts/results/model_size_<mode>.csv`; reruns resume
 completed cases. The modes are `dimensions`, `build` and `runtimes`.
+Older size-validation CSVs have a different schema; choose a new `--output`
+to preserve those historical measurements.
 Changed model source or settings create new cases. Use a different `--output` to
 repeat unchanged cases, including after modifying a solver: backend source changes
 do not invalidate completed cases. A nonzero exit code reports unavailable/failed presets

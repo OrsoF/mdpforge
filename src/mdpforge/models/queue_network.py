@@ -10,19 +10,16 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 125,
-            "parameters": {"state_dim": 100},
-            "source": "measured",
+            "requested_state_dim": 100,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 1000,
-            "parameters": {"state_dim": 1000},
-            "source": "measured",
+            "requested_state_dim": 1000,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 6859,
-            "parameters": {"state_dim": 5943},
-            "source": "inferred",
+            "requested_state_dim": 5943,
+            "parameters": {},
         },
     },
     "category": "service_operations",
@@ -36,6 +33,7 @@ METADATA = {
 
 class Model(MDP):
     def __init__(self, state_dim: int = 500, action_dim: int = 10):
+        self.requested_state_dim = int(state_dim)
         capacity = int(np.ceil(max(8, state_dim) ** (1.0 / 3.0))) - 1
         self.capacity = max(1, capacity)
         self.queues = 3

@@ -19,19 +19,16 @@ def build_track(state_dim: int, max_speed: int) -> np.ndarray:
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 146,
-            "parameters": {"state_dim": 100},
-            "source": "measured",
+            "requested_state_dim": 100,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 726,
-            "parameters": {"state_dim": 1000},
-            "source": "measured",
+            "requested_state_dim": 1000,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 3856,
-            "parameters": {"state_dim": 4385},
-            "source": "inferred",
+            "requested_state_dim": 4385,
+            "parameters": {},
         },
     },
     "category": "navigation",
@@ -51,6 +48,7 @@ class Model(MDP):
         action_dim: int = 10,
         custom_track: np.ndarray | None = None,
     ):
+        self.requested_state_dim = int(state_dim)
         self._proba_fail_action: float = 0.1
         self._max_speed = 3
 

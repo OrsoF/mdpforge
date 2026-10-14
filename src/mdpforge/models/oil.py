@@ -11,19 +11,16 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 100,
-            "parameters": {"state_dim": 100},
-            "source": "measured",
+            "requested_state_dim": 100,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 1000,
-            "parameters": {"state_dim": 1000},
-            "source": "measured",
+            "requested_state_dim": 1000,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 4800,
-            "parameters": {"state_dim": 4800},
-            "source": "inferred",
+            "requested_state_dim": 4800,
+            "parameters": {},
         },
     },
     "category": "asset_management",
@@ -39,8 +36,10 @@ METADATA = {
 
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10):
-        if state_dim < 2:
-            raise ValueError("state_dim must be at least 2.")
+        self.requested_state_dim = int(state_dim)
+        if state_dim < 1:
+            raise ValueError("state_dim must be positive")
+        state_dim = max(2, state_dim)
 
         if action_dim < 2:
             raise ValueError("action_dim must be at least 2.")

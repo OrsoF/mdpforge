@@ -15,19 +15,16 @@ TEST_PARAMETERS = {"state_dim": 20, "action_dim": 2}
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 500,
-            "parameters": {"state_dim": 500},
-            "source": "measured",
+            "requested_state_dim": 500,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 2000,
-            "parameters": {"state_dim": 2000},
-            "source": "measured",
+            "requested_state_dim": 2000,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 5000,
-            "parameters": {"state_dim": 5000},
-            "source": "inferred",
+            "requested_state_dim": 5000,
+            "parameters": {},
         },
     },
     "category": "abstract",
@@ -41,7 +38,8 @@ METADATA = {
 
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10):
-        self.block_dim = state_dim // 10
+        self.requested_state_dim = int(state_dim)
+        self.block_dim = max(1, state_dim // 10)
         self.action_dim = action_dim
         self.sparsity_block = 0.85
         self.block_number = 10

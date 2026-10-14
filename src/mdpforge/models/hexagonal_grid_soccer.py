@@ -9,19 +9,16 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 5000,
-            "parameters": {"state_dim": 5000},
-            "source": "measured",
+            "requested_state_dim": 5000,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 15000,
-            "parameters": {"state_dim": 15000},
-            "source": "measured",
+            "requested_state_dim": 15000,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 50653,
-            "parameters": {"state_dim": 50653},
-            "source": "measured",
+            "requested_state_dim": 50653,
+            "parameters": {},
         },
     },
     "category": "games_and_puzzles",
@@ -44,6 +41,7 @@ class Model(MDP):
     HEX_DIRS = [(1, 0), (1, -1), (0, -1), (-1, 0), (-1, 1), (0, 1)]
 
     def __init__(self, state_dim: int = 343, action_dim: int = 10):
+        self.requested_state_dim = int(state_dim)
         target = max(27, state_dim)
         radius = 1
         while (1 + 3 * radius * (radius + 1)) ** 3 <= target and radius < 4:

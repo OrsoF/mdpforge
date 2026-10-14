@@ -192,6 +192,24 @@ def test_model_contract(
     assert all(isinstance(matrix, csr_matrix) for matrix in model.transition_matrix)
 
 
+@pytest.mark.parametrize("requested", [1, 113])
+def test_model_constructor_adapts_positive_state_requests(
+    model_module, requested, request, tmp_path, monkeypatch
+):
+    if run_external_test(request, tmp_path):
+        return
+    monkeypatch.setattr(np.random, "randint", np.random.RandomState(0).randint)
+    numpy_state, random_state = np.random.get_state(), random.getstate()
+    try:
+        model = import_module(model_module).Model(state_dim=requested)
+        assert model.requested_state_dim == requested
+        assert isinstance(model.state_dim, (int, np.integer)) and model.state_dim > 0
+        assert isinstance(model.action_dim, (int, np.integer)) and model.action_dim > 0
+    finally:
+        np.random.set_state(numpy_state)
+        random.setstate(random_state)
+
+
 def test_solver_contract(solver_module, chain, monkeypatch, request, tmp_path):
     if run_external_test(request, tmp_path):
         return

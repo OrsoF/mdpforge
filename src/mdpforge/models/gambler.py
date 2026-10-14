@@ -6,19 +6,16 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 5000,
-            "parameters": {"state_dim": 5000},
-            "source": "measured",
+            "requested_state_dim": 5001,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 15000,
-            "parameters": {"state_dim": 15000},
-            "source": "measured",
+            "requested_state_dim": 15000,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 50000,
-            "parameters": {"state_dim": 50000},
-            "source": "inferred",
+            "requested_state_dim": 50000,
+            "parameters": {},
         },
     },
     "category": "games_and_puzzles",
@@ -62,6 +59,7 @@ class Model(MDP):
         # Classical version has states 0, ..., 100.
         # If state_dim=100 is passed by the benchmark CLI, this gives
         # goal=100 and therefore 101 states, matching the textbook.
+        self.requested_state_dim = int(state_dim)
         self.goal = max(100, state_dim)
         self.state_dim = self.goal + 1
 

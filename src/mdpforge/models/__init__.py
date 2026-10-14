@@ -23,8 +23,8 @@ def list_models(category: str | None = None, *, size: str | None = None) -> list
     asset_management and games_and_puzzles. Missing sizes are empty; other
     optional fields are None. References are the source attributions declared
     by the model authors.
-    Preset state_dim is the expected actual state count, while parameters are
-    constructor inputs. Inferred sizes are runtime estimates, not guarantees.
+    Preset requested_state_dim is passed as state_dim to the constructor;
+    parameters contains its other options. The built model reports actual sizes.
     Category selects a task family; size selects available presets.
     """
     if size is not None and size not in ("small", "medium", "large"):

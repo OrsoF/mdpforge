@@ -19,6 +19,7 @@ class MDP:
     """
 
     def __init__(self, state_dim: int, action_dim: int) -> None:
+        self.requested_state_dim = state_dim
         self.state_dim = state_dim
         self.action_dim = action_dim
         self.name = f"{state_dim}_{action_dim}_{self.__class__.__name__.lower()}"

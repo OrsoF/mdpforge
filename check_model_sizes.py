@@ -24,8 +24,7 @@ FIELDS = [
     "case_id",
     "model",
     "size",
-    "preset_source",
-    "expected_state_dim",
+    "requested_state_dim",
     "state_dim",
     "action_dim",
     "constructor_options",
@@ -152,16 +151,18 @@ def main(args):
             preset = catalogue[name]["sizes"].get(size, {})
             parameters = preset.get("parameters")
             if parameters is not None and (
-                not isinstance(preset.get("state_dim"), int) or preset["state_dim"] <= 0
+                type(preset.get("requested_state_dim")) is not int
+                or preset["requested_state_dim"] <= 0
             ):
                 raise ValueError(
-                    f"{name}/{size}: missing or invalid expected state_dim"
+                    f"{name}/{size}: missing or invalid requested_state_dim"
                 )
+            if parameters is not None:
+                parameters = {**parameters, "state_dim": preset["requested_state_dim"]}
             case = {
                 "model": name,
                 "size": size,
-                "preset_source": preset.get("source", "unavailable"),
-                "expected_state_dim": preset.get("state_dim"),
+                "requested_state_dim": preset.get("requested_state_dim"),
                 "constructor_options": (
                     json.dumps(parameters, sort_keys=True)
                     if parameters is not None

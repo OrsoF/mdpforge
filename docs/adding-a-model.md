@@ -42,6 +42,8 @@ Le module DOIT exposer une classe `Model(MDP)` avec un constructeur et une méth
 
 - `state_dim` et `action_dim` DOIVENT être des entiers Python strictement positifs,
   décrivant les dimensions réelles ;
+- `requested_state_dim` DOIT conserver la cible initiale passée comme `state_dim`
+  au constructeur, avant son adaptation aux dimensions admissibles ;
 - `name` DOIT être une chaîne non vide identifiant la configuration ;
 - les paramètres invalides DOIVENT provoquer une erreur explicite ;
 - le lien entre dimensions demandées et dimensions réelles DOIT être documenté.
@@ -90,11 +92,12 @@ class Model(MDP):
     """Chaîne contrôlée : coût -1 par étape, état 0 absorbant de coût nul."""
 
     def __init__(self, state_dim: int = 32, action_dim: int = 2):
-        if not isinstance(state_dim, int) or state_dim < 2:
-            raise ValueError("state_dim must be an integer >= 2")
+        if not isinstance(state_dim, int) or state_dim < 1:
+            raise ValueError("state_dim must be a positive integer")
         if action_dim != 2:
             raise ValueError("This model has exactly two actions")
-        super().__init__(state_dim, 2)
+        super().__init__(max(2, state_dim), 2)
+        self.requested_state_dim = state_dim
         self.name = f"{self.state_dim}_2_example_chain_v1"
 
     def _build_model(self):
@@ -152,17 +155,16 @@ taille disponible :
 
 | Champ | Signification |
 |---|---|
-| `state_dim` | Nombre réel d'états attendu après construction |
-| `parameters` | Arguments exacts du constructeur pour obtenir cette configuration |
-| `source` | `measured` si la configuration a été mesurée, `inferred` si elle résulte d'une extrapolation |
+| `requested_state_dim` | Cible entière positive transmise comme `state_dim` au constructeur |
+| `parameters` | Autres arguments du constructeur, ou `{}` ; sans `state_dim` |
 
-Une configuration qui n'a pas encore été mesurée peut utiliser `configured`
-(choix explicite), `analytical` (dimensions calculées analytiquement) ou
-`parameterized` (extension par paramètres). Ces origines ne constituent pas une
-validation des budgets de temps et doivent être expliquées dans la recette.
+Le nombre réel d'états est calculé par le constructeur et lu dans
+`model.state_dim`. Il ne doit pas être dupliqué dans les presets. La règle
+d'adaptation doit préserver la structure scientifique du modèle. Les résultats
+et graphiques utilisent les dimensions réelles ; la cible reste dans la provenance.
 
-Une taille indisponible DOIT utiliser `state_dim=None`, `parameters=None`,
-`source="unavailable"` et une `reason` non vide. Il ne faut pas dupliquer une même
+Une taille indisponible DOIT utiliser `requested_state_dim=None`, `parameters=None`
+et une `reason` non vide. Il ne faut pas dupliquer une même
 configuration sous plusieurs tailles pour donner l'impression que le modèle
 est extensible.
 
@@ -175,21 +177,18 @@ METADATA = {
     "reference": None,
     "sizes": {
         "small": {
-            "state_dim": None,
+            "requested_state_dim": None,
             "parameters": None,
-            "source": "unavailable",
             "reason": "Calibration pending.",
         },
         "medium": {
-            "state_dim": None,
+            "requested_state_dim": None,
             "parameters": None,
-            "source": "unavailable",
             "reason": "Calibration pending.",
         },
         "large": {
-            "state_dim": None,
+            "requested_state_dim": None,
             "parameters": None,
-            "source": "unavailable",
             "reason": "Calibration pending.",
         },
     },
@@ -273,7 +272,7 @@ Le contributeur DOIT conserver la provenance des tailles disponibles : résultat
 CSV et, pour une extrapolation, méthode et hypothèses dans un rapport associé.
 Rapporter les paramètres, dimensions réelles, seeds, solveurs, versions, précision,
 machine, répétitions et limites de temps. Plusieurs répétitions sont recommandées.
-Une taille `inferred` ne garantit pas un temps réel de résolution ; préciser les
+Une taille extrapolée ne garantit pas un temps réel de résolution ; préciser les
 solveurs couverts et exclure les mesures échouées du calcul.
 
 Le [script de calibration](../benchmark_sizes.py) mesure uniquement `small` et
@@ -302,7 +301,7 @@ Le premier contrôle vérifie les constructeurs, le deuxième construit et valid
 les matrices, le troisième mesure aussi les solveurs et vérifie la précision.
 Chaque étape est isolée dans un processus avec un timeout. Les résultats sont
 enregistrés progressivement dans des CSV distincts par mode, avec la dimension
-attendue, la dimension obtenue, la qualité de solution et le respect du budget.
+demandée, la dimension obtenue, la qualité de solution et le respect du budget.
 Le script retourne un code non nul si une configuration est indisponible, échoue
 ou dépasse son budget. Il reprend les cas déjà terminés ; choisir un autre
 `--output` pour refaire les mêmes mesures, notamment après une modification d'un

@@ -12,19 +12,16 @@ TEST_PARAMETERS = {"state_dim": 176, "action_dim": 5}
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 5000,
-            "parameters": {"state_dim": 5000},
-            "source": "analytical",
+            "requested_state_dim": 5000,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 16640,
-            "parameters": {"state_dim": 16640},
-            "source": "analytical",
+            "requested_state_dim": 16640,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 30000,
-            "parameters": {"state_dim": 30000},
-            "source": "analytical",
+            "requested_state_dim": 30000,
+            "parameters": {},
         },
     },
     "category": "service_operations",
@@ -130,6 +127,7 @@ class Model(MDP):
         action_dim: int = 5,
         n_floors: Optional[int] = None,
     ):
+        self.requested_state_dim = int(state_dim)
         if (
             isinstance(state_dim, (bool, np.bool_))
             or not isinstance(state_dim, (int, np.integer))

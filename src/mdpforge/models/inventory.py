@@ -9,19 +9,16 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 5000,
-            "parameters": {"state_dim": 5000},
-            "source": "measured",
+            "requested_state_dim": 5000,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 15000,
-            "parameters": {"state_dim": 15000},
-            "source": "measured",
+            "requested_state_dim": 15000,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 50000,
-            "parameters": {"state_dim": 50000},
-            "source": "inferred",
+            "requested_state_dim": 50000,
+            "parameters": {},
         },
     },
     "category": "asset_management",
@@ -35,6 +32,7 @@ METADATA = {
 
 class Model(MDP):
     def __init__(self, state_dim: int = 500, action_dim: int = 10):
+        self.requested_state_dim = int(state_dim)
         self._stock_size = (state_dim - 1) // 2  # Size of the stock
         self.max_action = action_dim - 1  # Max Number of action - 1
         self.state_dim = 2 * self._stock_size + 1

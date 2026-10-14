@@ -8,19 +8,16 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 1000,
-            "parameters": {"state_dim": 1000},
-            "source": "measured",
+            "requested_state_dim": 1000,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 5000,
-            "parameters": {"state_dim": 5000},
-            "source": "measured",
+            "requested_state_dim": 5000,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 15000,
-            "parameters": {"state_dim": 15000},
-            "source": "inferred",
+            "requested_state_dim": 15000,
+            "parameters": {},
         },
     },
     "category": "navigation",
@@ -33,6 +30,7 @@ METADATA = {
 
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10):
+        self.requested_state_dim = int(state_dim)
         self.state_dim = max(2, state_dim)
         self.action_dim = 3
 

@@ -5,6 +5,7 @@ import numpy as np
 import pytest
 
 import benchmark_sizes
+from mdpforge.models.rooms import Model as Rooms
 from mdpforge.models.unichain import Model as Unichain
 
 
@@ -19,7 +20,7 @@ def constructor_request(monkeypatch):
         "model": "unichain",
         "model_seed": 0,
         "constructor_options": '{"state_dim": 4}',
-        "expected_state_dim": 4,
+        "requested_state_dim": 4,
         "max_states": 100,
         "dimensions_only": True,
     }
@@ -40,13 +41,16 @@ def test_dimension_audit_never_builds_matrices(constructor_request, monkeypatch)
     assert result["state_dim"] == 4 and result["action_dim"] == 2
 
 
-def test_preset_mismatch_fails_before_matrix_construction(constructor_request):
-    # Full mode must reject the dimension mismatch before trying to access a
-    # model_path or building any matrices.
-    constructor_request.update(expected_state_dim=5, dimensions_only=False)
+def test_constructor_audit_accepts_rounded_dimensions(constructor_request, monkeypatch):
+    monkeypatch.setattr(
+        benchmark_sizes, "import_module", lambda name: SimpleNamespace(Model=Rooms)
+    )
+    constructor_request.update(
+        constructor_options='{"state_dim": 110}', requested_state_dim=110
+    )
     result = benchmark_sizes.build_model(constructor_request)
-    assert result["status"] == "dimension_mismatch"
-    assert "expects 5 states" in result["error"]
+    assert result["status"] == "success"
+    assert result["state_dim"] == 100
 
 
 def test_size_limit_applies_to_constructor_audit(constructor_request):

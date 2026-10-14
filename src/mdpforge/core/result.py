@@ -12,6 +12,7 @@ from mdpforge.utils.paths import BENCHMARKS_PATH
 
 _FIELD_TYPES = {
     "state_dim": int,
+    "requested_state_dim": lambda value: int(value) if value else None,
     "action_dim": int,
     "repeat": int,
     "seed": int,
@@ -108,7 +109,7 @@ def _performance_ratios(rows, experiment=None):
 
 
 def _scaling_statistics(rows, experiment, *, reference=None):
-    """Aggregate paired instance medians by requested state dimension."""
+    """Aggregate paired instance medians by actual state dimension."""
     study = (experiment or {}).get("study")
     if not isinstance(study, dict) or study.get("type") != "scaling":
         raise ValueError("Scaling analysis requires a scaling experiment manifest")
@@ -127,6 +128,8 @@ def _scaling_statistics(rows, experiment, *, reference=None):
         raise ValueError(f"Unknown reference solver: {reference!r}")
 
     by_size = {size: [] for size in sizes}
+    requested_sizes = study.get("requested_state_dims", sizes)
+    by_request = {size: [] for size in requested_sizes}
     model_metadata = experiment.get("models", {})
     for model, entry in instances.items():
         size = entry["state_dim"]
@@ -135,9 +138,15 @@ def _scaling_statistics(rows, experiment, *, reference=None):
         metadata = model_metadata.get(model, {})
         if metadata.get("state_dim") != size or "nnz" not in metadata:
             raise ValueError(f"Missing dimension or nnz metadata for {model!r}")
+        requested = entry.get("requested_state_dim", size)
+        if requested not in by_request:
+            raise ValueError(f"Unexpected requested state dimension {requested}")
+        by_request[requested].append(model)
         by_size[size].append(model)
-    if any(len(names) != study.get("instances") for names in by_size.values()):
+    if any(len(names) != study.get("instances") for names in by_request.values()):
         raise ValueError("Scaling manifest has an inconsistent instance count")
+    if any(not names for names in by_size.values()):
+        raise ValueError("Scaling manifest has an actual size without instances")
 
     def runtime(model, solver):
         return cells.get((model, solver), {}).get("median_runtime", np.nan)
@@ -268,7 +277,7 @@ class BenchmarkResult:
         return pd.DataFrame(records)
 
     def scaling_summary(self, *, reference=None):
-        """Summarize instance runtimes and paired speedups by state dimension.
+        """Summarize instance runtimes and paired speedups by actual state dimension.
 
         reference: solver ID; None uses the first solver in the results.
         Each MDP contributes its median successful trial runtime, only if all

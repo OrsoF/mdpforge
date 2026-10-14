@@ -15,19 +15,16 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 5000,
-            "parameters": {"state_dim": 5000},
-            "source": "measured",
+            "requested_state_dim": 5000,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 15000,
-            "parameters": {"state_dim": 15000},
-            "source": "measured",
+            "requested_state_dim": 15000,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 50000,
-            "parameters": {"state_dim": 50000},
-            "source": "inferred",
+            "requested_state_dim": 50000,
+            "parameters": {},
         },
     },
     "category": "navigation",
@@ -41,6 +38,7 @@ METADATA = {
 
 class Model(MDP):
     def __init__(self, state_dim: int = 81, action_dim: int = 10):
+        self.requested_state_dim = int(state_dim)
         state_dim = max(81, state_dim)
 
         # For 9 rooms, total side length = 3 * size_of_one_room.

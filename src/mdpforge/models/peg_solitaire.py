@@ -12,19 +12,16 @@ TEST_PARAMETERS = {"state_dim": 512, "action_dim": 4}
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 128,
-            "parameters": {"state_dim": 128},
-            "source": "configured",
+            "requested_state_dim": 128,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 512,
-            "parameters": {"state_dim": 512},
-            "source": "configured",
+            "requested_state_dim": 512,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 8192,
-            "parameters": {"state_dim": 8192},
-            "source": "configured",
+            "requested_state_dim": 8192,
+            "parameters": {},
         },
     },
     "category": "games_and_puzzles",
@@ -40,6 +37,7 @@ METADATA = {
 
 class Model(MDP):
     def __init__(self, state_dim: int = 512, action_dim: int = 10):
+        self.requested_state_dim = int(state_dim)
         if not isinstance(state_dim, (int, np.integer)) or state_dim < 1:
             raise ValueError("state_dim must be a positive integer")
 

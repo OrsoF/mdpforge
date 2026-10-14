@@ -12,19 +12,16 @@ TEST_PARAMETERS = {"state_dim": 9, "action_dim": 2}
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 500,
-            "parameters": {"state_dim": 500},
-            "source": "measured",
+            "requested_state_dim": 500,
+            "parameters": {},
         },
         "medium": {
-            "state_dim": 1500,
-            "parameters": {"state_dim": 1500},
-            "source": "measured",
+            "requested_state_dim": 1500,
+            "parameters": {},
         },
         "large": {
-            "state_dim": 3000,
-            "parameters": {"state_dim": 3000},
-            "source": "inferred",
+            "requested_state_dim": 3000,
+            "parameters": {},
         },
     },
     "category": "service_operations",
@@ -38,10 +35,10 @@ METADATA = {
 
 class Model(MDP):
     def __init__(self, state_dim: int = 100, action_dim: int = 10):
-        if state_dim < 9:
-            raise ValueError(
-                "ambulance requires at least three grid points (state_dim >= 9)."
-            )
+        self.requested_state_dim = int(state_dim)
+        if state_dim < 1:
+            raise ValueError("state_dim must be positive")
+        state_dim = max(9, state_dim)
         if action_dim < 2:
             raise ValueError("ambulance requires at least two actions.")
 
