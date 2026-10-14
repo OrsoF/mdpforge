@@ -16,18 +16,18 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 100,
-            "parameters": {"state_dim": 10000},
+            "state_dim": 500,
+            "parameters": {"state_dim": 500},
             "source": "measured",
         },
         "medium": {
-            "state_dim": 500,
-            "parameters": {"state_dim": 250000},
+            "state_dim": 2000,
+            "parameters": {"state_dim": 2000},
             "source": "measured",
         },
         "large": {
-            "state_dim": 1300,
-            "parameters": {"state_dim": 1690000},
+            "state_dim": 8000,
+            "parameters": {"state_dim": 8000},
             "source": "inferred",
         },
     },
@@ -46,8 +46,6 @@ class Model(MDP):
 
     def __init__(self, state_dim: int = 400, action_dim: int = 10):
         del action_dim
-
-        state_dim = int(np.sqrt(state_dim))
         requested = max(20, int(state_dim))
         self.num_priorities = 4
         self.num_servers = max(1, requested // self.num_priorities - 1)

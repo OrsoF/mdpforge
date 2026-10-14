@@ -93,7 +93,7 @@ def test_catalogue_solver_loads_class_and_forwards_options(chain):
     assert results.rows[0]["error_bound"] <= 1e-4
 
 
-def test_add_all_models_builds_defaults_and_preserves_existing(chain, monkeypatch):
+def test_add_all_mdps_builds_defaults_and_preserves_existing(chain, monkeypatch):
     existing = SimpleNamespace(**vars(chain))
     existing.name = "built_alpha"
     bench = Benchmark(default_solvers=False).add_mdp(existing)
@@ -108,14 +108,14 @@ def test_add_all_models_builds_defaults_and_preserves_existing(chain, monkeypatc
 
     monkeypatch.setattr(
         "mdpforge.core.benchmark.models.list_models",
-        lambda: [{"name": name} for name in ("alpha", "missing", "zeta")],
+        lambda **kwargs: [{"name": name} for name in ("alpha", "missing", "zeta")],
     )
     monkeypatch.setattr("mdpforge.core.benchmark.import_module", import_catalogue)
     for _ in range(2):
         with pytest.warns(
             UserWarning, match="Skipping model 'missing'.*missing_backend"
         ):
-            assert bench.add_all_models() is bench
+            assert bench.add_all_mdps() is bench
     assert [model.name for model in bench._mdps] == ["built_alpha", "built_zeta"]
     assert bench._mdps[0] is existing
     for model in bench._mdps:

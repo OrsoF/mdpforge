@@ -40,6 +40,7 @@ include = ["mdpforge", "mdpforge.*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 addopts = "-ra"
 markers = ["external: integrations with external dependencies, isolated in subprocesses"]
 

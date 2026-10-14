@@ -75,10 +75,10 @@ Each pair runs three trials. Results contain `runtime`, `error_bound` and `statu
 of the benchmark, including after `BenchmarkResult.from_csv("results.csv")`.
 
 ```python
-result.summary()                  # One row per MDP/solver; requires pandas
+result.summary()  # One row per MDP/solver; requires pandas
 result.solver_summary(reference="mdpforge_mpi")  # Solver performance metrics
-result.to_dataframe()             # Raw trials; requires pandas
-result.plot_performance_profile() # Share of MDPs within a factor of the fastest
+result.to_dataframe()  # Raw trials; requires pandas
+result.plot_performance_profile()  # Share of MDPs within a factor of the fastest
 result.plot_heat(reference="mdpforge_mpi")
 ```
 
@@ -253,14 +253,15 @@ invalid selections fail before adding any models. Missing dependencies are
 skipped with warnings for sequences, as for other collective additions.
 A named model with an unavailable size raises `ValueError` without falling back
 to its defaults. Without a model, at least one filter is required;
-use `bench.add_all_models()` to add the entire catalogue with defaults.
+use `bench.add_all_mdps()` to add the entire catalogue with defaults, or
+`bench.add_all_mdps(size="small")` for all available small presets.
 
 `size` accepts `small`, `medium` or `large`; omitted size uses constructor defaults.
 `category` selects exactly one of the six task families; omitted category selects
 all families. Unknown size/category labels raise `ValueError`. Both APIs use
 `category=`; the former `type=` keyword has been removed.
 Unavailable presets are excluded. Collective additions (filters or
-`add_all_models()`) skip models with missing dependencies with a warning;
+`add_all_mdps()`) skip models with missing dependencies with a warning;
 other construction errors propagate. Adding a single model by name propagates all errors.
 For use outside a benchmark, construct the recipe directly, for example
 `from mdpforge.models.rooms import Model`, followed by `model = Model()` and

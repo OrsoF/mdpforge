@@ -211,7 +211,7 @@ Une taille indisponible demandée explicitement provoque une erreur,
 sans repli sur les paramètres par défaut. Les filtres ne s'appliquent pas aux
 instances déjà construites ni aux matrices personnalisées.
 Une taille indisponible est exclue de cette sélection. Les ajouts collectifs
-(filtres ou `add_all_models()`) ignorent les modèles dont une dépendance manque,
+(filtres ou `add_all_mdps()`) ignorent les modèles dont une dépendance manque,
 avec un avertissement ; les autres erreurs sont remontées pendant l'ajout.
 L'ajout d'un modèle par son nom remonte toutes les erreurs.
 

@@ -248,7 +248,7 @@ class Benchmark:
         cannot accompany built objects or matrices. Custom names must be unique.
         Groups skip unavailable presets, duplicates and missing dependencies.
         Explicit IDs must all match filters; sequences preserve their given order.
-        Provide a model or filter; use add_all_models() for the entire catalogue.
+        Provide a model or filter; use add_all_mdps() for the entire catalogue.
         """
         named_group = isinstance(model, Sequence) and not isinstance(model, str)
         if named_group and (
@@ -297,7 +297,7 @@ class Benchmark:
         if model is None:
             raise ValueError(
                 "Provide a model or at least one size/category filter; "
-                "use add_all_models() to add the entire catalogue."
+                "use add_all_mdps() to add the entire catalogue."
             )
         if isinstance(model, str):
             if not model.strip():
@@ -355,13 +355,15 @@ class Benchmark:
             )
             return self
 
-    def add_all_models(self):
-        """Add all catalogue models with default dimensions, without duplicates.
+    def add_all_mdps(self, *, size: str | None = None):
+        """Add all catalogue MDPs for an optional size preset; return self.
 
-        Missing dependencies are skipped with a warning; other errors propagate.
+        size: "small", "medium" or "large"; None uses recipe defaults.
+        Unavailable sizes, duplicates and missing dependencies are skipped.
         """
-        for entry in models.list_models():
-            self._add_catalogue_model(entry["name"], grouped=True)
+        for entry in models.list_models(size=size):
+            preset = entry["sizes"][size] if size is not None else None
+            self._add_catalogue_model(entry["name"], preset=preset, grouped=True)
         return self
 
     def add_solver(

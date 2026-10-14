@@ -107,18 +107,28 @@ def test_custom_track_is_converted_without_mutating_metadata(
 
 
 @pytest.mark.parametrize(
-    "options, expected_states",
+    "method, options, expected_states",
     [
-        ({"size": "small"}, 4),
-        ({"category": "abstract"}, 100),
-        ({"size": "small", "category": "abstract"}, 4),
-        ({"model": "unichain", "size": "small"}, 4),
-        ({"model": "unichain", "category": "abstract"}, 100),
-        ({"model": "unichain", "size": "small", "category": "abstract"}, 4),
+        ("add_mdp", {"size": "small"}, 4),
+        ("add_mdp", {"category": "abstract"}, 100),
+        ("add_mdp", {"size": "small", "category": "abstract"}, 4),
+        ("add_mdp", {"model": "unichain", "size": "small"}, 4),
+        ("add_mdp", {"model": "unichain", "category": "abstract"}, 100),
+        (
+            "add_mdp",
+            {"model": "unichain", "size": "small", "category": "abstract"},
+            4,
+        ),
+        ("add_all_mdps", {"size": "small"}, 4),
     ],
 )
 def test_benchmark_selects_catalogue_models(
-    preset_catalogue, isolated_model_cache, monkeypatch, options, expected_states
+    preset_catalogue,
+    isolated_model_cache,
+    monkeypatch,
+    method,
+    options,
+    expected_states,
 ):
     imports = []
 
@@ -129,7 +139,7 @@ def test_benchmark_selects_catalogue_models(
 
     monkeypatch.setattr("mdpforge.core.benchmark.import_module", import_recipe)
     bench = Benchmark()
-    assert bench.add_mdp(**options) is bench
+    assert getattr(bench, method)(**options) is bench
     assert imports == ["mdpforge.models.unichain"]
     assert len(bench._mdps) == 1
     model = bench._mdps[0]
@@ -147,8 +157,9 @@ def test_benchmark_selects_catalogue_models(
         assert results.rows[0]["error_bound"] <= 1e-4
 
 
+@pytest.mark.parametrize("method", ["add_mdp", "add_all_mdps"])
 def test_benchmark_selection_preserves_existing_instances_and_previous_result(
-    preset_catalogue, isolated_model_cache, monkeypatch
+    preset_catalogue, isolated_model_cache, monkeypatch, method
 ):
     existing = Unichain(state_dim=4)
     existing.create_model()
@@ -161,7 +172,7 @@ def test_benchmark_selection_preserves_existing_instances_and_previous_result(
 
     monkeypatch.setattr(Unichain, "create_model", fail_build)
     for _ in range(2):
-        assert bench.add_mdp(size="small", category="abstract") is bench
+        assert getattr(bench, method)(size="small") is bench
     assert len(bench._mdps) == 1
     assert bench._mdps[0] is existing
     assert (result.rows, result.experiment) == snapshot
@@ -171,13 +182,28 @@ def test_benchmark_selection_preserves_existing_instances_and_previous_result(
         bench.add_mdp("unichain", size="small")
 
 
-def test_benchmark_selection_excludes_unavailable_sizes(preset_catalogue, monkeypatch):
+@pytest.mark.parametrize("method", ["add_mdp", "add_all_mdps"])
+def test_benchmark_selection_excludes_unavailable_sizes(
+    preset_catalogue, monkeypatch, method
+):
     def fail_import(name):
         pytest.fail("Unavailable size presets must not be built")
 
     monkeypatch.setattr("mdpforge.core.benchmark.import_module", fail_import)
     bench = Benchmark()
-    assert bench.add_mdp(size="large", category="abstract") is bench
+    assert getattr(bench, method)(size="large") is bench
+    assert bench._mdps == []
+
+
+@pytest.mark.parametrize("size", ["huge", "", 1])
+def test_add_all_mdps_rejects_invalid_size_before_import(monkeypatch, size):
+    def fail_import(name):
+        pytest.fail("Invalid sizes must fail before importing any recipe")
+
+    monkeypatch.setattr("mdpforge.core.benchmark.import_module", fail_import)
+    bench = Benchmark()
+    with pytest.raises(ValueError, match="size must be"):
+        bench.add_all_mdps(size=size)
     assert bench._mdps == []
 
 
@@ -297,9 +323,9 @@ def test_catalogue_additions_check_duplicates_before_building(
         pytest.fail("Already-registered models must not build or load matrices")
 
     monkeypatch.setattr(Unichain, "create_model", fail_build)
-    monkeypatch.setattr(models, "list_models", lambda: [{"name": "unichain"}])
+    monkeypatch.setattr(models, "list_models", lambda **kwargs: [{"name": "unichain"}])
     if add_all:
-        assert bench.add_all_models() is bench
+        assert bench.add_all_mdps() is bench
     else:
         with pytest.raises(ValueError, match="already registered"):
             bench.add_mdp("unichain")
@@ -429,7 +455,7 @@ def test_collective_additions_continue_after_missing_dependencies(
     bench = Benchmark()
     with pytest.warns(UserWarning, match="Skipping model 'missing'.*missing_backend"):
         if selection == "all":
-            assert bench.add_all_models() is bench
+            assert bench.add_all_mdps() is bench
         elif selection == "names":
             assert bench.add_mdp(model=["missing", "chain"], size="small") is bench
         else:
@@ -460,7 +486,7 @@ def test_collective_additions_propagate_construction_errors(
     bench = Benchmark()
     with pytest.raises(RuntimeError, match="Model construction failed"):
         if add_all:
-            bench.add_all_models()
+            bench.add_all_mdps()
         else:
             bench.add_mdp(size="small", category="abstract")
     assert bench._mdps == []
