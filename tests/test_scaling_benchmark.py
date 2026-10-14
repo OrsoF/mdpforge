@@ -196,16 +196,15 @@ def test_scaling_summary_aggregates_instances_after_repeats():
 
 def test_scaling_validation_and_export(tmp_path):
     result = _scaling_result()
+    loaded = BenchmarkResult.from_csv(result.export_csv(tmp_path / "scale.csv"))
+    assert loaded.experiment["study"] == result.experiment["study"]
+    pytest.importorskip("pandas")
+    assert loaded.scaling_summary().equals(result.scaling_summary())
     with pytest.raises(ValueError, match="Unknown reference solver"):
         result.scaling_summary(reference="missing")
     result.experiment["study"]["models"]["a"]["state_dim"] = 7
     with pytest.raises(ValueError, match="Unexpected state dimension"):
         result.scaling_summary()
-    result = _scaling_result()
-    loaded = BenchmarkResult.from_csv(result.export_csv(tmp_path / "scale.csv"))
-    assert loaded.experiment["study"] == result.experiment["study"]
-    pytest.importorskip("pandas")
-    assert loaded.scaling_summary().equals(result.scaling_summary())
 
 
 def test_scaling_plot_uses_optional_matplotlib():
