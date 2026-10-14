@@ -69,8 +69,7 @@ def _scaling_result():
         "experiment_id": "scale",
         "settings": {"repeats": 2},
         "models": {
-            model: {"state_dim": size, "nnz": size}
-            for model, size in sizes.items()
+            model: {"state_dim": size, "nnz": size} for model, size in sizes.items()
         },
         "study": {
             "type": "scaling",
@@ -95,17 +94,18 @@ def _scaling_result():
 def test_scaling_family_registers_distinct_seeded_models():
     bench = ScalingBenchmark(default_solvers=False)
     assert (
-        bench.add_family(_family, [2, 4], instances=2, seed=10, family="toy")
-        is bench
+        bench.add_family(_family, [2, 4], instances=2, seed=10, family="toy") is bench
     )
     assert len(bench._mdps) == 4
     assert [m.state_dim for m in bench._mdps] == [2, 2, 4, 4]
     assert [m.name for m in bench._mdps] == [
-        "toy_2_10", "toy_2_11", "toy_4_12", "toy_4_13"
+        "toy_2_10",
+        "toy_2_11",
+        "toy_4_12",
+        "toy_4_13",
     ]
     assert all(
-        model.transition_matrix[0].nnz == model.state_dim
-        for model in bench._mdps
+        model.transition_matrix[0].nnz == model.state_dim for model in bench._mdps
     )
     with pytest.raises(ValueError, match="one family"):
         bench.add_family(_family, [5])
@@ -113,10 +113,16 @@ def test_scaling_family_registers_distinct_seeded_models():
     assert bench.reset()._scaling_study is None
 
 
-@pytest.mark.parametrize("sizes, instances, seed", [
-    ([], 2, 0), ([2, 2], 2, 0), ([0, 2], 2, 0),
-    ([2], 0, 0), ([2], 1, -1),
-])
+@pytest.mark.parametrize(
+    "sizes, instances, seed",
+    [
+        ([], 2, 0),
+        ([2, 2], 2, 0),
+        ([0, 2], 2, 0),
+        ([2], 0, 0),
+        ([2], 1, -1),
+    ],
+)
 def test_invalid_study_parameters(sizes, instances, seed):
     with pytest.raises(ValueError):
         ScalingBenchmark().add_family(_family, sizes, instances=instances, seed=seed)
@@ -172,8 +178,10 @@ def test_scaling_plot_uses_actual_dimensions():
 
 def test_scaling_summary_aggregates_instances_after_repeats():
     pytest.importorskip("pandas")
-    table = _scaling_result().scaling_summary(reference="VI").set_index(
-        ["state_dim", "solver"]
+    table = (
+        _scaling_result()
+        .scaling_summary(reference="VI")
+        .set_index(["state_dim", "solver"])
     )
     assert table.loc[(2, "VI"), "median_runtime"] == 6
     assert table.loc[(2, "VI"), "q25_runtime"] == 5

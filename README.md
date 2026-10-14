@@ -75,10 +75,10 @@ Each pair runs three trials. Results contain `runtime`, `error_bound` and `statu
 of the benchmark, including after `BenchmarkResult.from_csv("results.csv")`.
 
 ```python
-result.summary()                  # One row per MDP/solver; requires pandas
+result.summary()  # One row per MDP/solver; requires pandas
 result.solver_summary(reference="mdpforge_mpi")  # Solver performance metrics
-result.to_dataframe()             # Raw trials; requires pandas
-result.plot_performance_profile() # Share of MDPs within a factor of the fastest
+result.to_dataframe()  # Raw trials; requires pandas
+result.plot_performance_profile()  # Share of MDPs within a factor of the fastest
 result.plot_heat(reference="mdpforge_mpi")
 ```
 
@@ -121,8 +121,11 @@ def family(size, seed):
 
 bench = ScalingBenchmark(default_solvers=False)
 bench.add_family(
-    family, sizes=[100, 200, 500, 1000], instances=5,
-    seed=42, family="identity",
+    family,
+    sizes=[100, 200, 500, 1000],
+    instances=5,
+    seed=42,
+    family="identity",
 )
 bench.add_solver("mdpforge_vi")
 bench.add_solver("mdpforge_mpi")

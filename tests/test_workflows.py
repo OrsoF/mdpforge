@@ -194,7 +194,7 @@ def test_model_contract(
 
 @pytest.mark.parametrize("requested", [1, 113])
 def test_model_constructor_adapts_positive_state_requests(
-    model_module, requested, request, tmp_path, monkeypatch
+    model_module, requested, request, tmp_path, monkeypatch, isolated_model_cache
 ):
     if run_external_test(request, tmp_path):
         return
@@ -205,6 +205,17 @@ def test_model_constructor_adapts_positive_state_requests(
         assert model.requested_state_dim == requested
         assert isinstance(model.state_dim, (int, np.integer)) and model.state_dim > 0
         assert isinstance(model.action_dim, (int, np.integer)) and model.action_dim > 0
+        if requested == 1 and model_module in (
+            "mdpforge.models.maze_backtrack",
+            "mdpforge.models.maze_prims",
+            "mdpforge.models.maze_wilson",
+        ):
+            assert model.state_dim == 9
+            model.create_model(save=False)
+            validate_model(model)
+            assert all(
+                isinstance(matrix, csr_matrix) for matrix in model.transition_matrix
+            )
     finally:
         np.random.set_state(numpy_state)
         random.setstate(random_state)

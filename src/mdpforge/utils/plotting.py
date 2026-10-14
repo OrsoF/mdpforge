@@ -247,9 +247,7 @@ def plot_scaling(
         ys = np.array([row[field] for row in records], dtype=float)
         (line,) = ax.plot(xs, ys, marker="o", label=label)
         for row in records:
-            available = (
-                row["n_success"] if metric == "runtime" else row["n_compared"]
-            )
+            available = row["n_success"] if metric == "runtime" else row["n_compared"]
             if available < row["n_instances"]:
                 caption = f"{available}/{row['n_instances']}"
                 if np.isfinite(row[field]):

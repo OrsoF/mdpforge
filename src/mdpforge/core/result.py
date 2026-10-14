@@ -182,9 +182,7 @@ def _scaling_statistics(rows, experiment, *, reference=None):
                     "n_compared": int(paired.sum()),
                     "geomean_speedup": float(
                         np.exp(
-                            np.mean(
-                                np.log(ref_times[paired]) - np.log(times[paired])
-                            )
+                            np.mean(np.log(ref_times[paired]) - np.log(times[paired]))
                         )
                     )
                     if paired.any()

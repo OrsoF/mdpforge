@@ -361,7 +361,10 @@ class Benchmark:
                 raise ValueError(f"An MDP named {model.name!r} is already registered.")
             expected_states, expected_actions = model.state_dim, model.action_dim
             model.create_model()
-            if (model.state_dim, model.action_dim) != (expected_states, expected_actions):
+            if (model.state_dim, model.action_dim) != (
+                expected_states,
+                expected_actions,
+            ):
                 raise ValueError(
                     f"{name}: expected {expected_states} states, got {model.state_dim}; "
                     f"expected {expected_actions} actions, got {model.action_dim}; "

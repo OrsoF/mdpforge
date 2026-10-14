@@ -484,7 +484,7 @@ def test_collective_additions_continue_after_missing_dependencies(
         imports.append(name)
         if name.endswith(".missing"):
             raise ModuleNotFoundError("Missing dependency", name="missing_backend")
-        return SimpleNamespace(Model=lambda state_dim: type(chain)(state_dim, 2))
+        return SimpleNamespace(Model=lambda state_dim=3: type(chain)(state_dim, 2))
 
     monkeypatch.setattr("mdpforge.core.benchmark.import_module", import_recipe)
     bench = Benchmark()
