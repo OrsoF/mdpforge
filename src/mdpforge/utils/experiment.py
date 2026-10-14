@@ -268,6 +268,7 @@ def capture_experiment(
             "source_sha256": _source_hash(type(model)),
             "state_dim": int(model.state_dim),
             "action_dim": int(model.action_dim),
+            "nnz": sum(matrix.nnz for matrix in model.transition_matrix),
             "config": _json_value(
                 get_config() if callable(get_config) else model_config(model)
             ),

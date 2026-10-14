@@ -75,10 +75,10 @@ Each pair runs three trials. Results contain `runtime`, `error_bound` and `statu
 of the benchmark, including after `BenchmarkResult.from_csv("results.csv")`.
 
 ```python
-result.summary()  # One row per MDP/solver; requires pandas
+result.summary()                  # One row per MDP/solver; requires pandas
 result.solver_summary(reference="mdpforge_mpi")  # Solver performance metrics
-result.to_dataframe()  # Raw trials; requires pandas
-result.plot_performance_profile()  # Share of MDPs within a factor of the fastest
+result.to_dataframe()             # Raw trials; requires pandas
+result.plot_performance_profile() # Share of MDPs within a factor of the fastest
 result.plot_heat(reference="mdpforge_mpi")
 ```
 
@@ -96,6 +96,55 @@ size (0 yields NaN). Set `reference` explicitly when comparing runs; omitting
 it uses the first solver in the measurements.
 Performance profiles use equal model weights and compare against the fastest
 eligible median on each MDP. Their reference changes when the solver set changes.
+
+### Analyze scalability
+
+`ScalingBenchmark` runs the same solver set on independent instances from one
+parameterized MDP family. The factory must use the supplied generation seed
+and assign a unique model name that includes it; these seeds are independent
+of the solver trial seeds passed to `run()`.
+
+```python
+import numpy as np
+from scipy.sparse import eye
+from mdpforge import ScalingBenchmark
+from mdpforge.core.mdp import MDP
+
+
+def family(size, seed):
+    rng = np.random.default_rng(seed)
+    rewards = rng.normal(size=(size, 1))
+    return MDP.from_matrices(
+        f"identity_{size}_{seed}", [eye(size, format="csr")], rewards
+    )
+
+
+bench = ScalingBenchmark(default_solvers=False)
+bench.add_family(
+    family, sizes=[100, 200, 500, 1000], instances=5,
+    seed=42, family="identity",
+)
+bench.add_solver("mdpforge_vi")
+bench.add_solver("mdpforge_mpi")
+result = bench.run(discount=0.99, precision=1e-3, repeats=5)
+
+result.scaling_summary(reference="mdpforge_vi")
+result.plot_scaling(x="state_dim")
+result.plot_scaling(x="nnz", metric="speedup", reference="mdpforge_vi")
+result.export_csv("scaling.csv")
+```
+
+The manifest records each model's size, instance index, model-generation seed,
+and the number of nonzero transition entries (`nnz`). `scaling_summary()` requires
+pandas and reports model success coverage, median and quartile runtimes across
+successful instances, and paired geometric speedup on jointly completed
+instances. An instance contributes only if all expected solver repeats succeed.
+`plot_scaling()` requires Matplotlib; log-log curves annotate partial coverage
+with `completed/total` (or `paired/total` for speedups) and show sizes
+without an eligible estimate with a cross near the axis.
+The `nnz` x-coordinate is the median across instances at a given size. The
+estimated scaling is empirical, and sweep designs should control action counts,
+sparsity, discount, precision and hardware. Generation is outside solver timing.
 
 Each run has an `experiment_id`; its manifest records model configurations and
 matrix fingerprints, solver options/defaults, versions, machine details and Git

@@ -107,6 +107,84 @@ def _performance_ratios(rows, experiment=None):
     return models, solvers, aggregated, ratios
 
 
+def _scaling_statistics(rows, experiment, *, reference=None):
+    """Aggregate paired instance medians by requested state dimension."""
+    study = (experiment or {}).get("study")
+    if not isinstance(study, dict) or study.get("type") != "scaling":
+        raise ValueError("Scaling analysis requires a scaling experiment manifest")
+    instances = study.get("models", {})
+    sizes = study.get("sizes", [])
+    if not instances or not sizes:
+        raise ValueError("Scaling manifest has no registered models or sizes")
+
+    observed, solvers, cells = _aggregate_rows(rows, experiment)
+    if set(observed) - set(instances):
+        raise ValueError(
+            "Benchmark contains models not registered in the scaling study"
+        )
+    reference = solvers[0] if reference is None else reference
+    if reference not in solvers:
+        raise ValueError(f"Unknown reference solver: {reference!r}")
+
+    by_size = {size: [] for size in sizes}
+    model_metadata = experiment.get("models", {})
+    for model, entry in instances.items():
+        size = entry["state_dim"]
+        if size not in by_size:
+            raise ValueError(f"Unexpected state dimension {size} for {model!r}")
+        metadata = model_metadata.get(model, {})
+        if metadata.get("state_dim") != size or "nnz" not in metadata:
+            raise ValueError(f"Missing dimension or nnz metadata for {model!r}")
+        by_size[size].append(model)
+    if any(len(names) != study.get("instances") for names in by_size.values()):
+        raise ValueError("Scaling manifest has an inconsistent instance count")
+
+    def runtime(model, solver):
+        return cells.get((model, solver), {}).get("median_runtime", np.nan)
+
+    records = []
+    for size in sorted(by_size):
+        names = by_size[size]
+        nnz = [model_metadata[name]["nnz"] for name in names]
+        for solver in solvers:
+            times = np.array([runtime(name, solver) for name in names], dtype=float)
+            ref_times = np.array(
+                [runtime(name, reference) for name in names], dtype=float
+            )
+            succeeded = np.isfinite(times)
+            paired = succeeded & np.isfinite(ref_times)
+            valid = times[succeeded]
+            records.append(
+                {
+                    "state_dim": size,
+                    "nnz": float(np.median(nnz)),
+                    "solver": solver,
+                    "n_instances": len(names),
+                    "n_success": int(succeeded.sum()),
+                    "n_failed": int((~succeeded).sum()),
+                    "success_rate": float(succeeded.mean()),
+                    "median_runtime": float(np.median(valid)) if valid.size else np.nan,
+                    "q25_runtime": float(np.quantile(valid, 0.25))
+                    if valid.size
+                    else np.nan,
+                    "q75_runtime": float(np.quantile(valid, 0.75))
+                    if valid.size
+                    else np.nan,
+                    "n_compared": int(paired.sum()),
+                    "geomean_speedup": float(
+                        np.exp(
+                            np.mean(
+                                np.log(ref_times[paired]) - np.log(times[paired])
+                            )
+                        )
+                    )
+                    if paired.any()
+                    else np.nan,
+                }
+            )
+    return records
+
+
 @dataclass
 class BenchmarkResult:
     """A run's rows and captured experiment metadata, independent of Benchmark.
@@ -188,6 +266,42 @@ class BenchmarkResult:
                 }
             )
         return pd.DataFrame(records)
+
+    def scaling_summary(self, *, reference=None):
+        """Summarize instance runtimes and paired speedups by state dimension.
+
+        reference: solver ID; None uses the first solver in the results.
+        Each MDP contributes its median successful trial runtime, only if all
+        expected repeats succeeded. The quantiles aggregate eligible instances.
+        """
+        import pandas as pd
+
+        return pd.DataFrame(
+            _scaling_statistics(self.rows, self.experiment, reference=reference)
+        )
+
+    def plot_scaling(
+        self, *, x="state_dim", metric="runtime", reference=None, ax=None, show=True
+    ):
+        """Plot scaling of median runtime or paired geometric speedup.
+
+        x: "state_dim" or "nnz" (median transition nonzeros across instances).
+        metric: "runtime" (seconds) or "speedup" (reference / solver).
+        reference: solver ID; None uses the first solver in the results.
+        ax: Matplotlib axes, or None to create a figure.
+        show: True displays the figure; False only returns (figure, axes).
+        """
+        from mdpforge.utils.plotting import plot_scaling
+
+        return plot_scaling(
+            self.rows,
+            self.experiment,
+            x=x,
+            metric=metric,
+            reference=reference,
+            ax=ax,
+            show=show,
+        )
 
     def plot_performance_profile(self, *, max_factor=100, ax=None, show=True):
         """Plot each solver's share of models completed within a runtime factor.

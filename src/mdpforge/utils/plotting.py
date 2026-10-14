@@ -2,7 +2,11 @@
 
 import numpy as np
 
-from mdpforge.core.result import _aggregate_rows, _performance_ratios
+from mdpforge.core.result import (
+    _aggregate_rows,
+    _performance_ratios,
+    _scaling_statistics,
+)
 
 
 def _ordered_solver_labels(solver_names, experiment):
@@ -195,6 +199,99 @@ def plot_performance_profile(
     ax.yaxis.set_major_formatter(PercentFormatter(1))
     ax.grid(alpha=0.3)
     ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1), borderaxespad=0)
+    fig.tight_layout()
+    if show:
+        plt.show()
+    return fig, ax
+
+
+def plot_scaling(
+    results,
+    experiment=None,
+    *,
+    x="state_dim",
+    metric="runtime",
+    reference=None,
+    ax=None,
+    show=True,
+):
+    """Plot median instance runtimes or paired speedups for one size sweep.
+
+    x: "state_dim" or "nnz" (median nonzero transition entries).
+    metric: "runtime" (seconds) or "speedup" (geometric reference/solver).
+    reference: solver ID; None uses the first solver in the measurements.
+    ax: Matplotlib axes, or None to create a figure.
+    show: True displays the figure; False returns (figure, axes) without showing.
+    """
+    if x not in {"state_dim", "nnz"}:
+        raise ValueError("x must be 'state_dim' or 'nnz'")
+    if metric not in {"runtime", "speedup"}:
+        raise ValueError("metric must be 'runtime' or 'speedup'")
+    stats = _scaling_statistics(results, experiment, reference=reference)
+    solver_names = list(dict.fromkeys(row["solver"] for row in stats))
+    names, labels = _ordered_solver_labels(solver_names, experiment)
+
+    import matplotlib.pyplot as plt
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(8, 5))
+    else:
+        fig = ax.figure
+    field = "median_runtime" if metric == "runtime" else "geomean_speedup"
+    for solver, label in zip(names, labels):
+        records = sorted(
+            (row for row in stats if row["solver"] == solver),
+            key=lambda row: row[x],
+        )
+        xs = np.array([row[x] for row in records], dtype=float)
+        ys = np.array([row[field] for row in records], dtype=float)
+        (line,) = ax.plot(xs, ys, marker="o", label=label)
+        for row in records:
+            available = (
+                row["n_success"] if metric == "runtime" else row["n_compared"]
+            )
+            if available < row["n_instances"]:
+                caption = f"{available}/{row['n_instances']}"
+                if np.isfinite(row[field]):
+                    ax.annotate(
+                        caption,
+                        (row[x], row[field]),
+                        xytext=(4, 6),
+                        textcoords="offset points",
+                        fontsize=8,
+                        color=line.get_color(),
+                    )
+                else:
+                    # Keep fully failed sizes visible even with logarithmic y.
+                    ax.plot(
+                        row[x],
+                        0.04,
+                        marker="x",
+                        linestyle="None",
+                        color=line.get_color(),
+                        transform=ax.get_xaxis_transform(),
+                    )
+                    ax.annotate(
+                        caption,
+                        (row[x], 0.04),
+                        xycoords=ax.get_xaxis_transform(),
+                        xytext=(4, 4),
+                        textcoords="offset points",
+                        color=line.get_color(),
+                        fontsize=8,
+                    )
+
+    ax.set_xscale("log")
+    ax.set_yscale("log")
+    ax.set_xlabel("States" if x == "state_dim" else "Transition nonzeros (nnz)")
+    if metric == "runtime":
+        ax.set_ylabel("Median runtime per completed instance (s)")
+    else:
+        ax.set_ylabel("Paired geometric speedup vs reference")
+        ax.axhline(1, linestyle="--", linewidth=1, color="0.5")
+    ax.set_title("Solver scalability")
+    ax.grid(alpha=0.3)
+    ax.legend()
     fig.tight_layout()
     if show:
         plt.show()
