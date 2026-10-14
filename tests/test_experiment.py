@@ -9,6 +9,7 @@ import pytest
 from scipy.sparse import csr_matrix
 
 from mdpforge import Benchmark
+from mdpforge.solvers import mdpforge_vi
 from mdpforge.solvers.mdpforge_vi import Solver as VI
 from mdpforge.utils.experiment import capture_experiment, model_config
 
@@ -178,3 +179,23 @@ def test_function_defaults_use_calling_convention_not_parameter_names(chain):
     bench.add_solver("function", solve_function=solver)
     bench.run(0.9, repeats=1)
     assert bench.experiment["solvers"]["function"]["parameters"] == {"env": "example"}
+
+
+def test_solver_catalogue_metadata_is_a_snapshot_for_aliases(chain, monkeypatch):
+    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench.add_solver("aliased VI", solve_function=VI)
+    bench.run(0.9, repeats=1)
+    record = bench.experiment["solvers"]["aliased VI"]["metadata"]
+    assert record == mdpforge_vi.METADATA
+    monkeypatch.setitem(mdpforge_vi.METADATA, "display_name", "Changed later")
+    assert record["display_name"] == "VI · mdpforge"
+
+
+def test_custom_callable_named_like_catalogue_solver_is_not_misclassified(chain):
+    def custom(transitions, rewards, discount, precision):
+        return np.array([2 * discount, 2, 0])
+
+    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench.add_solver("mdpforge_vi", solve_function=custom)
+    bench.run(0.9, repeats=1)
+    assert bench.experiment["solvers"]["mdpforge_vi"]["metadata"] == {}

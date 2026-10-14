@@ -7,6 +7,17 @@ from scipy.sparse.linalg import spsolve
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import bellman_operator, compute_transition_reward_policy
 
+METADATA = {
+    "display_name": "PI · mdpforge",
+    "family": "pi",
+    "backend": "mdpforge",
+    "description": (
+        "Policy iteration with sparse linear-system policy evaluation and "
+        "greedy policy improvement until policy stability."
+    ),
+    "update_scheme": "linear_solve",
+}
+
 
 class Solver:
     def __init__(

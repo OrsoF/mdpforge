@@ -5,7 +5,6 @@ from scipy.sparse import dok_array
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["navigation", "grid-world"],
     "sizes": {
         "small": {
             "state_dim": 75,

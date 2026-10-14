@@ -5,7 +5,6 @@ from scipy.sparse import random
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["synthetic", "random"],
     "sizes": {
         "small": {
             "state_dim": 100,
@@ -23,7 +22,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "synthetic",
+    "category": "abstract",
     "description": (
         "Random finite MDP with Gaussian rewards and normalized random transitions."
     ),

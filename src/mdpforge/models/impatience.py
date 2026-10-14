@@ -22,7 +22,6 @@ from scipy.stats import poisson
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["queueing", "real-world"],
     "sizes": {
         "small": {
             "state_dim": 100,
@@ -40,7 +39,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "queueing",
+    "category": "service_operations",
     "description": (
         "Batch service of an impatient queue with a truncated transition kernel."
     ),

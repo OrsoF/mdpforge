@@ -122,6 +122,12 @@ def _source_hash(implementation):
 
 
 def _solver_metadata(constructor, options):
+    module = inspect.getmodule(constructor)
+    metadata = (
+        getattr(module, "METADATA", {})
+        if module is not None and getattr(module, "Solver", None) is constructor
+        else {}
+    )
     try:
         parameters = inspect.signature(constructor).parameters
         positional = [
@@ -151,6 +157,7 @@ def _solver_metadata(constructor, options):
         "source_sha256": _source_hash(constructor),
         "options": _json_value(options),
         "parameters": _json_value(defaults | options),
+        "metadata": _json_value(metadata),
     }
 
 

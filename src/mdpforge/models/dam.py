@@ -78,7 +78,6 @@ def find_closest_indices(
 
 
 METADATA = {
-    "tags": ["resource-management", "real-world", "random"],
     "sizes": {
         "small": {
             "state_dim": 16,
@@ -96,7 +95,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "resource_management",
+    "category": "asset_management",
     "description": "Reservoir release decisions with stochastic inflow.",
     "reference": (
         "Carpentier, P., Chancelier, J.-P., Leclere, V. and Pacaud, F. (2018). "

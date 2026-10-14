@@ -31,7 +31,6 @@ def params_match_state_dim(state_dim: int, max_index=50) -> tuple:
 
 
 METADATA = {
-    "tags": ["queueing", "real-world"],
     "sizes": {
         "small": {
             "state_dim": 36,
@@ -49,7 +48,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "queueing",
+    "category": "service_operations",
     "description": "Absolute service-capacity choices for two queues in tandem.",
     "reference": (
         "Family reference: Ohno & Ichiki (1987). Computing Optimal Policies "

@@ -12,7 +12,6 @@ from scipy.sparse import dok_array
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["synthetic"],
     "sizes": {
         "small": {
             "state_dim": 100,
@@ -30,7 +29,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "synthetic",
+    "category": "abstract",
     "description": (
         "Controlled chain walk with uncertain movement and boundary rewards."
     ),

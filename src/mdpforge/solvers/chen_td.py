@@ -14,6 +14,17 @@ from mdpforge.core.operators import (
 )
 from mdpforge.core.partition import Partition
 
+METADATA = {
+    "display_name": "Chen aggregated VI · mdpforge",
+    "family": "vi",
+    "backend": "mdpforge",
+    "description": (
+        "Value iteration alternating synchronous ground-state Bellman sweeps "
+        "and stochastic approximation on sampled aggregate states."
+    ),
+    "update_scheme": "mixed",
+}
+
 
 class Solver:
     solver_type = "vi"

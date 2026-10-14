@@ -14,7 +14,6 @@ from scipy.sparse import dok_array
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["queueing", "real-world"],
     "sizes": {
         "small": {
             "state_dim": 100,
@@ -32,7 +31,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "queueing",
+    "category": "service_operations",
     "description": "Accept or reject priority requests with limited free servers.",
     "reference": (
         "Sutton, R. S. and Barto, A. G. (2018). Reinforcement Learning: An "

@@ -4,7 +4,6 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["queueing", "real-world"],
     "sizes": {
         "small": {
             "state_dim": 108,
@@ -22,7 +21,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "queueing",
+    "category": "service_operations",
     "description": "Admission control with customer classes and service phases.",
     "reference": (
         "Wieczorek, Busic, and Hyon: admission-control / critical-level-policy "

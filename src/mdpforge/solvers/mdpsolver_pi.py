@@ -10,6 +10,17 @@ from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpsolver import create_mdpsolver, solve_mdpsolver
 
+METADATA = {
+    "display_name": "PI · MDPSolver",
+    "family": "pi",
+    "backend": "mdpsolver",
+    "description": (
+        "MDPSolver policy iteration with standard value updates, explicit "
+        "zero initialization and residual certification after postprocessing."
+    ),
+    "update_scheme": "synchronous",
+}
+
 
 class Solver(GenericSolver):
     def __init__(

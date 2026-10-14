@@ -14,25 +14,24 @@ from scipy.sparse import dok_array
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["control", "real-world"],
     "sizes": {
         "small": {
-            "state_dim": 257,
-            "parameters": {"state_dim": 100},
+            "state_dim": 2402,
+            "parameters": {"state_dim": 2402},
             "source": "measured",
         },
         "medium": {
-            "state_dim": 1297,
-            "parameters": {"state_dim": 1000},
+            "state_dim": 14642,
+            "parameters": {"state_dim": 14642},
             "source": "measured",
         },
         "large": {
-            "state_dim": 6562,
-            "parameters": {"state_dim": 5231},
+            "state_dim": 65537,
+            "parameters": {"state_dim": 65537},
             "source": "inferred",
         },
     },
-    "category": "control",
+    "category": "physical_control",
     "description": "Discretized control of an underactuated two-link pendulum.",
     "reference": (
         "Sutton, R. S. (1996). Generalization in Reinforcement Learning: Successful "

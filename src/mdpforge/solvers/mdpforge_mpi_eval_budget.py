@@ -5,6 +5,17 @@ import numpy as np
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import bellman_operator, compute_transition_reward_policy
 
+METADATA = {
+    "display_name": "MPI · mdpforge · eval budget",
+    "family": "mpi",
+    "backend": "mdpforge",
+    "description": (
+        "Modified policy iteration with synchronous policy evaluation whose "
+        "iteration budget is controlled by the proba option."
+    ),
+    "update_scheme": "synchronous",
+}
+
 
 class Solver:
     def __init__(

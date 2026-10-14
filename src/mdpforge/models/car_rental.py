@@ -17,7 +17,6 @@ from scipy.sparse import dok_array
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["resource-management", "real-world"],
     "sizes": {
         "small": {
             "state_dim": 25,
@@ -35,7 +34,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "resource_management",
+    "category": "asset_management",
     "description": "Overnight car transfers between two locations with rental demand.",
     "reference": (
         "Sutton, R. S. and Barto, A. G. (2018). Reinforcement Learning: An "

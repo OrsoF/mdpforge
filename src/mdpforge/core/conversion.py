@@ -11,6 +11,17 @@ if TYPE_CHECKING:
     from mdpforge.core.model import MDPProtocol
 
 
+def _nonzero_entries(matrix: csr_matrix):
+    """Traverse stored CSR entries, preserving coordinate sums for duplicates."""
+    entries = matrix.tocoo()
+    canonical = matrix.has_canonical_format
+    for row, column, value in zip(entries.row, entries.col, entries.data):
+        if value != 0:
+            if not canonical:
+                value = matrix[row, column]
+            yield int(row), int(column), float(value)
+
+
 ####### MARMOTE #######
 
 
@@ -31,32 +42,26 @@ def build_marmote_transition_list(
 ) -> list:
     from marmote.core import SparseMatrix
 
-    marmote_transitions_list = list()
-    for aa in range(action_dim):
-        P = SparseMatrix(state_dim)
-
-        row_indices, col_indices = transition_matrix[aa].nonzero()
-        for i in range(len(row_indices)):
-            ss1 = row_indices[i]
-            ss2 = col_indices[i]
-            val = transition_matrix[aa][ss1, ss2]
-            P.addToEntry(int(ss1), int(ss2), val)
-
-        marmote_transitions_list.append(P)
-        P = None
+    marmote_transitions_list = []
+    for action in range(action_dim):
+        transition = SparseMatrix(state_dim)
+        for state_from, state_to, value in _nonzero_entries(transition_matrix[action]):
+            transition.addToEntry(state_from, state_to, value)
+        marmote_transitions_list.append(transition)
     return marmote_transitions_list
+
+
+####### MDPSOLVER #######
 
 
 def compute_mdpsolver_args(model: "MDPProtocol") -> tuple:
     """Convert transition and reward matrices to MDPSolver input lists."""
     transitions = []
     for action in range(model.action_dim):
-        row_indices, col_indices = model.transition_matrix[action].nonzero()
-        for index in range(len(row_indices)):
-            state_from = row_indices[index]
-            state_to = col_indices[index]
-            value = float(model.transition_matrix[action][state_from, state_to])
-            transitions.append([int(state_from), action, int(state_to), value])
+        for state_from, state_to, value in _nonzero_entries(
+            model.transition_matrix[action]
+        ):
+            transitions.append([state_from, action, state_to, value])
 
     rewards = [
         [

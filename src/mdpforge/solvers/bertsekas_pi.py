@@ -20,6 +20,17 @@ from mdpforge.utils.bellman import (
     iterative_policy_evaluation,
 )
 
+METADATA = {
+    "display_name": "Bertsekas adaptive PI · mdpforge",
+    "family": "pi",
+    "backend": "mdpforge",
+    "description": (
+        "Policy iteration combining synchronous policy evaluation with "
+        "adaptive aggregate linear-system corrections."
+    ),
+    "update_scheme": "mixed",
+}
+
 
 class Solver:
     def __init__(

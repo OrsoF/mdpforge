@@ -13,7 +13,6 @@ rnd_gen = np.random.default_rng(seed=0)
 TEST_PARAMETERS = {"state_dim": 20, "action_dim": 2}
 
 METADATA = {
-    "tags": ["synthetic", "random"],
     "sizes": {
         "small": {
             "state_dim": 100,
@@ -31,7 +30,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "synthetic",
+    "category": "abstract",
     "description": "Random transition blocks with weak connections between blocks.",
     "reference": (
         "Meuleau et al. (1998). Solving very large weakly coupled Markov decision "

@@ -9,7 +9,6 @@ from mdpforge.core.mdp import MDP
 TEST_PARAMETERS = {"state_dim": 96, "action_dim": 6}
 
 METADATA = {
-    "tags": ["games", "puzzle"],
     "sizes": {
         "small": {
             "state_dim": 96,
@@ -27,7 +26,7 @@ METADATA = {
             "source": "parameterized",
         },
     },
-    "category": "games",
+    "category": "games_and_puzzles",
     "description": (
         "Factored block manipulation with looking, picking and lifting actions. "
         "Larger instances require sequentially solving additional block puzzles."

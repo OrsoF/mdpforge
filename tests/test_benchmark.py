@@ -13,6 +13,65 @@ from mdpforge.core.model import MDPProtocol
 from mdpforge.core.validation import validate_model
 from mdpforge.solvers.mdpforge_mpi import Solver as MPI
 from mdpforge.solvers.mdpforge_vi import Solver as VI
+from mdpforge.utils import persistence
+
+
+@pytest.mark.parametrize("default_solvers", [False, True])
+@pytest.mark.parametrize(
+    "reset_options",
+    [{}, {"models": False}, {"solvers": False}, {"models": False, "solvers": False}],
+)
+def test_reset_preserves_selected_registrations_and_allows_reuse(
+    chain, default_solvers, reset_options
+):
+    initial_value = np.array([1.8, 2.0, 0.0])
+    bench = Benchmark(default_solvers=default_solvers).add_mdp(chain)
+    bench.add_solver("custom", solve_function=VI, initial_value=initial_value)
+    results = bench.run(discount=0.9, precision=1e-4, repeats=1)
+    assert all(row["status"] == "success" for row in results)
+    assert bench.experiment is not None
+    registered_solvers = bench._solvers.copy()
+
+    assert bench.reset(**reset_options) is bench
+    assert bench.results == []
+    assert bench.experiment is None
+    if reset_options.get("models", True):
+        assert bench._mdps == []
+        bench.add_mdp(chain)
+    else:
+        assert len(bench._mdps) == 1
+        assert bench._mdps[0] is chain
+    if reset_options.get("solvers", True):
+        assert bench._solvers == ({"VI": (VI, {})} if default_solvers else {})
+        bench.add_solver("custom", solve_function=VI, initial_value=initial_value)
+    else:
+        assert bench._solvers.keys() == registered_solvers.keys()
+        for name, registration in registered_solvers.items():
+            assert bench._solvers[name] is registration
+        assert bench._solvers["custom"][1]["initial_value"] is initial_value
+
+    new_results = bench.run(discount=0.9, precision=1e-4, repeats=1)
+    assert new_results is not results
+    assert len(new_results) == len(registered_solvers)
+    assert all(row["status"] == "success" for row in new_results)
+    assert all(row["error_bound"] <= 1e-4 for row in new_results)
+
+
+def test_reset_keeps_cached_models_and_exported_results(chain, tmp_path):
+    persistence.save_model(chain)
+    bench = Benchmark().add_mdp(chain)
+    bench.run(discount=0.9, repeats=1)
+    bench.export_csv(tmp_path / "results.csv")
+    saved_files = {
+        path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()
+    }
+    assert saved_files
+
+    bench.reset()
+
+    assert {
+        path: path.read_bytes() for path in tmp_path.rglob("*") if path.is_file()
+    } == saved_files
 
 
 def test_catalogue_solver_loads_class_and_forwards_options(chain):
@@ -39,8 +98,8 @@ def test_add_all_models_builds_defaults_and_preserves_existing(chain, monkeypatc
         return SimpleNamespace(Model=lambda: model)
 
     monkeypatch.setattr(
-        "mdpforge.core.benchmark._catalogue",
-        lambda package: {"zeta", "missing", "alpha"},
+        "mdpforge.core.benchmark.models.list_models",
+        lambda: [{"name": name} for name in ("alpha", "missing", "zeta")],
     )
     monkeypatch.setattr("mdpforge.core.benchmark.import_module", import_catalogue)
     for _ in range(2):
@@ -76,6 +135,34 @@ def test_add_all_solvers_preserves_default_vi_and_skips_missing(monkeypatch):
     assert list(bench._solvers) == ["VI", "other"]
     assert bench._solvers["VI"] == (VI, {})
     assert bench._solvers["other"] == (MPI, {})
+
+
+def test_add_all_solvers_keeps_configured_entries_and_noop_results(monkeypatch):
+    initial_value = np.array([1.8, 2.0, 0.0])
+    bench = Benchmark(default_solvers=False)
+    bench.add_solver("configured", solve_function=VI, initial_value=initial_value)
+    registration = bench._solvers["configured"]
+    imported = []
+
+    def import_catalogue(path):
+        imported.append(path.rsplit(".", 1)[1])
+        return SimpleNamespace(Solver=VI)
+
+    monkeypatch.setattr(
+        "mdpforge.core.benchmark._catalogue", lambda package: {"configured", "default"}
+    )
+    monkeypatch.setattr("mdpforge.core.benchmark.import_module", import_catalogue)
+    assert bench.add_all_solvers() is bench
+    assert imported == ["default"]
+    assert bench._solvers["configured"] is registration
+    assert bench._solvers["default"] == (VI, {})
+
+    results, manifest = ["saved"], {"saved": True}
+    bench.results, bench.experiment = results, manifest
+    assert bench.add_all_solvers() is bench
+    assert imported == ["default"]
+    assert bench.results is results
+    assert bench.experiment is manifest
 
 
 def test_unknown_solver_lists_catalogue_without_importing_it(monkeypatch):

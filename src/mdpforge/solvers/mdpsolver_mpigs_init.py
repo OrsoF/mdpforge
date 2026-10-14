@@ -9,6 +9,17 @@ from mdpforge.core.model import MDPProtocol
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpsolver import create_mdpsolver, solve_mdpsolver
 
+METADATA = {
+    "display_name": "MPI · MDPSolver · GS · V₀=0",
+    "family": "mpi",
+    "backend": "mdpsolver",
+    "description": (
+        "MDPSolver modified policy iteration with Gauss-Seidel updates and "
+        "explicitly zero-initialized values and policy."
+    ),
+    "update_scheme": "gauss_seidel",
+}
+
 
 class Solver(GenericSolver):
     def __init__(

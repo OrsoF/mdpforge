@@ -7,7 +7,6 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["resource-management", "real-world"],
     "sizes": {
         "small": {
             "state_dim": 99,
@@ -25,7 +24,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "resource_management",
+    "category": "asset_management",
     "description": "Stock replenishment under random demand.",
     "reference": (
         "Winston, W. L. and Goldberg, J. B. (2004). Operations Research: "

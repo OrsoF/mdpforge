@@ -7,7 +7,6 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["games"],
     "sizes": {
         "small": {
             "state_dim": 343,
@@ -25,7 +24,7 @@ METADATA = {
             "source": "measured",
         },
     },
-    "category": "games",
+    "category": "games_and_puzzles",
     "description": "Single-agent soccer on a hexagonal grid with a defending opponent.",
     "reference": (
         "Continuous U-Tree, Uther & Veloso (1998), enlarged hexagonal-grid soccer; "

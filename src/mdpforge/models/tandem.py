@@ -29,7 +29,6 @@ def get_params(state_dim: int, max_index=50) -> tuple:
 
 
 METADATA = {
-    "tags": ["queueing", "real-world"],
     "sizes": {
         "small": {
             "state_dim": 100,
@@ -47,7 +46,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "queueing",
+    "category": "service_operations",
     "description": "Service-capacity adjustments for two queues in tandem.",
     "reference": (
         "Ohno & Ichiki (1987). Computing Optimal Policies for Controlled "

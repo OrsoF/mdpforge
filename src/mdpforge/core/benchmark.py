@@ -1,12 +1,14 @@
 """Benchmark finite discounted MDP solvers at a fixed value precision."""
 
 import csv
+import inspect
 import multiprocessing
 import pickle
 import random
 import warnings
 from copy import deepcopy
 from importlib import import_module
+from importlib.util import find_spec
 from pathlib import Path
 from pkgutil import iter_modules
 from tempfile import TemporaryDirectory
@@ -19,6 +21,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.validation import validate_model
+from mdpforge.solvers import list_solvers
 from mdpforge.utils.experiment import capture_experiment, export_experiment
 
 
@@ -29,6 +32,70 @@ def _catalogue(package):
         for module in iter_modules(package.__path__)
         if not module.ispkg and not module.name.startswith("_")
     }
+
+
+def _load_solver(name, *, backend=None):
+    """Load a catalogue solver, checking an explicitly selected backend first."""
+    dependency = {
+        "gurobi": "gurobipy",
+        "marmote": "marmote",
+        "mdpsolver": "mdpsolver",
+        "mdptoolbox": "mdptoolbox",
+    }.get(backend)
+    if dependency and find_spec(dependency) is None:
+        raise ModuleNotFoundError(
+            f"Missing solver dependency: {dependency}", name=dependency
+        )
+    return import_module(f"{solvers.__name__}.{name}").Solver
+
+
+def _available_solvers(entries):
+    """Yield selected solvers, warning only for missing dependencies."""
+    for entry in entries:
+        name = entry["name"]
+        try:
+            constructor = _load_solver(name, backend=entry.get("backend"))
+        except ModuleNotFoundError as exc:
+            warnings.warn(
+                f"Skipping solver {name!r}: missing dependency {exc.name!r}",
+                stacklevel=3,
+            )
+            continue
+        yield name, constructor
+
+
+def _check_solver_options(name, constructor, options):
+    """Check options against the class/function calling convention used by run()."""
+    try:
+        signature = inspect.signature(constructor)
+        if inspect.isclass(constructor):
+            signature.bind(None, None, final_precision=None, **options)
+        else:
+            signature.bind(None, None, None, None, **options)
+    except TypeError as exc:
+        raise TypeError(f"Invalid options for solver {name!r}: {exc}") from exc
+
+
+def _same_options(left, right):
+    """Compare explicit options conservatively, including initial-value arrays."""
+    if left.keys() != right.keys():
+        return False
+    for key, value in left.items():
+        other = right[key]
+        if value is other:
+            continue
+        try:
+            if isinstance(value, np.ndarray) and isinstance(other, np.ndarray):
+                equal = value.dtype == other.dtype and np.array_equal(
+                    value, other, equal_nan=True
+                )
+            else:
+                equal = value == other
+            if not isinstance(equal, (bool, np.bool_)) or not equal:
+                return False
+        except (TypeError, ValueError):
+            return False
+    return True
 
 
 def _solver_trial(model, constructor, options, discount, precision, seed):
@@ -136,35 +203,93 @@ class Benchmark:
     """
 
     def __init__(self, *, default_solvers=True):
+        self._default_solvers = default_solvers
         self._mdps: list[MDPProtocol] = []
         self._solvers = {}  # label -> (solver class/function, options)
-        self.results = []
-        self.experiment = None
+        self._clear_results()
         if default_solvers:
             from mdpforge.solvers.mdpforge_vi import Solver as VI
 
             self.add_solver("VI", solve_function=VI)
 
-    def add_mdp(self, model: MDPProtocol | str, *, transitions=None, reward=None):
-        """Register a catalogue name, custom matrices or a built MDP.
+    def _clear_results(self):
+        """Invalidate measurements and their matching experiment manifest together."""
+        self.results = []
+        self.experiment = None
 
-        Catalogue models use Model() and create_model() with their defaults.
-        Unknown names require transitions and reward, converted to
-        CSR and validated with dimensions inferred from rewards of shape (S, A).
-        Each built MDP name must be unique. Construction is outside solver timing.
+    def reset(self, *, models=True, solvers=True):
+        """Reset registrations and always clear results/experiment; return self.
+
+        models: True removes all registered MDPs; False keeps them.
+        solvers: True restores VI alone if constructed with default_solvers=True,
+            otherwise removes all solvers. False keeps solvers and their options.
+
+        Only in-memory state is reset; cached models and exported files are kept.
         """
+        if models:
+            self._mdps.clear()
+        if solvers:
+            self._solvers.clear()
+            if self._default_solvers:
+                from mdpforge.solvers.mdpforge_vi import Solver as VI
+
+                self.add_solver("VI", solve_function=VI)
+        self._clear_results()
+        return self
+
+    def add_mdp(
+        self,
+        model: MDPProtocol | str | None = None,
+        *,
+        transitions=None,
+        reward=None,
+        size: str | None = None,
+        category: str | None = None,
+    ):
+        """Add named, matrix-defined or built MDPs, or filtered groups; return self.
+
+        model: catalogue ID from list_models(), built MDP object, or custom name
+            with transitions and reward. None selects by size/category filters.
+        transitions: A dense/sparse (S, S) matrices, one per action;
+            None for catalogue models or built objects. S = states, A = actions.
+        reward: dense/sparse (S, A) expected rewards, indexed [state, action];
+            None for catalogue models or built objects.
+        size: "small", "medium" or "large" preset;
+            None uses recipe defaults and does not filter available sizes.
+        category: "abstract", "navigation", "physical_control",
+            "service_operations", "asset_management" or "games_and_puzzles".
+            None accepts all task families.
+
+        size/category accept single strings and combine with AND. Filters cannot
+        accompany an explicit model or matrices. Custom names must be unique.
+        Groups skip unavailable presets, duplicates and missing dependencies.
+        Provide a model or filter; use add_all_models() for the entire catalogue.
+        """
+        if size is not None or category is not None:
+            if model is not None or transitions is not None or reward is not None:
+                raise ValueError(
+                    "size/category filters cannot be combined with a model or matrices."
+                )
+            for entry in models.list_models(size=size, category=category):
+                preset = entry["sizes"][size] if size is not None else None
+                self._add_catalogue_model(entry["name"], preset=preset, grouped=True)
+            return self
+        if model is None:
+            raise ValueError(
+                "Provide a model or at least one size/category filter; "
+                "use add_all_models() to add the entire catalogue."
+            )
         if isinstance(model, str):
             if not model.strip():
                 raise ValueError("Each MDP must have a nonempty string 'name'.")
-            catalogue = _catalogue(models)
+            catalogue = {entry["name"] for entry in models.list_models()}
             if model in catalogue:
                 if transitions is not None or reward is not None:
                     raise ValueError(
                         f"Catalogue model {model!r} uses its generator; "
                         "choose a custom name when supplying matrices."
                     )
-                model = import_module(f"{models.__name__}.{model}").Model()
-                model.create_model()
+                return self._add_catalogue_model(model)
             else:
                 if transitions is None or reward is None:
                     raise ValueError(
@@ -181,42 +306,95 @@ class Benchmark:
         if any(existing.name == name for existing in self._mdps):
             raise ValueError(f"An MDP named {name!r} is already registered.")
         self._mdps.append(model)
-        self.results = []
-        self.experiment = None
+        self._clear_results()
         return self
+
+    def _add_catalogue_model(self, name, *, preset=None, grouped=False):
+        """Build a recipe; groups skip duplicates and missing dependencies."""
+        try:
+            options = dict(preset["parameters"]) if preset is not None else {}
+            if "custom_track" in options:
+                options["custom_track"] = np.asarray(options["custom_track"]).copy()
+            model = import_module(f"{models.__name__}.{name}").Model(**options)
+            if any(existing.name == model.name for existing in self._mdps):
+                if grouped:
+                    return self
+                raise ValueError(f"An MDP named {model.name!r} is already registered.")
+            model.create_model()
+            if preset is not None and model.state_dim != preset["state_dim"]:
+                raise ValueError(
+                    f"{name}: expected {preset['state_dim']} states, "
+                    f"got {model.state_dim}; check the preset and cached matrices"
+                )
+            return self.add_mdp(model)
+        except ModuleNotFoundError as exc:
+            if not grouped:
+                raise
+            warnings.warn(
+                f"Skipping model {name!r}: missing dependency {exc.name!r}",
+                stacklevel=3,
+            )
+            return self
 
     def add_all_models(self):
         """Add all catalogue models with default dimensions, without duplicates.
 
         Missing dependencies are skipped with a warning; other errors propagate.
         """
-        for name in sorted(_catalogue(models)):
-            try:
-                model = import_module(f"{models.__name__}.{name}").Model()
-                if any(existing.name == model.name for existing in self._mdps):
-                    continue
-                model.create_model()
-                self.add_mdp(model)
-            except ModuleNotFoundError as exc:
-                warnings.warn(
-                    f"Skipping model {name!r}: missing dependency {exc.name!r}",
-                    stacklevel=2,
-                )
+        for entry in models.list_models():
+            self._add_catalogue_model(entry["name"], grouped=True)
         return self
 
-    def add_solver(self, solver_name: str, *, solve_function=None, **options):
-        """Register a catalogue solver or a named custom function/class.
+    def add_solver(
+        self,
+        solver_name: str | None = None,
+        *,
+        solve_function=None,
+        family=None,
+        backend=None,
+        update_scheme=None,
+        **options,
+    ):
+        """Add solvers by name, filters or custom callable; return self.
 
-        Without solve_function, solver_name identifies a module in solvers/.
-        Otherwise it labels the supplied callable. Functions receive
-        (CSR transitions, NumPy rewards, discount, precision) and return values.
-        Classes receive (model, discount, final_precision=...) and expose run()
-        and value. Options are forwarded; problem data, discount and precision
-        are supplied by run() and cannot be overridden per solver.
+        solver_name: catalogue ID from list_solvers(), or a custom label.
+            None selects a group using the filters below.
+        solve_function: custom function/class, or None for catalogue solvers.
+            Requires solver_name; cannot accompany metadata filters.
+        family: "vi" (value iteration), "pi" (policy iteration),
+            "mpi" (modified policy iteration), "lp" (linear programming).
+        backend: implementation library: "mdpforge", "mdpsolver", "marmote",
+            "mdptoolbox" or "gurobi".
+        update_scheme:
+            "synchronous": full-vector Bellman sweeps.
+            "gauss_seidel": in-place state updates.
+            "sor": successive over-relaxation.
+            "linear_solve": matrix-based policy evaluation.
+            "mixed": Bellman sweeps with aggregate or stochastic corrections.
+            "not_applicable": LP, without Bellman sweeps.
+        **options: selected solver's constructor/function keywords, e.g.
+            parallel=True or initial_value=array. See its signature for options;
+            problem data, discount and precision are supplied by run().
+
+        Filters accept a string, nonempty sequence of strings, or None (ignored).
+        Fields combine with AND; values within each sequence combine with OR.
         """
-        if not isinstance(solver_name, str) or not solver_name.strip():
+        filters = {
+            "family": family,
+            "backend": backend,
+            "update_scheme": update_scheme,
+        }
+        filtered = any(value is not None for value in filters.values())
+        grouped = solver_name is None and filtered
+        if not grouped and (
+            not isinstance(solver_name, str) or not solver_name.strip()
+        ):
             raise ValueError("A solver must have a nonempty string name.")
-        if solver_name in self._solvers:
+        if filtered and solve_function is not None:
+            raise ValueError(
+                "Metadata filters cannot accompany a custom solve_function"
+            )
+        if not grouped and solver_name in self._solvers:
             raise ValueError(f"A solver named {solver_name!r} is already registered.")
         reserved = {
             "model",
@@ -230,6 +408,8 @@ class Benchmark:
             raise ValueError(
                 f"Solver parameters controlled by run(): {sorted(reserved)}"
             )
+        if grouped:
+            return self._add_solver_group(list_solvers(**filters), options)
         if solve_function is None:
             catalogue = _catalogue(solvers)
             if solver_name not in catalogue:
@@ -237,12 +417,45 @@ class Benchmark:
                     f"Unknown solver {solver_name!r}. Available solvers: "
                     + ", ".join(sorted(catalogue))
                 )
-            solve_function = import_module(f"{solvers.__name__}.{solver_name}").Solver
+            if filtered and solver_name not in {
+                entry["name"] for entry in list_solvers(**filters)
+            }:
+                raise ValueError(
+                    f"Solver {solver_name!r} does not match the requested "
+                    "metadata filters"
+                )
+            solve_function = _load_solver(solver_name)
         if not callable(solve_function):
             raise TypeError("solve_function must be a callable function or class.")
         self._solvers[solver_name] = (solve_function, options)
-        self.results = []
-        self.experiment = None
+        self._clear_results()
+        return self
+
+    def _add_solver_group(self, entries, options):
+        """Check the entire selection before committing new registrations."""
+        pending = {}
+        for name, constructor in _available_solvers(entries):
+            _check_solver_options(name, constructor, options)
+            if name in self._solvers:
+                existing, previous_options = self._solvers[name]
+                if existing is constructor and _same_options(previous_options, options):
+                    continue
+                raise ValueError(
+                    f"Solver {name!r} is already registered with a different "
+                    "implementation or configuration"
+                )
+            if any(
+                existing is constructor and _same_options(previous_options, options)
+                for existing, previous_options in (
+                    *self._solvers.values(),
+                    *pending.values(),
+                )
+            ):
+                continue
+            pending[name] = (constructor, options.copy())
+        if pending:
+            self._solvers.update(pending)
+            self._clear_results()
         return self
 
     def add_all_solvers(self):
@@ -251,17 +464,12 @@ class Benchmark:
         Default VI is not duplicated under its catalogue name. Missing
         dependencies are skipped with a warning; other errors propagate.
         """
-        for name in sorted(_catalogue(solvers)):
-            if name in self._solvers:
-                continue
-            try:
-                constructor = import_module(f"{solvers.__name__}.{name}").Solver
-            except ModuleNotFoundError as exc:
-                warnings.warn(
-                    f"Skipping solver {name!r}: missing dependency {exc.name!r}",
-                    stacklevel=2,
-                )
-                continue
+        entries = (
+            {"name": name}
+            for name in sorted(_catalogue(solvers))
+            if name not in self._solvers
+        )
+        for name, constructor in _available_solvers(entries):
             if any(
                 existing is constructor and not options
                 for existing, options in self._solvers.values()
@@ -334,10 +542,9 @@ class Benchmark:
         for model in self._mdps:
             validate_model(model)
 
-        self.results = []
+        self._clear_results()
         numpy_state, random_state = np.random.get_state(), random.getstate()
         try:
-            self.experiment = None
             self.experiment = capture_experiment(
                 self._mdps,
                 self._solvers,
@@ -444,16 +651,44 @@ class Benchmark:
         A cell is only plotted when *all* repeats met the target precision.
         Failed/imprecise trials are marked FAIL, not silently discarded.
 
+        Rows are grouped by family (VI, PI, MPI, LP), method, backend and variant.
+        The default reference remains the first registered solver.
         Returns ``(figure, axes)``. Matplotlib is an optional dependency.
         """
         from mdpforge.utils.plotting import plot_heat
 
+        solver_names = list(self._solvers)
+        if reference is None and solver_names:
+            reference = solver_names[0]
+        metadata = {
+            name: record.get("metadata") or {}
+            for name, record in (self.experiment or {}).get("solvers", {}).items()
+        }
+        labels = {
+            name: fields.get("display_name") or name
+            for name, fields in metadata.items()
+        }
+
+        def solver_order(name):
+            fields = metadata.get(name, {})
+            family = {"vi": 0, "pi": 1, "mpi": 2, "lp": 3}.get(fields.get("family"), 4)
+            if family == 4:
+                return (family, "", "", ())
+            parts = labels[name].split(" · ")
+            return (
+                family,
+                parts[0].casefold(),
+                (fields.get("backend") or "").casefold(),
+                tuple(part.casefold() for part in parts[2:]),
+            )
+
         return plot_heat(
             self.results,
             [model.name for model in self._mdps],
-            list(self._solvers),
+            sorted(solver_names, key=solver_order),
             reference=reference,
             metric=metric,
+            solver_labels=labels,
             ax=ax,
             show=show,
         )

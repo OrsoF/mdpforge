@@ -10,7 +10,6 @@ WEST, EAST, NORTH, SOUTH, PICKUP, DROPOFF = range(6)
 IN_TAXI = 4
 
 METADATA = {
-    "tags": ["navigation", "real-world", "grid-world"],
     "sizes": {
         "small": {
             "state_dim": 81,
@@ -28,7 +27,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "navigation",
+    "category": "service_operations",
     "description": "Taxi navigation with passenger pickup and drop-off decisions.",
     "reference": (
         "Dietterich, T. G. (2000). Hierarchical reinforcement learning with the "

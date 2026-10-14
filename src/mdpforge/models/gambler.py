@@ -4,7 +4,6 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["games"],
     "sizes": {
         "small": {
             "state_dim": 101,
@@ -22,7 +21,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "games",
+    "category": "games_and_puzzles",
     "description": "Stake selection to reach a capital target before ruin.",
     "reference": (
         "Sutton & Barto, Reinforcement Learning: An Introduction, Example 4.3, "

@@ -12,6 +12,17 @@ from mdpforge.core.conversion import compute_marmote_args
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.solver import GenericSolver
 
+METADATA = {
+    "display_name": "MPI · Marmote · GS",
+    "family": "mpi",
+    "backend": "marmote",
+    "description": (
+        "Marmote C++ modified policy iteration with Gauss-Seidel updates and "
+        "at most ten inner policy-evaluation iterations."
+    ),
+    "update_scheme": "gauss_seidel",
+}
+
 
 class Solver(GenericSolver):
     def __init__(

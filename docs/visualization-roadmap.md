@@ -32,8 +32,8 @@ as though they used the same baseline.
    the benchmark and one external solver producing a comparison. The current
    quickstart already demonstrates both registrations. Add a dedicated solver
    contribution guide before implying that such a guide exists.
-2. **An MDP catalogue preview.** A small table of navigation, control, queueing
-   and random-model examples, with actual size presets and links to their recipes,
+2. **An MDP catalogue preview.** A small table of navigation, physical-control,
+   service-operations and abstract examples, with actual size presets and recipe links,
    would make the collection easier to discover. Read catalogue metadata rather
    than maintaining a manually counted headline.
 3. **A current broad comparison.** Once refreshed, pair the performance profile

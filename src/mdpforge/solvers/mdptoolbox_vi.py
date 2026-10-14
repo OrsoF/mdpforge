@@ -12,6 +12,17 @@ from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
 from mdpforge.core.validation import validate_model
 
+METADATA = {
+    "display_name": "VI · MDPToolbox",
+    "family": "vi",
+    "backend": "mdptoolbox",
+    "description": (
+        "MDPToolbox synchronous value iteration with sparse initialization "
+        "that avoids the dense iteration-bound calculation."
+    ),
+    "update_scheme": "synchronous",
+}
+
 
 class _SparseValueIteration(ValueIteration):
     """Initialize pymdptoolbox 4.0b3 without its dense input checks/iteration cap.

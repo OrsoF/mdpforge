@@ -4,7 +4,6 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["navigation", "grid-world"],
     "sizes": {
         "small": {
             "state_dim": 100,

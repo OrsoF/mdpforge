@@ -10,25 +10,24 @@ from mdpforge.core.mdp import MDP
 TEST_PARAMETERS = {"state_dim": 176, "action_dim": 5}
 
 METADATA = {
-    "tags": ["control", "real-world"],
     "sizes": {
         "small": {
-            "state_dim": 176,
-            "parameters": {"state_dim": 176},
+            "state_dim": 5000,
+            "parameters": {"state_dim": 5000},
             "source": "analytical",
         },
         "medium": {
-            "state_dim": 1664,
-            "parameters": {"state_dim": 1664},
+            "state_dim": 16640,
+            "parameters": {"state_dim": 16640},
             "source": "analytical",
         },
         "large": {
-            "state_dim": 14592,
-            "parameters": {"state_dim": 14592},
+            "state_dim": 30000,
+            "parameters": {"state_dim": 30000},
             "source": "analytical",
         },
     },
-    "category": "control",
+    "category": "service_operations",
     "description": (
         "Elevator movement and pickup decisions with passenger destination masks."
     ),

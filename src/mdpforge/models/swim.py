@@ -6,25 +6,24 @@ from scipy.sparse import dok_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["control", "real-world"],
     "sizes": {
         "small": {
-            "state_dim": 100,
-            "parameters": {"state_dim": 100},
+            "state_dim": 5000,
+            "parameters": {"state_dim": 5000},
             "source": "measured",
         },
         "medium": {
-            "state_dim": 1000,
-            "parameters": {"state_dim": 1000},
+            "state_dim": 10000,
+            "parameters": {"state_dim": 10000},
             "source": "measured",
         },
         "large": {
-            "state_dim": 8000,
-            "parameters": {"state_dim": 8000},
+            "state_dim": 15000,
+            "parameters": {"state_dim": 15000},
             "source": "inferred",
         },
     },
-    "category": "control",
+    "category": "navigation",
     "description": "River swimming with current-dependent movement rewards.",
     "reference": (
         "Strehl, A. L. and Littman, M. L. (2008). An analysis of model-based "
@@ -38,7 +37,7 @@ class Model(MDP):
         self.state_dim = max(3, state_dim)
         self.action_dim = 2
 
-        self.name = "{}_{}_sim".format(self.state_dim, self.action_dim)
+        self.name = "{}_{}_swim".format(self.state_dim, self.action_dim)
 
     def _build_model(self):
         self.transition_matrix: list = [

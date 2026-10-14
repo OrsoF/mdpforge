@@ -7,7 +7,6 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["navigation", "maze"],
     "sizes": {
         "small": {
             "state_dim": 100,

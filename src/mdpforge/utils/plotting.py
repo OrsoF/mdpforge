@@ -10,10 +10,16 @@ def plot_heat(
     *,
     reference=None,
     metric="speedup",
+    solver_labels=None,
     ax=None,
     show=True,
 ):
-    """Plot median runtimes or speedups, marking any failed repeat as FAIL."""
+    """Plot median runtimes or speedups, marking failed repeats as FAIL.
+
+    Optional display labels do not change the technical solver IDs in results.
+    Duplicate display labels are disambiguated with their registered IDs.
+    Abbreviations in catalogue labels are explained beneath the plot.
+    """
     if not results:
         raise ValueError("No results available; call run() before plot_heat()")
     if metric not in {"speedup", "runtime"}:
@@ -22,6 +28,11 @@ def plot_heat(
         reference = next(iter(solver_names))
     if metric == "speedup" and reference not in solver_names:
         raise ValueError(f"Unknown reference solver: {reference!r}")
+    labels = [(solver_labels or {}).get(name, name) for name in solver_names]
+    labels = [
+        f"{label} [{name}]" if labels.count(label) > 1 else label
+        for name, label in zip(solver_names, labels)
+    ]
 
     import matplotlib.pyplot as plt
     from matplotlib.colors import TwoSlopeNorm
@@ -50,7 +61,7 @@ def plot_heat(
         limit = max(1.0, float(finite.max())) if finite.size else 1.0
         norm = TwoSlopeNorm(vmin=-limit, vcenter=0, vmax=limit)
         cmap = plt.get_cmap("RdYlGn").copy()
-        color_label = f"log₂ speedup vs {reference}"
+        color_label = f"log₂ speedup vs {labels[solver_names.index(reference)]}"
     else:
         values = times
         colors = times
@@ -70,7 +81,7 @@ def plot_heat(
         fig = ax.figure
     im = ax.imshow(np.ma.masked_invalid(colors), cmap=cmap, norm=norm, aspect="auto")
     ax.set_xticks(range(len(model_names)), model_names, rotation=35, ha="right")
-    ax.set_yticks(range(len(solver_names)), solver_names)
+    ax.set_yticks(range(len(solver_names)), labels)
     ax.set_xlabel("MDP")
     ax.set_ylabel("Solver")
     settings = results[0]
@@ -90,7 +101,21 @@ def plot_heat(
                 label = f"{values[i, j]:.3g} s"
             ax.text(j, i, label, ha="center", va="center", fontsize=9)
     fig.colorbar(im, ax=ax, label=color_label)
-    fig.tight_layout()
+    notes = []
+    for marker, explanation in (
+        (" · GS", "GS = Gauss-Seidel"),
+        (" · SOR", "SOR = successive over-relaxation"),
+        (" · V₀=0", "V₀=0 = zero initialization"),
+        ("QVI", "QVI = Q-value iteration"),
+    ):
+        if any(marker in label for label in labels):
+            notes.append(explanation)
+    if notes:
+        lines = ["; ".join(notes[i : i + 2]) for i in range(0, len(notes), 2)]
+        fig.text(0.5, 0.01, "\n".join(lines), ha="center", va="bottom", fontsize=8)
+        fig.tight_layout(rect=(0, 0.05 * len(lines), 1, 1))
+    else:
+        fig.tight_layout()
     if show:
         plt.show()
     return fig, ax

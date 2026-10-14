@@ -15,6 +15,17 @@ from mdpforge.utils.projected_bellman import (
     projected_optimal_bellman_operator_residual,
 )
 
+METADATA = {
+    "display_name": "Aggregated VI · mdpforge",
+    "family": "vi",
+    "backend": "mdpforge",
+    "description": (
+        "Value iteration with progressively refined state aggregation, "
+        "projected Bellman backups and a full-state VI fallback."
+    ),
+    "update_scheme": "synchronous",
+}
+
 
 class Solver:
     solver_type = "vi"

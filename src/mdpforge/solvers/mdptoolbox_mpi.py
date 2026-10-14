@@ -10,6 +10,17 @@ from mdptoolbox.mdp import PolicyIterationModified
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
 
+METADATA = {
+    "display_name": "MPI · MDPToolbox",
+    "family": "mpi",
+    "backend": "mdptoolbox",
+    "description": (
+        "MDPToolbox modified policy iteration with synchronous, truncated "
+        "policy evaluation and independent residual certification."
+    ),
+    "update_scheme": "synchronous",
+}
+
 
 class Solver:
     def __init__(

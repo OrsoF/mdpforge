@@ -17,25 +17,24 @@ def index_closest_value(value: float, list_of_values) -> Tuple[int, float]:
 
 
 METADATA = {
-    "tags": ["control", "real-world"],
     "sizes": {
         "small": {
-            "state_dim": 256,
-            "parameters": {"state_dim": 100},
+            "state_dim": 4096,
+            "parameters": {"state_dim": 4096},
             "source": "measured",
         },
         "medium": {
-            "state_dim": 625,
-            "parameters": {"state_dim": 1000},
+            "state_dim": 14641,
+            "parameters": {"state_dim": 14641},
             "source": "measured",
         },
         "large": {
-            "state_dim": 4096,
-            "parameters": {"state_dim": 4555},
+            "state_dim": 38416,
+            "parameters": {"state_dim": 38416},
             "source": "inferred",
         },
     },
-    "category": "control",
+    "category": "physical_control",
     "description": "Discretized CartPole balancing with bounded force actions.",
     "reference": (
         "inspired by the classical CartPole model Barto, Sutton and Anderson "

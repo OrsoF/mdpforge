@@ -8,7 +8,6 @@ from mdpforge.core.mdp import MDP
 param_list = [{}]
 
 METADATA = {
-    "tags": ["resource-management", "real-world"],
     "sizes": {
         "small": {
             "state_dim": 100,
@@ -26,7 +25,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "resource_management",
+    "category": "asset_management",
     "description": "Replacement decisions for equipment with aging-related costs.",
     "reference": (
         "Howard, R. A. (1960). Dynamic Programming and Markov Processes, p.54, The "

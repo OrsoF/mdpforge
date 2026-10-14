@@ -8,7 +8,6 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["resource-management", "real-world"],
     "sizes": {
         "small": {
             "state_dim": 100,
@@ -26,7 +25,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "resource_management",
+    "category": "asset_management",
     "description": "Inventory replenishment with a one-period delivery delay.",
     "reference": (
         "General reference: Puterman (1994). Markov Decision Processes: "

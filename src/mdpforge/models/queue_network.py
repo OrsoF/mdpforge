@@ -8,7 +8,6 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["queueing", "real-world"],
     "sizes": {
         "small": {
             "state_dim": 125,
@@ -26,7 +25,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "queueing",
+    "category": "service_operations",
     "description": "Service allocation in a finite queueing network.",
     "reference": (
         "General reference: Puterman (1994). Markov Decision Processes: "

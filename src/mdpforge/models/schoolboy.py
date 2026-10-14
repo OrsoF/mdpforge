@@ -6,7 +6,6 @@ from scipy.sparse import csr_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["navigation"],
     "sizes": {
         "small": {
             "state_dim": 100,

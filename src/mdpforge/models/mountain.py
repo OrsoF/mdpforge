@@ -16,25 +16,24 @@ def index_closest_value(value: float, list_of_values) -> Tuple:
 
 
 METADATA = {
-    "tags": ["control", "real-world"],
     "sizes": {
         "small": {
-            "state_dim": 100,
-            "parameters": {"state_dim": 100},
+            "state_dim": 4900,
+            "parameters": {"state_dim": 4900},
             "source": "measured",
         },
         "medium": {
-            "state_dim": 961,
-            "parameters": {"state_dim": 1000},
+            "state_dim": 14884,
+            "parameters": {"state_dim": 14884},
             "source": "measured",
         },
         "large": {
-            "state_dim": 7569,
-            "parameters": {"state_dim": 7665},
+            "state_dim": 49729,
+            "parameters": {"state_dim": 49729},
             "source": "inferred",
         },
     },
-    "category": "control",
+    "category": "physical_control",
     "description": "Discretized MountainCar position and velocity control.",
     "reference": (
         "Moore, A. W. (1990). Efficient Memory-based Learning for Robot Control. "

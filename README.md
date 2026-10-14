@@ -75,6 +75,19 @@ from trial seeds; fingerprints identify the actual data, without storing matrice
 `Benchmark()` includes VI by default; use `verbose=True` to show progress.
 [Explore the notebook](notebooks/benchmark.ipynb) for catalogue comparisons and plots.
 
+Reuse a benchmark with `reset()`; it returns the same object for chaining:
+
+```python
+bench.reset()  # Clear MDPs; restore initial solver defaults
+bench.reset(models=False)  # Keep MDPs; restore initial solver defaults
+bench.reset(solvers=False)  # Clear MDPs; keep solvers and their options
+bench.reset(models=False, solvers=False)  # Clear only results and experiment metadata
+```
+
+Every reset clears results and the experiment manifest. Resetting solvers restores
+VI alone for `Benchmark()`, or no solvers for `Benchmark(default_solvers=False)`.
+Cached models and exported files are preserved.
+
 ## Explore the results
 
 [Open the visual gallery](notebooks/visualize_results.ipynb) to plot existing CSVs
@@ -165,32 +178,56 @@ select [catalogue models](src/mdpforge/models) by module name.
 Use `from mdpforge import list_models`, then `list_models(category="navigation")`
 to browse descriptions and declared references without building models.
 Each recipe exposes a literal `METADATA` dict with `category`, `description`,
-`reference`, `tags` and `sizes`. Each size preset contains its expected actual
+`reference` and `sizes`. Each recipe declares exactly one task category:
+
+| Category | Task family |
+|---|---|
+| `abstract` | Abstract chains or generated MDPs for algorithm studies |
+| `navigation` | Movement through spatial environments, routes or racetracks |
+| `physical_control` | Physical systems with dynamical equations |
+| `service_operations` | Admission, assignment and service of requests or passengers |
+| `asset_management` | Use, allocation, maintenance or renewal of stocks and assets |
+| `games_and_puzzles` | Games, betting and symbolic puzzles |
+
+These categories describe tasks, not expected solver performance. Classification
+rules and boundary cases are documented in [the model guide](docs/adding-a-model.md).
+Each size preset contains its expected actual
 `state_dim`, constructor `parameters`, and `source` (`measured`, `inferred`,
 `configured`, `analytical`, `parameterized` or `unavailable`). Configured,
 analytical and parameterized sizes describe dimension choices without measured
 solver runtimes. Constructor inputs can differ from the resulting dimensions.
-Unavailable presets have `parameters=None` and a reason. Missing tags/sizes in
-new recipes default to empty collections; other missing fields are `None`.
+Unavailable presets have `parameters=None` and a reason. A missing or unknown
+category raises `ValueError`; missing sizes default to an empty dict and other
+optional fields to `None`.
 
 ```python
-from mdpforge import Benchmark, list_models, load_model
+from mdpforge import Benchmark, list_models
 
-presets = list_models(size="small", type="random")  # Metadata only
+presets = list_models(size="small", category="abstract")  # Metadata only
 bench = Benchmark()
-for model in load_model(size="small", type="random"):
-    bench.add_mdp(model)
+bench.add_mdp(size="small", category="abstract")
 ```
 
-`load_model` returns an iterator and builds one model per iteration, using
-`create_model()` and the existing matrix cache. `size` accepts `small`, `medium`
-or `large`; omitted size uses constructor defaults. `type` matches a category or
-a tag, including `random`, `maze`, `real-world`, `navigation` and `control`;
-omitted type selects all models. `random` describes random model generation,
-not merely stochastic transitions. `real-world` describes simulated applications
-inspired by real systems. Unknown size/type labels raise `ValueError`.
-Unavailable presets are excluded; dependency and construction errors propagate.
-Use `save=False` to avoid writing newly built matrices (existing caches are read).
+`bench.add_mdp(size=..., category=...)` builds and registers matching models using
+`create_model()` and the existing matrix cache. Either filter can be used alone;
+combining them selects their intersection. Already-registered model names are
+skipped before building or loading their matrices, preserving existing instances.
+Filters cannot be combined with an explicit model or matrices. Without a model,
+at least one filter is required;
+use `bench.add_all_models()` to add the entire catalogue with defaults.
+
+`size` accepts `small`, `medium` or `large`; omitted size uses constructor defaults.
+`category` selects exactly one of the six task families; omitted category selects
+all families. Unknown size/category labels raise `ValueError`. Both APIs use
+`category=`; the former `type=` keyword has been removed.
+Unavailable presets are excluded. Collective additions (filters or
+`add_all_models()`) skip models with missing dependencies with a warning;
+other construction errors propagate. Adding a model by name propagates all errors.
+For use outside a benchmark, construct the recipe directly, for example
+`from mdpforge.models.rooms import Model`, followed by `model = Model()` and
+`model.create_model(save=False)` to avoid writing newly built matrices (existing
+caches are read). The catalogue `load_model()` API has been removed; use
+`bench.add_mdp(size=..., category=...)` for benchmark selections.
 
 Calibrated presets use measurements at discount `0.99`, precision `1e-3`
 and one thread. Inferred large presets aim at a 30-second solver budget with a
@@ -230,6 +267,73 @@ handles copies, timing and final accuracy checks.
 
 Without `solve_function`, the name selects a [catalogue solver](src/mdpforge/solvers).
 Custom names must be unique; extra keyword options are forwarded to the solver.
+
+Each catalogue solver module declares a literal `METADATA` dict with
+`display_name`, `family`, `backend`, `description` and `update_scheme`.
+Families are `vi`, `pi`, `mpi` and `lp`; backends identify the implementation
+library. Update schemes are `synchronous`, `gauss_seidel`, `sor`, `linear_solve`,
+`mixed` and `not_applicable`. `linear_solve` denotes matrix-based policy evaluation;
+`mixed` combines Bellman sweeps with aggregate linear corrections or stochastic
+updates; LP uses `not_applicable` because it has no Bellman sweep scheme.
+Metadata describes the default implementation; initialization variants are
+identified in the display name and description. Existing constructor options
+and experiment manifests still describe the configuration of each actual run.
+
+Browse and select solvers by these characteristics:
+
+```python
+from mdpforge import Benchmark, list_solvers
+
+entries = list_solvers(family=["pi", "mpi"], backend="mdpforge")
+print([entry["display_name"] for entry in entries])  # No backend imports
+
+bench = Benchmark(default_solvers=False)
+bench.add_solver(family="vi", backend="mdpforge")
+bench.add_solver(family=["pi", "mpi"], backend="mdpforge")
+
+# Register existing Gauss-Seidel and SOR variants, without reconfiguring VI.
+bench.add_solver(family="vi", update_scheme=["gauss_seidel", "sor"])
+```
+
+Filters combine fields with AND and values within a list with OR. Unknown
+values and combinations matching no catalogue solver raise `ValueError`.
+`list_solvers()` returns the technical `name` and all five metadata fields,
+including backends that are not installed. Solver modules without metadata
+remain discoverable, with their filename as display name and other fields `None`.
+Both listing and selection use a string or a nonempty sequence for each filter.
+
+Group additions skip missing dependencies with warnings, preserve matching
+registrations and avoid duplicating the default VI. A conflicting implementation
+or explicit option configuration under the same name raises `ValueError`.
+Constructor options apply to every selected solver; unsupported option names
+are rejected before any group registrations change. For example,
+`bench.add_solver(family="vi", backend="mdpsolver", update_scheme="synchronous", parallel=True)`
+selects only MDPSolver's standard-update VI implementation and forwards `parallel`.
+Options are compared as supplied; omitted defaults and explicitly supplied
+defaults are distinct configurations.
+
+Named calls such as `bench.add_solver("mdpsolver_vi", parallel=True)` retain their
+existing behavior. A named catalogue solver may also be constrained by filters;
+an incompatible filter raises an error rather than switching its algorithm.
+Filters cannot accompany `solve_function`. `bench.add_all_solvers()` still adds
+the entire catalogue with defaults, and `bench.add_solver()` without a name or
+filter remains invalid.
+
+Each experiment manifest snapshots solver metadata alongside constructor options.
+CSV solver IDs stay unchanged. Display names use `Method · Backend · Variant`,
+for example `MPI · MDPSolver · GS · V₀=0` or `LP · Gurobi · dual`. Standard
+updates have no suffix. GS means Gauss-Seidel, SOR means successive over-relaxation,
+and `V₀=0` denotes zero initialization; plots explain the abbreviations they use.
+Distinct methods retain their names, such as `Aggregated VI` and `Envelope VI`.
+`reward init` denotes initialization from rewards; `eval budget` denotes the
+policy-evaluation budget variant. QVI denotes Q-value iteration.
+
+`bench.plot_heat()` uses recorded display names, adding IDs when labels collide,
+and sorts rows by family (VI, PI, MPI, LP), method, backend and variant. Custom
+callables without family metadata follow in registration order. Its `reference`
+argument always uses the registered ID; the default remains the first registered
+solver. Existing experiment manifests retain the names recorded at run time;
+new runs capture the updated names.
 
 ## Limitations
 

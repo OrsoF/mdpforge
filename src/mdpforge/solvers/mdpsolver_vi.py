@@ -10,6 +10,17 @@ from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpsolver import create_mdpsolver, solve_mdpsolver
 
+METADATA = {
+    "display_name": "VI · MDPSolver",
+    "family": "vi",
+    "backend": "mdpsolver",
+    "description": (
+        "MDPSolver value iteration with standard Bellman sweeps and "
+        "independent residual certification."
+    ),
+    "update_scheme": "synchronous",
+}
+
 
 class Solver(GenericSolver):
     solver_type = "vi"

@@ -10,7 +10,6 @@ from mdpforge.core.mdp import MDP
 TEST_PARAMETERS = {"state_dim": 512, "action_dim": 4}
 
 METADATA = {
-    "tags": ["games", "puzzle"],
     "sizes": {
         "small": {
             "state_dim": 128,
@@ -28,7 +27,7 @@ METADATA = {
             "source": "configured",
         },
     },
-    "category": "games",
+    "category": "games_and_puzzles",
     "description": (
         "Peg-jumping puzzle with board configurations represented as states."
     ),

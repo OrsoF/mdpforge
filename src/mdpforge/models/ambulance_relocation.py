@@ -7,7 +7,6 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["resource-management", "real-world"],
     "sizes": {
         "small": {
             "state_dim": 50,
@@ -25,7 +24,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "resource_management",
+    "category": "service_operations",
     "description": "Ambulance relocation with response and movement costs.",
     "reference": (
         "Sinclair, Banerjee & Yu (2019), Adaptive Discretization for Episodic RL."

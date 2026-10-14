@@ -20,7 +20,6 @@ def build_track(state_dim: int) -> np.ndarray:
 
 
 METADATA = {
-    "tags": ["navigation", "racetrack"],
     "sizes": {
         "small": {
             "state_dim": 283,

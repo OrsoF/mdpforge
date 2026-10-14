@@ -25,6 +25,17 @@ from mdpforge.utils.projected_bellman import (
     projected_optimal_q_bellman_operator,
 )
 
+METADATA = {
+    "display_name": "Aggregated QVI · mdpforge",
+    "family": "vi",
+    "backend": "mdpforge",
+    "description": (
+        "Q-value iteration with progressive state aggregation, synchronous "
+        "Bellman backups and a full-state VI fallback."
+    ),
+    "update_scheme": "synchronous",
+}
+
 
 class Solver(GenericSolver):
     solver_type = "vi"

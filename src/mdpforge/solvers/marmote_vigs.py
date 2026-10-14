@@ -13,6 +13,17 @@ from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
 
+METADATA = {
+    "display_name": "VI · Marmote · GS",
+    "family": "vi",
+    "backend": "marmote",
+    "description": (
+        "Marmote C++ value iteration with Gauss-Seidel Bellman sweeps and "
+        "independent residual certification."
+    ),
+    "update_scheme": "gauss_seidel",
+}
+
 
 class Solver(GenericSolver):
     solver_type = "vi"

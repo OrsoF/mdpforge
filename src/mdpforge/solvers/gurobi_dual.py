@@ -12,6 +12,17 @@ from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import compute_transition_reward_policy
 from mdpforge.utils.gurobi import gurobi_model_creation
 
+METADATA = {
+    "display_name": "LP · Gurobi · dual",
+    "family": "lp",
+    "backend": "gurobi",
+    "description": (
+        "Solve the discounted occupancy-measure dual linear program, then "
+        "recover and evaluate a deterministic policy."
+    ),
+    "update_scheme": "not_applicable",
+}
+
 
 class Solver:
     def __init__(

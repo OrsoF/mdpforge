@@ -27,6 +27,17 @@ from mdpforge.utils.projected_bellman import (
     apply_ppbo_until_var_small,
 )
 
+METADATA = {
+    "display_name": "Aggregated MPI · mdpforge",
+    "family": "mpi",
+    "backend": "mdpforge",
+    "description": (
+        "Modified policy iteration with progressively refined aggregate "
+        "policy evaluation and ground-state Bellman updates."
+    ),
+    "update_scheme": "synchronous",
+}
+
 
 class Solver:
     def __init__(

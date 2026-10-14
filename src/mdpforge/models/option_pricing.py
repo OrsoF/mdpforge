@@ -8,7 +8,6 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["resource-management", "real-world"],
     "sizes": {
         "small": {
             "state_dim": 101,
@@ -26,7 +25,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "resource_management",
+    "category": "asset_management",
     "description": "Exercise or hold an American put option over a finite horizon.",
     "reference": (
         "Family reference: Cox, Ross & Rubinstein (1979). "

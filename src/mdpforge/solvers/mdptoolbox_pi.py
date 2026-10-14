@@ -10,6 +10,17 @@ from mdptoolbox.mdp import PolicyIteration
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.solver import GenericSolver
 
+METADATA = {
+    "display_name": "PI · MDPToolbox",
+    "family": "pi",
+    "backend": "mdptoolbox",
+    "description": (
+        "MDPToolbox policy iteration using its default matrix-based policy "
+        "evaluation and greedy policy improvement."
+    ),
+    "update_scheme": "linear_solve",
+}
+
 
 class Solver(GenericSolver):
     def __init__(

@@ -6,25 +6,24 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["control", "real-world"],
     "sizes": {
         "small": {
-            "state_dim": 100,
-            "parameters": {"state_dim": 100},
+            "state_dim": 5000,
+            "parameters": {"state_dim": 5000},
             "source": "measured",
         },
         "medium": {
-            "state_dim": 1000,
-            "parameters": {"state_dim": 1000},
+            "state_dim": 15000,
+            "parameters": {"state_dim": 15000},
             "source": "measured",
         },
         "large": {
-            "state_dim": 4600,
-            "parameters": {"state_dim": 4600},
+            "state_dim": 30000,
+            "parameters": {"state_dim": 30000},
             "source": "inferred",
         },
     },
-    "category": "control",
+    "category": "physical_control",
     "description": (
         "Discretized scalar dynamics with quadratic state and control costs."
     ),

@@ -9,6 +9,17 @@ from mdpforge.core.model import MDPProtocol
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpsolver import create_mdpsolver, solve_mdpsolver
 
+METADATA = {
+    "display_name": "MPI · MDPSolver",
+    "family": "mpi",
+    "backend": "mdpsolver",
+    "description": (
+        "MDPSolver modified policy iteration with standard updates and an "
+        "explicit ten-step partial evaluation limit."
+    ),
+    "update_scheme": "synchronous",
+}
+
 
 class Solver(GenericSolver):
     def __init__(

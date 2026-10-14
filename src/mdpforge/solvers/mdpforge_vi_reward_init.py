@@ -4,6 +4,17 @@ from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.solver import GenericSolver
 
+METADATA = {
+    "display_name": "VI · mdpforge · reward init",
+    "family": "vi",
+    "backend": "mdpforge",
+    "description": (
+        "Synchronous value iteration initialized from maximum immediate "
+        "rewards divided by one minus the discount."
+    ),
+    "update_scheme": "synchronous",
+}
+
 
 class Solver(GenericSolver):
     solver_type = "vi"

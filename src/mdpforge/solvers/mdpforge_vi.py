@@ -4,6 +4,17 @@ from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.solver import GenericSolver
 
+METADATA = {
+    "display_name": "VI · mdpforge",
+    "family": "vi",
+    "backend": "mdpforge",
+    "description": (
+        "Synchronous value iteration with a full Bellman-residual stopping "
+        "threshold for absolute value precision."
+    ),
+    "update_scheme": "synchronous",
+}
+
 
 class Solver(GenericSolver):
     solver_type = "vi"

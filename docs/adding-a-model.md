@@ -113,23 +113,39 @@ class Model(MDP):
         self.reward_matrix[0, :] = 0
 ```
 
-## 3. Métadonnées, tags et tailles
+## 3. Métadonnées, catégories et tailles
 
 Chaque nouveau module DOIT définir un dictionnaire littéral `METADATA`, avec
-`category`, `description`, `reference`, `tags` et `sizes`. Il est lu par
+`category`, `description`, `reference` et `sizes`. Il est lu par
 `ast.literal_eval` : pas d'appel de fonction, de tableau NumPy, de compréhension
 ou de référence à une variable dans ce dictionnaire.
 
-Les catégories actuelles sont `synthetic`, `navigation`, `control`, `queueing`,
-`resource_management` et `games`. Le contributeur DEVRAIT réutiliser les tags
-existants, accessibles via `list_models()`, et justifier l'ajout d'un nouveau tag.
-Plusieurs tags peuvent décrire un modèle :
+Chaque modèle DOIT déclarer une seule catégorie, selon la tâche principale de
+l'agent. Les catégories autorisées sont :
 
-- `random` : la génération des paramètres, récompenses ou transitions est
-  aléatoire ; avoir des transitions stochastiques ne suffit pas ;
-- `maze` : navigation dans un labyrinthe ;
-- `real-world` : application simulée inspirée d'un système réel ;
-- `grid-world`, `racetrack`, `puzzle` : descriptions complémentaires du problème.
+| Catégorie | Tâche principale |
+|---|---|
+| `abstract` | MDP abstrait, chaîne ou transitions construites pour étudier les algorithmes, sans application particulière |
+| `navigation` | Choisir ses déplacements dans un environnement spatial, un trajet ou une piste |
+| `physical_control` | Commander un système décrit par des variables physiques et des équations de dynamique |
+| `service_operations` | Accepter, affecter ou servir des demandes, clients ou passagers |
+| `asset_management` | Exploiter, répartir, entretenir ou renouveler des stocks et des actifs |
+| `games_and_puzzles` | Prendre des décisions selon les règles d'un jeu ou résoudre un puzzle |
+
+Ces familles organisent les tâches ; elles ne garantissent pas des performances
+numériques similaires. Une catégorie manquante ou inconnue provoque une erreur.
+Les caractéristiques complémentaires (labyrinthe, piste, génération aléatoire,
+application simulée) DOIVENT être décrites dans `description` ou la documentation
+scientifique du module.
+
+Pour les cas frontières, la tâche prime sur les mécanismes secondaires :
+`taxi`, `elevator` et les ambulances servent des demandes et relèvent de
+`service_operations`, tandis que `schoolboy` effectue son propre trajet et relève
+de `navigation`. `car_rental` rééquilibre des stocks et relève de
+`asset_management`. Les pistes `barto` et `sutton`, ainsi que la chaîne fluviale
+`swim`, relèvent de `navigation`. `option_pricing` traite un actif financier et
+relève de `asset_management`, tandis que `gambler` suit un jeu de mises et relève
+de `games_and_puzzles`. `blocks_world` est classé comme puzzle symbolique.
 
 `sizes` DOIT déclarer les trois labels `small`, `medium` et `large`. Pour chaque
 taille disponible :
@@ -154,10 +170,9 @@ Exemple pour une recette originale dont les tailles restent à calibrer :
 
 ```python
 METADATA = {
-    "category": "synthetic",
+    "category": "abstract",
     "description": "Controlled chain with a zero-cost absorbing boundary.",
     "reference": None,
-    "tags": ["synthetic"],
     "sizes": {
         "small": {
             "state_dim": None,
@@ -182,11 +197,14 @@ METADATA = {
 ```
 
 La découverte via `list_models()` DOIT fonctionner sans importer la recette ni
-construire ses matrices. `list_models(size="small", type="random")` filtre les
-métadonnées ; `load_model(size="small", type="random")` retourne un itérateur de
-modèles construits progressivement. `type` correspond à une catégorie ou un tag.
-Une taille indisponible est exclue de cette sélection ; les erreurs d'import ou
-de construction sont remontées pendant l'itération.
+construire ses matrices. `list_models(size="small", category="abstract")` filtre
+les métadonnées ; `bench.add_mdp(size="small", category="abstract")` construit et
+ajoute les modèles sélectionnés au benchmark. Les deux filtres sont combinés
+par intersection.
+Une taille indisponible est exclue de cette sélection. Les ajouts collectifs
+(filtres ou `add_all_models()`) ignorent les modèles dont une dépendance manque,
+avec un avertissement ; les autres erreurs sont remontées pendant l'ajout.
+L'ajout d'un modèle par son nom remonte toutes les erreurs.
 
 Le chargement du paquet installé ne DOIT pas dépendre d'un fichier de calibration
 dans `artifacts/`. Les configurations utilisables doivent être dans le module.
@@ -208,7 +226,7 @@ Le cache de matrices utilise `model.name` ; le cache de valeurs optimales conser
 la clé `<discount>_<model.name>` et une référence calculée par VI à précision
 `1e-3`. Une modification de la dynamique ou des récompenses DOIT traiter les
 caches devenus obsolètes, par exemple avec une nouvelle version dans le nom.
-Changer uniquement les descriptions ou les tags ne nécessite pas une nouvelle
+Changer uniquement les descriptions ou les catégories ne nécessite pas une nouvelle
 identité numérique.
 
 Les tests de génération DOIVENT isoler le cache. `create_model(save=False)`
@@ -309,7 +327,7 @@ régressions introduites.
 - [ ] `state_dim`, `action_dim` et `name` définis dès le constructeur.
 - [ ] Dimensions réelles, paramètres invalides et paliers documentés.
 - [ ] Matrices CSR et récompenses NumPy conformes au validateur.
-- [ ] `METADATA` littéral, catégorie, tags et trois labels de taille déclarés.
+- [ ] `METADATA` littéral, une catégorie autorisée et trois labels de taille déclarés.
 - [ ] Tailles disponibles reproductibles ; tailles indisponibles justifiées.
 - [ ] Calibration mesurée ou inférée accompagnée de sa provenance, si disponible.
 - [ ] Génération aléatoire reproductible et identité de cache suffisante.

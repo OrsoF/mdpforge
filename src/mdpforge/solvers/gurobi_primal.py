@@ -9,6 +9,17 @@ import numpy as np
 from mdpforge.core.model import MDPProtocol
 from mdpforge.utils.gurobi import gurobi_model_creation
 
+METADATA = {
+    "display_name": "LP · Gurobi · primal",
+    "family": "lp",
+    "backend": "gurobi",
+    "description": (
+        "Solve the discounted value-function primal linear program with "
+        "Bellman inequality constraints using Gurobi."
+    ),
+    "update_scheme": "not_applicable",
+}
+
 
 class Solver:
     def __init__(

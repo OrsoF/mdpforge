@@ -10,7 +10,6 @@ from mdpforge.core.mdp import MDP
 TEST_PARAMETERS = {"state_dim": 9, "action_dim": 2}
 
 METADATA = {
-    "tags": ["resource-management", "real-world"],
     "sizes": {
         "small": {
             "state_dim": 100,
@@ -28,7 +27,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "resource_management",
+    "category": "service_operations",
     "description": "One-dimensional ambulance positioning under random demand.",
     "reference": (
         "Mason, W. A. and Watts, D. J. (2012). Collaborative learning in networks. "

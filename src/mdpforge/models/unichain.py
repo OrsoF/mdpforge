@@ -6,7 +6,6 @@ from scipy.sparse import lil_matrix
 from mdpforge.core.mdp import MDP
 
 METADATA = {
-    "tags": ["synthetic"],
     "sizes": {
         "small": {
             "state_dim": 100,
@@ -24,7 +23,7 @@ METADATA = {
             "source": "inferred",
         },
     },
-    "category": "synthetic",
+    "category": "abstract",
     "description": "Two-action chain with a zero-cost boundary state.",
     "reference": (
         "Puterman, M. L. (2014). Markov Decision Processes: Discrete Stochastic "

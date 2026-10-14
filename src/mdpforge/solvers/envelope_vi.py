@@ -28,6 +28,17 @@ from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import bellman_operator, compact_optimal_bellman_operator
 from mdpforge.core.partition import Partition
 
+METADATA = {
+    "display_name": "Envelope VI · mdpforge",
+    "family": "vi",
+    "backend": "mdpforge",
+    "description": (
+        "Progressive Bellman-envelope iteration with compressed transitions, "
+        "certified lower and upper bounds, and optional residual polishing."
+    ),
+    "update_scheme": "synchronous",
+}
+
 
 class Solver:
     solver_type = "vi"
