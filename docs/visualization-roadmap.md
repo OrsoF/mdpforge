@@ -7,9 +7,9 @@ a compact comparison with repeat spread, and a link to an executed visual galler
 ## Views available in the exploratory notebook
 
 [`notebooks/visualize_results.ipynb`](../notebooks/visualize_results.ipynb) reads
-saved benchmark exports without executing solvers. Its functions are intentionally
-local to this notebook while the designs are explored; the library's existing
-`BenchmarkResult.plot_heat()` offers the library's runtime/speedup heatmap.
+saved benchmark exports without executing solvers. The notebook retains its
+exploratory plotting functions, while the library now provides `BenchmarkResult.plot_heat()`, `plot_performance_profile()`, `summary()`
+and `solver_summary()` for comparisons of a single benchmark run.
 
 | View | Best use | Interpretation |
 | --- | --- | --- |

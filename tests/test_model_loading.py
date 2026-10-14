@@ -112,6 +112,9 @@ def test_custom_track_is_converted_without_mutating_metadata(
         ({"size": "small"}, 4),
         ({"category": "abstract"}, 100),
         ({"size": "small", "category": "abstract"}, 4),
+        ({"model": "unichain", "size": "small"}, 4),
+        ({"model": "unichain", "category": "abstract"}, 100),
+        ({"model": "unichain", "size": "small", "category": "abstract"}, 4),
     ],
 )
 def test_benchmark_selects_catalogue_models(
@@ -164,6 +167,8 @@ def test_benchmark_selection_preserves_existing_instances_and_previous_result(
     assert (result.rows, result.experiment) == snapshot
     with pytest.raises(ValueError, match="already registered"):
         bench.add_mdp(existing)
+    with pytest.raises(ValueError, match="already registered"):
+        bench.add_mdp("unichain", size="small")
 
 
 def test_benchmark_selection_excludes_unavailable_sizes(preset_catalogue, monkeypatch):
@@ -173,6 +178,110 @@ def test_benchmark_selection_excludes_unavailable_sizes(preset_catalogue, monkey
     monkeypatch.setattr("mdpforge.core.benchmark.import_module", fail_import)
     bench = Benchmark()
     assert bench.add_mdp(size="large", category="abstract") is bench
+    assert bench._mdps == []
+
+
+@pytest.mark.parametrize(
+    "options, message",
+    [
+        ({"model": "unichain", "size": "large"}, "preset may be unavailable"),
+        ({"model": "unichain", "category": "navigation"}, "does not match"),
+        ({"model": "missing", "size": "small"}, "Unknown model 'missing'"),
+        ({"model": "unichain", "size": "huge"}, "size must be"),
+        ({"model": "unichain", "category": "unknown"}, "Unknown model category"),
+        ({"model": " ", "size": "small"}, "nonempty string"),
+    ],
+)
+def test_named_model_filters_fail_before_import(
+    preset_catalogue, monkeypatch, options, message
+):
+    def fail_import(name):
+        pytest.fail("Invalid named selections must fail before importing a recipe")
+
+    monkeypatch.setattr("mdpforge.core.benchmark.import_module", fail_import)
+    bench = Benchmark()
+    with pytest.raises(ValueError, match=message):
+        bench.add_mdp(**options)
+    assert bench._mdps == []
+
+
+@pytest.mark.parametrize(
+    "options, expected_states",
+    [({}, 100), ({"size": "small", "category": "abstract"}, 4)],
+)
+def test_named_model_sequences_preserve_order_presets_and_existing_instances(
+    preset_catalogue,
+    isolated_model_cache,
+    tmp_path,
+    monkeypatch,
+    options,
+    expected_states,
+):
+    (tmp_path / "other.py").write_text(
+        f"METADATA = {preset_catalogue!r}\n", encoding="utf-8"
+    )
+
+    def import_recipe(path):
+        name = path.rsplit(".", 1)[1]
+
+        def build(**parameters):
+            model = Unichain(**parameters)
+            model.name = f"{name}_{model.name}"
+            return model
+
+        return SimpleNamespace(Model=build)
+
+    monkeypatch.setattr("mdpforge.core.benchmark.import_module", import_recipe)
+    bench = Benchmark()
+    names = ["unichain", "other", "unichain"]
+    assert bench.add_mdp(model=names, **options) is bench
+    assert names == ["unichain", "other", "unichain"]
+    existing = bench._mdps.copy()
+    assert [model.name for model in existing] == [
+        f"unichain_{expected_states}_2_unichain",
+        f"other_{expected_states}_2_unichain",
+    ]
+    for model in existing:
+        assert model.state_dim == expected_states
+        validate_model(model)
+
+    def fail_build(self):
+        pytest.fail("Already-registered models must not build or load matrices")
+
+    monkeypatch.setattr(Unichain, "create_model", fail_build)
+    assert bench.add_mdp(model=tuple(names), **options) is bench
+    assert len(bench._mdps) == 2
+    assert all(actual is original for actual, original in zip(bench._mdps, existing))
+    result = bench.run(0.9, precision=1e-4, repeats=1)
+    assert len(result.rows) == 2
+    assert all(row["status"] == "success" for row in result.rows)
+    assert all(row["error_bound"] <= 1e-4 for row in result.rows)
+
+
+@pytest.mark.parametrize(
+    "names, options, message",
+    [
+        ([], {}, "nonempty sequence"),
+        (["unichain", 1], {}, "nonempty sequence"),
+        ([""], {}, "nonempty sequence"),
+        ([" "], {}, "nonempty sequence"),
+        (["unichain", "missing"], {}, "Unknown model 'missing'"),
+        (["unichain", "unavailable"], {"size": "small"}, "does not match"),
+        (["unichain"], {"size": "large"}, "preset may be unavailable"),
+        (["unichain"], {"category": "navigation"}, "does not match"),
+        (["unichain"], {"transitions": [np.eye(2)]}, "cannot be combined"),
+    ],
+)
+def test_named_model_sequences_validate_all_names_before_registration(
+    preset_catalogue, monkeypatch, names, options, message
+):
+    def fail_import(name):
+        pytest.fail("Invalid named selections must fail before any recipe is imported")
+
+    monkeypatch.setattr("mdpforge.core.benchmark.import_module", fail_import)
+    bench = Benchmark()
+    with pytest.raises(ValueError, match=message):
+        bench.add_mdp(model=names, **options)
     assert bench._mdps == []
 
 
@@ -245,13 +354,12 @@ def test_benchmark_rejects_bad_filters(preset_catalogue, options, monkeypatch):
 @pytest.mark.parametrize(
     "options",
     [
-        {"model": "unichain", "size": "small"},
-        {"model": "unichain", "category": "abstract"},
+        {"model": "custom", "transitions": [np.eye(2)], "size": "small"},
         {"transitions": [np.eye(2)], "size": "small"},
         {"reward": np.zeros((2, 1)), "category": "abstract"},
     ],
 )
-def test_benchmark_rejects_filters_combined_with_models_or_matrices(options):
+def test_benchmark_rejects_filters_combined_with_matrices(options):
     with pytest.raises(ValueError, match="cannot be combined"):
         Benchmark().add_mdp(**options)
 
@@ -286,8 +394,9 @@ def test_benchmark_selection_warns_about_missing_dependencies(
     assert bench._mdps == []
 
 
+@pytest.mark.parametrize("options", [{}, {"category": "navigation"}])
 def test_named_catalogue_model_reports_missing_dependencies(
-    preset_catalogue, monkeypatch
+    preset_catalogue, monkeypatch, options
 ):
     def fail_import(name):
         raise ModuleNotFoundError("Missing dependency", name="missing_model_dependency")
@@ -295,13 +404,13 @@ def test_named_catalogue_model_reports_missing_dependencies(
     monkeypatch.setattr("mdpforge.core.benchmark.import_module", fail_import)
     bench = Benchmark()
     with pytest.raises(ModuleNotFoundError, match="Missing dependency"):
-        bench.add_mdp("unavailable")
+        bench.add_mdp("unavailable", **options)
     assert bench._mdps == []
 
 
-@pytest.mark.parametrize("add_all", [False, True])
+@pytest.mark.parametrize("selection", ["all", "filters", "names"])
 def test_collective_additions_continue_after_missing_dependencies(
-    chain, monkeypatch, add_all
+    chain, monkeypatch, selection
 ):
     entries = [
         {"name": name, "sizes": {"small": {"state_dim": 3, "parameters": {}}}}
@@ -319,8 +428,10 @@ def test_collective_additions_continue_after_missing_dependencies(
     monkeypatch.setattr("mdpforge.core.benchmark.import_module", import_recipe)
     bench = Benchmark()
     with pytest.warns(UserWarning, match="Skipping model 'missing'.*missing_backend"):
-        if add_all:
+        if selection == "all":
             assert bench.add_all_models() is bench
+        elif selection == "names":
+            assert bench.add_mdp(model=["missing", "chain"], size="small") is bench
         else:
             assert bench.add_mdp(size="small") is bench
     assert imports == ["mdpforge.models.missing", "mdpforge.models.chain"]

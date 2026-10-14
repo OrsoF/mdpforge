@@ -5,6 +5,7 @@ import multiprocessing
 import pickle
 import random
 import warnings
+from collections.abc import Sequence
 from copy import deepcopy
 from importlib import import_module
 from importlib.util import find_spec
@@ -222,7 +223,7 @@ class Benchmark:
 
     def add_mdp(
         self,
-        model: MDPProtocol | str | None = None,
+        model: MDPProtocol | str | Sequence[str] | None = None,
         *,
         transitions=None,
         reward=None,
@@ -231,29 +232,65 @@ class Benchmark:
     ):
         """Add named, matrix-defined or built MDPs, or filtered groups; return self.
 
-        model: catalogue ID from list_models(), built MDP object, or custom name
-            with transitions and reward. None selects by size/category filters.
+        model: catalogue ID or nonempty sequence of IDs from list_models(), built
+            MDP object, or custom name with matrices. None selects by filters.
         transitions: A dense/sparse (S, S) matrices, one per action;
             None for catalogue models or built objects. S = states, A = actions.
         reward: dense/sparse (S, A) expected rewards, indexed [state, action];
             None for catalogue models or built objects.
-        size: "small", "medium" or "large" preset;
+        size: "small", "medium" or "large" preset, including for a catalogue ID;
             None uses recipe defaults and does not filter available sizes.
         category: "abstract", "navigation", "physical_control",
             "service_operations", "asset_management" or "games_and_puzzles".
-            None accepts all task families.
+            None accepts all task families; a named model must match the category.
 
-        size/category accept single strings and combine with AND. Filters cannot
-        accompany an explicit model or matrices. Custom names must be unique.
+        size/category combine with AND and can constrain a catalogue ID, but
+        cannot accompany built objects or matrices. Custom names must be unique.
         Groups skip unavailable presets, duplicates and missing dependencies.
+        Explicit IDs must all match filters; sequences preserve their given order.
         Provide a model or filter; use add_all_models() for the entire catalogue.
         """
-        if size is not None or category is not None:
-            if model is not None or transitions is not None or reward is not None:
+        named_group = isinstance(model, Sequence) and not isinstance(model, str)
+        if named_group and (
+            not model
+            or any(not isinstance(name, str) or not name.strip() for name in model)
+        ):
+            raise ValueError("model must be a nonempty sequence of catalogue names.")
+        if named_group or size is not None or category is not None:
+            if (
+                (model is not None and not isinstance(model, str) and not named_group)
+                or transitions is not None
+                or reward is not None
+            ):
                 raise ValueError(
-                    "size/category filters cannot be combined with a model or matrices."
+                    "Catalogue selections cannot be combined with built objects "
+                    "or matrices."
                 )
-            for entry in models.list_models(size=size, category=category):
+            if isinstance(model, str) and not model.strip():
+                raise ValueError("Each MDP must have a nonempty string 'name'.")
+            entries = models.list_models(size=size, category=category)
+            if model is not None:
+                names = list(dict.fromkeys(model)) if named_group else [model]
+                selected = {entry["name"]: entry for entry in entries}
+                for name in names:
+                    if name in selected:
+                        continue
+                    catalogue = {item["name"] for item in models.list_models()}
+                    if name not in catalogue:
+                        raise ValueError(
+                            f"Unknown model {name!r}. Available models: "
+                            + ", ".join(sorted(catalogue))
+                        )
+                    raise ValueError(
+                        f"Model {name!r} does not match size={size!r}, "
+                        f"category={category!r}; "
+                        "the requested preset may be unavailable."
+                    )
+                for name in names:
+                    preset = selected[name]["sizes"][size] if size is not None else None
+                    self._add_catalogue_model(name, preset=preset, grouped=named_group)
+                return self
+            for entry in entries:
                 preset = entry["sizes"][size] if size is not None else None
                 self._add_catalogue_model(entry["name"], preset=preset, grouped=True)
             return self

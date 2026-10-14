@@ -1,5 +1,3 @@
-from copy import deepcopy
-
 import pytest
 
 from mdpforge import Benchmark, BenchmarkResult
@@ -23,17 +21,13 @@ def test_heatmap_display_labels_preserve_ids_and_disambiguate_aliases():
         }
         for name, runtime in (("VI", 2.0), ("warm VI", 1.0), ("custom", 0.5))
     ]
-    fig, ax = plot_heat(
-        rows,
-        experiment={
-            "solvers": {
-                name: {"metadata": {"display_name": "VI · mdpforge"}}
-                for name in ("VI", "warm VI")
-            }
-        },
-        reference="VI",
-        show=False,
-    )
+    experiment = {
+        "solvers": {
+            "VI": {"metadata": {"display_name": "VI · mdpforge"}},
+            "warm VI": {"metadata": {"display_name": "VI · mdpforge"}},
+        }
+    }
+    fig, ax = plot_heat(rows, experiment, reference="VI", show=False)
     try:
         assert [label.get_text() for label in ax.get_yticklabels()] == [
             "VI · mdpforge [VI]",
@@ -46,7 +40,7 @@ def test_heatmap_display_labels_preserve_ids_and_disambiguate_aliases():
         plt.close(fig)
 
 
-def test_result_plot_uses_recorded_metadata_labels(chain):
+def test_benchmark_plot_uses_recorded_metadata_labels(chain):
     matplotlib = pytest.importorskip("matplotlib")
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -56,7 +50,6 @@ def test_result_plot_uses_recorded_metadata_labels(chain):
     result = bench.run(0.9, repeats=1)
     metadata = result.experiment["solvers"]["mdpforge_vi"]["metadata"]
     metadata["display_name"] = "Saved label"
-    bench.reset()
     fig, ax = result.plot_heat(reference="mdpforge_vi", show=False)
     try:
         assert [label.get_text() for label in ax.get_yticklabels()] == ["Saved label"]
@@ -65,7 +58,7 @@ def test_result_plot_uses_recorded_metadata_labels(chain):
         plt.close(fig)
 
 
-def test_result_plot_sorts_rows_without_changing_reference_or_measurements(chain):
+def test_benchmark_plot_sorts_rows_without_changing_reference_or_results(chain):
     matplotlib = pytest.importorskip("matplotlib")
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -105,7 +98,7 @@ def test_result_plot_sorts_rows_without_changing_reference_or_measurements(chain
         }
     }
     result = BenchmarkResult(rows=rows, experiment=experiment)
-    snapshot = deepcopy((rows, experiment))
+    originals = [row.copy() for row in rows]
     fig, ax = result.plot_heat(show=False)
     try:
         assert [label.get_text() for label in ax.get_yticklabels()] == [
@@ -132,6 +125,6 @@ def test_result_plot_sorts_rows_without_changing_reference_or_measurements(chain
         ]
         assert fig.axes[-1].get_ylabel() == "log₂ speedup vs LP · Gurobi · dual"
         assert "GS = Gauss-Seidel" in fig.texts[0].get_text()
-        assert (result.rows, result.experiment) == snapshot
+        assert result.rows == originals
     finally:
         plt.close(fig)

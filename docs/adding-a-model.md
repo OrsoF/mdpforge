@@ -201,6 +201,15 @@ construire ses matrices. `list_models(size="small", category="abstract")` filtre
 les métadonnées ; `bench.add_mdp(size="small", category="abstract")` construit et
 ajoute les modèles sélectionnés au benchmark. Les deux filtres sont combinés
 par intersection.
+Un nom de recette accepte aussi un preset, par exemple
+`bench.add_mdp("block", size="small")`. Une éventuelle catégorie DOIT correspondre
+à la recette. Une liste ou un tuple non vide sélectionne plusieurs noms, par
+exemple `bench.add_mdp(["block", "garnet", "unichain"], size="small")`, dans
+l'ordre donné. Tous les noms explicites DOIVENT exister et respecter les filtres
+avant tout ajout ; les répétitions et les instances déjà enregistrées sont ignorées.
+Une taille indisponible demandée explicitement provoque une erreur,
+sans repli sur les paramètres par défaut. Les filtres ne s'appliquent pas aux
+instances déjà construites ni aux matrices personnalisées.
 Une taille indisponible est exclue de cette sélection. Les ajouts collectifs
 (filtres ou `add_all_models()`) ignorent les modèles dont une dépendance manque,
 avec un avertissement ; les autres erreurs sont remontées pendant l'ajout.

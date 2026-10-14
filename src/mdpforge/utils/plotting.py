@@ -2,32 +2,11 @@
 
 import numpy as np
 
+from mdpforge.core.result import _aggregate_rows, _performance_ratios
 
-def plot_heat(
-    results,
-    experiment=None,
-    *,
-    reference=None,
-    metric="speedup",
-    ax=None,
-    show=True,
-):
-    """Plot median runtimes or speedups, marking failed repeats as FAIL.
 
-    Model/solver names are derived from the measurements.
-    Display labels and family/method/backend/variant sorting use the manifest.
-    Without a manifest, technical IDs and their original order are preserved.
-    Duplicate display labels are disambiguated with their registered IDs.
-    Abbreviations in catalogue labels are explained beneath the plot.
-    """
-    if not results:
-        raise ValueError("No results available; call run() before plot_heat()")
-    if metric not in {"speedup", "runtime"}:
-        raise ValueError("metric must be 'speedup' or 'runtime'")
-    model_names = list(dict.fromkeys(row["model"] for row in results))
-    solver_names = list(dict.fromkeys(row["solver"] for row in results))
-    if reference is None:
-        reference = solver_names[0]
+def _ordered_solver_labels(solver_names, experiment):
+    """Order registered solver IDs and resolve their captured display names."""
     metadata = {
         name: record.get("metadata") or {}
         for name, record in (experiment or {}).get("solvers", {}).items()
@@ -50,30 +29,56 @@ def plot_heat(
         )
 
     solver_names = sorted(solver_names, key=solver_order)
-    if metric == "speedup" and reference not in solver_names:
-        raise ValueError(f"Unknown reference solver: {reference!r}")
     labels = [solver_labels.get(name, name) for name in solver_names]
     labels = [
         f"{label} [{name}]" if labels.count(label) > 1 else label
         for name, label in zip(solver_names, labels)
     ]
+    return solver_names, labels
+
+
+def plot_heat(
+    results,
+    experiment=None,
+    *,
+    reference=None,
+    metric="speedup",
+    ax=None,
+    show=True,
+):
+    """Plot median runtimes or speedups, marking incomplete pairs as FAIL.
+
+    Model/solver names are derived from the measurements.
+    Display labels and family/method/backend/variant sorting use the manifest.
+    Without a manifest, technical IDs and their original order are preserved.
+    Duplicate display labels are disambiguated with their registered IDs.
+    Abbreviations in catalogue labels are explained beneath the plot.
+    """
+    if not results:
+        raise ValueError("No results available; call run() before plot_heat()")
+    if metric not in {"speedup", "runtime"}:
+        raise ValueError("metric must be 'speedup' or 'runtime'")
+    model_names, solver_names, aggregated = _aggregate_rows(results, experiment)
+    reference = solver_names[0] if reference is None else reference
+    if metric == "speedup" and reference not in solver_names:
+        raise ValueError(f"Unknown reference solver: {reference!r}")
+    solver_names, labels = _ordered_solver_labels(solver_names, experiment)
 
     import matplotlib.pyplot as plt
     from matplotlib.colors import TwoSlopeNorm
 
-    times = np.full((len(solver_names), len(model_names)), np.nan)
-    failures = np.zeros_like(times, dtype=bool)
-    for i, solver in enumerate(solver_names):
-        for j, model in enumerate(model_names):
-            rows = [
-                row
-                for row in results
-                if row["solver"] == solver and row["model"] == model
-            ]
-            if not rows or any(row["status"] != "success" for row in rows):
-                failures[i, j] = True
-                continue
-            times[i, j] = float(np.median([row["runtime"] for row in rows]))
+    times = np.array(
+        [
+            [aggregated[model, solver]["median_runtime"] for model in model_names]
+            for solver in solver_names
+        ]
+    )
+    failures = np.array(
+        [
+            [not aggregated[model, solver]["complete"] for model in model_names]
+            for solver in solver_names
+        ]
+    )
 
     if metric == "speedup":
         ref_times = times[solver_names.index(reference)]
@@ -140,6 +145,57 @@ def plot_heat(
         fig.tight_layout(rect=(0, 0.05 * len(lines), 1, 1))
     else:
         fig.tight_layout()
+    if show:
+        plt.show()
+    return fig, ax
+
+
+def plot_performance_profile(
+    results, experiment=None, *, max_factor=100, ax=None, show=True
+):
+    """Plot model-weighted Dolan-Moré runtime performance profiles.
+
+    max_factor: finite float greater than one; maximum displayed runtime ratio.
+    ax: Matplotlib axes, or None to create a figure.
+    show: True displays the figure; False only returns (figure, axes).
+    """
+    if (
+        isinstance(max_factor, (bool, np.bool_))
+        or not isinstance(max_factor, (int, float, np.integer, np.floating))
+        or not np.isfinite(max_factor)
+        or max_factor <= 1
+    ):
+        raise ValueError("max_factor must be finite and greater than one")
+    models, solvers, _, ratios = _performance_ratios(results, experiment)
+    ordered, labels = _ordered_solver_labels(solvers, experiment)
+
+    import matplotlib.pyplot as plt
+    from matplotlib.ticker import FuncFormatter, PercentFormatter
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(8, 5))
+    else:
+        fig = ax.figure
+    for solver, label in zip(ordered, labels):
+        values = ratios[:, solvers.index(solver)]
+        finite = values[np.isfinite(values) & (values <= max_factor)]
+        factors = np.unique(np.r_[1.0, finite, max_factor])
+        fractions = (values[:, None] <= factors[None, :]).mean(axis=0)
+        ax.step(factors, fractions, where="post", linewidth=2, label=label)
+
+    ax.set_xscale("log", base=2)
+    ax.set_xlim(1, max_factor)
+    ticks = [factor for factor in (1, 2, 4, 8, 16, 32, 64, 100) if factor <= max_factor]
+    ax.set_xticks(ticks)
+    ax.xaxis.set_major_formatter(FuncFormatter(lambda factor, _: f"{factor:g}×"))
+    ax.set_ylim(0, 1.02)
+    ax.set_xlabel("Runtime / fastest eligible median")
+    ax.set_ylabel("Fraction of all MDPs")
+    ax.set_title(f"Performance profiles — {len(models)} MDPs")
+    ax.yaxis.set_major_formatter(PercentFormatter(1))
+    ax.grid(alpha=0.3)
+    ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1), borderaxespad=0)
+    fig.tight_layout()
     if show:
         plt.show()
     return fig, ax

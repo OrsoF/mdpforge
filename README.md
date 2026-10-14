@@ -39,7 +39,7 @@ include `mdpsolver`, `gurobi`, `marmote` and `maze`.
 
 ```python
 import numpy as np
-from mdpforge import Benchmark, BenchmarkResult
+from mdpforge import Benchmark
 
 P = [[[1, 0], [0, 1]], [[0, 1], [1, 0]]]
 R = [[1, 0], [0, 2]]
@@ -63,17 +63,40 @@ bench.add_mdp("my_mdp", transitions=P, reward=R)  # New MDP
 bench.add_solver("mdpforge_mpi")  # Existing solver
 bench.add_solver("my_solver", solve_function=my_solver)  # New solver
 
-results = bench.run(discount=0.9, precision=1e-3)
-results.export_csv("results.csv")  # Also writes results.experiment.json
-loaded = BenchmarkResult.from_csv("results.csv")
+result = bench.run(discount=0.9, precision=1e-3)
+result.export_csv("results.csv")  # Also writes results.experiment.json
 ```
 
-Each pair runs three trials. `run()` returns a `BenchmarkResult`; its `rows`
-contain `runtime`, `error_bound` and `status`, and its `experiment` holds the
-captured manifest. Results remain independent of later benchmark registrations
-or resets. Save or plot them with `results.export_csv()` and `results.plot_heat()`.
-Reload an export with `BenchmarkResult.from_csv("results.csv")`, importing
-`BenchmarkResult` from `mdpforge`.
+Each pair runs three trials. Results contain `runtime`, `error_bound` and `status`.
+
+### Compare solvers
+
+`Benchmark.run()` returns a `BenchmarkResult` that can be analyzed independently
+of the benchmark, including after `BenchmarkResult.from_csv("results.csv")`.
+
+```python
+result.summary()                  # One row per MDP/solver; requires pandas
+result.solver_summary(reference="mdpforge_mpi")  # Solver performance metrics
+result.to_dataframe()             # Raw trials; requires pandas
+result.plot_performance_profile() # Share of MDPs within a factor of the fastest
+result.plot_heat(reference="mdpforge_mpi")
+```
+
+Install the `notebooks` extra for pandas (or install pandas separately); plots
+require the `plot` extra. A pair contributes a median runtime only when all
+expected trials succeeded with positive, finite runtimes. Expected repeats come
+from the experiment manifest, or from observed repeat IDs when it is absent.
+Missing or failed pairs count as unsolved in `solver_summary()` and performance
+profiles. `n_failed` counts such MDPs, not failed individual trials.
+`success_rate`, `fastest_rate` and `within_2x` use all MDPs in the run
+as denominator; `median_ratio` and `median_runtime` include only completed MDPs.
+`geomean_speedup` is the geometric mean of reference/solver median-runtime
+ratios on MDPs completed by **both** solvers; `n_compared` reports that sample
+size (0 yields NaN). Set `reference` explicitly when comparing runs; omitting
+it uses the first solver in the measurements.
+Performance profiles use equal model weights and compare against the fastest
+eligible median on each MDP. Their reference changes when the solver set changes.
+
 Each run has an `experiment_id`; its manifest records model configurations and
 matrix fingerprints, solver options/defaults, versions, machine details and Git
 provenance. Metadata is captured before timing. Model generation seeds are separate
@@ -87,12 +110,13 @@ Reuse a benchmark with `reset()`; it returns the same object for chaining:
 bench.reset()  # Clear MDPs; restore initial solver defaults
 bench.reset(models=False)  # Keep MDPs; restore initial solver defaults
 bench.reset(solvers=False)  # Clear MDPs; keep solvers and their options
-bench.reset(models=False, solvers=False)  # Keep all registrations; no change
+bench.reset(models=False, solvers=False)  # Keep both models and solvers
 ```
 
-Resetting solvers restores VI alone for `Benchmark()`, or no solvers for
-`Benchmark(default_solvers=False)`. Previously returned results, their experiment
-manifests, cached models and exported files are preserved.
+Previously returned `BenchmarkResult` objects are independent of `Benchmark`
+and remain available after reset. Resetting solvers restores VI alone for
+`Benchmark()`, or no solvers for `Benchmark(default_solvers=False)`.
+Cached models and exported files are preserved.
 
 ## Explore the results
 
@@ -122,7 +146,7 @@ saved trials as the speedup figure. The gallery's larger backend example is a
 
 This saved heatmap shows median runtime / median VI runtime: lower is faster.
 Its ratio of medians differs from the median of paired trial speedups above.
-For a new run, use `results.plot_heat(reference="VI")`; the current API displays
+For a new run, use `result.plot_heat(reference="VI")`; the current API displays
 speedup (higher is faster) by default and marks any failed repeat as `FAIL`.
 
 </details>
@@ -218,8 +242,17 @@ bench.add_mdp(size="small", category="abstract")
 `create_model()` and the existing matrix cache. Either filter can be used alone;
 combining them selects their intersection. Already-registered model names are
 skipped before building or loading their matrices, preserving existing instances.
-Filters cannot be combined with an explicit model or matrices. Without a model,
-at least one filter is required;
+Filters can constrain a catalogue name; built objects and custom matrices cannot
+be combined with filters. For example, `bench.add_mdp("block", size="small")`
+uses Block's small preset, and an optional `category` must match the named recipe.
+A nonempty list or tuple selects multiple catalogue models in the given order:
+`bench.add_mdp(model=["block", "garnet", "unichain"], size="small")`.
+Without `size`, each recipe uses its defaults. Repeated names and existing
+instances are skipped. All explicit names must exist and match the filters;
+invalid selections fail before adding any models. Missing dependencies are
+skipped with warnings for sequences, as for other collective additions.
+A named model with an unavailable size raises `ValueError` without falling back
+to its defaults. Without a model, at least one filter is required;
 use `bench.add_all_models()` to add the entire catalogue with defaults.
 
 `size` accepts `small`, `medium` or `large`; omitted size uses constructor defaults.
@@ -228,7 +261,7 @@ all families. Unknown size/category labels raise `ValueError`. Both APIs use
 `category=`; the former `type=` keyword has been removed.
 Unavailable presets are excluded. Collective additions (filters or
 `add_all_models()`) skip models with missing dependencies with a warning;
-other construction errors propagate. Adding a model by name propagates all errors.
+other construction errors propagate. Adding a single model by name propagates all errors.
 For use outside a benchmark, construct the recipe directly, for example
 `from mdpforge.models.rooms import Model`, followed by `model = Model()` and
 `model.create_model(save=False)` to avoid writing newly built matrices (existing
@@ -334,7 +367,7 @@ Distinct methods retain their names, such as `Aggregated VI` and `Envelope VI`.
 `reward init` denotes initialization from rewards; `eval budget` denotes the
 policy-evaluation budget variant. QVI denotes Q-value iteration.
 
-`results.plot_heat()` uses recorded display names, adding IDs when labels collide,
+`result.plot_heat()` uses recorded display names, adding IDs when labels collide,
 and sorts rows by family (VI, PI, MPI, LP), method, backend and variant. Custom
 callables without family metadata follow in registration order. Its `reference`
 argument always uses the registered ID; the default remains the first registered

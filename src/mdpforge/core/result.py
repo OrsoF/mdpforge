@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
+import numpy as np
+
 from mdpforge.utils.paths import BENCHMARKS_PATH
 
 _FIELD_TYPES = {
@@ -22,6 +24,89 @@ _FIELD_TYPES = {
 _REQUIRED_FIELDS = {"model", "solver", "status", "runtime", "discount", "epsilon"}
 
 
+def _aggregate_rows(rows, experiment=None):
+    """Aggregate eligible, fully successful trials by model and solver."""
+    if not rows:
+        raise ValueError("No benchmark measurements available")
+    models = list(dict.fromkeys(row["model"] for row in rows))
+    solvers = list(dict.fromkeys(row["solver"] for row in rows))
+    if len({(row.get("discount"), row.get("epsilon")) for row in rows}) > 1:
+        raise ValueError("Cannot compare different discount or precision settings")
+    if len({row.get("experiment_id") for row in rows}) > 1:
+        raise ValueError("Cannot compare multiple benchmark runs")
+
+    grouped = {}
+    by_model = {model: [] for model in models}
+    for row in rows:
+        grouped.setdefault((row["model"], row["solver"]), []).append(row)
+        by_model[row["model"]].append(row)
+
+    recorded_repeats = (experiment or {}).get("settings", {}).get("repeats")
+    if recorded_repeats is not None and (
+        type(recorded_repeats) is not int or recorded_repeats < 1
+    ):
+        raise ValueError("Manifest repeats must be a positive integer")
+
+    aggregated = {}
+    for model in models:
+        model_rows = by_model[model]
+        repeat_fields = {"repeat" in row for row in model_rows}
+        if len(repeat_fields) > 1:
+            raise ValueError(f"Inconsistent repeat fields for model {model!r}")
+        has_repeats = True in repeat_fields
+        if recorded_repeats is not None:
+            expected = set(range(1, recorded_repeats + 1))
+        elif has_repeats:
+            # Legacy CSVs cannot prove that all intended repeats were recorded.
+            expected = {row["repeat"] for row in model_rows}
+        else:
+            expected = max(len(grouped.get((model, solver), ())) for solver in solvers)
+
+        for solver in solvers:
+            group = grouped.get((model, solver), [])
+            if has_repeats:
+                actual = [row["repeat"] for row in group]
+                present = len(actual) == len(set(actual)) and set(actual) == expected
+            else:
+                present = len(group) == (
+                    len(expected) if isinstance(expected, set) else expected
+                )
+            valid = all(
+                row["status"] == "success"
+                and np.isfinite(row["runtime"])
+                and row["runtime"] > 0
+                for row in group
+            )
+            complete = bool(group) and present and valid
+            aggregated[model, solver] = {
+                "model": model,
+                "solver": solver,
+                "n_success": sum(row["status"] == "success" for row in group),
+                "n_trials": len(group),
+                "median_runtime": (
+                    float(np.median([row["runtime"] for row in group]))
+                    if complete
+                    else np.nan
+                ),
+                "complete": complete,
+            }
+    return models, solvers, aggregated
+
+
+def _performance_ratios(rows, experiment=None):
+    """Return per-model ratios to the fastest eligible median runtime."""
+    models, solvers, aggregated = _aggregate_rows(rows, experiment)
+    ratios = np.full((len(models), len(solvers)), np.inf)
+    for i, model in enumerate(models):
+        runtimes = np.array(
+            [aggregated[model, solver]["median_runtime"] for solver in solvers]
+        )
+        eligible = np.isfinite(runtimes)
+        if eligible.any():
+            ratios[i, eligible] = runtimes[eligible] / runtimes[eligible].min()
+    return models, solvers, aggregated, ratios
+
+
 @dataclass
 class BenchmarkResult:
     """A run's rows and captured experiment metadata, independent of Benchmark.
@@ -33,8 +118,96 @@ class BenchmarkResult:
     rows: list[dict]
     experiment: dict | None = None
 
+    def to_dataframe(self):
+        """Return raw trials as a pandas DataFrame (pandas optional)."""
+        import pandas as pd
+
+        return pd.DataFrame(self.rows)
+
+    def summary(self):
+        """Return per-model/solver trial counts and eligible median runtimes."""
+        import pandas as pd
+
+        models, solvers, aggregated = _aggregate_rows(self.rows, self.experiment)
+        return pd.DataFrame(
+            [aggregated[model, solver] for model in models for solver in solvers]
+        )
+
+    def solver_summary(self, *, reference=None):
+        """Compare model coverage, runtime, and speedup against a fixed solver.
+
+        reference: registered solver ID; None uses the first solver in the rows.
+        Geometric speedups use only MDPs solved by both solvers; n_compared
+        records the number of such MDPs. All models count toward failure rates.
+        """
+        import pandas as pd
+
+        models, solvers, aggregated, ratios = _performance_ratios(
+            self.rows, self.experiment
+        )
+        reference = solvers[0] if reference is None else reference
+        if reference not in solvers:
+            raise ValueError(f"Unknown reference solver: {reference!r}")
+        reference_times = np.array(
+            [aggregated[model, reference]["median_runtime"] for model in models]
+        )
+        records = []
+        for j, solver in enumerate(solvers):
+            values = ratios[:, j]
+            runtimes = np.array(
+                [aggregated[model, solver]["median_runtime"] for model in models]
+            )
+            successful = np.isfinite(runtimes)
+            paired = np.isfinite(reference_times) & successful
+            records.append(
+                {
+                    "solver": solver,
+                    "models_solved": int(successful.sum()),
+                    "n_models": len(models),
+                    "n_failed": int((~successful).sum()),
+                    "success_rate": float(successful.mean()),
+                    "fastest_rate": float((values <= 1).mean()),
+                    "within_2x": float((values <= 2).mean()),
+                    "median_ratio": float(np.median(values[successful]))
+                    if successful.any()
+                    else np.nan,
+                    "median_runtime": float(np.median(runtimes[successful]))
+                    if successful.any()
+                    else np.nan,
+                    "n_compared": int(paired.sum()),
+                    "geomean_speedup": float(
+                        np.exp(
+                            np.mean(
+                                np.log(reference_times[paired])
+                                - np.log(runtimes[paired])
+                            )
+                        )
+                    )
+                    if paired.any()
+                    else np.nan,
+                }
+            )
+        return pd.DataFrame(records)
+
+    def plot_performance_profile(self, *, max_factor=100, ax=None, show=True):
+        """Plot each solver's share of models completed within a runtime factor.
+
+        max_factor: finite float greater than one; maximum displayed factor.
+        ax: Matplotlib axes, or None to create a figure.
+        show: True displays the figure; False only returns (figure, axes).
+        """
+        from mdpforge.utils.plotting import plot_performance_profile
+
+        return plot_performance_profile(
+            self.rows,
+            self.experiment,
+            max_factor=max_factor,
+            ax=ax,
+            show=show,
+        )
+
     def plot_heat(self, *, reference=None, metric="speedup", ax=None, show=True):
-        """Plot median runtimes or speedups; any failed repeat marks a cell FAIL.
+        """Plot eligible medians or speedups; failed or missing trials mark FAIL.
 
         reference: registered solver ID; None uses the first solver in the rows.
         metric: "speedup" or "runtime" (seconds).
