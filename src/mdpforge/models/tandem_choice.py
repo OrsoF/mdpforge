@@ -33,18 +33,18 @@ def params_match_state_dim(state_dim: int, max_index=50) -> tuple:
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 36,
-            "parameters": {"state_dim": 36},
+            "state_dim": 5000,
+            "parameters": {"state_dim": 5000},
             "source": "measured",
         },
         "medium": {
-            "state_dim": 100,
-            "parameters": {"state_dim": 100},
+            "state_dim": 15000,
+            "parameters": {"state_dim": 15000},
             "source": "measured",
         },
         "large": {
-            "state_dim": 625,
-            "parameters": {"state_dim": 620},
+            "state_dim": 50000,
+            "parameters": {"state_dim": 50000},
             "source": "inferred",
         },
     },

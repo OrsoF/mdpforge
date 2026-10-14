@@ -11,18 +11,18 @@ TEST_PARAMETERS = {"state_dim": 9, "action_dim": 4}
 METADATA = {
     "sizes": {
         "small": {
-            "state_dim": 100,
-            "parameters": {"state_dim": 100},
+            "state_dim": 5000,
+            "parameters": {"state_dim": 5000},
             "source": "measured",
         },
         "medium": {
-            "state_dim": 961,
-            "parameters": {"state_dim": 1000},
+            "state_dim": 15000,
+            "parameters": {"state_dim": 15000},
             "source": "measured",
         },
         "large": {
-            "state_dim": 7396,
-            "parameters": {"state_dim": 7454},
+            "state_dim": 50000,
+            "parameters": {"state_dim": 50000},
             "source": "inferred",
         },
     },
