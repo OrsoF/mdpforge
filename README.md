@@ -1,10 +1,8 @@
 # mdpforge
 
-Benchmark finite discounted MDPs and compare solvers at a shared target accuracy.
-Use the catalogue or bring your own models and solvers.
+Benchmark finite discounted MDPs and compare solvers at a shared target accuracy. Use the catalogue or bring your own models and solvers.
 
-[![CI](https://github.com/OrsoF/mdpforge/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/OrsoF/mdpforge/actions/workflows/ci.yml)
-[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![CI](https://github.com/OrsoF/mdpforge/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/OrsoF/mdpforge/actions/workflows/ci.yml) [![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## Install
 
@@ -14,9 +12,7 @@ Python 3.11+:
 python -m pip install "mdpforge @ git+https://github.com/OrsoF/mdpforge.git"
 ```
 
-Use `mdpforge[notebooks]` in the same command for tables and plots. Optional
-backends include `mdptoolbox`, `mdpsolver`, `marmote` and `gurobi`;
-see [all extras](pyproject.toml).
+Use `mdpforge[notebooks]` in the same command for tables and plots. Optional backends include `mdptoolbox`, `mdpsolver`, `marmote` and `gurobi`; see [all extras](pyproject.toml).
 
 ## Run a benchmark
 
@@ -32,10 +28,7 @@ result = bench.run(discount=0.9, precision=1e-3, repeats=3, seed=0)
 result.export_csv("results.csv")
 ```
 
-Each trial records runtime, status and an independently checked value-error
-bound. Only finite discounted problems (`0 < discount < 1`) are supported.
-The export includes an experiment manifest with settings, seeds, matrix
-fingerprints, versions and machine information.
+Each trial records runtime, status and an independently checked value-error bound. Only finite discounted problems (`0 < discount < 1`) are supported. The export includes an experiment manifest with settings, seeds, matrix fingerprints, versions and machine information.
 
 With the `notebooks` extra installed:
 
@@ -45,14 +38,11 @@ result.plot_performance_profile()
 result.plot_heat(reference="mdpforge_vi")
 ```
 
-Comparisons require every repeat of an MDP/solver pair to succeed. Failed or
-missing pairs count as unsolved; paired speedups use models completed by both
-solvers. Set the reference explicitly when comparing runs.
+Comparisons require every repeat of an MDP/solver pair to succeed. Failed or missing pairs count as unsolved; paired speedups use models completed by both solvers. Set the reference explicitly when comparing runs.
 
 ## Use your own models and solvers
 
-Register transition matrices, one per action, and expected rewards of shape
-`(states, actions)`. Dense and sparse inputs are accepted:
+Register transition matrices, one per action, and expected rewards of shape `(states, actions)`. Dense and sparse inputs are accepted:
 
 ```python
 bench.add_mdp(
@@ -62,14 +52,9 @@ bench.add_mdp(
 )
 ```
 
-Register a callable with `bench.add_solver("my_solver", solve_function=my_solver)`.
-It takes `(transitions, rewards, discount, precision)` and returns a NumPy value
-vector. Inputs are SciPy CSR transitions and NumPy rewards; the benchmark handles
-copies, timing and accuracy checks.
+Register a callable with `bench.add_solver("my_solver", solve_function=my_solver)`. It takes `(transitions, rewards, discount, precision)` and returns a NumPy value vector. Inputs are SciPy CSR transitions and NumPy rewards; the benchmark handles copies, timing and accuracy checks.
 
-Browse the catalogue with `list_models()` and `list_solvers()` from `mdpforge`.
-Select models by `size` and `category`, and solvers by `family`, `backend` and
-`update_scheme`. Use `ScalingBenchmark` for size sweeps over seeded model families.
+Browse the catalogue with `list_models()` and `list_solvers()` from `mdpforge`. Select models by `size` and `category`, and solvers by `family`, `backend` and `update_scheme`. Use `ScalingBenchmark` for size sweeps over seeded model families.
 
 ## Examples and documentation
 
@@ -77,7 +62,7 @@ Select models by `size` and `category`, and solvers by `family`, `backend` and
 - [Results and plots](notebooks/visualize_results.ipynb)
 - [Discount and precision sensitivity](notebooks/solver_sensitivity.ipynb)
 - [Contribute a model](docs/adding-a-model.md)
+- [Experimental CMA-ES policy evaluation](docs/cmaes-policy-evaluation.md)
 - [Benchmark API](src/mdpforge/core/benchmark.py) · [Results API](src/mdpforge/core/result.py) · [Scaling API](src/mdpforge/core/scaling_benchmark.py)
 
-Experimental: APIs and the catalogue may change. External backends require their
-optional dependencies; MDPSolver requires version 0.10.2 or later.
+Experimental: APIs and the catalogue may change. External backends require their optional dependencies; MDPSolver requires version 0.10.2 or later.

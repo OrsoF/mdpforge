@@ -421,7 +421,7 @@ class Benchmark:
         family: "vi" (value iteration), "pi" (policy iteration),
             "mpi" (modified policy iteration), "lp" (linear programming).
         backend: implementation library: "mdpforge", "mdpsolver", "marmote",
-            "mdptoolbox" or "gurobi".
+            "mdptoolbox", "gurobi" or "cma" (experimental policy evaluation).
         update_scheme:
             "synchronous": full-vector Bellman sweeps.
             "gauss_seidel": in-place state updates.
