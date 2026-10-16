@@ -26,21 +26,26 @@ class Solver(GenericSolver):
         final_precision: float = 1e-3,
         initial_value: np.ndarray | None = None,
     ):
+        """initial_value: None for zeros, or a finite NumPy vector of shape (S,)."""
         super().__init__(model, discount, final_precision)
-
-        if initial_value is not None:
-            self.value = initial_value
-        else:
-            self.value = np.zeros(self.model.state_dim)
-
+        self.initial_value = (
+            np.zeros(model.state_dim)
+            if initial_value is None
+            else np.array(initial_value, dtype=float, copy=True)
+        )
+        if self.initial_value.shape != (model.state_dim,) or not np.all(
+            np.isfinite(self.initial_value)
+        ):
+            raise ValueError("initial_value must contain one finite value per state")
         self.name = "mdpforge VI"
 
     def _solve(self) -> np.ndarray:
+        value = self.initial_value.copy()
         tolerance = self.final_precision * (1 - self.discount)
 
         while True:
-            new_value = optimal_bellman_operator(self.model, self.value, self.discount)
-            bellman_residual = np.linalg.norm(new_value - self.value, ord=np.inf)
+            new_value = optimal_bellman_operator(self.model, value, self.discount)
+            bellman_residual = np.linalg.norm(new_value - value, ord=np.inf)
             if bellman_residual < tolerance:
                 return new_value
-            self.value = new_value
+            value = new_value

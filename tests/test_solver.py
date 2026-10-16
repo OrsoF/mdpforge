@@ -67,3 +67,40 @@ def test_custom_options_and_policy_work_with_benchmark(chain):
     assert results.rows[0]["solver"] == "PolicySolver"
     assert results.rows[0]["status"] == "success", results.rows[0]["error"]
     assert results.rows[0]["error_bound"] <= 1e-4
+
+
+def test_vi_uses_initial_value_without_modifying_it(chain, monkeypatch):
+    from mdpforge.solvers import mdpforge_vi
+
+    initial_value = np.array([1.8, 2.0, 0.0])
+    initial_value.flags.writeable = False
+    bellman_operator = mdpforge_vi.optimal_bellman_operator
+    evaluations = 0
+
+    def count_evaluations(model, value, discount):
+        nonlocal evaluations
+        evaluations += 1
+        return bellman_operator(model, value, discount)
+
+    monkeypatch.setattr(mdpforge_vi, "optimal_bellman_operator", count_evaluations)
+    solver = mdpforge_vi.Solver(
+        chain, 0.9, final_precision=1e-4, initial_value=initial_value
+    )
+    solver.run()
+
+    # An optimal starting value needs only one Bellman-residual evaluation.
+    assert evaluations == 1
+    assert_allclose(solver.value, [1.8, 2.0, 0.0], atol=1e-12, rtol=0)
+    assert_allclose(initial_value, [1.8, 2.0, 0.0], atol=0, rtol=0)
+    assert solver.bellman_residual() <= 1e-5
+
+
+@pytest.mark.parametrize(
+    "initial_value",
+    [np.zeros(2), np.zeros((3, 1)), [0, np.nan, 0], [0, np.inf, 0]],
+)
+def test_vi_rejects_invalid_initial_value(chain, initial_value):
+    from mdpforge.solvers.mdpforge_vi import Solver
+
+    with pytest.raises(ValueError, match="initial_value"):
+        Solver(chain, 0.9, initial_value=initial_value)

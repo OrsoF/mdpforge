@@ -41,7 +41,7 @@ class Model(MDP):
         self.dynamics_b = 0.8
         self.noise_probability = 0.1
 
-        self.name = "{}_{}_lqr".format(self.state_dim, self.action_dim)
+        self.name = "{}_{}_lqregulator".format(self.state_dim, self.action_dim)
 
     def _build_model(self):
         self.states = np.linspace(-2.0, 2.0, self.state_dim)

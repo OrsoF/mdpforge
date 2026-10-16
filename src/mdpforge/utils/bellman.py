@@ -3,6 +3,7 @@
 from typing import Tuple
 
 import numpy as np
+from scipy.sparse import csr_matrix
 
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import (
@@ -13,32 +14,42 @@ from mdpforge.core.operators import (
 
 
 def iterative_policy_evaluation(
-    transition_policy: np.ndarray,
+    transition_policy: np.ndarray | csr_matrix,
     reward_policy: np.ndarray,
     discount: float,
     variation_tol: float,
-    initial_value: np.ndarray,
+    initial_value: np.ndarray | None,
+    *,
+    max_iterations: int | None = None,
 ) -> np.ndarray:
-    """
-    Apply Bellman^pi to initial_value until |initial_value - Bellman^pi initial_value| < tolerance
+    """Apply policy Bellman updates until the residual threshold or iteration cap.
+
+    variation_tol: positive residual threshold, already scaled by the caller.
+    initial_value: starting vector of shape (S,), or None for zeros.
+    max_iterations: None for no cap, or an int > 0; return the last update at the cap.
     """
     assert 0 < discount < 1, "discount must be strictly between 0 and 1"
-    if initial_value is None:
-        value = np.zeros((transition_policy.shape[0]))
-    else:
-        value = initial_value
+    if max_iterations is not None and (
+        type(max_iterations) is not int or max_iterations < 1
+    ):
+        raise ValueError("max_iterations must be None or a positive integer")
+    value = (
+        np.zeros(transition_policy.shape[0]) if initial_value is None else initial_value
+    )
+    iterations = 0
 
     while True:
         next_value = bellman_policy_operator(
             value, discount, transition_policy, reward_policy
         )
-        distance = norminf(next_value - value)
+        policy_residual = norminf(next_value - value)
         value = next_value
+        iterations += 1
 
-        if distance < variation_tol:
-            break
-
-    return value
+        if policy_residual < variation_tol or (
+            max_iterations is not None and iterations >= max_iterations
+        ):
+            return value
 
 
 def apply_obo_until_var_small(
