@@ -14,8 +14,8 @@ METADATA = {
     "reference": "QVBS resource-gathering benchmark: https://qcomp.org/benchmarks/",
     "sizes": {
         "small": {"requested_state_dim": 14400, "parameters": {"energy": 7}},
-        "medium": {"requested_state_dim": 1730, "parameters": {"energy": 11}},
-        "large": {"requested_state_dim": 5834, "parameters": {"energy": 17}},
+        "medium": {"requested_state_dim": 57600, "parameters": {"energy": 11}},
+        "large": {"requested_state_dim": 230400, "parameters": {"energy": 17}},
     },
 }
 

@@ -14,8 +14,8 @@ METADATA = {
     ),
     "sizes": {
         "small": {"requested_state_dim": 22400, "parameters": {"backoff": 2}},
-        "medium": {"requested_state_dim": 578, "parameters": {"backoff": 3}},
-        "large": {"requested_state_dim": 3102, "parameters": {"backoff": 4}},
+        "medium": {"requested_state_dim": 89600, "parameters": {"backoff": 3}},
+        "large": {"requested_state_dim": 358400, "parameters": {"backoff": 4}},
     },
 }
 
