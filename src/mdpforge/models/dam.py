@@ -7,13 +7,9 @@ from itertools import product
 from typing import Tuple
 
 import numpy as np
-from scipy.sparse import lil_matrix
+from scipy.sparse import csr_matrix
 
 from mdpforge.core.mdp import MDP
-
-seed = 0
-rng_gen = np.random.default_rng(seed)
-
 
 def update_first_dam(
     current_volume: int,
@@ -80,7 +76,7 @@ def find_closest_indices(
 METADATA = {
     "sizes": {
         "small": {
-            "requested_state_dim": 5000,
+            "requested_state_dim": 500,
             "parameters": {},
         },
         "medium": {
@@ -103,12 +99,20 @@ METADATA = {
 
 
 class Model(MDP):
-    def __init__(self, state_dim: int = 100, action_dim: int = 10):
+    def __init__(self, state_dim: int = 100, action_dim: int = 10, *, seed: int = 0):
+        """Use seed (nonnegative integer, default 0) for reproducible rewards."""
+        if (
+            isinstance(seed, (bool, np.bool_))
+            or not isinstance(seed, (int, np.integer))
+            or seed < 0
+        ):
+            raise ValueError("seed must be a nonnegative integer")
+        self.seed = int(seed)
         self.requested_state_dim = int(state_dim)
         self._max_dam_capa, self._n_dam = find_closest_indices(state_dim)
         self._build_action_space()
         self._build_state_space()
-        self.name = "{}_{}_dam".format(self.state_dim, self.action_dim)
+        self.name = f"{self.state_dim}_{self.action_dim}_dam_v2_seed{self.seed}"
 
     def _build_action_space(self):
         # Action décrite par la turbinated water sur chaque dam
@@ -131,87 +135,58 @@ class Model(MDP):
         self.state_dim = len(self.state_list)
 
     def _build_model(self):
-        self.transition_matrix = [
-            lil_matrix((self.state_dim, self.state_dim)) for _ in range(self.action_dim)
-        ]
-        self.reward_matrix = np.zeros((self.state_dim, self.action_dim))
-
-        self.transition_matrix_normalization = np.zeros(
-            (self.state_dim, self.action_dim)
-        )
-
-        for aa, action in enumerate(self.action_list):
-            turbinating_water = action
-
-            for ss in range(self.state_dim):
-                state = self.state_list[ss]
-                dam_current_volumes = state[: self._n_dam]
-                upcoming_water_all_dam = state[self._n_dam : 2 * self._n_dam]
-                total_transition = 0
-
-                for natural_flow in range(0, self._max_dam_capa + 1):
-                    next_volumes, next_upcoming_water = [], []
-
-                    for dam_index in range(self._n_dam):
-                        if dam_index == 0:
-                            current_volume = dam_current_volumes[dam_index]
-                            current_turbinating_water = turbinating_water[dam_index]
-                            next_volume, next_turbinating_water, next_spilling_water = (
-                                update_first_dam(
-                                    current_volume,
-                                    natural_flow,
-                                    current_turbinating_water,
-                                    self._max_dam_capa,
-                                    self._max_dam_capa,
-                                    self._max_dam_capa,
-                                )
-                            )
-                        else:
-                            current_volume = dam_current_volumes[dam_index]
-                            current_turbinating_water = turbinating_water[dam_index]
-                            upcoming_water = upcoming_water_all_dam[dam_index - 1]
-                            next_volume, next_turbinating_water, next_spilling_water = (
-                                update_middle_dam(
-                                    current_volume,
-                                    natural_flow,
-                                    upcoming_water,
-                                    current_turbinating_water,
-                                    self._max_dam_capa,
-                                    self._max_dam_capa,
-                                    self._max_dam_capa,
-                                )
-                            )
-
-                        next_volumes.append(next_volume)  # Nouveau
-                        next_upcoming_water.append(
-                            min(
-                                (next_turbinating_water + next_spilling_water),
-                                self._max_dam_capa,
-                            )
-                        )
-
-                    next_state = tuple(int(elem) for elem in next_volumes) + tuple(
-                        int(elem) for elem in next_upcoming_water
-                    )
-
-                    next_state_index = self.state_dict[next_state]
-                    self.transition_matrix[aa][ss, next_state_index] += 1.0
-                    total_transition += 1.0
-
-                self.transition_matrix_normalization[ss, aa] = total_transition
-
-            # Transition normalization
-            row_indices, col_indices = self.transition_matrix[aa].nonzero()
-            for ss1, ss2 in zip(row_indices, col_indices):
-                self.transition_matrix[aa][ss1, ss2] = (
-                    self.transition_matrix[aa][ss1, ss2]
-                    / self.transition_matrix_normalization[ss1, aa]
-                )
-
-            # Reward definition
-            turbinated_water = sum(self.action_list[aa])
-            self.reward_matrix[:, aa] = turbinated_water * rng_gen.random(
-                size=self.state_dim
+        rng = np.random.default_rng(self.seed)
+        base = self._max_dam_capa + 1
+        volumes = np.empty((base, base, 2 * base - 1), dtype=np.intp)
+        outgoing = np.empty_like(volumes)
+        for volume, release, inflow in product(
+            range(base), range(base), range(2 * base - 1)
+        ):
+            next_volume, turbined, spilled = update_first_dam(
+                volume,
+                inflow,
+                release,
+                self._max_dam_capa,
+                self._max_dam_capa,
+                self._max_dam_capa,
+            )
+            volumes[volume, release, inflow] = next_volume
+            outgoing[volume, release, inflow] = min(
+                turbined + spilled, self._max_dam_capa
             )
 
-        self.transition_matrix = [matrix.tocsr() for matrix in self.transition_matrix]
+        states = np.asarray(self.state_list, dtype=np.intp)
+        rows = np.arange(self.state_dim)
+        self.transition_matrix = []
+        self.reward_matrix = np.zeros((self.state_dim, self.action_dim))
+        self.transition_matrix_normalization = np.full(
+            (self.state_dim, self.action_dim), float(base)
+        )
+        for aa, action in enumerate(self.action_list):
+            matrix = csr_matrix((self.state_dim, self.state_dim))
+            for natural_flow in range(base):
+                next_volumes = np.zeros(self.state_dim, dtype=np.intp)
+                next_outgoing = np.zeros(self.state_dim, dtype=np.intp)
+                for dam_index, release in enumerate(action):
+                    inflow = natural_flow
+                    if dam_index:
+                        inflow = inflow + states[:, self._n_dam + dam_index - 1]
+                    current = states[:, dam_index]
+                    next_volumes = (
+                        base * next_volumes + volumes[current, release, inflow]
+                    )
+                    next_outgoing = (
+                        base * next_outgoing + outgoing[current, release, inflow]
+                    )
+                targets = next_volumes * base**self._n_dam + next_outgoing
+                matrix += csr_matrix(
+                    (np.ones(self.state_dim), (rows, targets)), shape=matrix.shape
+                )
+            matrix.data /= base
+            self.transition_matrix.append(matrix)
+
+            # Keep the historical action/state draw order within each instance.
+            turbinated_water = sum(self.action_list[aa])
+            self.reward_matrix[:, aa] = turbinated_water * rng.random(
+                size=self.state_dim
+            )

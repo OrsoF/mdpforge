@@ -19,7 +19,7 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "requested_state_dim": 5000,
+            "requested_state_dim": 625,
             "parameters": {},
         },
         "medium": {
@@ -116,9 +116,7 @@ class Model(MDP):
             probabilities = np.zeros((side, side))
             outcomes = []
             for cars in range(side):
-                distribution = self._location_outcomes(
-                    cars, request_probs, return_probs
-                )
+                distribution = self._location_outcomes(cars, request_probs, return_probs)
                 for next_cars, (probability, _) in distribution.items():
                     probabilities[cars, next_cars] = probability
                 # Keep the original outcome order for reward accumulation.

@@ -1,7 +1,7 @@
 import itertools
 
 import numpy as np
-from scipy.sparse import dok_array
+from scipy.sparse import csr_matrix
 
 from mdpforge.core.mdp import MDP
 
@@ -119,11 +119,6 @@ class Model(MDP):
 
         self.action_encoding = space_dictionary(self.action_space_tuples)
         self.action_list = list(self.action_encoding.keys())
-
-        self.transition_matrix = [
-            dok_array((self.state_dim, self.state_dim), dtype=float)
-            for _ in range(self.action_dim)
-        ]
 
         self.reward_matrix = np.empty((self.state_dim, self.action_dim), dtype=float)
 
@@ -244,39 +239,59 @@ class Model(MDP):
         )
 
     def build_transition_reward_matrices(self):
-        for aa in range(self.action_dim):
-            for ss1 in range(self.state_dim):
-                m1, m2, _, _ = self.state_list[ss1]
-                a1, a2 = self.action_list[aa]
+        m1, m2, k1, k2 = np.asarray(self.state_list).T
+        rows = np.arange(self.state_dim)
+        capacities = self.K1 * self.K2
+        arrival = (np.minimum(m1 + 1, self.B1) * (self.B2 + 1) + m2) * capacities
+        transfer = (
+            np.maximum(m1 - 1, 0) * (self.B2 + 1) + np.minimum(m2 + 1, self.B2)
+        ) * capacities
+        departure = (m1 * (self.B2 + 1) + np.maximum(m2 - 1, 0)) * capacities
+        self.transition_matrix = []
+        for aa, (a1, a2) in enumerate(self.action_list):
+            rate_1 = self.arrival_rate_lambda
+            rate_2 = self.mu_1 * np.minimum(m1, a1)
+            rate_3 = self.mu_2 * np.minimum(m2, a2)
+            lambda_sa = rate_1 + rate_2 + rate_3
+            pseudo_rate = self.lambda_tilde - lambda_sa
+            if np.any(pseudo_rate < -1e-12):
+                raise RuntimeError(
+                    f"Negative pseudo-rate: {pseudo_rate.min()}. "
+                    "Check lambda_tilde >= lambda_sa."
+                )
+            pseudo_rate = np.maximum(0.0, pseudo_rate)
+            offset = (a1 - 1) * self.K2 + a2 - 1
+            matrix = csr_matrix((self.state_dim, self.state_dim))
+            # Add events separately to preserve duplicate-destination sum order.
+            for targets, probabilities in (
+                (arrival + offset, np.full(self.state_dim, rate_1 / self.lambda_tilde)),
+                (transfer + offset, rate_2 / self.lambda_tilde),
+                (departure + offset, rate_3 / self.lambda_tilde),
+                (rows, pseudo_rate / self.lambda_tilde),
+            ):
+                matrix += csr_matrix(
+                    (probabilities, (rows, targets)), shape=matrix.shape
+                )
+            self.transition_matrix.append(matrix)
 
-                rate_1 = self.arrival_rate_lambda
-                rate_2 = self.mu_1 * min(m1, a1)
-                rate_3 = self.mu_2 * min(m2, a2)
-
-                lambda_sa = rate_1 + rate_2 + rate_3
-                pseudo_rate = self.lambda_tilde - lambda_sa
-
-                if pseudo_rate < -1e-12:
-                    raise RuntimeError(
-                        f"Negative pseudo-rate: {pseudo_rate}. "
-                        "Check lambda_tilde >= lambda_sa."
-                    )
-
-                pseudo_rate = max(0.0, pseudo_rate)
-
-                ss2_1 = self.s1p(ss1, aa)
-                ss2_2 = self.s2p(ss1, aa)
-                ss2_3 = self.s3p(ss1, aa)
-
-                self.transition_matrix[aa][ss1, ss2_1] += rate_1 / self.lambda_tilde
-                self.transition_matrix[aa][ss1, ss2_2] += rate_2 / self.lambda_tilde
-                self.transition_matrix[aa][ss1, ss2_3] += rate_3 / self.lambda_tilde
-                self.transition_matrix[aa][ss1, ss1] += pseudo_rate / self.lambda_tilde
-
-                # Negative cost if your solver maximizes rewards.
-                self.reward_matrix[ss1, aa] = -self.Reward_tilde(ss1, aa)
-
-        self.transition_matrix = [matrix.tocsr() for matrix in self.transition_matrix]
+            denominator = lambda_sa + self.discount
+            c1 = a1 * self.CS + m1 * self.CH
+            c2 = a2 * self.CS + m2 * self.CH
+            h1 = (
+                self.CA * np.maximum(0, a1 - k1)
+                + self.CD * np.maximum(0, k1 - a1)
+                + rate_1 * self.CR * (m1 == self.B1) / denominator
+            )
+            h2 = (
+                self.CA * np.maximum(0, a2 - k2)
+                + self.CD * np.maximum(0, k2 - a2)
+                + rate_2 * self.CR * (m2 == self.B2) / denominator
+            )
+            self.reward_matrix[:, aa] = -(
+                ((c1 + c2) / denominator + h1 + h2)
+                * denominator
+                / (self.lambda_tilde + self.discount)
+            )
 
         for aa, matrix in enumerate(self.transition_matrix):
             row_sums = np.asarray(matrix.sum(axis=1)).ravel()

@@ -1,7 +1,7 @@
 import itertools
 
 import numpy as np
-from scipy.sparse import dok_array
+from scipy.sparse import csr_matrix
 
 from mdpforge.core.mdp import MDP
 
@@ -31,7 +31,7 @@ def get_params(state_dim: int, max_index=50) -> tuple:
 METADATA = {
     "sizes": {
         "small": {
-            "requested_state_dim": 4900,
+            "requested_state_dim": 980,
             "parameters": {},
         },
         "medium": {
@@ -118,11 +118,6 @@ class Model(MDP):
         self.action_encoding = {
             action: i for i, action in enumerate(self.action_decoding)
         }
-
-        self.transition_matrix = [
-            dok_array((self.state_dim, self.state_dim), dtype=float)
-            for _ in range(self.action_dim)
-        ]
 
         self.build_p()
 
@@ -239,31 +234,63 @@ class Model(MDP):
         )
 
     def build_p(self):
-        for a in range(self.action_dim):
-            for s in range(self.state_dim):
-                m1, m2, k1, k2 = self.state_list[s]
-                a1, a2 = self.action_decoding[a]
-
-                rate_arrival = self.arrival_rate_lambda
-                rate_service_1 = self.mu_1 * min(m1, self.n1(k1 + a1))
-                rate_service_2 = self.mu_2 * min(m2, self.n2(k2 + a2))
-
-                lambda_sa = rate_arrival + rate_service_1 + rate_service_2
-                pseudo_rate = self.lambda_tilde - lambda_sa
-
-                self.transition_matrix[a][s, self.s1p(s, a)] += rate_arrival
-                self.transition_matrix[a][s, self.s2p(s, a)] += rate_service_1
-                self.transition_matrix[a][s, self.s3p(s, a)] += rate_service_2
-                self.transition_matrix[a][s, s] += pseudo_rate
-
-        for a in range(self.action_dim):
-            self.transition_matrix[a] /= self.lambda_tilde
-            self.transition_matrix[a] = self.transition_matrix[a].tocsr()
+        m1, m2, k1, k2 = np.asarray(self.state_list).T
+        rows = np.arange(self.state_dim)
+        capacities = self.K1 * self.K2
+        arrival = (np.minimum(m1 + 1, self.B1) * (self.B2 + 1) + m2) * capacities
+        transfer = (
+            np.maximum(m1 - 1, 0) * (self.B2 + 1) + np.minimum(m2 + 1, self.B2)
+        ) * capacities
+        departure = (m1 * (self.B2 + 1) + np.maximum(m2 - 1, 0)) * capacities
+        self.transition_matrix = []
+        for a1, a2 in self.action_decoding:
+            chosen_1 = np.clip(k1 + a1, 1, self.K1)
+            chosen_2 = np.clip(k2 + a2, 1, self.K2)
+            rate_arrival = np.full(self.state_dim, self.arrival_rate_lambda)
+            rate_service_1 = self.mu_1 * np.minimum(m1, chosen_1)
+            rate_service_2 = self.mu_2 * np.minimum(m2, chosen_2)
+            lambda_sa = rate_arrival + rate_service_1 + rate_service_2
+            pseudo_rate = self.lambda_tilde - lambda_sa
+            offset = (chosen_1 - 1) * self.K2 + chosen_2 - 1
+            matrix = csr_matrix((self.state_dim, self.state_dim))
+            # Uniformise after adding events, as in the scalar construction.
+            for targets, rates in (
+                (arrival + offset, rate_arrival),
+                (transfer + offset, rate_service_1),
+                (departure + offset, rate_service_2),
+                (rows, pseudo_rate),
+            ):
+                matrix += csr_matrix((rates, (rows, targets)), shape=matrix.shape)
+            matrix.data /= self.lambda_tilde
+            self.transition_matrix.append(matrix)
 
     def build_r(self):
-        for a in range(self.action_dim):
-            for s in range(self.state_dim):
-                self.reward_matrix[s, a] = -self.Reward_tilde(s, a)
+        m1, m2, k1, k2 = np.asarray(self.state_list).T
+        for a, (a1, a2) in enumerate(self.action_decoding):
+            chosen_1 = np.clip(k1 + a1, 1, self.K1)
+            chosen_2 = np.clip(k2 + a2, 1, self.K2)
+            rate_service_1 = self.mu_1 * np.minimum(m1, chosen_1)
+            rate_service_2 = self.mu_2 * np.minimum(m2, chosen_2)
+            denominator = (
+                self.arrival_rate_lambda + rate_service_1 + rate_service_2 + self.discount
+            )
+            c1 = chosen_1 * self.CS + m1 * self.CH
+            c2 = chosen_2 * self.CS + m2 * self.CH
+            h1 = (
+                self.CA * int(a1 == 1)
+                + self.CD * int(a1 == -1)
+                + self.arrival_rate_lambda * self.CR * (m1 == self.B1) / denominator
+            )
+            h2 = (
+                self.CA * int(a2 == 1)
+                + self.CD * int(a2 == -1)
+                + rate_service_1 * self.CR * (m2 == self.B2) / denominator
+            )
+            self.reward_matrix[:, a] = -(
+                ((c1 + c2) / denominator + h1 + h2)
+                * denominator
+                / (self.lambda_tilde + self.discount)
+            )
 
     def reformat_regions(self):
         self.regions = [[int(state) for state in region] for region in self.regions]

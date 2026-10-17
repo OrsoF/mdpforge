@@ -19,7 +19,7 @@ METADATA = {
         "https://www.prismmodelchecker.org/files/nfm24dpmc/"
     ),
     "sizes": {
-        "small": {"requested_state_dim": 50, "parameters": {"battery_capacity": 5}},
+        "small": {"requested_state_dim": 500, "parameters": {"battery_capacity": 5}},
         "medium": {"requested_state_dim": 506, "parameters": {"battery_capacity": 5}},
         "large": {"requested_state_dim": 5006, "parameters": {"battery_capacity": 5}},
     },

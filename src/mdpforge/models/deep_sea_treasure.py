@@ -17,7 +17,7 @@ METADATA = {
         "https://www.prismmodelchecker.org/files/nfm24dpmc/"
     ),
     "sizes": {
-        "small": {"requested_state_dim": 74, "parameters": {}},
+        "small": {"requested_state_dim": 740, "parameters": {}},
         "medium": {"requested_state_dim": 542, "parameters": {}},
         "large": {"requested_state_dim": 5222, "parameters": {}},
     },

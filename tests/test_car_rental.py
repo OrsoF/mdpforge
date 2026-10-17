@@ -6,6 +6,21 @@ from mdpforge.core.validation import validate_model
 from mdpforge.models.car_rental import Model
 
 
+def scalar_outcomes(model, cars, request_rate, return_rate):
+    request_probs = model._poisson_probabilities(request_rate, model.poisson_cutoff)
+    return_probs = model._poisson_probabilities(return_rate, model.poisson_cutoff)
+    outcomes = {}
+    for requests, p_request in enumerate(request_probs):
+        rentals = min(cars, requests)
+        for returns, p_return in enumerate(return_probs):
+            probability = p_request * p_return
+            target = min(model.max_cars, cars - rentals + returns)
+            values = outcomes.setdefault(target, [0.0, 0.0])
+            values[0] += probability
+            values[1] += probability * rentals
+    return outcomes
+
+
 @pytest.mark.parametrize("state_dim, action_dim", [(25, 3), (49, 11)])
 def test_car_rental_matches_scalar_outcome_enumeration(state_dim, action_dim):
     model = Model(state_dim=state_dim, action_dim=action_dim)
@@ -14,8 +29,11 @@ def test_car_rental_matches_scalar_outcome_enumeration(state_dim, action_dim):
 
     outcomes = [
         [
-            model._location_outcomes(
-                cars, model.request_rates[location], model.return_rates[location]
+            scalar_outcomes(
+                model,
+                cars,
+                model.request_rates[location],
+                model.return_rates[location],
             )
             for cars in range(model.max_cars + 1)
         ]
@@ -67,3 +85,22 @@ def test_car_rental_with_no_requests_or_returns_is_deterministic():
                 destination = model._encode(cars_1 - move, cars_2 + move)
                 assert transition[state, destination] == 1.0
                 assert model.reward_matrix[state, action] == -2.0 * abs(move)
+
+
+def test_car_rental_computes_poisson_distributions_once_per_location(monkeypatch):
+    model = Model(state_dim=25)
+    original = model._poisson_probabilities
+    calls = []
+
+    def counted(rate, cutoff):
+        calls.append((rate, cutoff))
+        return original(rate, cutoff)
+
+    monkeypatch.setattr(model, "_poisson_probabilities", counted)
+    model.create_model(cache="off")
+    assert calls == [
+        (3.0, model.poisson_cutoff),
+        (3.0, model.poisson_cutoff),
+        (4.0, model.poisson_cutoff),
+        (2.0, model.poisson_cutoff),
+    ]
