@@ -66,3 +66,7 @@ Browse the catalogue with `list_models()` and `list_solvers()` from `mdpforge`. 
 - [Benchmark API](src/mdpforge/core/benchmark.py) · [Results API](src/mdpforge/core/result.py) · [Scaling API](src/mdpforge/core/scaling_benchmark.py)
 
 Experimental: APIs and the catalogue may change. External backends require their optional dependencies; MDPSolver requires version 0.10.2 or later.
+
+### Optional high-performance backends
+
+Adapters for **madupite VI, PI, OPI and iPI (GMRES, BiCGStab, TFQMR)** and **MDPax VI/PI** are available via `list_solvers(backend=["madupite", "mdpax"])`. For installation, usage, conversion costs and accuracy limits, see [docs/madupite-mdpax.md](docs/madupite-mdpax.md).

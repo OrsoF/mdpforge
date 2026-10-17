@@ -20,7 +20,7 @@ Définir un dictionnaire **littéral** `METADATA`, lu sans importer le backend :
 | --------------- | -------------------------------------------------------------------------------------------- |
 | `display_name`  | Libellé du catalogue, distinct de l'identifiant du fichier                                    |
 | `family`        | Famille : actuellement `vi`, `pi`, `mpi`, `lp`                                               |
-| `backend`       | Bibliothèque : actuellement `mdpforge`, `mdptoolbox`, `mdpsolver`, `marmote`, `gurobi`, `cma` |
+| `backend`       | Bibliothèque : actuellement `mdpforge`, `mdptoolbox`, `mdpsolver`, `marmote`, `madupite`, `mdpax`, `gurobi`, `cma` |
 | `description`   | Algorithme et particularités en une phrase                                                   |
 | `update_scheme` | Actuellement `synchronous`, `gauss_seidel`, `sor`, `linear_solve`, `mixed`, `not_applicable` |
 

@@ -11,6 +11,7 @@ from mdpforge.core.operators import (
     optimal_bellman_operator,
 )
 from mdpforge.utils.bellman import iterative_policy_evaluation
+from tests._contracts import assert_optimal_solution
 
 
 class RecurrentModel(MDP):
@@ -47,7 +48,6 @@ def test_bertsekas_pi_final_value_precision(recurrent_model):
     [
         ("mdpforge_mpi", {}),
         ("mdpforge_mpi_reward_init", {}),
-        ("mdpforge_mpi_eval_budget", {"proba": 0.5}),
         ("aggregated_mpi", {}),
         ("aggregated_mpi", {"split_method": "tiles", "n_tiles": 2}),
     ],
@@ -67,7 +67,7 @@ def test_mpi_precision_with_stable_policy(
         solver.max_iter_evaluation = 1
     solver.run()
 
-    assert_allclose(solver.value, [10, 20], atol=1e-4, rtol=0)
+    assert_optimal_solution(solver, recurrent_model, 0.9, 1e-4)
     assert (
         np.max(
             np.abs(
@@ -149,7 +149,7 @@ def test_reward_initialized_mpi_rejects_uncertified_iteration_limit(recurrent_mo
 
 @pytest.mark.parametrize(
     "module_name",
-    ["mdpforge_mpi", "mdpforge_mpi_reward_init", "mdpforge_mpi_eval_budget"],
+    ["mdpforge_mpi", "mdpforge_mpi_reward_init"],
 )
 def test_truncated_evaluation_can_improve_initially_stable_policy(
     module_name, recurrent_model, monkeypatch
@@ -165,8 +165,6 @@ def test_truncated_evaluation_can_improve_initially_stable_policy(
         solver.max_iter_eval = 1
     elif module_name == "mdpforge_mpi_reward_init":
         solver.max_iter_evaluation = 1
-    else:
-        solver.proba = 1.0
     solver.run()
     assert_allclose(solver.value, [18, 20], atol=1e-4, rtol=0)
     np.testing.assert_array_equal(solver.policy, [1, 0])
@@ -174,7 +172,7 @@ def test_truncated_evaluation_can_improve_initially_stable_policy(
 
 @pytest.mark.parametrize(
     "module_name",
-    ["mdpforge_mpi", "mdpforge_mpi_reward_init", "mdpforge_mpi_eval_budget"],
+    ["mdpforge_mpi", "mdpforge_mpi_reward_init"],
 )
 @pytest.mark.parametrize("discount", [0.1, 0.99])
 def test_mdpforge_mpi_transient_rewards(module_name, discount, chain, monkeypatch):

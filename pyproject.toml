@@ -19,6 +19,8 @@ mdptoolbox = ["pymdptoolbox==4.0b3"]
 gurobi = ["gurobipy"]
 mdpsolver = ["mdpsolver>=0.10.2"]
 marmote = ["marmote"]
+mdpax = ["mdpax>=0.2.2,<0.3"]
+# madupite requires MPI/PETSc; install via its upstream conda/source instructions.
 cma = ["cma>=4.4,<5"]
 deep = ["stable-baselines3", "gymnasium"]
 maze = ["mazelib"]

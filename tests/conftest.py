@@ -11,6 +11,14 @@ from scipy.sparse import csr_matrix
 from mdpforge import models, solvers
 from mdpforge.core.mdp import MDP
 from mdpforge.utils import persistence
+from tests._contracts import sample_models
+
+# Marker optional backends even when an adapter only imports another local module.
+OPTIONAL_BACKENDS = {
+    "madupite": "madupite", "mdpax": "mdpax", "marmote": "marmote",
+    "mdpsolver": "mdpsolver", "mdptoolbox": "mdptoolbox",
+    "gurobi": "gurobipy", "cmaes": "cma",
+}
 
 
 class FourStateModel(MDP):
@@ -63,6 +71,10 @@ def module_names(package, solver_type=None):
         dependencies = (
             imports - sys.stdlib_module_names - {"mdpforge", "numpy", "scipy"}
         )
+        if package is solvers:
+            backend = module.name.split("_", 1)[0]
+            if backend in OPTIONAL_BACKENDS:
+                dependencies.add(OPTIONAL_BACKENDS[backend])
         marks = (
             [pytest.mark.external(dependencies=sorted(dependencies))]
             if dependencies
@@ -114,3 +126,9 @@ def model_script():
         "import numpy as np\nfrom scipy.sparse import csr_matrix\n"
         "from mdpforge.core.mdp import MDP\n" + inspect.getsource(ChainModel)
     )
+
+
+@pytest.fixture(params=["ties_and_negative_rewards", "stochastic_switches", "generated"])
+def mdp_case(request):
+    """Small structural MDP families, independent of named catalogue models."""
+    return next(case for case in sample_models() if case.name == request.param)

@@ -31,6 +31,8 @@ def _load_solver(name, *, backend=None):
         "gurobi": "gurobipy",
         "marmote": "marmote",
         "mdpsolver": "mdpsolver",
+        "madupite": "madupite",
+        "mdpax": "mdpax",
         "mdptoolbox": "mdptoolbox",
     }.get(backend)
     if dependency and find_spec(dependency) is None:
@@ -421,7 +423,7 @@ class Benchmark:
         family: "vi" (value iteration), "pi" (policy iteration),
             "mpi" (modified policy iteration), "lp" (linear programming).
         backend: implementation library: "mdpforge", "mdpsolver", "marmote",
-            "mdptoolbox", "gurobi" or "cma" (experimental policy evaluation).
+            "mdptoolbox", "madupite", "mdpax", "gurobi" or "cma".
         update_scheme:
             "synchronous": full-vector Bellman sweeps.
             "gauss_seidel": in-place state updates.

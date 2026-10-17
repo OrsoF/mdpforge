@@ -4,6 +4,7 @@ from numpy.testing import assert_allclose
 
 from mdpforge.core.benchmark import Benchmark
 from mdpforge.core.solver import GenericSolver
+from tests._contracts import assert_optimal_solution
 
 
 class ChainSolver(GenericSolver):
@@ -26,6 +27,7 @@ def test_solver_only_needs_algorithm(chain, discount):
     assert solver.policy is None
     assert np.isfinite(solver.runtime) and solver.runtime >= 0
     assert solver.bellman_residual() == pytest.approx(0)
+    assert_optimal_solution(solver, chain, discount, 1e-3)
 
 
 @pytest.mark.parametrize("discount", [-0.1, 0, 1, 1.1, np.nan])

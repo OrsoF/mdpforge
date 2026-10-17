@@ -1,21 +1,35 @@
+"""Uniform-shift certification is a property of every discounted MDP."""
+
 import numpy as np
 import pytest
-from numpy.testing import assert_allclose
+from numpy.testing import assert_allclose, assert_array_equal
 
 from mdpforge.core.operators import bellman_operator
 from mdpforge.core.precision import certify_value
+from tests._contracts import enumerate_optimal_value
 
 
-def test_certification_removes_uniform_offset_without_changing_policy(chain):
-    value = np.array([1.8, 2, 0]) + 37
-    policy = bellman_operator(chain, value, 0.9).argmax(axis=1)
-    certified = certify_value(chain, value, 0.9, 1e-6)
-    assert_allclose(certified, [1.8, 2, 0], atol=1e-6, rtol=0)
-    assert np.array_equal(
-        bellman_operator(chain, certified, 0.9).argmax(axis=1), policy
+@pytest.mark.parametrize("discount", [0.5, 0.9])
+@pytest.mark.parametrize("shift", [-37.0, 37.0])
+def test_certification_removes_uniform_shift_and_preserves_policy(
+    mdp_case, discount, shift
+):
+    expected = enumerate_optimal_value(mdp_case, discount)
+    candidate = expected + shift
+    policy = bellman_operator(mdp_case, candidate, discount).argmax(axis=1)
+    certified = certify_value(mdp_case, candidate, discount, 1e-6)
+    assert_allclose(certified, expected, atol=1e-6, rtol=0)
+    assert_array_equal(
+        bellman_operator(mdp_case, certified, discount).argmax(axis=1), policy
     )
+    assert_allclose(candidate, expected + shift, atol=0, rtol=0)
 
 
-def test_certification_rejects_inaccurate_values(chain):
+@pytest.mark.parametrize("discount", [0.5, 0.9])
+def test_certification_rejects_values_with_nonconstant_bellman_error(
+    mdp_case, discount
+):
+    inaccurate = enumerate_optimal_value(mdp_case, discount).copy()
+    inaccurate[0] += 1
     with pytest.raises(RuntimeError, match="VI precision not reached"):
-        certify_value(chain, np.zeros(3), 0.9, 1e-3)
+        certify_value(mdp_case, inaccurate, discount, 1e-4)
