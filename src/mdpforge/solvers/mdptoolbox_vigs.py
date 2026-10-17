@@ -36,7 +36,8 @@ class Solver(GenericSolver):
         """Configure this solver.
 
         final_precision: finite float > 0; absolute value error target; default 1e-3.
-        max_iterations: int > 0; outer iteration budget; default 100_000_000.
+        max_iterations: int > 0; requested max_iter; default 100_000_000;
+            the backend may recompute its iteration bound.
         """
         super().__init__(
             model, discount, final_precision, max_iterations=max_iterations
@@ -69,8 +70,6 @@ class Solver(GenericSolver):
             max_iter=self.max_iterations,
             initial_value=initial_value,
         )
-        # Toolbox's VI iteration bound is not a bound for Gauss-Seidel sweeps.
-        self.vi.max_iter = self.max_iterations
         self.vi.run()
 
         self.value = np.array(self.vi.V)

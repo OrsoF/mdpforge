@@ -10,43 +10,16 @@ from mdptoolbox.mdp import ValueIteration
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
-from mdpforge.core.validation import validate_model
 
 METADATA = {
     "display_name": "VI · MDPToolbox",
     "family": "vi",
     "backend": "mdptoolbox",
     "description": (
-        "MDPToolbox synchronous value iteration with sparse initialization "
-        "that avoids the dense iteration-bound calculation."
+        "MDPToolbox synchronous value iteration through its public API, "
+        "with native initialization and independent residual certification."
     ),
 }
-
-
-class _SparseValueIteration(ValueIteration):
-    """Initialize pymdptoolbox 4.0b3 without its dense input checks/iteration cap.
-
-    The inherited Bellman operator, run loop and span threshold are unchanged.
-    Its automatic cap was already discarded by this adapter; computing it is
-    quadratic in the state count and fails for zero reward spans or mixing rows.
-    Repository validation checks CSR data directly and tolerates roundoff in
-    stochastic rows, without changing the supplied probabilities.
-    """
-
-    def __init__(self, model, discount, epsilon, max_iter):
-        validate_model(model)
-        self.discount = float(discount)
-        self.epsilon = float(epsilon)
-        self.max_iter = int(max_iter)
-        self.S, self.A = model.state_dim, model.action_dim
-        self.P = self._computeTransition(model.transition_matrix)
-        self.R = self._computeReward(model.reward_matrix, self.P)
-        self.verbose = False
-        self.time = None
-        self.iter = 0
-        self.V = np.zeros(self.S)
-        self.policy = None
-        self.thresh = self.epsilon * (1 - self.discount) / self.discount
 
 
 class Solver(GenericSolver):
@@ -63,7 +36,8 @@ class Solver(GenericSolver):
         """Configure this solver.
 
         final_precision: finite float > 0; absolute value error target; default 1e-3.
-        max_iterations: int > 0; outer iteration budget; default 100_000_000.
+        max_iterations: int > 0; requested max_iter; default 100_000_000;
+            the backend may recompute its iteration bound.
         """
         super().__init__(
             model, discount, final_precision, max_iterations=max_iterations
@@ -81,8 +55,9 @@ class Solver(GenericSolver):
     def run(self):
         start_time = time.time()
 
-        self.vi = _SparseValueIteration(
-            self.model,
+        self.vi = ValueIteration(
+            self.model.transition_matrix,
+            self.model.reward_matrix,
             discount=self.discount,
             epsilon=self.epsilon * (1 - self.discount),
             max_iter=self.max_iterations,

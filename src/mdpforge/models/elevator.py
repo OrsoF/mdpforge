@@ -12,7 +12,7 @@ TEST_PARAMETERS = {"state_dim": 176, "action_dim": 5}
 METADATA = {
     "sizes": {
         "small": {
-            "requested_state_dim": 1000,
+            "requested_state_dim": 1750,
             "parameters": {},
         },
         "medium": {

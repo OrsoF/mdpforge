@@ -76,7 +76,7 @@ def find_closest_indices(
 METADATA = {
     "sizes": {
         "small": {
-            "requested_state_dim": 500,
+            "requested_state_dim": 900,
             "parameters": {},
         },
         "medium": {

@@ -16,7 +16,7 @@ METADATA = {
         "https://www.prismmodelchecker.org/casestudies/rabin.php"
     ),
     "sizes": {
-        "small": {"requested_state_dim": 320, "parameters": {}},
+        "small": {"requested_state_dim": 1800, "parameters": {}},
         "medium": {"requested_state_dim": 1024, "parameters": {}},
         "large": {"requested_state_dim": 4096, "parameters": {}},
     },

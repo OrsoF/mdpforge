@@ -10,7 +10,7 @@ METADATA = {
     ),
     "reference": "QVBS Pacman benchmark: https://qcomp.org/benchmarks/",
     "sizes": {
-        "small": {"requested_state_dim": 326, "parameters": {}},
+        "small": {"requested_state_dim": 1650, "parameters": {}},
         "medium": {"requested_state_dim": 1026, "parameters": {}},
         "large": {"requested_state_dim": 5186, "parameters": {}},
     },

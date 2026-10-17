@@ -172,6 +172,11 @@ def test_all_vi_solvers_meet_precision_on_mixing_chain(
     transition = np.array([[0.7, 0.3, 0], [0.2, 0.5, 0.3], [0, 0.1, 0.9]])
     rewards = np.ones((3, 2)) if constant else [[1, 0.2], [2, -0.1], [0.5, 0]]
     model = matrix_model("mixing_chain", [transition, transition], rewards)
+    if constant and vi_module == "mdpforge.solvers.mdptoolbox_vi":
+        # Native pymdptoolbox 4.0b3 cannot initialise its bound for a zero span.
+        with pytest.raises(OverflowError):
+            run_solver_preserving_input(solver_class, model, discount, 1e-4)
+        return
     solver = run_solver_preserving_input(solver_class, model, discount, 1e-4)
     # First action is optimal; linear solve is an independent reference.
     expected = np.linalg.solve(

@@ -156,7 +156,7 @@ def plot_heat(
 
 def plot_performance_profile(
     results, experiment=None, *, max_factor=100, ax=None, show=True
-):
+) -> tuple:
     """Plot model-weighted Dolan-Moré runtime performance profiles.
 
     max_factor: finite float greater than one; maximum displayed runtime ratio.

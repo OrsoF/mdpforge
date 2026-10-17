@@ -17,7 +17,7 @@ METADATA = {
         "https://users.cecs.anu.edu.au/~ssanner/IPPC_2011/"
     ),
     "sizes": {
-        "small": {"requested_state_dim": 50, "parameters": {}},
+        "small": {"requested_state_dim": 650, "parameters": {}},
         "medium": {"requested_state_dim": 512, "parameters": {}},
         "large": {"requested_state_dim": 5000, "parameters": {}},
     },
