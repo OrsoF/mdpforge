@@ -10,7 +10,6 @@ METADATA = {
     "description": (
         "Inexact policy iteration with PETSc BiCGStab (bcgs) policy evaluation."
     ),
-    "update_scheme": "linear_solve",
 }
 
 

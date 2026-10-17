@@ -4,7 +4,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.models._benchmark_sparse import TransitionBuilder
 
 METADATA = {
-    "category": "communication_protocols",
+    "category": "service_operations",
     "description": (
         "Reduced CSMA/CD: two stations, contention, random backoff and collision limit."
     ),
@@ -35,7 +35,10 @@ class Model(MDP):
         super().__init__(4 * (self.collisions + 1) * (backoff + 1) ** 2 + 2, 3)
         self.requested_state_dim = state_dim
         self.success, self.failure = self.state_dim - 2, self.state_dim - 1
-        self.name = f"csma_v1_window{backoff}_collisions{self.collisions}"
+        self.name = (
+            f"{self.state_dim}_{self.action_dim}_csma_v1"
+            f"_window{backoff}_collisions{self.collisions}"
+        )
 
     def _encode(self, mask, collisions, b0, b1):
         return (

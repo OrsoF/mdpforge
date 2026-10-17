@@ -11,7 +11,6 @@ METADATA = {
         "Optimistic policy iteration with a fixed number of Richardson "
         "policy-evaluation steps."
     ),
-    "update_scheme": "mixed",
 }
 
 

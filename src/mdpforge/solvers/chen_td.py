@@ -27,7 +27,6 @@ METADATA = {
         "Value iteration alternating synchronous ground-state Bellman sweeps "
         "and stochastic approximation on sampled aggregate states."
     ),
-    "update_scheme": "mixed",
 }
 
 

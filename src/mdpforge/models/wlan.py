@@ -11,7 +11,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.models._benchmark_sparse import TransitionBuilder
 
 METADATA = {
-    "category": "communication_protocols",
+    "category": "service_operations",
     "description": "Two-station Wi-Fi contention with backoffs, priorities and collisions.",
     "reference": (
         "PRISM IEEE 802.11 WLAN (KNS02a): "
@@ -52,8 +52,9 @@ class Model(MDP):
         self.requested_state_dim = state_dim
         self.success, self.failure = self.state_dim - 2, self.state_dim - 1
         self.name = (
-            f"wlan_v1_b{self.backoff_limit}_col{max_collisions}"
-            f"_interference{external_interference:.17g}"
+            f"{self.state_dim}_{self.action_dim}_wlan_v1"
+            f"_b{self.backoff_limit}_col{max_collisions}"
+            f"_interference{external_interference}"
         )
 
     def _encode(self, backoff_a, backoff_b, collisions, delivered):

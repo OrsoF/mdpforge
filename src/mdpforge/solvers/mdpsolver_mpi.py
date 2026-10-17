@@ -18,7 +18,6 @@ METADATA = {
         "MDPSolver modified policy iteration with standard updates and an "
         "explicit ten-step partial evaluation limit."
     ),
-    "update_scheme": "synchronous",
 }
 
 

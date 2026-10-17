@@ -18,7 +18,6 @@ METADATA = {
         "Solve the discounted value-function primal linear program with "
         "Bellman inequality constraints using Gurobi."
     ),
-    "update_scheme": "not_applicable",
 }
 
 

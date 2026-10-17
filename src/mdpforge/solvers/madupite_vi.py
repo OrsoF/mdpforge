@@ -11,7 +11,6 @@ METADATA = {
         "Value iteration using one unpreconditioned Richardson step per "
         "policy-evaluation sweep."
     ),
-    "update_scheme": "synchronous",
 }
 
 

@@ -15,7 +15,6 @@ METADATA = {
         "Experimental policy iteration with CMA-ES minimization of the squared "
         "policy Bellman residual and independent final residual certification."
     ),
-    "update_scheme": "mixed",
 }
 
 

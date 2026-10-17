@@ -28,7 +28,6 @@ METADATA = {
         "Value iteration with progressively refined state aggregation, "
         "projected Bellman backups and a full-state VI fallback."
     ),
-    "update_scheme": "synchronous",
 }
 
 

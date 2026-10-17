@@ -17,7 +17,6 @@ METADATA = {
         "MDPax JAX value iteration over padded sparse CSR successors, "
         "with independent Bellman-residual certification."
     ),
-    "update_scheme": "synchronous",
 }
 
 

@@ -11,7 +11,6 @@ METADATA = {
         "Named GMRES profile of madupite inexact policy iteration for "
         "reproducible comparisons."
     ),
-    "update_scheme": "linear_solve",
 }
 
 

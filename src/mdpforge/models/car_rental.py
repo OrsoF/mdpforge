@@ -12,7 +12,7 @@
 import math
 
 import numpy as np
-from scipy.sparse import dok_array
+from scipy.sparse import csr_matrix, kron
 
 from mdpforge.core.mdp import MDP
 
@@ -105,67 +105,54 @@ class Model(MDP):
         }
 
     def _build_model(self) -> None:
-        matrices = [
-            dok_array((self.state_dim, self.state_dim), dtype=np.float64)
-            for _ in range(self.action_dim)
-        ]
-        self.reward_matrix = np.zeros(
-            (self.state_dim, self.action_dim),
-            dtype=np.float64,
-        )
+        side = self.max_cars + 1
+        location_transitions = []
+        location_outcomes = []
+        for location in range(2):
+            probabilities = np.zeros((side, side))
+            outcomes = []
+            for cars in range(side):
+                distribution = self._location_outcomes(
+                    cars, self.request_rates[location], self.return_rates[location]
+                )
+                for next_cars, (probability, _) in distribution.items():
+                    probabilities[cars, next_cars] = probability
+                # Keep the original outcome order for reward accumulation.
+                outcomes.append(np.array(list(distribution.values())))
+            location_transitions.append(csr_matrix(probabilities))
+            location_outcomes.append(outcomes)
 
-        location_cache: dict[tuple[int, int], dict[int, tuple[float, float]]] = {}
+        joint_transition = kron(*location_transitions, format="csr")
+        joint_transition.eliminate_zeros()
+        expected_rentals = np.empty((side, side))
+        for cars_1, outcomes_1 in enumerate(location_outcomes[0]):
+            p_1, rentals_1 = outcomes_1.T
+            for cars_2, outcomes_2 in enumerate(location_outcomes[1]):
+                p_2, rentals_2 = outcomes_2.T
+                weighted_rentals = (
+                    rentals_1[:, None] * p_2[None, :]
+                    + rentals_2[None, :] * p_1[:, None]
+                )
+                # cumsum preserves the scalar loop's floating-point sum order.
+                expected_rentals[cars_1, cars_2] = np.cumsum(weighted_rentals)[-1]
 
-        for cars_1 in range(self.max_cars + 1):
-            for cars_2 in range(self.max_cars + 1):
-                state = self._encode(cars_1, cars_2)
-
-                for action_index, requested_move in enumerate(self.action_values):
-                    actual_move = int(np.clip(requested_move, -cars_2, cars_1))
-                    actual_move = int(
-                        np.clip(
-                            actual_move,
-                            -(self.max_cars - cars_1),
-                            self.max_cars - cars_2,
-                        )
-                    )
-
-                    after_move_1 = cars_1 - actual_move
-                    after_move_2 = cars_2 + actual_move
-
-                    key_1 = (0, after_move_1)
-                    key_2 = (1, after_move_2)
-                    if key_1 not in location_cache:
-                        location_cache[key_1] = self._location_outcomes(
-                            after_move_1,
-                            self.request_rates[0],
-                            self.return_rates[0],
-                        )
-                    if key_2 not in location_cache:
-                        location_cache[key_2] = self._location_outcomes(
-                            after_move_2,
-                            self.request_rates[1],
-                            self.return_rates[1],
-                        )
-
-                    expected_rentals = 0.0
-                    for next_1, (p_1, weighted_rentals_1) in location_cache[
-                        key_1
-                    ].items():
-                        for next_2, (p_2, weighted_rentals_2) in location_cache[
-                            key_2
-                        ].items():
-                            next_state = self._encode(next_1, next_2)
-                            probability = p_1 * p_2
-                            matrices[action_index][state, next_state] += probability
-
-                            expected_rentals += (
-                                weighted_rentals_1 * p_2 + weighted_rentals_2 * p_1
-                            )
-
-                    self.reward_matrix[state, action_index] = (
-                        self.rental_reward * expected_rentals
-                        - self.movement_cost * abs(actual_move)
-                    )
-
-        self.transition_matrix = [matrix.tocsr() for matrix in matrices]
+        cars_1, cars_2 = np.divmod(np.arange(self.state_dim), side)
+        self.reward_matrix = np.empty((self.state_dim, self.action_dim))
+        self.transition_matrix = []
+        for action_index, requested_move in enumerate(self.action_values):
+            actual_move = np.clip(requested_move, -cars_2, cars_1)
+            actual_move = np.clip(
+                actual_move, -(self.max_cars - cars_1), self.max_cars - cars_2
+            )
+            after_move_1 = cars_1 - actual_move
+            after_move_2 = cars_2 + actual_move
+            after_move = after_move_1 * side + after_move_2
+            self.transition_matrix.append(
+                joint_transition
+                if requested_move == 0
+                else joint_transition[after_move, :]
+            )
+            self.reward_matrix[:, action_index] = (
+                self.rental_reward * expected_rentals[after_move_1, after_move_2]
+                - self.movement_cost * np.abs(actual_move)
+            )

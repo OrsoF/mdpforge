@@ -22,7 +22,6 @@ METADATA = {
         "MDPSolver modified policy iteration with successive over-relaxation "
         "updates and backend-default initialization."
     ),
-    "update_scheme": "sor",
 }
 
 

@@ -44,8 +44,8 @@ class Model(MDP):
         self.requested_state_dim = state_dim
         self.delivered, self.damaged = self.state_dim - 2, self.state_dim - 1
         self.name = (
-            f"boxworld_v1_n{self.locations}_delay{traffic_delay:.17g}"
-            f"_damage{cargo_damage:.17g}"
+            f"{self.state_dim}_{self.action_dim}_boxworld_v1"
+            f"_n{self.locations}_delay{traffic_delay}_damage{cargo_damage}"
         )
 
     def _encode(self, truck, crate, loaded):

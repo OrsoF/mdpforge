@@ -21,7 +21,6 @@ METADATA = {
         "Marmote C++ modified policy iteration with Gauss-Seidel updates and "
         "at most ten inner policy-evaluation iterations."
     ),
-    "update_scheme": "gauss_seidel",
 }
 
 

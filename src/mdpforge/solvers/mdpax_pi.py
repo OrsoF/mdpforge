@@ -17,7 +17,6 @@ METADATA = {
         "MDPax JAX iterative policy evaluation and improvement with "
         "independent Bellman-residual certification."
     ),
-    "update_scheme": "synchronous",
 }
 
 

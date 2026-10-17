@@ -109,6 +109,13 @@ def test_category_boundaries_reflect_the_primary_task():
         "gambler": "games_and_puzzles",
         "blocks_world": "games_and_puzzles",
         "garnet": "abstract",
+        "consensus": "abstract",
+        "firewire": "abstract",
+        "csma": "service_operations",
+        "wlan": "service_operations",
+        "zeroconf": "service_operations",
+        "dining_philosophers": "service_operations",
+        "rabin": "service_operations",
     }
     assert {name: categories[name] for name in expected} == expected
 

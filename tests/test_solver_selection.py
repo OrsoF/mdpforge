@@ -149,7 +149,7 @@ def test_named_filters_constrain_but_do_not_reconfigure_solver(monkeypatch):
 
     monkeypatch.setattr("mdpforge.core.benchmark.import_module", fail_import)
     with pytest.raises(ValueError, match="does not match"):
-        bench.add_solver("mdpforge_vi", update_scheme="gauss_seidel")
+        bench.add_solver("mdpforge_vi", family="pi")
 
 
 def test_custom_solver_and_run_parameters_cannot_be_used_as_group_filters():

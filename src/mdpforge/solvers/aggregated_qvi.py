@@ -38,7 +38,6 @@ METADATA = {
         "Q-value iteration with progressive state aggregation, synchronous "
         "Bellman backups and a full-state VI fallback."
     ),
-    "update_scheme": "synchronous",
 }
 
 

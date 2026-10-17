@@ -14,7 +14,6 @@ METADATA = {
         "Modified policy iteration with synchronous, truncated evaluation and "
         "value and policy initialization from immediate rewards."
     ),
-    "update_scheme": "synchronous",
 }
 
 

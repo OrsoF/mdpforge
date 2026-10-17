@@ -39,7 +39,10 @@ class Model(MDP):
         super().__init__(3 * (self.depth + 1) * (self.oxygen_capacity + 1) + 2, 5)
         self.requested_state_dim = state_dim
         self.treasure, self.drowned = self.state_dim - 2, self.state_dim - 1
-        self.name = f"deep_sea_treasure_v1_depth{self.depth}_current{self.current_probability:.17g}"
+        self.name = (
+            f"{self.state_dim}_{self.action_dim}_deep_sea_treasure_v1"
+            f"_depth{self.depth}_current{self.current_probability}"
+        )
 
     def _encode(self, depth, column, oxygen):
         return (depth * 3 + column) * (self.oxygen_capacity + 1) + oxygen

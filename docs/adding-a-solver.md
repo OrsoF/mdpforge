@@ -22,7 +22,6 @@ Définir un dictionnaire **littéral** `METADATA`, lu sans importer le backend :
 | `family`        | Famille : actuellement `vi`, `pi`, `mpi`, `lp`                                               |
 | `backend`       | Bibliothèque : actuellement `mdpforge`, `mdptoolbox`, `mdpsolver`, `marmote`, `madupite`, `mdpax`, `gurobi`, `cma` |
 | `description`   | Algorithme et particularités en une phrase                                                   |
-| `update_scheme` | Actuellement `synchronous`, `gauss_seidel`, `sor`, `linear_solve`, `mixed`, `not_applicable` |
 
 Utiliser des chaînes non vides et les valeurs existantes quand elles conviennent. Vérifier la découverte avec `list_solvers()` et l'ajout avec `bench.add_solver("<nom>")`. Pour une VI, déclarer aussi `solver_type = "vi"` dans la classe afin d'inclure les tests de précision dédiés.
 
@@ -39,7 +38,7 @@ Les budgets du constructeur sont des entiers strictement positifs : `max_iterati
 
 `mdpforge_vi`, `mdpforge_vi_reward_init`, `mdpforge_mpi` et `mdpforge_mpi_reward_init` utilisent `GenericSolver._check_iteration()` : `iterations` compte les itérations, et `stop_reason` indique `converged`, `max_iterations`, `non_finite` ou `stagnation`. Un échec lève une `RuntimeError` ; une convergence obtenue à la dernière itération autorisée est acceptée. Les budgets MDPSolver concernent l'évaluation interne ; l'API installée ne fournit pas de plafond externe. Les variantes MPIGS/MPISOR, avec ou sans initialisation explicite, utilisent désormais toutes `max_evaluation_iterations=10` par défaut.
 
-Les initialisations configurables se nomment `initial_value` et `initial_policy`, et la seed privée de CMA-ES se nomme `seed`. Les méthodes de raffinement utilisent `refinement`. Ces noms remplacent les anciennes options sans alias ; adapter les appels qui utilisaient `split_method`, `projected_steps`, `bellman_updates`, `iter_agg`, `iter_bellman`, `random_seed`, `max_policy_iterations`, `max_iter_pi`, `max_iter_ksp`, `max_eval_iter` ou `evaluation_sweeps`.
+Les initialisations configurables se nomment `initial_value` et `initial_policy` ; les profils `mdpsolver_mpigs_init` et `mdpsolver_mpisor_init` conservent une initialisation nulle fixe. La seed privée de CMA-ES se nomme `seed`. Les méthodes de raffinement utilisent `refinement`. Ces noms remplacent les anciennes options sans alias ; adapter les appels qui utilisaient `split_method`, `projected_steps`, `bellman_updates`, `iter_agg`, `iter_bellman`, `random_seed`, `max_policy_iterations`, `max_iter_pi`, `max_iter_ksp`, `max_eval_iter` ou `evaluation_sweeps`.
 
 ## Validation
 

@@ -31,7 +31,10 @@ class Model(MDP):
         self.requested_state_dim = state_dim
         self.win, self.lose = self.state_dim - 2, self.state_dim - 1
         self.pellets = (self.width - 1, self.cells - 1)
-        self.name = f"pacman_v1_grid{self.width}x{self.width}"
+        self.name = (
+            f"{self.state_dim}_{self.action_dim}_pacman_v1"
+            f"_grid{self.width}x{self.width}"
+        )
 
     def _encode(self, pac, ghost, mask):
         return ((pac * self.cells + ghost) << 2) | mask

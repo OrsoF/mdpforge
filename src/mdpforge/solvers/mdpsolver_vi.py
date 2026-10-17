@@ -19,7 +19,6 @@ METADATA = {
         "MDPSolver value iteration with standard Bellman sweeps and "
         "independent residual certification."
     ),
-    "update_scheme": "synchronous",
 }
 
 

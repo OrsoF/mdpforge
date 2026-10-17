@@ -8,7 +8,7 @@ import numpy as np
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpsolver import create_mdpsolver, solve_mdpsolver
-from mdpforge.utils.solver_options import initial_vectors, positive_integer
+from mdpforge.utils.solver_options import positive_integer
 
 METADATA = {
     "display_name": "MPI · MDPSolver · GS · V₀=0",
@@ -18,7 +18,6 @@ METADATA = {
         "MDPSolver modified policy iteration with Gauss-Seidel updates and "
         "explicitly zero-initialized values and policy."
     ),
-    "update_scheme": "gauss_seidel",
 }
 
 
@@ -31,8 +30,6 @@ class Solver(GenericSolver):
         parallel: bool = False,
         *,
         max_evaluation_iterations: int = 10,
-        initial_value: np.ndarray | None = None,
-        initial_policy: np.ndarray | None = None,
     ):
         """Configure this solver.
 
@@ -40,20 +37,11 @@ class Solver(GenericSolver):
         parallel: bool; backend parallel execution where supported; default False.
         max_evaluation_iterations: int > 0; policy-evaluation iteration budget; default
             10.
-        initial_value: None or a finite vector of shape (S,); starting value; default
-            None.
-        initial_policy: None or an integer vector (S,) in [0, A); starting policy;
-            default None.
         """
         super().__init__(model, discount, final_precision)
         self.parallel = parallel
-        self.initial_value, self.initial_policy = initial_vectors(
-            model, initial_value, initial_policy
-        )
-        if self.initial_value is None:
-            self.initial_value = np.zeros(model.state_dim)
-        if self.initial_policy is None:
-            self.initial_policy = np.zeros(model.state_dim, dtype=int)
+        self.initial_value = np.zeros(model.state_dim)
+        self.initial_policy = np.zeros(model.state_dim, dtype=int)
         self.max_evaluation_iterations = positive_integer(
             max_evaluation_iterations, "max_evaluation_iterations"
         )

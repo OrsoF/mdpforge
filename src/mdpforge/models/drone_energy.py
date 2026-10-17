@@ -51,8 +51,9 @@ class Model(MDP):
         self.requested_state_dim = state_dim
         self.landed, self.crashed = self.state_dim - 2, self.state_dim - 1
         self.name = (
-            f"drone_energy_v1_n{self.locations}_battery{battery_capacity}"
-            f"_wind{self.wind_probability:.17g}_stall{self.stall_probability:.17g}"
+            f"{self.state_dim}_{self.action_dim}_drone_energy_v1"
+            f"_n{self.locations}_battery{battery_capacity}"
+            f"_wind{self.wind_probability}_stall{self.stall_probability}"
         )
 
     def _encode(self, location: int, battery: int, wind: int) -> int:

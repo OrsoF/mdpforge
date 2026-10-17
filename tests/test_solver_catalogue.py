@@ -11,17 +11,14 @@ def solver_catalogue(tmp_path, monkeypatch):
             "family": "vi",
             "backend": "mdpforge",
             "description": "Synchronous example.",
-            "update_scheme": "synchronous",
         },
         "b_vi_gs": {
             "family": "vi",
             "backend": "external",
-            "update_scheme": "gauss_seidel",
         },
         "c_pi": {
             "family": "pi",
             "backend": "mdpforge",
-            "update_scheme": "linear_solve",
         },
     }
     for name, metadata in entries.items():
@@ -46,7 +43,6 @@ def test_solver_catalogue_is_static_and_metadata_is_independent(solver_catalogue
         "family": None,
         "backend": None,
         "description": None,
-        "update_scheme": None,
     }
     entries[0]["family"] = "changed"
     assert list_solvers()[0]["family"] == "vi"
@@ -59,15 +55,13 @@ def test_solver_filters_combine_fields_with_and_and_values_with_or(solver_catalo
     ] == ["a_vi", "c_pi"]
     assert [
         e["name"]
-        for e in list_solvers(
-            family="vi", update_scheme=("synchronous", "gauss_seidel")
-        )
+        for e in list_solvers(family="vi", backend=("mdpforge", "external"))
     ] == ["a_vi", "b_vi_gs"]
     with pytest.raises(ValueError, match="No catalogue solver matches"):
         list_solvers(family="pi", backend="external")
 
 
-@pytest.mark.parametrize("field", ["family", "backend", "update_scheme"])
+@pytest.mark.parametrize("field", ["family", "backend"])
 @pytest.mark.parametrize("value", ["typo", [], "", ["vi", 1], 1])
 def test_invalid_solver_filters_fail_clearly(solver_catalogue, field, value):
     with pytest.raises(ValueError, match=field):
@@ -86,4 +80,5 @@ def test_existing_solver_metadata_covers_the_catalogue():
     assert entries
     assert {e["family"] for e in entries} == {"vi", "pi", "mpi", "lp"}
     for entry in entries:
+        assert set(entry) == {"name", "display_name", "family", "backend", "description"}
         assert all(isinstance(value, str) and value for value in entry.values())

@@ -33,7 +33,6 @@ METADATA = {
         "Policy iteration combining synchronous policy evaluation with "
         "adaptive aggregate linear-system corrections."
     ),
-    "update_scheme": "mixed",
 }
 
 

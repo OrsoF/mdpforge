@@ -19,7 +19,6 @@ METADATA = {
         "MDPSolver value iteration with Gauss-Seidel Bellman sweeps and "
         "independent residual certification."
     ),
-    "update_scheme": "gauss_seidel",
 }
 
 

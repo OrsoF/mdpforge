@@ -12,7 +12,6 @@ METADATA = {
         "Synchronous value iteration with a full Bellman-residual stopping "
         "threshold for absolute value precision."
     ),
-    "update_scheme": "synchronous",
 }
 
 

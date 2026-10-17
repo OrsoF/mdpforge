@@ -2,7 +2,7 @@
 # Ambulance relocation has continuous locations in [0, 1]; this is a tabular discretization.
 
 import numpy as np
-from scipy.sparse import lil_matrix
+from scipy.sparse import csr_matrix
 
 from mdpforge.core.mdp import MDP
 
@@ -49,21 +49,30 @@ class Model(MDP):
         self.action_grid = np.linspace(0.0, 1.0, self.action_dim)
         self.arrival_probs = self._arrival_distribution(kind="beta_mixture")
         self.expected_request = float(np.dot(self.arrival_probs, self.state_grid))
-        self.reward_matrix = np.zeros((self.state_dim, self.action_dim), dtype=float)
-        self.transition_matrix = [
-            lil_matrix((self.state_dim, self.state_dim)) for _ in range(self.action_dim)
+        response_cost = np.array(
+            [
+                np.dot(self.arrival_probs, np.abs(self.state_grid - u))
+                for u in self.action_grid
+            ]
+        )
+        relocation_cost = 0.25 * np.abs(
+            self.action_grid[None, :] - self.state_grid[:, None]
+        )
+        self.reward_matrix = -(response_cost[None, :] + relocation_cost)
+
+        # Every row and action has the same post-service request distribution.
+        destinations = np.flatnonzero(self.arrival_probs > 1e-12)
+        transition = csr_matrix(
+            (
+                np.tile(self.arrival_probs[destinations], self.state_dim),
+                np.tile(destinations, self.state_dim),
+                np.arange(self.state_dim + 1, dtype=np.int64) * destinations.size,
+            ),
+            shape=(self.state_dim, self.state_dim),
+        )
+        self.transition_matrix = [transition] + [
+            transition.copy() for _ in range(self.action_dim - 1)
         ]
-
-        for s, x in enumerate(self.state_grid):
-            for a, u in enumerate(self.action_grid):
-                response_cost = np.dot(self.arrival_probs, np.abs(self.state_grid - u))
-                relocation_cost = 0.25 * abs(u - x)
-                self.reward_matrix[s, a] = -(response_cost + relocation_cost)
-                for ns, p in enumerate(self.arrival_probs):
-                    if p > 1e-12:
-                        self.transition_matrix[a][s, ns] = p
-
-        self.transition_matrix = [m.tocsr() for m in self.transition_matrix]
 
     def _arrival_distribution(self, kind="uniform"):
         x = self.state_grid

@@ -10,7 +10,6 @@ METADATA = {
     "description": (
         "Inexact policy iteration with PETSc transpose-free QMR policy evaluation."
     ),
-    "update_scheme": "linear_solve",
 }
 
 

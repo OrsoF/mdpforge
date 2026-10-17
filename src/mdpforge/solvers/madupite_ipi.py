@@ -20,7 +20,6 @@ METADATA = {
         "madupite distributed inexact policy iteration, running on one MPI rank "
         "with PETSc file conversion and independent residual certification."
     ),
-    "update_scheme": "linear_solve",
 }
 
 

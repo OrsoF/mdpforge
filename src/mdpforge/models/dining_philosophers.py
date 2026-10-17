@@ -6,7 +6,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.models._benchmark_sparse import TransitionBuilder
 
 METADATA = {
-    "category": "communication_protocols",
+    "category": "service_operations",
     "description": (
         "Reduced random-first-fork philosophers with shared forks and "
         "scheduler actions."
@@ -34,7 +34,10 @@ class Model(MDP):
         self.philosophers = max(2, min(7, round(math.log(state_dim, 5))))
         super().__init__(5**self.philosophers, self.philosophers)
         self.requested_state_dim = state_dim
-        self.name = f"dining_philosophers_v1_n{self.philosophers}"
+        self.name = (
+            f"{self.state_dim}_{self.action_dim}_dining_philosophers_v1"
+            f"_n{self.philosophers}"
+        )
 
     def _encode(self, statuses):
         result = 0

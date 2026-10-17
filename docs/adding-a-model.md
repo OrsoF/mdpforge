@@ -27,11 +27,13 @@ Le module DOIT exposer une classe `Model(MDP)` avec un constructeur et une méth
 
 - `state_dim` et `action_dim` DOIVENT être des entiers Python strictement positifs, décrivant les dimensions réelles ;
 - `requested_state_dim` DOIT conserver la cible initiale passée comme `state_dim` au constructeur, avant son adaptation aux dimensions admissibles ;
-- `name` DOIT être une chaîne non vide identifiant la configuration ;
+- `name` DOIT suivre le format `<state_dim>_<action_dim>_<nom>[_paramètres]`, avec les dimensions réelles et les paramètres identifiant la configuration ;
 - les paramètres invalides DOIVENT provoquer une erreur explicite ;
 - le lien entre dimensions demandées et dimensions réelles DOIT être documenté.
 
 Si le modèle impose une grille, un nombre fixe d'actions ou des tailles discrètes, le constructeur DOIT exposer les dimensions obtenues après adaptation. Il ne doit pas attendre `_build_model()` pour les définir. Le constructeur DEVRAIT rester léger et laisser la construction des matrices à `_build_model()`.
+
+Le nom peut conserver une version après le nom de la recette, par exemple `74_3_firewire_v1_delay2_rounds3_tie0.2`. Les paramètres flottants DEVRAIENT utiliser leur représentation Python habituelle, sans format `:.17g` ni arrondi supplémentaire.
 
 L'utilisateur appelle `create_model()`, qui gère la construction, le cache et la conversion finale en CSR. Une recette ne DOIT pas remplacer ce mécanisme pour effectuer une conversion propre à un backend de solveur.
 
@@ -97,16 +99,18 @@ Chaque modèle DOIT déclarer une seule catégorie, selon la tâche principale d
 
 | Catégorie            | Tâche principale                                                                                            |
 | -------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `abstract`           | MDP abstrait, chaîne ou transitions construites pour étudier les algorithmes, sans application particulière |
+| `abstract`           | Étudier un MDP abstrait, une chaîne ou un protocole de coordination, notamment le consensus ou l'élection d'un leader |
 | `navigation`         | Choisir ses déplacements dans un environnement spatial, un trajet ou une piste                              |
 | `physical_control`   | Commander un système décrit par des variables physiques et des équations de dynamique                       |
-| `service_operations` | Accepter, affecter ou servir des demandes, clients ou passagers                                             |
+| `service_operations` | Accepter, affecter, ordonnancer ou servir des demandes, y compris informatiques, des clients ou des passagers |
 | `asset_management`   | Exploiter, répartir, entretenir ou renouveler des stocks et des actifs                                      |
 | `games_and_puzzles`  | Prendre des décisions selon les règles d'un jeu ou résoudre un puzzle                                       |
 
 Ces familles organisent les tâches ; elles ne garantissent pas des performances numériques similaires. Une catégorie manquante ou inconnue provoque une erreur. Les caractéristiques complémentaires (labyrinthe, piste, génération aléatoire, application simulée) DOIVENT être décrites dans `description` ou la documentation scientifique du module.
 
 Pour les cas frontières, la tâche prime sur les mécanismes secondaires : `taxi`, `elevator` et les ambulances servent des demandes et relèvent de `service_operations`, tandis que `schoolboy` effectue son propre trajet et relève de `navigation`. `car_rental` rééquilibre des stocks et relève de `asset_management`. Les pistes `barto` et `sutton`, ainsi que la chaîne fluviale `swim`, relèvent de `navigation`. `option_pricing` traite un actif financier et relève de `asset_management`, tandis que `gambler` suit un jeu de mises et relève de `games_and_puzzles`. `blocks_world` est classé comme puzzle symbolique.
+
+Les protocoles `consensus` et `firewire` relèvent de `abstract` : leur tâche principale est d'atteindre une décision commune ou d'élire un leader. `csma` et `wlan` organisent les transmissions, `zeroconf` pilote l'obtention d'une adresse libre, et `dining_philosophers` et `rabin` ordonnancent des demandes d'accès à des ressources partagées ; ils relèvent de `service_operations`.
 
 `sizes` DOIT déclarer les trois labels `small`, `medium` et `large`. Pour chaque taille disponible :
 

@@ -19,7 +19,6 @@ METADATA = {
         "MDPSolver policy iteration with standard value updates, explicit "
         "zero initialization and residual certification after postprocessing."
     ),
-    "update_scheme": "synchronous",
 }
 
 

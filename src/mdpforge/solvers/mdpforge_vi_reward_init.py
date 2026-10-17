@@ -12,7 +12,6 @@ METADATA = {
         "Synchronous value iteration initialized from maximum immediate "
         "rewards divided by one minus the discount."
     ),
-    "update_scheme": "synchronous",
 }
 
 

@@ -424,7 +424,6 @@ class Benchmark:
         solve_function=None,
         family=None,
         backend=None,
-        update_scheme=None,
         **options,
     ):
         """Add solvers by name, filters or custom callable; return self.
@@ -437,13 +436,6 @@ class Benchmark:
             "mpi" (modified policy iteration), "lp" (linear programming).
         backend: implementation library: "mdpforge", "mdpsolver", "marmote",
             "mdptoolbox", "madupite", "mdpax", "gurobi" or "cma".
-        update_scheme:
-            "synchronous": full-vector Bellman sweeps.
-            "gauss_seidel": in-place state updates.
-            "sor": successive over-relaxation.
-            "linear_solve": matrix-based policy evaluation.
-            "mixed": Bellman sweeps with aggregate or stochastic corrections.
-            "not_applicable": LP, without Bellman sweeps.
         **options: selected solver's constructor/function keywords, e.g.
             parallel=True or initial_value=array. See its signature for options;
             problem data, discount and precision are supplied by run().
@@ -454,7 +446,6 @@ class Benchmark:
         filters = {
             "family": family,
             "backend": backend,
-            "update_scheme": update_scheme,
         }
         filtered = any(value is not None for value in filters.values())
         grouped = solver_name is None and filtered

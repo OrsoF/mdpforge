@@ -50,8 +50,9 @@ class Model(MDP):
         self.gem = self.cells - 1
         self.hazard = (self.width // 2) * self.width + self.width // 2
         self.name = (
-            f"resource_gathering_v1_grid{self.width}_energy{energy}"
-            f"_slip{slip_probability:.17g}_hazard{hazard_probability:.17g}"
+            f"{self.state_dim}_{self.action_dim}_resource_gathering_v1"
+            f"_grid{self.width}_energy{energy}"
+            f"_slip{slip_probability}_hazard{hazard_probability}"
         )
 
     def _encode(self, position, mask, energy):

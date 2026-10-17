@@ -13,6 +13,7 @@ mdpforge benchmarks new finite MDPs and new MDP solvers. Prefer small, useful ch
 
 ## Preserve the scientific contract
 
+- **Règle d'or absolue : ne jamais modifier l'implémentation des solveurs ni leurs fonctions internes, y compris celles des backends.** Limiter les changements aux interfaces de construction, aux paramètres transmis aux API publiques des backends, aux métadonnées, à la documentation et aux tests. Si une demande nécessite de toucher au calcul, aux boucles ou aux critères d'arrêt internes, signaler le conflit avant toute modification.
 - When adding a catalogue model, follow [docs/adding-a-model.md](docs/adding-a-model.md). Declare size presets and one task category, justify unavailable sizes, and add a small test instance with scientific validation. Preserve the validation execution rules below.
 - Keep numerical conventions, stopping criteria, reward scales, and RNG behavior unless the requested change requires otherwise.
 - Models expose `state_dim`, `action_dim`, `transition_matrix[action]`, and `reward_matrix[state, action]`; construct them with `create_model()`. Solvers take explicit constructor options followed by an option-free `run()`. Transitions are a list of SciPy `csr_matrix` objects; rewards and values are NumPy arrays. Finalize CSR in `create_model()`; keep backend conversions local.

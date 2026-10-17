@@ -4,7 +4,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.models._benchmark_sparse import TransitionBuilder
 
 METADATA = {
-    "category": "communication_protocols",
+    "category": "service_operations",
     "description": (
         "Reduced Zeroconf: probe losses, occupied addresses and retries; "
         "discounted rewards."
@@ -51,8 +51,9 @@ class Model(MDP):
         self.success = self.state_dim - 2
         self.failure = self.state_dim - 1
         self.name = (
-            f"zeroconf_v1_k{probes}_attempts{self.attempts}_hosts{existing_hosts}"
-            f"_loss{self.loss_probability:.17g}"
+            f"{self.state_dim}_{self.action_dim}_zeroconf_v1"
+            f"_k{probes}_attempts{self.attempts}_hosts{existing_hosts}"
+            f"_loss{self.loss_probability}"
         )
 
     def _encode(self, attempt, occupied, sent):

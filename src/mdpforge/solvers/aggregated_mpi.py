@@ -40,7 +40,6 @@ METADATA = {
         "Modified policy iteration with progressively refined aggregate "
         "policy evaluation and ground-state Bellman updates."
     ),
-    "update_scheme": "synchronous",
 }
 
 

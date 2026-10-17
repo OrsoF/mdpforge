@@ -20,7 +20,6 @@ METADATA = {
         "MDPToolbox synchronous value iteration with sparse initialization "
         "that avoids the dense iteration-bound calculation."
     ),
-    "update_scheme": "synchronous",
 }
 
 

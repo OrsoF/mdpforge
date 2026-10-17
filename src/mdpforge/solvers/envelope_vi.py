@@ -41,7 +41,6 @@ METADATA = {
         "Progressive Bellman-envelope iteration with compressed transitions, "
         "certified lower and upper bounds, and optional residual polishing."
     ),
-    "update_scheme": "synchronous",
 }
 
 

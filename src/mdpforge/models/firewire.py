@@ -11,7 +11,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.models._benchmark_sparse import TransitionBuilder
 
 METADATA = {
-    "category": "communication_protocols",
+    "category": "abstract",
     "description": "FireWire root election with probabilistic ties, timers, and retry limit.",
     "reference": (
         "PRISM IEEE 1394 FireWire root contention (KNS03b): "
@@ -50,8 +50,8 @@ class Model(MDP):
         self.requested_state_dim = state_dim
         self.elected, self.deadline = self.state_dim - 2, self.state_dim - 1
         self.name = (
-            f"firewire_v1_delay{self.delay}_rounds{max_rounds}"
-            f"_tie{tie_probability:.17g}"
+            f"{self.state_dim}_{self.action_dim}_firewire_v1"
+            f"_delay{self.delay}_rounds{max_rounds}_tie{tie_probability}"
         )
 
     def _encode(self, a, b, rounds, phase):

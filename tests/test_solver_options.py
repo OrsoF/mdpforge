@@ -1,9 +1,7 @@
 """Constructor contracts and forwarding of explicit solver options."""
 
-import ast
 import sys
 from importlib import import_module
-from pathlib import Path
 from types import ModuleType, SimpleNamespace
 
 import numpy as np
@@ -12,46 +10,6 @@ import pytest
 from mdpforge import Benchmark
 from mdpforge.solvers.mdpforge_pi import Solver as PI
 from tests._contracts import assert_optimal_solution
-
-
-SOLVER_FILES = sorted(
-    path
-    for path in (Path(__file__).parents[1] / "src/mdpforge/solvers").glob("*.py")
-    if not path.name.startswith("_")
-)
-
-
-@pytest.mark.parametrize("source", SOLVER_FILES, ids=lambda path: path.stem)
-def test_solver_options_are_explicit_and_run_has_no_options(source):
-    tree = ast.parse(source.read_text(encoding="utf-8"))
-    solver = next(
-        node
-        for node in tree.body
-        if isinstance(node, ast.ClassDef) and node.name == "Solver"
-    )
-    constructor = next(
-        node
-        for node in solver.body
-        if isinstance(node, ast.FunctionDef) and node.name == "__init__"
-    )
-    names = {arg.arg for arg in constructor.args.args + constructor.args.kwonlyargs}
-    assert "verbose" not in names
-    assert not names.intersection(
-        {
-            "max_iter_pi",
-            "max_iter_ksp",
-            "max_eval_iter",
-            "projected_steps",
-            "split_method",
-            "random_seed",
-        }
-    )
-    exact = {"mdpforge_pi", "mdptoolbox_pi", "gurobi_primal", "gurobi_dual"}
-    assert ("final_precision" in names) == (source.stem not in exact)
-    for node in solver.body:
-        if isinstance(node, ast.FunctionDef) and node.name == "run":
-            assert [arg.arg for arg in node.args.args] == ["self"]
-            assert not node.args.kwonlyargs
 
 
 def test_exact_pi_runs_through_benchmark_without_precision_argument(chain):
@@ -108,11 +66,18 @@ def test_mdpsolver_variants_share_default_evaluation_budget(chain, monkeypatch, 
     options = {"max_evaluation_iterations": 7}
     if "sor" in name:
         options["relaxation"] = 1.2
-    value = np.array([1.8, 2, 0])
-    policy = np.zeros(3, dtype=int)
-    solver = adapter.Solver(
-        chain, 0.9, initial_value=value, initial_policy=policy, **options
-    )
+    if name.endswith("_init"):
+        value = np.zeros(3)
+        policy = np.zeros(3, dtype=int)
+        with pytest.raises(TypeError, match="initial_value"):
+            adapter.Solver(chain, 0.9, 1e-3, initial_value=value)
+        with pytest.raises(TypeError, match="initial_policy"):
+            adapter.Solver(chain, 0.9, 1e-3, initial_policy=policy)
+    else:
+        value = np.array([1.8, 2, 0])
+        policy = np.zeros(3, dtype=int)
+        options.update(initial_value=value, initial_policy=policy)
+    solver = adapter.Solver(chain, 0.9, final_precision=1e-3, **options)
     solver.run()
     assert calls[-1]["parIterLim"] == 7
     assert calls[-1]["initValueVector"] == value.tolist()

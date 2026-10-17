@@ -15,7 +15,6 @@ METADATA = {
         "Policy iteration with sparse linear-system policy evaluation and "
         "greedy policy improvement until policy stability."
     ),
-    "update_scheme": "linear_solve",
 }
 
 

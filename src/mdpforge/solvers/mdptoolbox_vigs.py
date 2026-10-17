@@ -19,7 +19,6 @@ METADATA = {
         "MDPToolbox value iteration with Gauss-Seidel sweeps, constant-reward "
         "initialization handling and residual certification."
     ),
-    "update_scheme": "gauss_seidel",
 }
 
 

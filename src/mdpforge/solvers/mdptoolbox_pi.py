@@ -18,7 +18,6 @@ METADATA = {
         "MDPToolbox policy iteration using its default matrix-based policy "
         "evaluation and greedy policy improvement."
     ),
-    "update_scheme": "linear_solve",
 }
 
 

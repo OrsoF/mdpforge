@@ -21,7 +21,6 @@ METADATA = {
         "Solve the discounted occupancy-measure dual linear program, then "
         "recover and evaluate a deterministic policy."
     ),
-    "update_scheme": "not_applicable",
 }
 
 

@@ -10,7 +10,6 @@ _METADATA_FIELDS = (
     "family",
     "backend",
     "description",
-    "update_scheme",
 )
 
 
@@ -18,7 +17,6 @@ def list_solvers(
     *,
     family: str | Sequence[str] | None = None,
     backend: str | Sequence[str] | None = None,
-    update_scheme: str | Sequence[str] | None = None,
 ) -> list[dict]:
     """Read literal solver metadata without loading backend dependencies.
 
@@ -42,7 +40,6 @@ def list_solvers(
     for field, value in (
         ("family", family),
         ("backend", backend),
-        ("update_scheme", update_scheme),
     ):
         if value is None:
             continue

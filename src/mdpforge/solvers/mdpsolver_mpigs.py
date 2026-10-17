@@ -18,7 +18,6 @@ METADATA = {
         "MDPSolver modified policy iteration with Gauss-Seidel value updates "
         "and backend-default initialization."
     ),
-    "update_scheme": "gauss_seidel",
 }
 
 

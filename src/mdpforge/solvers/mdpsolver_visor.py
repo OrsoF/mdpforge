@@ -19,7 +19,6 @@ METADATA = {
         "MDPSolver value iteration with successive over-relaxation Bellman "
         "updates and independent residual certification."
     ),
-    "update_scheme": "sor",
 }
 
 

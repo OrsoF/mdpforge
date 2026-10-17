@@ -38,7 +38,8 @@ class Model(MDP):
         self.requested_state_dim = state_dim
         self.goal, self.stranded = self.state_dim - 2, self.state_dim - 1
         self.name = (
-            f"tireworld_v1_length{self.length}_flat{self.puncture_probability:.17g}"
+            f"{self.state_dim}_{self.action_dim}_tireworld_v1"
+            f"_length{self.length}_flat{self.puncture_probability}"
         )
 
     def _encode(self, column, lane, spare, flat):

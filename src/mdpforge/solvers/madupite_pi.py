@@ -11,7 +11,6 @@ METADATA = {
         "Policy iteration with direct LU-preconditioned policy evaluation on "
         "one MPI rank."
     ),
-    "update_scheme": "linear_solve",
 }
 
 

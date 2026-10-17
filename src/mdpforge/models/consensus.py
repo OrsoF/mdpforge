@@ -4,7 +4,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.models._benchmark_sparse import TransitionBuilder
 
 METADATA = {
-    "category": "communication_protocols",
+    "category": "abstract",
     "description": (
         "Reduced shared coin: fair coin flips, bounded counter and two decisions."
     ),
@@ -36,7 +36,10 @@ class Model(MDP):
         super().__init__((2 * self.bound - 1) * self.masks + 2, processes)
         self.requested_state_dim = state_dim
         self.decide_zero, self.decide_one = self.state_dim - 2, self.state_dim - 1
-        self.name = f"consensus_v1_n{processes}_bound{self.bound}"
+        self.name = (
+            f"{self.state_dim}_{self.action_dim}_consensus_v1"
+            f"_n{processes}_bound{self.bound}"
+        )
 
     def _encode(self, position, mask):
         return (position + self.bound - 1) * self.masks + mask
