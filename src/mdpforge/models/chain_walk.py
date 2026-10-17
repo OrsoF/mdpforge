@@ -38,6 +38,8 @@ METADATA = {
 
 
 class Model(MDP):
+    CACHE_VERSION = 1
+
     LEFT = 0
     RIGHT = 1
 

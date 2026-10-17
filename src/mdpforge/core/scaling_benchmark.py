@@ -58,12 +58,12 @@ class ScalingBenchmark(Benchmark):
                 if name in metadata:
                     raise ValueError(
                         f"Duplicate model name {name!r}; include the generation "
-                        "seed in the model name to avoid cache collisions"
+                        "distinct names are required for result reporting"
                     )
                 # Avoid saving an entire sweep to the shared model cache. The
                 # factory must use seed in its generation and name for provenance.
                 expected_states, expected_actions = model.state_dim, model.action_dim
-                model.create_model(save=False)
+                model.create_model(cache="off")
                 if (model.state_dim, model.action_dim) != (
                     expected_states,
                     expected_actions,

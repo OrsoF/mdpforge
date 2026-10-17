@@ -21,7 +21,7 @@ def test_seeded_garnet_generation_is_reproducible_without_cache(isolated_model_c
             generated.append(model)
         first, second = generated
         assert_model_unchanged(first, second)
-        assert not persistence.model_cache_path(first.name).exists()
+        assert persistence.model_cache_path(first) is None
 
 
 def test_generated_model_uses_mdp_and_preserves_identity(chain):
@@ -63,25 +63,26 @@ def test_matrix_mdp_shares_densities_and_state_relabeling(chain):
     assert all(isinstance(matrix, csr_matrix) for matrix in model.transition_matrix)
 
 
-def test_matrix_mdp_reuses_standard_model_and_value_caches(chain):
+def test_matrix_mdp_values_are_cached_by_content_not_name(chain):
     model = MDP.from_matrices(
         "matrix_chain", chain.transition_matrix, chain.reward_matrix
     )
-    persistence.save_model(model)
     expected = model.optimal_value_function(0.9)
-    assert isinstance(expected, np.ndarray)
     assert_allclose(expected, [1.8, 2, 0], rtol=0, atol=1e-3)
-    assert persistence.value_function_cache_path("0.9_matrix_chain").is_file()
+    assert persistence.value_function_cache_path(model, 0.9).is_file()
 
-    restored = MDP(3, 2)
-    restored.name = model.name
-    # The value cache can be reused before loading the matrices.
-    assert_allclose(restored.optimal_value_function(0.9), expected, rtol=0, atol=0)
-    restored.create_model(save=False)
-    assert_allclose(restored.reward_matrix, model.reward_matrix, rtol=0, atol=0)
-    for actual, original in zip(restored.transition_matrix, model.transition_matrix):
-        assert isinstance(actual, csr_matrix)
-        assert_allclose(actual.toarray(), original.toarray(), rtol=0, atol=0)
+    equivalent = MDP.from_matrices(
+        "some_other_name", chain.transition_matrix, chain.reward_matrix
+    )
+    assert persistence.value_function_cache_path(equivalent, 0.9) == (
+        persistence.value_function_cache_path(model, 0.9)
+    )
+    assert_allclose(equivalent.optimal_value_function(0.9), expected, rtol=0, atol=0)
+
+    unbuilt = MDP(3, 2)
+    unbuilt.name = model.name
+    with pytest.raises(ValueError, match="Build the MDP"):
+        unbuilt.optimal_value_function(0.9)
 
 
 @pytest.mark.parametrize("input_format", ["dense", "csr", "coo"])

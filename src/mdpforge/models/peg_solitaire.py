@@ -36,6 +36,8 @@ METADATA = {
 
 
 class Model(MDP):
+    CACHE_VERSION = 1
+
     def __init__(self, state_dim: int = 512, action_dim: int = 10):
         self.requested_state_dim = int(state_dim)
         if not isinstance(state_dim, (int, np.integer)) or state_dim < 1:

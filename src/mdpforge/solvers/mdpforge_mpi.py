@@ -23,8 +23,13 @@ class Solver(GenericSolver):
         model: MDPProtocol,
         discount: float,
         final_precision: float = 1e-2,
+        *,
+        max_iterations: int = 100_000,
     ):
-        super().__init__(model, discount, final_precision)
+        """max_iterations: int > 0, default 100_000, maximum policy evaluations."""
+        super().__init__(
+            model, discount, final_precision, max_iterations=max_iterations
+        )
         self.name = "mdpforge MPI"
 
         self.max_iter_eval = 10
@@ -37,7 +42,8 @@ class Solver(GenericSolver):
         evaluation_tolerance = self.precision_policy_eval * (1 - self.discount)
         tolerance = self.precision_policy_update * (1 - self.discount)
 
-        while True:
+        for iteration in range(1, self.max_iterations + 1):
+            previous_value = value
             transition_policy, reward_policy = compute_transition_reward_policy(
                 self.model, policy
             )
@@ -54,7 +60,17 @@ class Solver(GenericSolver):
             new_policy = q_value.argmax(axis=1)
             bellman_residual = np.abs(q_value.max(axis=1) - value).max()
 
-            if bellman_residual < tolerance:
+            if self._check_iteration(
+                iteration,
+                bellman_residual,
+                tolerance,
+                value,
+                q_value,
+                stagnated=(
+                    np.array_equal(value, previous_value)
+                    and np.array_equal(new_policy, policy)
+                ),
+            ):
                 self.policy = new_policy
                 return value
             policy = new_policy

@@ -25,6 +25,8 @@ METADATA = {
 
 
 class Model(MDP):
+    CACHE_VERSION = 1
+
     """
     FrozenLake finite MDP.
 

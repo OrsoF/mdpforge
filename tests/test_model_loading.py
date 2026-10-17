@@ -60,24 +60,22 @@ def test_defaults_and_internal_cache_loader_are_preserved(
     bench = Benchmark().add_mdp(category="abstract")
     original = bench._mdps[0]
     assert original.state_dim == Unichain().state_dim
-    assert persistence.model_cache_path(original.name).exists()
+    assert persistence.model_cache_path(restored).exists()
     restored = Unichain()
     assert persistence.load_model(restored) is True
     np.testing.assert_array_equal(restored.reward_matrix, original.reward_matrix)
 
 
-def test_stale_dimension_cache_is_reported(preset_catalogue, isolated_model_cache):
+def test_legacy_pickle_is_not_loaded_implicitly(preset_catalogue, isolated_model_cache):
     model = Unichain(state_dim=4)
-    model.create_model()
     wrong = MDP.from_matrices("wrong", [np.eye(2)], np.zeros((2, 1)))
     persistence.save_pickle(
-        persistence.pack_model(wrong),
-        persistence.model_cache_path(model.name),
+        persistence.pack_model(wrong), persistence.legacy_model_cache_path(model.name)
     )
-    bench = Benchmark()
-    with pytest.raises(ValueError, match="expected 4 states, got 2"):
-        bench.add_mdp(size="small", category="abstract")
-    assert bench._mdps == []
+    model.create_model(cache="readwrite")
+    assert model.state_dim == 4
+    assert model.action_dim == 2
+    assert persistence.model_cache_path(Unichain(state_dim=4)).exists()
 
 
 @pytest.mark.parametrize(

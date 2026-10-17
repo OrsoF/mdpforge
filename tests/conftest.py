@@ -22,6 +22,8 @@ OPTIONAL_BACKENDS = {
 
 
 class FourStateModel(MDP):
+    CACHE_VERSION = 1
+
     """Small synthetic MDP for validation and partition invariants."""
 
     def _build_model(self):
@@ -33,6 +35,8 @@ class FourStateModel(MDP):
 
 
 class ChainModel(MDP):
+    CACHE_VERSION = 1
+
     """Transient rewards with known optimal value [2 * discount, 2, 0]."""
 
     def _build_model(self):

@@ -27,15 +27,22 @@ class MDP:
         self.transition_matrix: list[csr_matrix]
         self.reward_matrix: np.ndarray
 
-    def get_config(self) -> dict:
-        """Return JSON metadata for public model parameters, excluding matrices.
+    # Opt in per deterministic model recipe. Unspecified/custom models are rebuilt.
+    CACHE_VERSION = None
 
-        Override this method for recipes needing a more specific configuration.
-        Unsupported objects are identified by type rather than silently omitted.
-        """
+    def get_config(self) -> dict:
+        """Return descriptive experiment metadata (not a cache recipe)."""
         from mdpforge.utils.experiment import model_config
 
         return model_config(self)
+
+    def get_cache_config(self) -> dict:
+        """Return pre-build parameters; override for custom deterministic recipes."""
+        return {
+            key: value for key, value in vars(self).items()
+            if key not in {"transition_matrix", "reward_matrix", "name"}
+            and not key.startswith("_cache_")
+        }
 
     @classmethod
     def from_matrices(cls, name: str, transition_matrix, reward_matrix) -> "MDP":
@@ -71,24 +78,49 @@ class MDP:
         self,
         check_transition: bool = False,
         normalize_reward: bool = False,
-        save: bool = True,
+        save: bool | None = None,
+        *,
+        cache: str | None = None,
     ):
-        """Load cached matrices or build, optionally validate, normalize and save."""
-        already_built = self._is_model_built() or load_model(self)
-        if not already_built:
-            self._build_model()
-        self.transition_matrix = [
-            csr_matrix(matrix) for matrix in self.transition_matrix
-        ]
-        if already_built:
+        """Build or load matrices using the selected cache policy."""
+        from mdpforge.utils.cache_keys import CacheIdentityError, recipe_identity
+        from mdpforge.utils.persistence import validate_cache_mode
+
+        if cache is None:
+            # Backward-compatible save=False: allow reads but do not write.
+            cache = "readonly" if save is False else "readwrite"
+        elif save is not None:
+            raise ValueError("Specify either save or cache, not both")
+        validate_cache_mode(cache)
+        if self._is_model_built():
+            if cache == "refresh":
+                raise ValueError("refresh requires a fresh, unbuilt model instance")
+            self.transition_matrix = [csr_matrix(m) for m in self.transition_matrix]
+            if check_transition:
+                self.test_model()
             return
-        if normalize_reward:
+
+        key = None
+        if cache != "off":
+            try:
+                key = recipe_identity(self, normalize_reward=normalize_reward)
+            except CacheIdentityError:
+                # An unrepresentable recipe must not use an ambiguous cache key.
+                key = None
+        self._cache_recipe_key = key
+        loaded = (
+            key is not None and cache in ("readwrite", "readonly")
+            and load_model(self, key=key, strict=cache == "readonly")
+        )
+        if not loaded:
+            self._build_model()
+        self.transition_matrix = [csr_matrix(m) for m in self.transition_matrix]
+        if not loaded and normalize_reward:
             self._normalize_reward_matrix()
-        if check_transition:
+        if check_transition or loaded:
             self.test_model()
-            print("Transition is stochastic.")
-        if save:
-            save_model(self)
+        if not loaded and key is not None and cache in ("readwrite", "refresh"):
+            save_model(self, key=key)
 
     def _build_model(self):
         raise NotImplementedError(
@@ -189,12 +221,11 @@ class MDP:
             plt.legend()
             plt.show()
 
-    def optimal_value_function(self, discount: float) -> np.ndarray:
-        """Load cached discounted values or solve with VI at precision 1e-3."""
+    def optimal_value_function(self, discount: float, *, cache="readwrite") -> np.ndarray:
+        """Get a VI reference at absolute value-error precision 1e-3."""
         from mdpforge.utils.exact_value_function import compute_value_function
 
-        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         return get_cached_value_function(
-            f"{discount}_{self.name}",
-            lambda: compute_value_function(self, discount, 1e-3),
+            self, discount, 1e-3,
+            lambda: compute_value_function(self, discount, 1e-3), cache=cache,
         )

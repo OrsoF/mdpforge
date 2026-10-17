@@ -32,6 +32,8 @@ METADATA = {
 
 
 class Model(MDP):
+    CACHE_VERSION = 1
+
     def __init__(self, state_dim: int = 64, action_dim: int = 10):
         self.requested_state_dim = int(state_dim)
         machines = int(np.floor(np.log2(max(2, state_dim))))

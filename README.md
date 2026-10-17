@@ -70,3 +70,7 @@ Experimental: APIs and the catalogue may change. External backends require their
 ### Optional high-performance backends
 
 Adapters for **madupite VI, PI, OPI and iPI (GMRES, BiCGStab, TFQMR)** and **MDPax VI/PI** are available via `list_solvers(backend=["madupite", "mdpax"])`. For installation, usage, conversion costs and accuracy limits, see [docs/madupite-mdpax.md](docs/madupite-mdpax.md).
+
+## Cache et reproductibilité
+
+Le cache v2 utilise des clés par recette pour les modèles et par contenu numérique pour les références VI ; voir [la documentation du cache](docs/cache.md). Les modèles aléatoires non explicitement reproductibles ne sont pas mis en cache automatiquement.

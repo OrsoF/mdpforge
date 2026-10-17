@@ -36,6 +36,8 @@ METADATA = {
 
 
 class Model(MDP):
+    CACHE_VERSION = 1
+
     """
     Elevator control finite MDP.
 

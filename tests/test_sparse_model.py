@@ -23,8 +23,9 @@ def test_create_model_finalizes_and_saves_csr(chain, matrix_type, monkeypatch):
 
     monkeypatch.setattr(model, "_build_model", build)
     model.create_model()
-    stored = persistence.load_pickle(persistence.model_cache_path(model.name))
-    for transitions in (model.transition_matrix, stored[2]):
+    stored = type(chain)(3, 2)
+    stored.create_model(cache="readonly")
+    for transitions in (model.transition_matrix, stored.transition_matrix):
         assert isinstance(transitions, list)
         assert all(isinstance(matrix, csr_matrix) for matrix in transitions)
         for matrix, expected in zip(transitions, matrices):
@@ -35,21 +36,24 @@ def test_create_model_finalizes_and_saves_csr(chain, matrix_type, monkeypatch):
     assert_allclose(restored.reward_matrix, chain.reward_matrix, rtol=0, atol=0)
 
 
-def test_dense_cache_is_loaded_as_csr_without_rebuilding(chain, monkeypatch):
+def test_legacy_dense_cache_is_ignored(chain, monkeypatch):
     matrices = np.array([matrix.toarray() for matrix in chain.transition_matrix])
     persistence.save_pickle(
-        (3, 2, matrices, chain.reward_matrix), persistence.model_cache_path(chain.name)
+        (3, 2, matrices, chain.reward_matrix),
+        persistence.legacy_model_cache_path(chain.name),
     )
     model = type(chain)(3, 2)
+    built = []
+    real_build = model._build_model
 
-    def fail_build():
-        pytest.fail("A cached model should not be rebuilt")
+    def build():
+        built.append(True)
+        real_build()
 
-    monkeypatch.setattr(model, "_build_model", fail_build)
-    model.create_model(save=False)
+    monkeypatch.setattr(model, "_build_model", build)
+    model.create_model(cache="readwrite")
+    assert built == [True]
     assert all(isinstance(matrix, csr_matrix) for matrix in model.transition_matrix)
-    for matrix, expected in zip(model.transition_matrix, matrices):
-        assert_allclose(matrix.toarray(), expected, rtol=0, atol=0)
 
 
 def test_create_model_finalizes_already_built_transitions(chain):

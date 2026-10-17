@@ -25,9 +25,17 @@ class Solver(GenericSolver):
         discount: float,
         final_precision: float = 1e-3,
         initial_value: np.ndarray | None = None,
+        *,
+        max_iterations: int = 100_000,
     ):
-        """initial_value: None for zeros, or a finite NumPy vector of shape (S,)."""
-        super().__init__(model, discount, final_precision)
+        """Configure value iteration.
+
+        initial_value: None for zeros, or a finite NumPy vector of shape (S,).
+        max_iterations: int > 0, default 100_000, maximum Bellman updates.
+        """
+        super().__init__(
+            model, discount, final_precision, max_iterations=max_iterations
+        )
         self.initial_value = (
             np.zeros(model.state_dim)
             if initial_value is None
@@ -43,9 +51,15 @@ class Solver(GenericSolver):
         value = self.initial_value.copy()
         tolerance = self.final_precision * (1 - self.discount)
 
-        while True:
+        for iteration in range(1, self.max_iterations + 1):
             new_value = optimal_bellman_operator(self.model, value, self.discount)
             bellman_residual = np.linalg.norm(new_value - value, ord=np.inf)
-            if bellman_residual < tolerance:
+            if self._check_iteration(
+                iteration,
+                bellman_residual,
+                tolerance,
+                new_value,
+                stagnated=np.array_equal(new_value, value),
+            ):
                 return new_value
             value = new_value
