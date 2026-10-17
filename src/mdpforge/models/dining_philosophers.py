@@ -16,7 +16,7 @@ METADATA = {
         "https://www.prismmodelchecker.org/casestudies/phil.php"
     ),
     "sizes": {
-        "small": {"requested_state_dim": 3700, "parameters": {}},
+        "small": {"requested_state_dim": 7400, "parameters": {}},
         "medium": {"requested_state_dim": 625, "parameters": {}},
         "large": {"requested_state_dim": 3125, "parameters": {}},
     },

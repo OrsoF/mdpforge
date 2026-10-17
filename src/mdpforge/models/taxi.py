@@ -12,7 +12,7 @@ IN_TAXI = 4
 METADATA = {
     "sizes": {
         "small": {
-            "requested_state_dim": 1000,
+            "requested_state_dim": 6000,
             "parameters": {},
         },
         "medium": {

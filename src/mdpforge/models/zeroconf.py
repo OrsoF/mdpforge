@@ -14,7 +14,7 @@ METADATA = {
         "https://www.prismmodelchecker.org/benchmarks/models.php#mdps"
     ),
     "sizes": {
-        "small": {"requested_state_dim": 850, "parameters": {"probes": 4}},
+        "small": {"requested_state_dim": 30000, "parameters": {"probes": 4}},
         "medium": {"requested_state_dim": 502, "parameters": {"probes": 4}},
         "large": {"requested_state_dim": 5002, "parameters": {"probes": 4}},
     },

@@ -10,7 +10,7 @@ from mdpforge.core.mdp import MDP
 METADATA = {
     "sizes": {
         "small": {
-            "requested_state_dim": 3000,
+            "requested_state_dim": 36000,
             "parameters": {},
         },
         "medium": {

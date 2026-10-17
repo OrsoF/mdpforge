@@ -10,7 +10,7 @@ param_list = [{}]
 METADATA = {
     "sizes": {
         "small": {
-            "requested_state_dim": 1350,
+            "requested_state_dim": 2700,
             "parameters": {},
         },
         "medium": {

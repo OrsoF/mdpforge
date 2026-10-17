@@ -33,7 +33,7 @@ def params_match_state_dim(state_dim: int, max_index=50) -> tuple:
 METADATA = {
     "sizes": {
         "small": {
-            "requested_state_dim": 200,
+            "requested_state_dim": 400,
             "parameters": {},
         },
         "medium": {
