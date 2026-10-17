@@ -27,13 +27,15 @@ Le module DOIT exposer une classe `Model(MDP)` avec un constructeur et une méth
 
 - `state_dim` et `action_dim` DOIVENT être des entiers Python strictement positifs, décrivant les dimensions réelles ;
 - `requested_state_dim` DOIT conserver la cible initiale passée comme `state_dim` au constructeur, avant son adaptation aux dimensions admissibles ;
-- `name` DOIT suivre le format `<state_dim>_<action_dim>_<nom>[_paramètres]`, avec les dimensions réelles et les paramètres identifiant la configuration ;
+- `name` DOIT suivre le format `<state_dim>_<action_dim>_<nom_fichier>[_paramètres]`, avec le nom du fichier sans `.py`, les dimensions réelles et les paramètres identifiant la configuration ;
 - les paramètres invalides DOIVENT provoquer une erreur explicite ;
 - le lien entre dimensions demandées et dimensions réelles DOIT être documenté.
 
 Si le modèle impose une grille, un nombre fixe d'actions ou des tailles discrètes, le constructeur DOIT exposer les dimensions obtenues après adaptation. Il ne doit pas attendre `_build_model()` pour les définir. Le constructeur DEVRAIT rester léger et laisser la construction des matrices à `_build_model()`.
 
 Le nom peut conserver une version après le nom de la recette, par exemple `74_3_firewire_v1_delay2_rounds3_tie0.2`. Les paramètres flottants DEVRAIENT utiliser leur représentation Python habituelle, sans format `:.17g` ni arrondi supplémentaire.
+
+Les options configurables qui distinguent deux modèles de mêmes dimensions DOIVENT apparaître dans le suffixe : par exemple `100_5_elevator_floors3` ou `200_10_impatience_tol1e-08`. Barto utilise uniquement sa piste générée ; l'option `custom_track` a été supprimée.
 
 L'utilisateur appelle `create_model()`, qui gère la construction, le cache et la conversion finale en CSR. Une recette ne DOIT pas remplacer ce mécanisme pour effectuer une conversion propre à un backend de solveur.
 

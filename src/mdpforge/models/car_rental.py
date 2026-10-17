@@ -61,7 +61,7 @@ class Model(MDP):
         self.movement_cost = 2.0
         self.poisson_cutoff = max(8, self.max_cars + 1)
 
-        self.name = f"{self.state_dim}_{self.action_dim}_jacks_car_rental"
+        self.name = f"{self.state_dim}_{self.action_dim}_car_rental"
 
     def _encode(self, cars_1: int, cars_2: int) -> int:
         return cars_1 * (self.max_cars + 1) + cars_2
@@ -79,29 +79,27 @@ class Model(MDP):
     def _location_outcomes(
         self,
         cars: int,
-        request_rate: float,
-        return_rate: float,
+        request_probs: np.ndarray,
+        return_probs: np.ndarray,
     ) -> dict[int, tuple[float, float]]:
-        request_probs = self._poisson_probabilities(request_rate, self.poisson_cutoff)
-        return_probs = self._poisson_probabilities(return_rate, self.poisson_cutoff)
-
-        # next_cars -> [probability, probability-weighted rentals]
-        outcomes: dict[int, list[float]] = {}
-
-        for requests, p_request in enumerate(request_probs):
-            rentals = min(cars, requests)
-            remaining = cars - rentals
-
-            for returns, p_return in enumerate(return_probs):
-                probability = p_request * p_return
-                next_cars = min(self.max_cars, remaining + returns)
-                if next_cars not in outcomes:
-                    outcomes[next_cars] = [0.0, 0.0]
-                outcomes[next_cars][0] += probability
-                outcomes[next_cars][1] += probability * rentals
-
+        rentals = np.minimum(cars, np.arange(len(request_probs)))
+        next_cars = np.minimum(
+            self.max_cars,
+            (cars - rentals)[:, None] + np.arange(len(return_probs)),
+        )
+        joint = request_probs[:, None] * return_probs
+        probabilities = np.zeros(self.max_cars + 1)
+        weighted_rentals = np.zeros(self.max_cars + 1)
+        # Unbuffered accumulation preserves the scalar request/return order.
+        np.add.at(probabilities, next_cars.ravel(), joint.ravel())
+        np.add.at(
+            weighted_rentals, next_cars.ravel(), (joint * rentals[:, None]).ravel()
+        )
+        destinations, first = np.unique(next_cars, return_index=True)
+        order = destinations[np.argsort(first)]
         return {
-            next_cars: (values[0], values[1]) for next_cars, values in outcomes.items()
+            int(target): (probabilities[target], weighted_rentals[target])
+            for target in order
         }
 
     def _build_model(self) -> None:
@@ -109,11 +107,17 @@ class Model(MDP):
         location_transitions = []
         location_outcomes = []
         for location in range(2):
+            request_probs = self._poisson_probabilities(
+                self.request_rates[location], self.poisson_cutoff
+            )
+            return_probs = self._poisson_probabilities(
+                self.return_rates[location], self.poisson_cutoff
+            )
             probabilities = np.zeros((side, side))
             outcomes = []
             for cars in range(side):
                 distribution = self._location_outcomes(
-                    cars, self.request_rates[location], self.return_rates[location]
+                    cars, request_probs, return_probs
                 )
                 for next_cars, (probability, _) in distribution.items():
                     probabilities[cars, next_cars] = probability

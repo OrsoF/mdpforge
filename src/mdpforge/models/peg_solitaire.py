@@ -46,7 +46,7 @@ class Model(MDP):
         self.state_dim = int(state_dim)
         self.size = self._get_size(self.state_dim)
         self.action_dim = 4 * self.size * self.size
-        self.name = "{}_{}_peg".format(self.state_dim, self.action_dim)
+        self.name = "{}_{}_peg_solitaire".format(self.state_dim, self.action_dim)
 
         # action_dim is retained for compatibility: an action specifies both
         # a starting cell and one of the four jump directions.

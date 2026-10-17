@@ -78,7 +78,7 @@ class Model(MDP):
 
         self.wind = self._make_wind(self.width)
 
-        self.name = "{}_{}_windy_gridworld".format(self.state_dim, self.action_dim)
+        self.name = "{}_{}_windgrid".format(self.state_dim, self.action_dim)
 
     def _build_model(self):
         self.reward_matrix = -np.ones((self.state_dim, self.action_dim))

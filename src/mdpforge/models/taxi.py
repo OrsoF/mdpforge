@@ -45,7 +45,7 @@ class Model(MDP):
         self.state_dim = self.base_state_dim + 1
         self.action_dim = 6
 
-        self.name = f"{self.state_dim}_{self.action_dim}_terminal_taxi_benchmark"
+        self.name = f"{self.state_dim}_{self.action_dim}_taxi"
 
     def build_state_space(self) -> None:
         self.state_list = []

@@ -85,7 +85,10 @@ class Model(MDP):
         self.q_cost = (1 - self.proba_person_stay) * self.loss_cost + self.holding_cost
 
         self.truncation_tol = float(truncation_tol)
-        self.name = f"{self.state_dim}_{self.action_dim}_queue_impatience"
+        self.name = (
+            f"{self.state_dim}_{self.action_dim}_impatience"
+            f"_tol{self.truncation_tol}"
+        )
 
     def _build_model(self):
         N = self.max_queue_length

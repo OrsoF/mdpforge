@@ -42,22 +42,13 @@ METADATA = {
 
 
 class Model(MDP):
-    def __init__(
-        self,
-        state_dim: int = 300,
-        action_dim: int = 10,
-        custom_track: np.ndarray | None = None,
-    ):
+    def __init__(self, state_dim: int = 300, action_dim: int = 10):
         self.requested_state_dim = int(state_dim)
         self._proba_fail_action: float = 0.1
         self._max_speed = 3
 
         state_dim = max(300, state_dim)
-        self._track = (
-            np.asarray(custom_track)
-            if custom_track is not None
-            else build_track(state_dim, self._max_speed)
-        )
+        self._track = build_track(state_dim, self._max_speed)
 
         self._X, self._Y = self._track.shape
 

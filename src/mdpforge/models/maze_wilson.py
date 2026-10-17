@@ -40,7 +40,7 @@ class Model(MDP):
         self._build_state_space()
         self.action_dim = 4
 
-        self.name = "{}_{}_mazewilson".format(
+        self.name = "{}_{}_maze_wilson".format(
             self.state_dim,
             self.action_dim,
         )

@@ -2,7 +2,7 @@
 
 import numpy as np
 import scipy.stats as st
-from scipy.sparse import lil_matrix
+from scipy.sparse import csr_matrix
 
 from mdpforge.core.mdp import MDP
 
@@ -31,6 +31,8 @@ METADATA = {
 
 
 class Model(MDP):
+    CACHE_VERSION = 1
+
     def __init__(self, state_dim: int = 500, action_dim: int = 10):
         self.requested_state_dim = int(state_dim)
         self._stock_size = (state_dim - 1) // 2  # Size of the stock
@@ -43,57 +45,44 @@ class Model(MDP):
         self._shortage_cost = 2  # shortageCost
         self._action_cost = 5  # action cost
 
-        self.name = "{}_{}_inventory".format(state_dim, action_dim)
+        self.name = "{}_{}_inventory".format(self.state_dim, self.action_dim)
 
     def _build_model(self):
         self.state_dim = 2 * self._stock_size + 1
         self.action_dim = self.max_action + 1
 
-        self.transition_matrix = [
-            lil_matrix((self.state_dim, self.state_dim)) for _ in range(self.action_dim)
-        ]
-        self.reward_matrix = np.empty((self.state_dim, self.action_dim))
-
         self._build_transition_matrix()
         self._build_reward_matrix()
 
-        self.transition_matrix = [matrix.tocsr() for matrix in self.transition_matrix]
-
     def _build_transition_matrix(self):
-        sortie = 0
-        # look over all the actions
-        for aa in range(self.action_dim):
-            for ss1 in range(self.state_dim):
-                etat = ss1 - self._stock_size
-                etat = min(
-                    etat + aa, self._stock_size
-                )  # on doit pas sortir apres une action
-                proba = 0
-                borne = min(self.BinomialeQ, etat + self._stock_size)
-                for y in range(
-                    borne + 1
-                ):  # dans tous les cas on atteint pas la borne inferieure
-                    proba = st.binom.pmf(y, self.BinomialeQ, self.BinomialeP)
-                    sortie = etat - y  # valeur sortie
-                    self.transition_matrix[aa][ss1, self._stock_size + sortie] = proba
-                if (
-                    borne < self.BinomialeQ
-                ):  # on est dans un cas ou la borne inf est atteinte
-                    proba = 0
-                    sortie = -self._stock_size
-                    for y in range(borne, self.BinomialeQ + 1):
-                        proba += st.binom.pmf(y, self.BinomialeQ, self.BinomialeP)
-                    self.transition_matrix[aa][ss1, self._stock_size + sortie] = proba
+        demand = np.arange(self.BinomialeQ + 1)
+        probabilities = st.binom.pmf(demand, self.BinomialeQ, self.BinomialeP)
+        # Keep the original ascending-demand addition order at the lower bound.
+        tails = np.array([np.cumsum(probabilities[y:])[-1] for y in demand])
+        states = np.arange(self.state_dim)
+        self.transition_matrix = []
+        for action in range(self.action_dim):
+            after_order = np.minimum(states + action, self.state_dim - 1)
+            bound = np.minimum(self.BinomialeQ, after_order)
+            targets = after_order[:, None] - demand
+            valid = demand <= bound[:, None]
+            values = np.broadcast_to(probabilities, targets.shape).copy()
+            saturated = bound < self.BinomialeQ
+            values[states[saturated], bound[saturated]] = tails[bound[saturated]]
+            rows = np.broadcast_to(states[:, None], targets.shape)
+            matrix = csr_matrix(
+                (values[valid], (rows[valid], targets[valid])),
+                shape=(self.state_dim, self.state_dim),
+            )
+            matrix.eliminate_zeros()
+            self.transition_matrix.append(matrix)
 
     def _build_reward_matrix(self):
-        for ss1 in range(self.state_dim):
-            for aa in range(self.action_dim):
-                res = 0.0
-                etat = ss1 - self._stock_size
-                if etat < 0:
-                    # case of shortage
-                    res += -self._shortage_cost * etat + aa * self._action_cost
-                else:
-                    # case of holding
-                    res += self._holding_cost * etat + aa * self._action_cost
-                self.reward_matrix[ss1, aa] = res
+        stock = np.arange(self.state_dim) - self._stock_size
+        costs = np.where(
+            stock < 0, -self._shortage_cost * stock, self._holding_cost * stock
+        )
+        self.reward_matrix = np.asarray(
+            costs[:, None] + np.arange(self.action_dim) * self._action_cost,
+            dtype=float,
+        )

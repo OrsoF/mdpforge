@@ -362,8 +362,6 @@ class Benchmark:
             options = dict(preset["parameters"]) if preset is not None else {}
             if preset is not None:
                 options["state_dim"] = preset["requested_state_dim"]
-            if "custom_track" in options:
-                options["custom_track"] = np.asarray(options["custom_track"]).copy()
             model = import_module(f"{models.__name__}.{name}").Model(**options)
             if any(existing.name == model.name for existing in self._mdps):
                 if grouped:

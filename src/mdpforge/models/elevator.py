@@ -168,7 +168,7 @@ class Model(MDP):
         self.state_to_id = {}
         self._enumerate_states()
         assert len(self.states) == self.state_dim
-        self.name = f"{self.state_dim}_{self.action_dim}_elevator"
+        self.name = f"{self.state_dim}_{self.action_dim}_elevator_floors{self.n_floors}"
 
     def _build_model(self):
         """Build one CSR matrix at a time, never a dense S x S matrix.

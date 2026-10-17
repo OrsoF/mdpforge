@@ -112,30 +112,6 @@ def test_rounded_presets_use_actual_dimensions(
     assert restored.experiment["models"][model.name]["requested_state_dim"] == requested
 
 
-def test_custom_track_is_converted_without_mutating_metadata(
-    preset_catalogue, isolated_model_cache, monkeypatch
-):
-    entry = list_models(category="abstract")[0]
-    track = [[1, 1], [1, 0]]
-    entry["sizes"]["small"]["parameters"]["custom_track"] = track
-    monkeypatch.setattr(models, "list_models", lambda **kwargs: [entry])
-
-    def create_recipe(state_dim, custom_track):
-        assert isinstance(custom_track, np.ndarray)
-        np.testing.assert_array_equal(custom_track, track)
-        custom_track[0, 0] = 0
-        return Unichain(state_dim=state_dim)
-
-    monkeypatch.setattr(
-        "mdpforge.core.benchmark.import_module",
-        lambda name: SimpleNamespace(Model=create_recipe),
-    )
-    bench = Benchmark().add_mdp(size="small")
-    model = bench._mdps[0]
-    assert model.state_dim == 4
-    assert track == [[1, 1], [1, 0]]
-
-
 @pytest.mark.parametrize(
     "method, options, expected_states",
     [

@@ -101,8 +101,6 @@ def build_model(request):
                 ),
             )
     options = json.loads(request["constructor_options"])
-    if "custom_track" in options:
-        options["custom_track"] = np.asarray(options["custom_track"])
     start = perf_counter()
     model = module.Model(**options)
     dimensions = {

@@ -49,7 +49,7 @@ class Model(MDP):
         self.side_size = 3 * self.size_of_one_room
         self.state_dim = self.side_size**2
 
-        self.name = "{}_{}_9_ninerooms".format(self.state_dim, self.action_dim)
+        self.name = "{}_{}_ninerooms".format(self.state_dim, self.action_dim)
 
     def _build_model(self):
         self.door_step = self.size_of_one_room / (self.n_doors + 1)

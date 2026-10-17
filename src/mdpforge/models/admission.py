@@ -97,7 +97,7 @@ class Model(MDP):
         self.state_dim = (self.S + 1) * (self.J + 1) * self.K
         self.action_dim = 2
 
-        self.name = "{}_{}_admission_control".format(
+        self.name = "{}_{}_admission".format(
             self.state_dim,
             self.action_dim,
         )

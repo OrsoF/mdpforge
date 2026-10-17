@@ -65,7 +65,7 @@ class Model(MDP):
         # S at top-left, G at bottom-right, sparse holes.
         self.desc = self._make_map(self.side_size)
 
-        self.name = "{}_{}_frozen_lake".format(self.state_dim, self.action_dim)
+        self.name = "{}_{}_frozen".format(self.state_dim, self.action_dim)
 
     def _build_model(self):
         self.reward_matrix = np.zeros((self.state_dim, self.action_dim))
