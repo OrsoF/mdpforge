@@ -39,7 +39,8 @@ class MDP:
     def get_cache_config(self) -> dict:
         """Return pre-build parameters; override for custom deterministic recipes."""
         return {
-            key: value for key, value in vars(self).items()
+            key: value
+            for key, value in vars(self).items()
             if key not in {"transition_matrix", "reward_matrix", "name"}
             and not key.startswith("_cache_")
         }
@@ -109,7 +110,8 @@ class MDP:
                 key = None
         self._cache_recipe_key = key
         loaded = (
-            key is not None and cache in ("readwrite", "readonly")
+            key is not None
+            and cache in ("readwrite", "readonly")
             and load_model(self, key=key, strict=cache == "readonly")
         )
         if not loaded:
@@ -221,11 +223,16 @@ class MDP:
             plt.legend()
             plt.show()
 
-    def optimal_value_function(self, discount: float, *, cache="readwrite") -> np.ndarray:
+    def optimal_value_function(
+        self, discount: float, *, cache="readwrite"
+    ) -> np.ndarray:
         """Get a VI reference at absolute value-error precision 1e-3."""
         from mdpforge.utils.exact_value_function import compute_value_function
 
         return get_cached_value_function(
-            self, discount, 1e-3,
-            lambda: compute_value_function(self, discount, 1e-3), cache=cache,
+            self,
+            discount,
+            1e-3,
+            lambda: compute_value_function(self, discount, 1e-3),
+            cache=cache,
         )

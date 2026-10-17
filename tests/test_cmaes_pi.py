@@ -45,9 +45,7 @@ def test_policy_evaluation_and_optimal_solution(
         raise AssertionError("CMA-ES must preserve sparse transition matrices")
 
     monkeypatch.setattr(csr_matrix, "toarray", forbid_dense)
-    solver = solver_class(
-        switching_model, discount, final_precision=1e-4, random_seed=17
-    )
+    solver = solver_class(switching_model, discount, final_precision=1e-4, seed=17)
     # The initial policy stays put: its values differ from the optimal ones.
     tolerance = solver.final_precision * (1 - discount) / 4
     value = solver._evaluate_policy(tolerance)
@@ -60,7 +58,9 @@ def test_policy_evaluation_and_optimal_solution(
     assert solver.generations > 0
     assert solver.objective_evaluations > solver.generations
     assert solver.policy_iterations >= 2
-    residual = optimal_bellman_operator(reference, solver.value, discount) - solver.value
+    residual = (
+        optimal_bellman_operator(reference, solver.value, discount) - solver.value
+    )
     assert np.max(np.abs(residual)) / (1 - discount) <= solver.final_precision
     # Evaluate the returned policy using an independent dense two-state oracle.
     states = np.arange(2)
@@ -96,7 +96,7 @@ def test_reproducible_benchmark_seeds(solver_class, switching_model):
 
 def test_explicit_seed_preserves_global_rng(solver_class, switching_model):
     before = np.random.get_state()
-    solver_class(switching_model, 0.9, random_seed=17).run()
+    solver_class(switching_model, 0.9, seed=17).run()
     after = np.random.get_state()
     assert before[0] == after[0]
     assert_array_equal(before[1], after[1])
@@ -130,7 +130,7 @@ def test_inner_budget_is_an_error(solver_class, switching_model):
         0.9,
         sigma0=1e-12,
         max_generations=1,
-        random_seed=17,
+        seed=17,
     )
     with pytest.raises(RuntimeError, match="policy evaluation precision not reached"):
         solver.run()
@@ -141,8 +141,8 @@ def test_outer_budget_is_an_error(solver_class, switching_model):
         switching_model,
         0.9,
         initial_policy=np.ones(2, dtype=int),
-        max_policy_iterations=1,
-        random_seed=17,
+        max_iterations=1,
+        seed=17,
     )
     # Zero is the exact value of this policy, but not the optimal value.
     with pytest.raises(RuntimeError, match="policy iteration precision not reached"):
@@ -154,15 +154,15 @@ def test_outer_budget_is_an_error(solver_class, switching_model):
     [
         {"max_generations": 0},
         {"max_generations": 1.5},
-        {"max_policy_iterations": True},
+        {"max_iterations": True},
         {"sigma0": np.nan},
         {"sigma0": 0},
         {"initial_policy": [0.5, 0]},
         {"initial_policy": [0, 2]},
         {"initial_value": [0, np.inf]},
         {"initial_value": [0]},
-        {"random_seed": -1},
-        {"random_seed": 2**32},
+        {"seed": -1},
+        {"seed": 2**32},
     ],
 )
 def test_invalid_options(solver_class, switching_model, options):

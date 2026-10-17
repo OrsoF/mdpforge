@@ -7,7 +7,11 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
-from mdpforge.utils.cache_keys import CacheIdentityError, recipe_identity, value_identity
+from mdpforge.utils.cache_keys import (
+    CacheIdentityError,
+    recipe_identity,
+    value_identity,
+)
 from mdpforge.utils.cache_store import (
     CacheCorruptError,
     load_model_entry,
@@ -51,17 +55,29 @@ def value_function_cache_path(model, discount, precision=1e-3):
     """Return the v2 path for a built model's numerical reference."""
     if not hasattr(model, "transition_matrix") or not hasattr(model, "reward_matrix"):
         raise ValueError("Build the MDP before accessing its value cache")
-    return _entry_path(SAVED_VALUE_FUNCTIONS_PATH, value_identity(model, discount, precision))
+    return _entry_path(
+        SAVED_VALUE_FUNCTIONS_PATH, value_identity(model, discount, precision)
+    )
 
 
 def pack_model(model: "MDPProtocol") -> tuple:
     """Pack numerical fields for an explicitly trusted legacy export."""
-    return (model.state_dim, model.action_dim, model.transition_matrix, model.reward_matrix)
+    return (
+        model.state_dim,
+        model.action_dim,
+        model.transition_matrix,
+        model.reward_matrix,
+    )
 
 
 def restore_model(model: "MDPProtocol", payload: tuple) -> None:
     """Restore numerical fields from an explicitly trusted legacy export."""
-    (model.state_dim, model.action_dim, model.transition_matrix, model.reward_matrix) = payload
+    (
+        model.state_dim,
+        model.action_dim,
+        model.transition_matrix,
+        model.reward_matrix,
+    ) = payload
 
 
 def load_model(model, *, key=None, normalize_reward=False, strict=False):
@@ -89,7 +105,9 @@ def save_model(model, *, key=None, normalize_reward=False):
     key = key or getattr(model, "_cache_recipe_key", None)
     if key is None:
         # A post-build snapshot is not a safe substitute for the original recipe.
-        raise CacheIdentityError("No pre-build recipe; use create_model(cache='readwrite')")
+        raise CacheIdentityError(
+            "No pre-build recipe; use create_model(cache='readwrite')"
+        )
     save_model_entry(_entry_path(SAVED_MODELS_PATH, key), key, model)
 
 
@@ -119,7 +137,12 @@ def get_cached_value_function(
     value = verify_value(model, compute(), discount, precision)
     if cache in ("refresh", "readwrite"):
         return save_value_entry(
-            path, key, model, discount, precision, value,
+            path,
+            key,
+            model,
+            discount,
+            precision,
+            value,
             replace=cache == "refresh",
         )
     return value
@@ -170,7 +193,8 @@ def import_legacy_model_cache(model, *, trusted=False, normalize_reward=False):
 
     candidate = SimpleNamespace(
         name=model.name,
-        state_dim=payload[0], action_dim=payload[1],
+        state_dim=payload[0],
+        action_dim=payload[1],
         transition_matrix=[csr_matrix(matrix) for matrix in payload[2]],
         reward_matrix=np.asarray(payload[3], dtype=float),
     )

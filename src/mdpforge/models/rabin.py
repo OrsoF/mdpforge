@@ -57,9 +57,7 @@ class Model(MDP):
                 status = statuses[a]
                 competing = sum(value in (1, 2) for value in statuses)
                 has_claim = any(
-                    value in (2, 3)
-                    for i, value in enumerate(statuses)
-                    if i != a
+                    value in (2, 3) for i, value in enumerate(statuses) if i != a
                 )
                 builder.rewards[s, a] = -0.1
                 if status == 0:

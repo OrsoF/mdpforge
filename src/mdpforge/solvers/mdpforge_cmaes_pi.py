@@ -32,9 +32,22 @@ class Solver(GenericSolver):
         initial_value: np.ndarray | None = None,
         sigma0: float = 1.0,
         max_generations: int = 2000,
-        max_policy_iterations: int = 100,
-        random_seed: int | None = None,
+        max_iterations: int = 100,
+        seed: int | None = None,
     ):
+        """Configure this solver.
+
+        final_precision: finite float > 0; absolute value error target; default 1e-3.
+        initial_policy: None or an integer vector (S,) in [0, A); starting policy;
+            default None.
+        initial_value: None or a finite vector of shape (S,); starting value; default
+            None.
+        sigma0: finite float > 0; initial CMA-ES standard deviation; default 1.0.
+        max_generations: int > 0; CMA-ES generations per policy; default 2000.
+        max_iterations: int > 0; outer iteration budget; default 100.
+        seed: None for the NumPy stream, or an int in [0, 2**32); RNG seed; default
+            None.
+        """
         super().__init__(model, discount, final_precision)
         if model.state_dim < 2:
             raise ValueError("CMA-ES evaluation requires at least two states.")
@@ -42,14 +55,12 @@ class Solver(GenericSolver):
             raise ValueError("sigma0 must be finite and positive.")
         for name, budget in (
             ("max_generations", max_generations),
-            ("max_policy_iterations", max_policy_iterations),
+            ("max_iterations", max_iterations),
         ):
             if type(budget) is not int or budget < 1:
                 raise ValueError(f"{name} must be a positive integer.")
-        if random_seed is not None and (
-            type(random_seed) is not int or not 0 <= random_seed < 2**32
-        ):
-            raise ValueError("random_seed must be None or an integer in [0, 2**32).")
+        if seed is not None and (type(seed) is not int or not 0 <= seed < 2**32):
+            raise ValueError("seed must be None or an integer in [0, 2**32).")
 
         policy = (
             np.zeros(model.state_dim, dtype=int)
@@ -74,12 +85,12 @@ class Solver(GenericSolver):
         self.value = value.copy()
         self.sigma0 = float(sigma0)
         self.max_generations = max_generations
-        self.max_policy_iterations = max_policy_iterations
+        self.max_iterations = max_iterations
         # Derive the private RNG from the benchmark's seeded NumPy stream.
         seed = (
             int(np.random.randint(0, 2**32 - 1, dtype=np.int64))
-            if random_seed is None
-            else random_seed
+            if seed is None
+            else seed
         )
         self.rng = np.random.RandomState(seed)
         self.policy_iterations = 0
@@ -158,7 +169,7 @@ class Solver(GenericSolver):
         """Return only when both value and policy quality are certified."""
         tolerance = self.final_precision * (1 - self.discount)
         states = np.arange(self.model.state_dim)
-        for _ in range(self.max_policy_iterations):
+        for _ in range(self.max_iterations):
             self.value = self._evaluate_policy(tolerance / 4)
             self.policy_iterations += 1
             q_value = bellman_operator(self.model, self.value, self.discount)

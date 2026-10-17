@@ -15,9 +15,13 @@ from tests._contracts import sample_models
 
 # Marker optional backends even when an adapter only imports another local module.
 OPTIONAL_BACKENDS = {
-    "madupite": "madupite", "mdpax": "mdpax", "marmote": "marmote",
-    "mdpsolver": "mdpsolver", "mdptoolbox": "mdptoolbox",
-    "gurobi": "gurobipy", "cmaes": "cma",
+    "madupite": "madupite",
+    "mdpax": "mdpax",
+    "marmote": "marmote",
+    "mdpsolver": "mdpsolver",
+    "mdptoolbox": "mdptoolbox",
+    "gurobi": "gurobipy",
+    "cmaes": "cma",
 }
 
 
@@ -132,7 +136,9 @@ def model_script():
     )
 
 
-@pytest.fixture(params=["ties_and_negative_rewards", "stochastic_switches", "generated"])
+@pytest.fixture(
+    params=["ties_and_negative_rewards", "stochastic_switches", "generated"]
+)
 def mdp_case(request):
     """Small structural MDP families, independent of named catalogue models."""
     return next(case for case in sample_models() if case.name == request.param)

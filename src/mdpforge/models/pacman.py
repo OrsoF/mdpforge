@@ -46,8 +46,7 @@ class Model(MDP):
     def _build_model(self):
         builder = TransitionBuilder(self.state_dim, self.action_dim)
         neighbors = [
-            sorted({self._step(g, a) for a in range(4)})
-            for g in range(self.cells)
+            sorted({self._step(g, a) for a in range(4)}) for g in range(self.cells)
         ]
         for pac in range(self.cells):
             for ghost in range(self.cells):

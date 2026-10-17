@@ -58,14 +58,23 @@ class Solver(GenericSolver):
         model: MDPProtocol,
         discount: float,
         final_precision: float = 1e-3,
+        *,
+        max_iterations: int = 100_000_000,
     ):
-        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
+        """Configure this solver.
+
+        final_precision: finite float > 0; absolute value error target; default 1e-3.
+        max_iterations: int > 0; outer iteration budget; default 100_000_000.
+        """
+        super().__init__(
+            model, discount, final_precision, max_iterations=max_iterations
+        )
         self.model = model
         self.discount = discount
         assert final_precision > 0, "final_precision must be positive"
         self.epsilon = final_precision
         self.name = "VI MDPToolbox"
-        self.max_iter = int(1e8)
+        self.max_iterations = max_iterations
 
         self.value: np.ndarray
         self.policy: np.ndarray
@@ -77,7 +86,7 @@ class Solver(GenericSolver):
             self.model,
             discount=self.discount,
             epsilon=self.epsilon * (1 - self.discount),
-            max_iter=self.max_iter,
+            max_iter=self.max_iterations,
         )
         self.vi.run()
 

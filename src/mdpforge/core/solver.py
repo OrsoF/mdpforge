@@ -18,15 +18,15 @@ class GenericSolver:
         self,
         model: MDPProtocol,
         discount: float,
-        final_precision: float = 1e-3,
+        final_precision: float | None = 1e-3,
         *,
         max_iterations: int = 100_000,
     ) -> None:
         """max_iterations: int > 0, default 100_000, budget for _check_iteration()."""
         assert 0 < discount < 1, "discount must be strictly between 0 and 1"
-        assert np.isfinite(final_precision) and final_precision > 0, (
-            "final_precision must be finite and positive"
-        )
+        assert final_precision is None or (
+            np.isfinite(final_precision) and final_precision > 0
+        ), "final_precision must be finite and positive"
         if type(max_iterations) is not int or max_iterations < 1:
             raise ValueError("max_iterations must be a positive integer")
         self.name = self.__class__.__name__

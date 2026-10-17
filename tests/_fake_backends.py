@@ -37,7 +37,11 @@ def install_madupite(monkeypatch, values, policy=None):
 
         def solve(self):
             np.savetxt(self.options["-file_cost"], state.values)
-            actions = np.zeros(len(state.values), dtype=int) if state.policy is None else state.policy
+            actions = (
+                np.zeros(len(state.values), dtype=int)
+                if state.policy is None
+                else state.policy
+            )
             np.savetxt(self.options["-file_policy"], actions, fmt="%d")
 
     def write_petsc(matrix, path):
@@ -49,6 +53,7 @@ def install_madupite(monkeypatch, values, policy=None):
     monkeypatch.setitem(sys.modules, "madupite", backend)
     # The generic adapter binds md at import time; replace it for every test.
     from mdpforge.solvers import madupite_ipi
+
     monkeypatch.setattr(madupite_ipi, "md", backend)
     return SimpleNamespace(calls=calls, state=state, backend=backend)
 
@@ -69,7 +74,11 @@ def install_mdpax(monkeypatch, values, policy=None):
 
         def solve(self, **options):
             self.run_options = options
-            policy = np.zeros((len(state.values), 1), dtype=int) if state.policy is None else state.policy
+            policy = (
+                np.zeros((len(state.values), 1), dtype=int)
+                if state.policy is None
+                else state.policy
+            )
             return SimpleNamespace(values=state.values, policy=policy)
 
     backend.ValueIteration = FakeSolver

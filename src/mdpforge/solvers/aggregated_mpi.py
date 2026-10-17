@@ -26,6 +26,11 @@ from mdpforge.utils.bellman import (
 from mdpforge.utils.projected_bellman import (
     apply_ppbo_until_var_small,
 )
+from mdpforge.utils.solver_options import (
+    bounded_iterations,
+    positive_integer,
+    positive_real,
+)
 
 METADATA = {
     "display_name": "Aggregated MPI · mdpforge",
@@ -45,37 +50,73 @@ class Solver:
         model: MDPProtocol,
         discount: float,
         final_precision: float = 1e-1,
-        verbose: bool = False,
-        bellman_updates: int = 10,
-        split_method: str = "width",
+        bellman_iterations: int = 10,
+        refinement: str = "width",
         n_tiles: int | None = None,
-        projected_steps: int = 100,
+        max_projected_iterations: int = 100,
+        *,
+        max_iterations: int = 100_000,
+        max_fallback_iterations: int = 100_000,
+        switch_to_vi_ratio: float = 0.9,
+        max_evaluation_iterations: int = 100_000,
     ):
+        """Configure this solver.
+
+        final_precision: finite float > 0; absolute value error target; default 1e-1.
+        bellman_iterations: int > 0; Bellman updates per batch; default 10.
+        refinement: "width" or "tiles"; partition refinement method; default "width".
+        n_tiles: None for automatic sizing, or an int > 0; tiles per refinement; default
+            None.
+        max_projected_iterations: int > 0; projected iteration budget per batch; default
+            100.
+        max_iterations: int > 0; outer iteration budget; default 100_000.
+        max_fallback_iterations: int > 0; full-state iteration budget; default 100_000.
+        switch_to_vi_ratio: float in (0, 1]; region fraction triggering full-state VI;
+            default 0.9.
+        max_evaluation_iterations: int > 0; policy-evaluation iteration budget; default
+            100_000.
+        """
         assert 0 < discount < 1, "discount must be strictly between 0 and 1"
+        positive_real(final_precision, "final_precision")
+        self.max_iterations = positive_integer(max_iterations, "max_iterations")
+        self.max_fallback_iterations = positive_integer(
+            max_fallback_iterations, "max_fallback_iterations"
+        )
+        self.switch_to_vi_ratio = positive_real(
+            switch_to_vi_ratio, "switch_to_vi_ratio"
+        )
+        if self.switch_to_vi_ratio > 1:
+            raise ValueError("switch_to_vi_ratio must belong to (0, 1]")
+        self.max_evaluation_iterations = positive_integer(
+            max_evaluation_iterations, "max_evaluation_iterations"
+        )
         self.model = model
         self.discount = discount
 
-        self.epsilon_final_policy_evaluation = final_precision
         self.epsilon_variation = final_precision
         self.epsilon_policy_evaluation = final_precision
-
-        self.verbose = verbose
-        self.bellman_updates = bellman_updates
-        self.split_method = split_method
+        self.bellman_iterations = positive_integer(
+            bellman_iterations, "bellman_iterations"
+        )
+        self.refinement = refinement
 
         self.n_tiles = (
-            int(model.state_dim**0.5) + 1 if n_tiles is None else int(n_tiles)
+            int(model.state_dim**0.5) + 1
+            if n_tiles is None
+            else positive_integer(n_tiles, "n_tiles")
         )
         self.shared_reward = np.all(
             self.model.reward_matrix == self.model.reward_matrix[:, [0]]
         )
 
-        if self.split_method not in {"width", "tiles"}:
-            raise ValueError("split_method must be 'width' or 'tiles'.")
+        if self.refinement not in {"width", "tiles"}:
+            raise ValueError("refinement must be 'width' or 'tiles'.")
 
-        self.projected_steps = projected_steps
+        self.max_projected_iterations = positive_integer(
+            max_projected_iterations, "max_projected_iterations"
+        )
 
-        self.name = "PDMPI" if self.split_method == "width" else "PDMPItiles"
+        self.name = "PDMPI" if self.refinement == "width" else "PDMPItiles"
 
         self.partition = Partition(self.model)
 
@@ -92,7 +133,7 @@ class Solver:
             dtype=float,
         )
 
-        while True:
+        for _ in bounded_iterations(self.max_iterations, "aggregation"):
             self.value = self._policy_evaluation(
                 self.policy,
                 self.epsilon_policy_evaluation,
@@ -175,8 +216,13 @@ class Solver:
             policy
         )
 
-        while True:
-            if self.partition.n_regions > 0.9 * self.model.state_dim:
+        for _ in bounded_iterations(
+            self.max_evaluation_iterations, "policy evaluation"
+        ):
+            if (
+                self.partition.n_regions
+                > self.switch_to_vi_ratio * self.model.state_dim
+            ):
                 value = self.partition.phi @ contracted_value
 
                 value = iterative_policy_evaluation(
@@ -185,6 +231,7 @@ class Solver:
                     self.discount,
                     epsilon_policy_evaluation * (1 - self.discount),
                     value,
+                    max_iterations=self.max_fallback_iterations,
                 )
 
                 return value
@@ -200,7 +247,7 @@ class Solver:
                 self.partition.aggregate_reward_policy,
                 epsilon_pbr,
                 contracted_value,
-                self.projected_steps,
+                self.max_projected_iterations,
                 shift_acceleration=True,
             )
 
@@ -219,7 +266,7 @@ class Solver:
 
                 return self.value
 
-            if self.split_method == "width":
+            if self.refinement == "width":
                 parent = self.partition.refine_by_width(
                     bellman_of_value,
                     epsilon_span,
@@ -236,7 +283,7 @@ class Solver:
         self,
         value: np.ndarray,
     ) -> np.ndarray:
-        for _ in range(self.bellman_updates):
+        for _ in range(self.bellman_iterations):
             value = compact_optimal_bellman_operator(
                 self.model, value, self.discount, self.shared_reward
             )

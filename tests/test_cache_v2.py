@@ -51,10 +51,15 @@ def test_recipes_same_name_with_different_parameters_do_not_collide(caches):
     assert_allclose(restored.reward_matrix, first.reward_matrix)
 
 
-@pytest.mark.parametrize("mode, expected_builds, has_cache", [
-    ("off", 1, False), ("readonly", 1, False),
-    ("readwrite", 1, True), ("refresh", 1, True),
-])
+@pytest.mark.parametrize(
+    "mode, expected_builds, has_cache",
+    [
+        ("off", 1, False),
+        ("readonly", 1, False),
+        ("readwrite", 1, True),
+        ("refresh", 1, True),
+    ],
+)
 def test_cache_modes_on_miss(caches, mode, expected_builds, has_cache):
     model = RecipeModel()
     model.create_model(cache=mode)

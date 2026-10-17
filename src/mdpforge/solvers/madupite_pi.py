@@ -8,8 +8,8 @@ METADATA = {
     "family": "pi",
     "backend": "madupite",
     "description": (
-        'Policy iteration with direct LU-preconditioned policy evaluation on '
-        'one MPI rank.'
+        "Policy iteration with direct LU-preconditioned policy evaluation on "
+        "one MPI rank."
     ),
     "update_scheme": "linear_solve",
 }
@@ -26,14 +26,19 @@ class Solver(MadupiteIPISolver):
         discount: float,
         final_precision: float = 1e-3,
         *,
-        max_iter_pi: int = 1000,
+        max_iterations: int = 1000,
     ):
-        """Options: max_iter_pi > 0."""
+        """Configure this solver.
+
+        final_precision: finite float > 0; absolute value error target; default 1e-3.
+        max_iterations: int > 0; outer iteration budget; default 1000.
+        """
         super().__init__(
             model,
             discount,
             final_precision,
-            max_iter_pi=max_iter_pi, max_iter_ksp=1,
+            max_iterations=max_iterations,
+            max_evaluation_iterations=1,
             ksp_type="richardson",
             pc_type="lu",
         )

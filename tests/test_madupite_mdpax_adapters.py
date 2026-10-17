@@ -16,7 +16,10 @@ def test_madupite_conversion_preserves_transition_rows(mdp_case):
     """madupite flattens (state, action) rows into (S*A, S)."""
     reward, flattened = madupite_matrices(mdp_case)
     assert_array_equal(reward, mdp_case.reward_matrix)
-    assert flattened.shape == (mdp_case.state_dim * mdp_case.action_dim, mdp_case.state_dim)
+    assert flattened.shape == (
+        mdp_case.state_dim * mdp_case.action_dim,
+        mdp_case.state_dim,
+    )
     for state in range(mdp_case.state_dim):
         for action in range(mdp_case.action_dim):
             assert_allclose(
@@ -38,7 +41,9 @@ def test_mdpax_conversion_preserves_every_sparse_transition(mdp_case):
                 weights=probabilities[state, action],
                 minlength=mdp_case.state_dim,
             )
-            assert_allclose(actual, mdp_case.transition_matrix[action][state].toarray().ravel())
+            assert_allclose(
+                actual, mdp_case.transition_matrix[action][state].toarray().ravel()
+            )
 
 
 def test_mdpax_conversion_rejects_insufficient_capacity(mdp_case):

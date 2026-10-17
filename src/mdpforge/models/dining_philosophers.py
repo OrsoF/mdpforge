@@ -68,8 +68,10 @@ class Model(MDP):
                     changes = [(1, 1)]  # thinking -> hungry
                 elif status == 1:
                     # Random first fork, dropping infeasible choices.
-                    changes = [(2 if left_free else 1, 0.5),
-                               (3 if right_free else 1, 0.5)]
+                    changes = [
+                        (2 if left_free else 1, 0.5),
+                        (3 if right_free else 1, 0.5),
+                    ]
                 elif status == 2:
                     changes = [(4 if right_free else 1, 1)]
                 elif status == 3:

@@ -11,6 +11,7 @@ from marmote.mdp import DiscountedMDP, FeedbackSolutionMDP
 from mdpforge.core.conversion import compute_marmote_args
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.solver import GenericSolver
+from mdpforge.utils.solver_options import positive_integer, positive_real
 
 METADATA = {
     "display_name": "MPI · Marmote",
@@ -29,17 +30,38 @@ class Solver(GenericSolver):
         self,
         model: MDPProtocol,
         discount: float,
-        final_precision: float,
+        final_precision: float = 1e-3,
+        *,
+        max_iterations: int = 100_000_000,
+        max_evaluation_iterations: int = 10,
+        evaluation_precision: float | None = None,
     ):
-        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
+        """Configure this solver.
+
+        final_precision: finite float > 0; absolute value error target; default 1e-3.
+        max_iterations: int > 0; outer iteration budget; default 100_000_000.
+        max_evaluation_iterations: int > 0; policy-evaluation iteration budget; default
+            10.
+        evaluation_precision: None for final_precision, or a finite float > 0; inner
+            target; default None.
+        """
+        super().__init__(
+            model, discount, final_precision, max_iterations=max_iterations
+        )
         self.model = model
         self.discount = discount
         self.name = "MPI Marmote"
 
-        self.epsilon_inner = final_precision
+        self.epsilon_inner = (
+            final_precision
+            if evaluation_precision is None
+            else positive_real(evaluation_precision, "evaluation_precision")
+        )
         self.epsilon_outer = final_precision
-        self.max_step_policy_update = int(1e8)
-        self.max_step_policy_evaluation = 10
+        self.max_iterations = positive_integer(max_iterations, "max_iterations")
+        self.max_evaluation_iterations = positive_integer(
+            max_evaluation_iterations, "max_evaluation_iterations"
+        )
 
         self.transitions, self.rewards = compute_marmote_args(self.model)
 
@@ -60,9 +82,9 @@ class Solver(GenericSolver):
 
         self.opt: FeedbackSolutionMDP = self.mdp.PolicyIterationModified(
             self.epsilon_outer,
-            self.max_step_policy_update,
+            self.max_iterations,
             self.epsilon_inner,
-            self.max_step_policy_evaluation,
+            self.max_evaluation_iterations,
         )
 
         self.runtime = time() - self.start_time

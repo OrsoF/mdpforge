@@ -26,8 +26,11 @@ class Model(MDP):
     """State (position, resources bitmask, energy), plus banked and failed."""
 
     def __init__(
-        self, state_dim: int = 514, energy: int = 7,
-        slip_probability: float = 0.1, hazard_probability: float = 0.2,
+        self,
+        state_dim: int = 514,
+        energy: int = 7,
+        slip_probability: float = 0.1,
+        hazard_probability: float = 0.2,
     ):
         if type(state_dim) is not int or state_dim < 1:
             raise ValueError("state_dim must be a positive integer")
@@ -72,9 +75,9 @@ class Model(MDP):
                         if action == 4:
                             if position == 0 and mask:
                                 builder.add(action, s, self.banked, 1)
-                                builder.rewards[s, action] = (
-                                    10 * bool(mask & 1) + 20 * bool(mask & 2)
-                                )
+                                builder.rewards[s, action] = 10 * bool(
+                                    mask & 1
+                                ) + 20 * bool(mask & 2)
                             elif position == 0:
                                 builder.add(
                                     action,

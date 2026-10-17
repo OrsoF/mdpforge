@@ -7,6 +7,7 @@ from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpax import make_mdpax_problem
+from mdpforge.utils.solver_options import positive_integer
 
 METADATA = {
     "display_name": "PI · MDPax",
@@ -32,18 +33,28 @@ class Solver(GenericSolver):
         final_precision: float = 1e-3,
         *,
         max_iterations: int = 1_000,
-        max_eval_iter: int = 10_000,
+        max_evaluation_iterations: int = 10_000,
         max_event_entries: int = 2_000_000,
         max_batch_size: int = 1024,
     ):
-        """Options: positive outer/evaluation iteration, event and batch limits."""
+        """Configure this solver.
+
+        final_precision: finite float > 0; absolute value error target; default 1e-3.
+        max_iterations: int > 0; outer iteration budget; default 1_000.
+        max_evaluation_iterations: int > 0; policy-evaluation iteration budget; default
+            10_000.
+        max_event_entries: int > 0; padded transition-event capacity; default 2_000_000.
+        max_batch_size: int > 0; backend batch-size limit; default 1024.
+        """
         super().__init__(model, discount, final_precision)
-        if min(max_iterations, max_eval_iter, max_event_entries, max_batch_size) < 1:
-            raise ValueError("MDPax limits and batch size must be positive")
-        self.max_iterations = int(max_iterations)
-        self.max_eval_iter = int(max_eval_iter)
-        self.max_event_entries = int(max_event_entries)
-        self.max_batch_size = int(max_batch_size)
+        self.max_iterations = positive_integer(max_iterations, "max_iterations")
+        self.max_evaluation_iterations = positive_integer(
+            max_evaluation_iterations, "max_evaluation_iterations"
+        )
+        self.max_event_entries = positive_integer(
+            max_event_entries, "max_event_entries"
+        )
+        self.max_batch_size = positive_integer(max_batch_size, "max_batch_size")
         self.name = "MDPax PI"
 
     def _solve(self) -> np.ndarray:
@@ -53,7 +64,7 @@ class Solver(GenericSolver):
             gamma=self.discount,
             epsilon=self.final_precision * (1 - self.discount),
             convergence_test="max_diff",
-            max_eval_iter=self.max_eval_iter,
+            max_eval_iter=self.max_evaluation_iterations,
             max_batch_size=self.max_batch_size,
             checkpoint_frequency=0,
             verbose=0,

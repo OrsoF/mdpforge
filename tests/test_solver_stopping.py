@@ -31,9 +31,7 @@ def test_solver_rejects_invalid_iteration_limit(
 
 
 def test_solver_iteration_limit_and_rerun(solver_class, recurrent_model):
-    solver = solver_class(
-        recurrent_model, 0.9, final_precision=1e-4, max_iterations=1
-    )
+    solver = solver_class(recurrent_model, 0.9, final_precision=1e-4, max_iterations=1)
     with pytest.raises(RuntimeError, match="max_iterations after 1 iterations"):
         solver.run()
 
@@ -60,9 +58,7 @@ def test_solver_accepts_convergence_on_last_iteration(solver_class, recurrent_mo
 
 
 @pytest.mark.parametrize("non_finite", [np.nan, np.inf, -np.inf])
-def test_solver_rejects_non_finite_iterates(
-    solver_class, recurrent_model, non_finite
-):
+def test_solver_rejects_non_finite_iterates(solver_class, recurrent_model, non_finite):
     recurrent_model.reward_matrix[0, :] = non_finite
     solver = solver_class(recurrent_model, 0.9, max_iterations=1)
 

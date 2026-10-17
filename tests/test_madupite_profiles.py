@@ -43,19 +43,19 @@ def test_profile_options_and_shared_solution_contract(
 def test_opi_custom_evaluation_budget(chain, monkeypatch):
     fake = install_madupite(monkeypatch, [1.8, 2, 0])
     cls = import_module("mdpforge.solvers.madupite_opi").Solver
-    cls(chain, 0.9, evaluation_sweeps=7, max_iter_pi=120).run()
+    cls(chain, 0.9, max_evaluation_iterations=7, max_iterations=120).run()
     opts = fake.calls[-1].options
     assert opts["-ksp_max_it"] == opts["-max_iter_ksp"] == "7"
     assert opts["-max_iter_pi"] == "120"
     with pytest.raises(ValueError, match="positive"):
-        cls(chain, 0.9, evaluation_sweeps=0)
+        cls(chain, 0.9, max_evaluation_iterations=0)
 
 
 def test_krylov_limit_isolation_across_profiles(chain, monkeypatch):
     fake = install_madupite(monkeypatch, [1.8, 2, 0])
     import_module("mdpforge.solvers.madupite_vi").Solver(chain, 0.9).run()
     import_module("mdpforge.solvers.madupite_ipi_bicgstab").Solver(
-        chain, 0.9, max_iter_ksp=84
+        chain, 0.9, max_evaluation_iterations=84
     ).run()
     assert fake.calls[-2].options["-ksp_max_it"] == "1"
     assert fake.calls[-1].options["-ksp_max_it"] == "84"

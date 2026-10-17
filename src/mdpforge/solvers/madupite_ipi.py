@@ -10,6 +10,7 @@ from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.madupite import madupite_matrices
+from mdpforge.utils.solver_options import positive_integer
 
 METADATA = {
     "display_name": "iPI · madupite",
@@ -34,19 +35,27 @@ class Solver(GenericSolver):
         discount: float,
         final_precision: float = 1e-3,
         *,
-        max_iter_pi: int = 1000,
-        max_iter_ksp: int = 1000,
+        max_iterations: int = 1000,
+        max_evaluation_iterations: int = 1000,
         ksp_type: str = "gmres",
         pc_type: str = "none",
     ):
-        """Options: max_iter_pi/max_iter_ksp > 0; ksp_type/pc_type are PETSc names."""
+        """Configure this solver.
+
+        final_precision: finite float > 0; absolute value error target; default 1e-3.
+        max_iterations: int > 0; outer iteration budget; default 1000.
+        max_evaluation_iterations: int > 0; policy-evaluation iteration budget; default
+            1000.
+        ksp_type: nonempty PETSc Krylov solver name; default "gmres".
+        pc_type: nonempty PETSc preconditioner name; default "none".
+        """
         super().__init__(model, discount, final_precision)
-        if max_iter_pi < 1 or max_iter_ksp < 1:
-            raise ValueError("iteration limits must be positive")
         if not ksp_type or not pc_type:
             raise ValueError("PETSc solver names must be nonempty")
-        self.max_iter_pi = int(max_iter_pi)
-        self.max_iter_ksp = int(max_iter_ksp)
+        self.max_iterations = positive_integer(max_iterations, "max_iterations")
+        self.max_evaluation_iterations = positive_integer(
+            max_evaluation_iterations, "max_evaluation_iterations"
+        )
         self.ksp_type = ksp_type
         self.pc_type = pc_type
         self.name = "madupite iPI"
@@ -87,9 +96,9 @@ class Solver(GenericSolver):
                 ("-mode", "MAXREWARD"),
                 ("-discount_factor", str(self.discount)),
                 ("-atol_pi", str(self.final_precision * (1 - self.discount))),
-                ("-max_iter_pi", str(self.max_iter_pi)),
-                ("-max_iter_ksp", str(self.max_iter_ksp)),
-                ("-ksp_max_it", str(self.max_iter_ksp)),
+                ("-max_iter_pi", str(self.max_iterations)),
+                ("-max_iter_ksp", str(self.max_evaluation_iterations)),
+                ("-ksp_max_it", str(self.max_evaluation_iterations)),
                 ("-ksp_type", self.ksp_type),
                 ("-pc_type", self.pc_type),
                 ("-file_cost", str(value_path)),
@@ -102,9 +111,7 @@ class Solver(GenericSolver):
             if not value_path.is_file() or not policy_path.is_file():
                 raise RuntimeError("madupite did not write its value/policy files")
             values = np.atleast_1d(np.loadtxt(value_path, dtype=float)).ravel()
-            raw_policy = np.atleast_1d(
-                np.loadtxt(policy_path, dtype=float)
-            ).ravel()
+            raw_policy = np.atleast_1d(np.loadtxt(policy_path, dtype=float)).ravel()
 
         if not np.all(np.isfinite(raw_policy)) or not np.all(
             raw_policy == np.rint(raw_policy)

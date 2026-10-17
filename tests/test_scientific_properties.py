@@ -12,7 +12,9 @@ from tests._contracts import enumerate_optimal_value, matrix_model
 def test_exhaustive_oracle_is_a_bellman_fixed_point(mdp_case, discount):
     """Enumeration, linear algebra and the Bellman operator must agree."""
     value = enumerate_optimal_value(mdp_case, discount)
-    assert_allclose(optimal_bellman_operator(mdp_case, value, discount), value, atol=1e-11)
+    assert_allclose(
+        optimal_bellman_operator(mdp_case, value, discount), value, atol=1e-11
+    )
 
 
 @pytest.mark.parametrize("shift", [-3.0, 2.0])

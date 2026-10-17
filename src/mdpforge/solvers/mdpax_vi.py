@@ -7,6 +7,7 @@ from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpax import make_mdpax_problem
+from mdpforge.utils.solver_options import positive_integer
 
 METADATA = {
     "display_name": "VI · MDPax",
@@ -35,13 +36,19 @@ class Solver(GenericSolver):
         max_event_entries: int = 2_000_000,
         max_batch_size: int = 1024,
     ):
-        """Options: positive iteration cap, padded event-slot cap and batch size."""
+        """Configure this solver.
+
+        final_precision: finite float > 0; absolute value error target; default 1e-3.
+        max_iterations: int > 0; outer iteration budget; default 20_000.
+        max_event_entries: int > 0; padded transition-event capacity; default 2_000_000.
+        max_batch_size: int > 0; backend batch-size limit; default 1024.
+        """
         super().__init__(model, discount, final_precision)
-        if min(max_iterations, max_event_entries, max_batch_size) < 1:
-            raise ValueError("MDPax limits and batch size must be positive")
-        self.max_iterations = int(max_iterations)
-        self.max_event_entries = int(max_event_entries)
-        self.max_batch_size = int(max_batch_size)
+        self.max_iterations = positive_integer(max_iterations, "max_iterations")
+        self.max_event_entries = positive_integer(
+            max_event_entries, "max_event_entries"
+        )
+        self.max_batch_size = positive_integer(max_batch_size, "max_batch_size")
         self.name = "MDPax VI"
 
     def _solve(self) -> np.ndarray:

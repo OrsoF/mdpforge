@@ -49,7 +49,7 @@ def test_bertsekas_pi_final_value_precision(recurrent_model):
         ("mdpforge_mpi", {}),
         ("mdpforge_mpi_reward_init", {}),
         ("aggregated_mpi", {}),
-        ("aggregated_mpi", {"split_method": "tiles", "n_tiles": 2}),
+        ("aggregated_mpi", {"refinement": "tiles", "n_tiles": 2}),
     ],
 )
 def test_mpi_precision_with_stable_policy(
@@ -62,9 +62,9 @@ def test_mpi_precision_with_stable_policy(
     # Truncation of the inner evaluation must not allow a stable policy to
     # bypass the outer precision criterion.
     if module_name == "mdpforge_mpi":
-        solver.max_iter_eval = 1
+        solver.max_evaluation_iterations = 1
     elif module_name == "mdpforge_mpi_reward_init":
-        solver.max_iter_evaluation = 1
+        solver.max_evaluation_iterations = 1
     solver.run()
 
     assert_optimal_solution(solver, recurrent_model, 0.9, 1e-4)
@@ -140,10 +140,10 @@ def test_reward_initialized_mpi_rejects_uncertified_iteration_limit(recurrent_mo
     from mdpforge.solvers.mdpforge_mpi_reward_init import Solver
 
     solver = Solver(recurrent_model, 0.9, final_precision=1e-4)
-    solver.max_iter_evaluation = 1
-    solver.max_iter_policy_update = 1
+    solver.max_evaluation_iterations = 1
+    solver.max_iterations = 1
 
-    with pytest.raises(RuntimeError, match="policy iteration budget exhausted"):
+    with pytest.raises(RuntimeError, match="max_iterations"):
         solver.run()
 
 
@@ -162,9 +162,9 @@ def test_truncated_evaluation_can_improve_initially_stable_policy(
         recurrent_model, 0.9, final_precision=1e-4
     )
     if module_name == "mdpforge_mpi":
-        solver.max_iter_eval = 1
+        solver.max_evaluation_iterations = 1
     elif module_name == "mdpforge_mpi_reward_init":
-        solver.max_iter_evaluation = 1
+        solver.max_evaluation_iterations = 1
     solver.run()
     assert_allclose(solver.value, [18, 20], atol=1e-4, rtol=0)
     np.testing.assert_array_equal(solver.policy, [1, 0])

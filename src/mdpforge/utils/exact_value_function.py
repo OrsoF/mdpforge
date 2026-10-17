@@ -15,11 +15,16 @@ def compute_value_function(model: MDPProtocol, discount: float, precision: float
     return solver.value
 
 
-def get_exact_value(model: MDPProtocol, discount: float, *, cache="readwrite") -> np.ndarray:
+def get_exact_value(
+    model: MDPProtocol, discount: float, *, cache="readwrite"
+) -> np.ndarray:
     """Get a discounted VI reference with absolute error at most 1e-6."""
     return get_cached_value_function(
-        model, discount, 1e-6,
-        lambda: compute_value_function(model, discount, 1e-6), cache=cache,
+        model,
+        discount,
+        1e-6,
+        lambda: compute_value_function(model, discount, 1e-6),
+        cache=cache,
     )
 
 

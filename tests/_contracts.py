@@ -2,6 +2,7 @@
 
 from contextlib import contextmanager
 from copy import deepcopy
+from inspect import signature
 from itertools import product
 import random
 
@@ -61,7 +62,9 @@ def sample_models():
 def assert_model_unchanged(model, reference):
     """Compare the exact CSR representation and rewards, not just their values."""
     assert (model.name, model.state_dim, model.action_dim) == (
-        reference.name, reference.state_dim, reference.action_dim
+        reference.name,
+        reference.state_dim,
+        reference.action_dim,
     )
     assert isinstance(model.reward_matrix, np.ndarray)
     assert model.reward_matrix.dtype == reference.reward_matrix.dtype
@@ -89,7 +92,7 @@ def evaluate_policy(model, policy, discount):
 
 def enumerate_optimal_value(model, discount):
     """Compute V* independently of all production solvers for tiny MDPs."""
-    if model.action_dim ** model.state_dim > 1024:
+    if model.action_dim**model.state_dim > 1024:
         raise ValueError("oracle is reserved for small MDPs")
     return np.max(
         [
@@ -124,11 +127,18 @@ def assert_optimal_solution(solver, model, discount, precision, *, expected=None
     return value.copy(), policy_value
 
 
-def run_solver_preserving_input(solver_class, reference, discount, precision, **options):
+def run_solver_preserving_input(
+    solver_class, reference, discount, precision, **options
+):
     """Exercise the external interface and preserve inputs even on failure."""
     model = deepcopy(reference)
     with reproducible_rng():
-        solver = solver_class(model, discount, final_precision=precision, **options)
+        precision_options = (
+            {"final_precision": precision}
+            if "final_precision" in signature(solver_class).parameters
+            else {}
+        )
+        solver = solver_class(model, discount, **precision_options, **options)
         assert_model_unchanged(model, reference)
         try:
             solver.run()

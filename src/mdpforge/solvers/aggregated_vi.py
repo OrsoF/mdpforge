@@ -14,6 +14,11 @@ from mdpforge.utils.projected_bellman import (
     apply_pobo_until_var_small,
     projected_optimal_bellman_operator_residual,
 )
+from mdpforge.utils.solver_options import (
+    bounded_iterations,
+    positive_integer,
+    positive_real,
+)
 
 METADATA = {
     "display_name": "Aggregated VI · mdpforge",
@@ -42,29 +47,61 @@ class Solver:
         model: MDPProtocol,
         discount: float,
         final_precision: float = 1e-3,
-        verbose: bool = False,
-        bellman_updates: int = 10,
+        bellman_iterations: int = 10,
         refinement: str = "width",
         norm_method: str = "region_size",
         with_norm_weights: bool = False,
         n_tiles: int | None = None,
-        projected_steps: int = 100,
+        max_projected_iterations: int = 100,
+        *,
+        max_iterations: int = 100_000,
+        max_fallback_iterations: int = 100_000,
+        switch_to_vi_ratio: float = 0.9,
     ):
+        """Configure this solver.
+
+        final_precision: finite float > 0; absolute value error target; default 1e-3.
+        bellman_iterations: int > 0; Bellman updates per batch; default 10.
+        refinement: "width" or "tiles"; partition refinement method; default "width".
+        norm_method: "region_size", "average_reward", "average_average_reward", or
+        "max_reward_region"; aggregation weights; default "region_size".
+        with_norm_weights: bool; enable aggregation normalization weights; default
+            False.
+        n_tiles: None for automatic sizing, or an int > 0; tiles per refinement; default
+            None.
+        max_projected_iterations: int > 0; projected iteration budget per batch; default
+            100.
+        max_iterations: int > 0; outer iteration budget; default 100_000.
+        max_fallback_iterations: int > 0; full-state iteration budget; default 100_000.
+        switch_to_vi_ratio: float in (0, 1]; region fraction triggering full-state VI;
+            default 0.9.
+        """
         assert 0 < discount < 1, "discount must be strictly between 0 and 1"
         if refinement not in {"width", "tiles"}:
             raise ValueError("refinement must be 'width' or 'tiles'")
         self._check_norm_method(norm_method)
 
+        positive_real(final_precision, "final_precision")
+        self.max_iterations = positive_integer(max_iterations, "max_iterations")
+        self.max_fallback_iterations = positive_integer(
+            max_fallback_iterations, "max_fallback_iterations"
+        )
+        self.switch_to_vi_ratio = positive_real(
+            switch_to_vi_ratio, "switch_to_vi_ratio"
+        )
+        if self.switch_to_vi_ratio > 1:
+            raise ValueError("switch_to_vi_ratio must belong to (0, 1]")
         self.model = model
         self.discount = discount
         assert final_precision > 0, "final_precision must be positive"
         self.epsilon = final_precision
-        self.verbose = verbose
-        self.bellman_updates = bellman_updates
+        self.bellman_iterations = positive_integer(
+            bellman_iterations, "bellman_iterations"
+        )
         self.refinement = refinement
         self.norm_method = norm_method
         self.with_norm_weights = with_norm_weights
-        self.n_tiles = n_tiles
+        self.n_tiles = None if n_tiles is None else positive_integer(n_tiles, "n_tiles")
         self.shared_reward = np.all(
             self.model.reward_matrix == self.model.reward_matrix[:, [0]]
         )
@@ -75,20 +112,27 @@ class Solver:
         self.partition = Partition(self.model)
         self.epsilon_pbr = self.epsilon * (1 - self.discount) / 2
         self.epsilon_span = self.epsilon * (1 - self.discount) / 2
-        self.projected_steps = projected_steps
+        self.max_projected_iterations = positive_integer(
+            max_projected_iterations, "max_projected_iterations"
+        )
 
     def run(self):
         start_time = time()
         contracted_value = np.zeros(self.partition.n_regions)
 
-        while True:
+        for _ in bounded_iterations(self.max_iterations, "aggregation"):
             switch_to_vi_condition = (
-                self.partition.n_regions > 0.9 * self.model.state_dim
+                self.partition.n_regions
+                > self.switch_to_vi_ratio * self.model.state_dim
             )
             if switch_to_vi_condition:
                 value = self.partition.phi @ contracted_value
                 value, _ = apply_obo_until_var_small(
-                    self.model, self.discount, 2 * self.epsilon_pbr, value
+                    self.model,
+                    self.discount,
+                    2 * self.epsilon_pbr,
+                    value,
+                    max_iterations=self.max_fallback_iterations,
                 )
 
                 self._finish(value, start_time)
@@ -105,7 +149,7 @@ class Solver:
                 self.epsilon_pbr,
                 contracted_value,
                 norm_weights,
-                max_steps=self.projected_steps,
+                max_steps=self.max_projected_iterations,
                 shift_acceleration=True,
             )
 
@@ -113,7 +157,6 @@ class Solver:
             contracted_value = self.partition.weights @ bellman_value
             n_regions = self.partition.n_regions
             if self.refinement == "width":
-                span = max(self.partition.span(bellman_value)) if self.verbose else None
                 self._refine_partition(bellman_value)
                 refined = self.partition.n_regions > n_regions
             else:
@@ -121,10 +164,6 @@ class Solver:
                 refined = span >= self.epsilon_span
                 if refined:
                     self._refine_partition(bellman_value)
-
-            if self.verbose:
-                print("Maximum span : {}".format(span))
-                print("K : {}".format(n_regions))
 
             if refined:
                 contracted_value = self.partition.weights @ bellman_value
@@ -153,7 +192,7 @@ class Solver:
         bellman_value = compact_optimal_bellman_operator(
             self.model, value, self.discount, self.shared_reward
         )
-        for _ in range(self.bellman_updates):
+        for _ in range(self.bellman_iterations):
             bellman_value = compact_optimal_bellman_operator(
                 self.model, bellman_value, self.discount, self.shared_reward
             )

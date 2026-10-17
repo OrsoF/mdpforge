@@ -11,6 +11,7 @@ from scipy.sparse.linalg import spsolve
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import compute_transition_reward_policy
 from mdpforge.utils.gurobi import gurobi_model_creation
+from mdpforge.utils.solver_options import positive_integer, positive_real
 
 METADATA = {
     "display_name": "LP · Gurobi · dual",
@@ -27,12 +28,21 @@ METADATA = {
 class Solver:
     def __init__(
         self,
-        env: MDPProtocol,
+        model: MDPProtocol,
         discount: float,
-        final_precision: float,
+        *,
+        threads: int = 1,
+        memory_limit_gb: float = 16.0,
     ):
+        """Configure this solver.
+
+        threads: int > 0; Gurobi thread count; default 1.
+        memory_limit_gb: finite float > 0; Gurobi memory limit in GB; default 16.0.
+        """
         assert 0 < discount < 1, "discount must be strictly between 0 and 1"
-        self.env = env
+        self.env = model
+        self.threads = positive_integer(threads, "threads")
+        self.memory_limit_gb = positive_real(memory_limit_gb, "memory_limit_gb")
         self.discount = discount
         self.name = "Gurobi LP Dual"
         self.incoming_transitions = self._build_incoming_transitions()
@@ -83,7 +93,9 @@ class Solver:
 
     def run(self):
         start_time = time.time()
-        self.model = gurobi_model_creation()
+        self.model = gurobi_model_creation(
+            threads=self.threads, memory_limit_gb=self.memory_limit_gb
+        )
 
         # Primal variables
         self._create_variables()

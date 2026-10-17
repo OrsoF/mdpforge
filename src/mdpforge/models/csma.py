@@ -38,8 +38,9 @@ class Model(MDP):
         self.name = f"csma_v1_window{backoff}_collisions{self.collisions}"
 
     def _encode(self, mask, collisions, b0, b1):
-        return (((mask * (self.collisions + 1) + collisions) * (self.backoff + 1) + b0)
-                * (self.backoff + 1) + b1)
+        return (
+            (mask * (self.collisions + 1) + collisions) * (self.backoff + 1) + b0
+        ) * (self.backoff + 1) + b1
 
     def _build_model(self):
         builder = TransitionBuilder(self.state_dim, self.action_dim)
@@ -86,7 +87,8 @@ class Model(MDP):
                                 next_mask = mask | sending
                                 builder.rewards[s, action] += 8 * sending.bit_count()
                                 target = (
-                                    self.success if next_mask == 3
+                                    self.success
+                                    if next_mask == 3
                                     else self._encode(next_mask, collisions, *counters)
                                 )
                                 builder.add(action, s, target, 1)

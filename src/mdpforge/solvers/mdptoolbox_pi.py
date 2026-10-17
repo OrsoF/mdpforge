@@ -27,14 +27,18 @@ class Solver(GenericSolver):
         self,
         model: MDPProtocol,
         discount: float,
-        final_precision: float,
+        *,
+        max_iterations: int = 100_000_000,
     ):
-        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
+        """Configure this solver.
+
+        max_iterations: int > 0; outer iteration budget; default 100_000_000.
+        """
+        super().__init__(model, discount, None, max_iterations=max_iterations)
         self.model = model
         self.discount = discount
-        self.epsilon = final_precision
         self.name = "PI MDPToolbox"
-        self.max_iter = int(1e8)
+        self.max_iterations = max_iterations
 
         self.value: np.ndarray
         self.policy: np.ndarray
@@ -46,7 +50,7 @@ class Solver(GenericSolver):
             self.model.transition_matrix,
             self.model.reward_matrix,
             discount=self.discount,
-            max_iter=self.max_iter,
+            max_iter=self.max_iterations,
         )
         self.vi.run()
         self.runtime = time.time() - start_time

@@ -8,8 +8,8 @@ METADATA = {
     "family": "mpi",
     "backend": "madupite",
     "description": (
-        'Optimistic policy iteration with a fixed number of Richardson '
-        'policy-evaluation steps.'
+        "Optimistic policy iteration with a fixed number of Richardson "
+        "policy-evaluation steps."
     ),
     "update_scheme": "mixed",
 }
@@ -26,15 +26,22 @@ class Solver(MadupiteIPISolver):
         discount: float,
         final_precision: float = 1e-3,
         *,
-        max_iter_pi: int = 1000,
-        evaluation_sweeps: int = 20,
+        max_iterations: int = 1000,
+        max_evaluation_iterations: int = 20,
     ):
-        """Options: max_iter_pi and evaluation_sweeps > 0."""
+        """Configure this solver.
+
+        final_precision: finite float > 0; absolute value error target; default 1e-3.
+        max_iterations: int > 0; outer iteration budget; default 1000.
+        max_evaluation_iterations: int > 0; policy-evaluation iteration budget; default
+            20.
+        """
         super().__init__(
             model,
             discount,
             final_precision,
-            max_iter_pi=max_iter_pi, max_iter_ksp=evaluation_sweeps,
+            max_iterations=max_iterations,
+            max_evaluation_iterations=max_evaluation_iterations,
             ksp_type="richardson",
             pc_type="none",
         )

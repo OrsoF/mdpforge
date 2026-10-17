@@ -44,7 +44,14 @@ def bad_negative_transition(model):
         (bad_transition_sum, "not stochastic"),
         (bad_negative_transition, "negative probabilities"),
     ],
-    ids=["name", "reward-shape", "transition-shape", "action-count", "stochastic", "negative"],
+    ids=[
+        "name",
+        "reward-shape",
+        "transition-shape",
+        "action-count",
+        "stochastic",
+        "negative",
+    ],
 )
 def test_model_validation_rejects_structural_violations(small_model, mutate, error):
     mutate(small_model)

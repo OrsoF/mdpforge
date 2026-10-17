@@ -27,6 +27,11 @@ import numpy as np
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import bellman_operator, compact_optimal_bellman_operator
 from mdpforge.core.partition import Partition
+from mdpforge.utils.solver_options import (
+    bounded_iterations,
+    positive_integer,
+    positive_real,
+)
 
 METADATA = {
     "display_name": "Envelope VI · mdpforge",
@@ -48,20 +53,40 @@ class Solver:
         model: MDPProtocol,
         discount: float,
         final_precision: float = 1e-3,
-        verbose: bool = False,
         refinement: str = "width",
         n_tiles: int | None = None,
-        projected_steps: int = 100,
+        max_projected_iterations: int = 100,
         refinement_width: float | None = None,
         switch_to_vi_ratio: float = 0.9,
         stop_criterion: str = "residual",
+        *,
+        max_iterations: int = 100_000,
+        max_fallback_iterations: int = 100_000,
     ):
+        """Configure this solver.
+
+        final_precision: finite float > 0; absolute value error target; default 1e-3.
+        refinement: "width" or "tiles"; partition refinement method; default "width".
+        n_tiles: None for automatic sizing, or an int > 0; tiles per refinement; default
+            None.
+        max_projected_iterations: int > 0; projected iteration budget per batch; default
+            100.
+        refinement_width: None for automatic sizing, or a positive admissible span;
+            default None.
+        switch_to_vi_ratio: float in (0, 1]; region fraction triggering full-state VI;
+            default 0.9.
+        stop_criterion: "residual" or "envelope"; final error certificate; default
+            "residual".
+        max_iterations: int > 0; outer iteration budget; default 100_000.
+        max_fallback_iterations: int > 0; full-state iteration budget; default 100_000.
+        """
         if not 0 < discount < 1:
             raise AssertionError("discount must belong to (0, 1)")
-        if final_precision <= 0:
-            raise ValueError("final_precision must be positive")
-        if projected_steps < 1:
-            raise ValueError("projected_steps must be >= 1")
+        positive_real(final_precision, "final_precision")
+        self.max_iterations = positive_integer(max_iterations, "max_iterations")
+        self.max_fallback_iterations = positive_integer(
+            max_fallback_iterations, "max_fallback_iterations"
+        )
         if refinement not in {"width", "tiles"}:
             raise ValueError("refinement must be 'width' or 'tiles'")
         if refinement_width is not None and refinement_width <= 0:
@@ -76,15 +101,16 @@ class Solver:
         self.model = model
         self.discount = discount
         self.epsilon = final_precision
-        self.verbose = verbose
         self.refinement = refinement
-        self.n_tiles = n_tiles
-        self.projected_steps = int(projected_steps)
+        self.n_tiles = None if n_tiles is None else positive_integer(n_tiles, "n_tiles")
+        self.max_projected_iterations = positive_integer(
+            max_projected_iterations, "max_projected_iterations"
+        )
         # A strict margin relative to 2 eps (1-gamma) ensures finite stopping.
         self.refinement_width = (
             final_precision * (1 - discount)
             if refinement_width is None
-            else float(refinement_width)
+            else positive_real(refinement_width, "refinement_width")
         )
         if self.refinement_width >= 2 * final_precision * (1 - discount):
             raise ValueError(
@@ -214,7 +240,7 @@ class Solver:
         Re-check the shifted vector to avoid assuming exact floating arithmetic.
         """
         threshold = self.epsilon * (1 - self.discount)
-        while True:
+        for _ in bounded_iterations(self.max_fallback_iterations, "residual polish"):
             updated = self._ground_bellman(value)
             r = updated - value
             if np.max(np.abs(r)) <= threshold:
@@ -280,10 +306,13 @@ class Solver:
     def _ground_fallback(self, lo: np.ndarray, hi: np.ndarray):
         """Certified fallback: full VI on both endpoints, not residual heuristics."""
         self.used_exact_vi = True
-        while float(np.max(hi - lo)) > 2 * self.epsilon:
+        if float(np.max(hi - lo)) <= 2 * self.epsilon:
+            return lo, hi
+        for _ in bounded_iterations(self.max_fallback_iterations, "ground VI"):
             lo = self._ground_bellman(lo)
             hi = self._ground_bellman(hi)
-        return lo, hi
+            if float(np.max(hi - lo)) <= 2 * self.epsilon:
+                return lo, hi
 
     def run(self):
         """Return when the certified sup-norm value error is <= final_precision."""
@@ -312,8 +341,8 @@ class Solver:
         xlo = self._reduce(lo, lower=True)
         xhi = self._reduce(hi, lower=False)
 
-        while True:
-            for _ in range(self.projected_steps):
+        for _ in bounded_iterations(self.max_iterations, "envelope iteration"):
+            for _ in range(self.max_projected_iterations):
                 # Region vectors only: the n-state value is never materialized
                 # inside the repeated approximate Bellman updates.
                 xlo = self._envelope_step(xlo, lower=True)
@@ -326,9 +355,6 @@ class Solver:
 
             K = self._K
             self.region_history.append((K, gap))
-            if self.verbose:
-                print(f"K={K:5d} gap={gap:.3e}, certificate={gap / 2:.3e}")
-
             if K >= self.switch_to_vi_ratio * n:
                 ground_lo, ground_hi = self._ground_fallback(
                     xlo[self._labels], xhi[self._labels]

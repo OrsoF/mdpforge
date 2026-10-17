@@ -12,6 +12,7 @@ from mdpforge.core.conversion import compute_marmote_args
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
 from mdpforge.core.solver import GenericSolver
+from mdpforge.utils.solver_options import positive_integer
 
 METADATA = {
     "display_name": "VI · Marmote",
@@ -33,15 +34,24 @@ class Solver(GenericSolver):
         model: MDPProtocol,
         discount: float,
         final_precision: float = 1e-3,
+        *,
+        max_iterations: int = 100_000_000,
     ):
-        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
+        """Configure this solver.
+
+        final_precision: finite float > 0; absolute value error target; default 1e-3.
+        max_iterations: int > 0; outer iteration budget; default 100_000_000.
+        """
+        super().__init__(
+            model, discount, final_precision, max_iterations=max_iterations
+        )
         self.model = model
         self.discount = discount
         self.name = "VI Marmote"
 
         assert final_precision > 0, "final_precision must be positive"
         self.epsilon = final_precision
-        self.max_iter = int(1e8)
+        self.max_iterations = positive_integer(max_iterations, "max_iterations")
 
         self.transitions, self.rewards = compute_marmote_args(self.model)
 
@@ -61,7 +71,7 @@ class Solver(GenericSolver):
         self.start_time = time()
 
         self.opt: SolutionMDP = self.mdp.ValueIteration(
-            self.epsilon * (1 - self.discount), self.max_iter
+            self.epsilon * (1 - self.discount), self.max_iterations
         )
 
         self.value = np.array(

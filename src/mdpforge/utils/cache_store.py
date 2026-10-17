@@ -55,7 +55,9 @@ def _read(path):
     try:
         with np.load(path, allow_pickle=False) as archive:
             metadata = json.loads(archive["metadata"].tobytes().decode("utf-8"))
-            data = {key: archive[key].copy() for key in archive.files if key != "metadata"}
+            data = {
+                key: archive[key].copy() for key in archive.files if key != "metadata"
+            }
         if not isinstance(metadata, dict):
             raise ValueError("Invalid metadata")
         return metadata, data
@@ -84,8 +86,11 @@ def _write(path, metadata, arrays):
 def load_model_entry(path, key):
     """Read and validate a model payload without modifying the caller."""
     metadata, arrays = _read(path)
-    if (metadata.get("schema") != 2 or metadata.get("kind") != "model"
-            or metadata.get("key") != key):
+    if (
+        metadata.get("schema") != 2
+        or metadata.get("kind") != "model"
+        or metadata.get("key") != key
+    ):
         raise CacheCorruptError("Model cache identity mismatch")
     try:
         states, actions = metadata["shape"]
@@ -104,8 +109,10 @@ def load_model_entry(path, key):
 
         candidate = SimpleNamespace(
             name="cached_mdp",
-            state_dim=states, action_dim=actions,
-            transition_matrix=matrices, reward_matrix=rewards,
+            state_dim=states,
+            action_dim=actions,
+            transition_matrix=matrices,
+            reward_matrix=rewards,
         )
         validate_model(candidate)
         if numerical_identity(candidate) != metadata["content_sha256"]:
@@ -130,7 +137,9 @@ def save_model_entry(path, key, model):
         arrays[f"t{i}_indices"] = matrix.indices
         arrays[f"t{i}_indptr"] = matrix.indptr
     metadata = {
-        "schema": 2, "kind": "model", "key": key,
+        "schema": 2,
+        "kind": "model",
+        "key": key,
         "shape": [int(model.state_dim), int(model.action_dim)],
         "content_sha256": checksum,
     }
@@ -142,15 +151,20 @@ def save_model_entry(path, key, model):
                 pass
             else:
                 if numerical_identity(previous) != checksum:
-                    raise CacheConflictError("One recipe produced different model matrices")
+                    raise CacheConflictError(
+                        "One recipe produced different model matrices"
+                    )
                 return
         _write(path, metadata, arrays)
 
 
 def load_value_entry(path, key, model, discount, precision):
     metadata, arrays = _read(path)
-    if (metadata.get("schema") != 2 or metadata.get("kind") != "value"
-            or metadata.get("key") != key):
+    if (
+        metadata.get("schema") != 2
+        or metadata.get("kind") != "value"
+        or metadata.get("key") != key
+    ):
         raise CacheCorruptError("Value cache identity mismatch")
     try:
         value = arrays["value"]
@@ -186,7 +200,9 @@ def verify_value(model, value, discount, precision):
 def save_value_entry(path, key, model, discount, precision, value, *, replace=False):
     value = verify_value(model, value, discount, precision)
     metadata = {
-        "schema": 2, "kind": "value", "key": key,
+        "schema": 2,
+        "kind": "value",
+        "key": key,
         "value_sha256": __value_hash(value),
     }
     with _write_lock(path):

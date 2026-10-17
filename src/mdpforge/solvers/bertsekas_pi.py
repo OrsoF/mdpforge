@@ -19,6 +19,11 @@ from mdpforge.core.precision import certify_value
 from mdpforge.utils.bellman import (
     iterative_policy_evaluation,
 )
+from mdpforge.utils.solver_options import (
+    bounded_iterations,
+    positive_integer,
+    positive_real,
+)
 
 METADATA = {
     "display_name": "Bertsekas adaptive PI · mdpforge",
@@ -41,18 +46,34 @@ class Solver:
         beta_1: float = 1e-1,
         beta_2: float = 1e-1,
         n_regions: int = 5,
-        verbose: bool = False,
+        *,
+        max_iterations: int = 100_000,
+        max_evaluation_iterations: int = 100_000,
     ):
+        """Configure this solver.
+
+        final_precision: finite float > 0; absolute value error target; default 1e-4.
+        beta_1: finite float > 0; aggregate progress factor; default 1e-1.
+        beta_2: finite float > 0; slow-progress factor; default 1e-1.
+        n_regions: int > 0; aggregate regions; default 5.
+        max_iterations: int > 0; outer iteration budget; default 100_000.
+        max_evaluation_iterations: int > 0; policy-evaluation iteration budget; default
+            100_000.
+        """
         assert 0 < discount < 1, "discount must be strictly between 0 and 1"
+        positive_real(final_precision, "final_precision")
+        self.max_iterations = positive_integer(max_iterations, "max_iterations")
+        self.max_evaluation_iterations = positive_integer(
+            max_evaluation_iterations, "max_evaluation_iterations"
+        )
         self.model = model
         self.discount = discount
         self.final_precision = final_precision
         self.epsilon_policy_evaluation = final_precision / 10
         self.epsilon_final_policy_evaluation = final_precision * (1 - discount) / 10
-        self.beta_1 = beta_1
-        self.beta_2 = beta_2
-        self.n_regions = n_regions
-        self.verbose = verbose
+        self.beta_1 = positive_real(beta_1, "beta_1")
+        self.beta_2 = positive_real(beta_2, "beta_2")
+        self.n_regions = positive_integer(n_regions, "n_regions")
 
         self.name = "BertsekasAdaptivePI"
 
@@ -66,7 +87,7 @@ class Solver:
         self.policy = np.zeros(self.model.state_dim, dtype=int)
         self.value = np.zeros(self.model.state_dim)
 
-        while True:
+        for _ in bounded_iterations(self.max_iterations, "policy iteration"):
             self.value = self._policy_evaluation(self.policy, self.value)
 
             new_policy = self._greedy_policy(self.value, self.policy)
@@ -84,15 +105,13 @@ class Solver:
                     self.discount,
                     self.epsilon_final_policy_evaluation,
                     self.value,
+                    max_iterations=self.max_evaluation_iterations,
                 )
                 self.value = certify_value(
                     self.model, self.value, self.discount, self.final_precision
                 )
 
                 self.runtime = time.time() - start_time
-                if self.verbose:
-                    print("Optimal Policy Reached.")
-
                 break
             else:
                 self.policy = new_policy
@@ -114,7 +133,9 @@ class Solver:
         previous_slow_span = np.inf
         value = initial_value.copy()
 
-        while True:
+        for _ in bounded_iterations(
+            self.max_evaluation_iterations, "policy evaluation"
+        ):
             bellman_value = bellman_policy_operator(
                 value, self.discount, transition_policy, reward_policy
             )

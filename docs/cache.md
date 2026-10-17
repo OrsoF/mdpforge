@@ -17,7 +17,11 @@ class Model(MDP):
     CACHE_VERSION = 1
 
     def get_cache_config(self):
-        return {"states": self.state_dim, "actions": self.action_dim, "my_parameter": self.my_parameter}
+        return {
+            "states": self.state_dim,
+            "actions": self.action_dim,
+            "my_parameter": self.my_parameter,
+        }
 ```
 
 La configuration est capturée avant la construction des matrices. La clé SHA-256 inclut la classe, `CACHE_VERSION`, une empreinte du module source, les paramètres canoniques et la normalisation des récompenses. Le `get_cache_config()` par défaut inspecte les attributs existants avant construction ; un type non sérialisable entraîne l'absence de mise en cache plutôt qu'une clé imprécise. **Les recettes aléatoires sans graine explicitement reproductible doivent laisser `CACHE_VERSION = None`**, valeur par défaut. Les modèles dont l'état non matriciel est modifié pendant la construction doivent également désactiver le cache ou restaurer eux-mêmes cet état de manière fiable.

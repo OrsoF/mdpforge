@@ -62,7 +62,13 @@ def _check_solver_options(name, constructor, options):
     try:
         signature = inspect.signature(constructor)
         if inspect.isclass(constructor):
-            signature.bind(None, None, final_precision=None, **options)
+            precision_options = (
+                {"final_precision": None}
+                if "final_precision" in signature.parameters
+                or any(p.kind == p.VAR_KEYWORD for p in signature.parameters.values())
+                else {}
+            )
+            signature.bind(None, None, **precision_options, **options)
         else:
             signature.bind(None, None, None, None, **options)
     except TypeError as exc:
@@ -99,11 +105,18 @@ def _solver_trial(model, constructor, options, discount, precision, seed):
         trial_model = deepcopy(model)
         np.random.seed(seed)
         random.seed(seed)
+        precision_options = {}
+        if isinstance(constructor, type):
+            parameters = inspect.signature(constructor).parameters
+            precision_options = (
+                {"final_precision": precision}
+                if "final_precision" in parameters
+                or any(p.kind == p.VAR_KEYWORD for p in parameters.values())
+                else {}
+            )
         start = perf_counter()
         if isinstance(constructor, type):
-            solver = constructor(
-                trial_model, discount, final_precision=precision, **options
-            )
+            solver = constructor(trial_model, discount, **precision_options, **options)
             solver.run()
             value = solver.value
         else:
@@ -188,8 +201,8 @@ class Benchmark:
     Models must expose ``name``, ``state_dim``, ``action_dim``,
     ``transition_matrix`` and ``reward_matrix``. Solver functions accept
     ``(transitions, rewards, discount, precision)`` and return a value vector.
-    Solver classes accept ``(model, discount, final_precision=...)`` and provide
-    ``run()`` and a ``value`` vector.
+    Solver classes accept ``(model, discount)`` with optional ``final_precision``
+    and provide ``run()`` and a ``value`` vector.
 
     Runtime includes function execution or class construction and ``run()``,
     but excludes model copying, validation and independent precision verification.

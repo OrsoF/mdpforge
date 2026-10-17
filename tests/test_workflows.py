@@ -6,6 +6,7 @@ import sys
 from copy import deepcopy
 from importlib import import_module
 from importlib.util import find_spec
+from inspect import signature
 from types import SimpleNamespace
 
 import numpy as np
@@ -58,7 +59,9 @@ def test_all_solvers_meet_precision_and_preserve_inputs(
     precision = 1e-4
     previous = None
     for _ in range(2):
-        solver = run_solver_preserving_input(solver_class, mdp_case, discount, precision)
+        solver = run_solver_preserving_input(
+            solver_class, mdp_case, discount, precision
+        )
         actual = assert_optimal_solution(solver, mdp_case, discount, precision)
         if previous is not None:
             # Value and policy value must reproduce, even if there are action ties.
@@ -103,10 +106,17 @@ def test_all_solvers_reject_invalid_discount(
         return
     solver_class = import_module(solver_module).Solver
     with pytest.raises(AssertionError, match="discount"):
-        solver_class(chain, discount, final_precision=1e-4)
+        precision_options = (
+            {"final_precision": 1e-4}
+            if "final_precision" in signature(solver_class).parameters
+            else {}
+        )
+        solver_class(chain, discount, **precision_options)
 
 
-def test_all_solvers_accept_plain_model_protocol(solver_module, chain, request, tmp_path):
+def test_all_solvers_accept_plain_model_protocol(
+    solver_module, chain, request, tmp_path
+):
     if run_external_test(request, tmp_path):
         return
     model = SimpleNamespace(
@@ -125,8 +135,12 @@ def test_all_solvers_accept_plain_model_protocol(solver_module, chain, request, 
 @pytest.mark.parametrize(
     "solver_name",
     [
-        pytest.param("mdptoolbox_mpi", marks=pytest.mark.external(dependencies=["mdptoolbox"])),
-        pytest.param("mdpsolver_pi", marks=pytest.mark.external(dependencies=["mdpsolver"])),
+        pytest.param(
+            "mdptoolbox_mpi", marks=pytest.mark.external(dependencies=["mdptoolbox"])
+        ),
+        pytest.param(
+            "mdpsolver_pi", marks=pytest.mark.external(dependencies=["mdpsolver"])
+        ),
     ],
 )
 def test_span_stopping_rule_does_not_lose_constant_value(
@@ -160,7 +174,11 @@ def test_all_vi_solvers_meet_precision_on_mixing_chain(
     model = matrix_model("mixing_chain", [transition, transition], rewards)
     solver = run_solver_preserving_input(solver_class, model, discount, 1e-4)
     # First action is optimal; linear solve is an independent reference.
-    expected = np.linalg.solve(np.eye(3) - discount * transition, model.reward_matrix[:, 0])
+    expected = np.linalg.solve(
+        np.eye(3) - discount * transition, model.reward_matrix[:, 0]
+    )
     assert_allclose(solver.value, expected, atol=1e-4, rtol=0)
-    residual = np.abs(optimal_bellman_operator(model, solver.value, discount) - solver.value).max()
+    residual = np.abs(
+        optimal_bellman_operator(model, solver.value, discount) - solver.value
+    ).max()
     assert residual <= 1e-4 * (1 - discount) * (1 + 1e-8)
