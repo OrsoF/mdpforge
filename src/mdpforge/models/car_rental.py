@@ -116,7 +116,9 @@ class Model(MDP):
             probabilities = np.zeros((side, side))
             outcomes = []
             for cars in range(side):
-                distribution = self._location_outcomes(cars, request_probs, return_probs)
+                distribution = self._location_outcomes(
+                    cars, request_probs, return_probs
+                )
                 for next_cars, (probability, _) in distribution.items():
                     probabilities[cars, next_cars] = probability
                 # Keep the original outcome order for reward accumulation.
@@ -154,7 +156,6 @@ class Model(MDP):
                 if requested_move == 0
                 else joint_transition[after_move, :]
             )
-            self.reward_matrix[:, action_index] = (
-                self.rental_reward * expected_rentals[after_move_1, after_move_2]
-                - self.movement_cost * np.abs(actual_move)
-            )
+            self.reward_matrix[:, action_index] = self.rental_reward * expected_rentals[
+                after_move_1, after_move_2
+            ] - self.movement_cost * np.abs(actual_move)

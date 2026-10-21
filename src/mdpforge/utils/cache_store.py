@@ -4,7 +4,6 @@ import json
 import os
 import tempfile
 from contextlib import contextmanager
-from pathlib import Path
 from zipfile import BadZipFile
 
 import numpy as np
@@ -105,6 +104,7 @@ def load_model_entry(path, key):
         if rewards.shape != (states, actions):
             raise ValueError("Reward dimensions do not match")
         from types import SimpleNamespace
+
         from mdpforge.core.validation import validate_model
 
         candidate = SimpleNamespace(

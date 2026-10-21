@@ -1,10 +1,10 @@
 """Scientific contracts shared by every compatible finite discounted MDP solver."""
 
+import random
 from contextlib import contextmanager
 from copy import deepcopy
 from inspect import signature
 from itertools import product
-import random
 
 import numpy as np
 from numpy.testing import assert_allclose, assert_array_equal

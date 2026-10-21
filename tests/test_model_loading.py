@@ -60,8 +60,8 @@ def test_defaults_and_internal_cache_loader_are_preserved(
     bench = Benchmark().add_mdp(category="abstract")
     original = bench._mdps[0]
     assert original.state_dim == Unichain().state_dim
-    assert persistence.model_cache_path(restored).exists()
     restored = Unichain()
+    assert persistence.model_cache_path(restored).exists()
     assert persistence.load_model(restored) is True
     np.testing.assert_array_equal(restored.reward_matrix, original.reward_matrix)
 

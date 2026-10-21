@@ -11,6 +11,7 @@ from scipy.sparse import csr_matrix
 
 from mdpforge.core.mdp import MDP
 
+
 def update_first_dam(
     current_volume: int,
     natural_flow: int,

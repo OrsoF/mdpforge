@@ -178,8 +178,9 @@ def legacy_value_function_cache_path(name: str) -> Path:
 
 def import_legacy_model_cache(model, *, trusted=False, normalize_reward=False):
     """Import a trusted legacy pickle only when explicitly authorized."""
-    from mdpforge.core.validation import validate_model
     from scipy.sparse import csr_matrix
+
+    from mdpforge.core.validation import validate_model
 
     if not trusted:
         raise ValueError("Legacy pickle import requires trusted=True")

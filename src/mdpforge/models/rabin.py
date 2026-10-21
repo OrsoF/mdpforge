@@ -34,10 +34,7 @@ class Model(MDP):
         self.processes = max(2, min(7, round(math.log(state_dim, 4))))
         super().__init__(4**self.processes, self.processes)
         self.requested_state_dim = state_dim
-        self.name = (
-            f"{self.state_dim}_{self.action_dim}_rabin_v1"
-            f"_n{self.processes}"
-        )
+        self.name = f"{self.state_dim}_{self.action_dim}_rabin_v1_n{self.processes}"
 
     def _encode(self, statuses):
         result = 0

@@ -15,7 +15,6 @@ from mdpforge.models.traffic_control import Model as TrafficControl
 from mdpforge.models.wlan import Model as WLAN
 from mdpforge.models.zenotravel import Model as ZenoTravel
 
-
 NEW_MODELS = (
     "drone_energy",
     "traffic_control",

@@ -86,8 +86,7 @@ class Model(MDP):
 
         self.truncation_tol = float(truncation_tol)
         self.name = (
-            f"{self.state_dim}_{self.action_dim}_impatience"
-            f"_tol{self.truncation_tol}"
+            f"{self.state_dim}_{self.action_dim}_impatience_tol{self.truncation_tol}"
         )
 
     def _build_model(self):

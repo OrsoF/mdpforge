@@ -107,7 +107,8 @@ def test_vi_uses_public_constructor_and_keeps_backend_bound(
         assert transitions is chain.transition_matrix
     else:
         assert_array_equal(
-            transitions, np.stack([matrix.toarray() for matrix in chain.transition_matrix])
+            transitions,
+            np.stack([matrix.toarray() for matrix in chain.transition_matrix]),
         )
         assert options.pop("initial_value") == 0
     assert options == {

@@ -1,7 +1,7 @@
 """Small controlled doubles for optional native backends (no PETSc/JAX needed)."""
 
-from types import ModuleType, SimpleNamespace
 import sys
+from types import ModuleType, SimpleNamespace
 
 import numpy as np
 

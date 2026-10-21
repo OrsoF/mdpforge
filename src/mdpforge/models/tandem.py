@@ -272,7 +272,10 @@ class Model(MDP):
             rate_service_1 = self.mu_1 * np.minimum(m1, chosen_1)
             rate_service_2 = self.mu_2 * np.minimum(m2, chosen_2)
             denominator = (
-                self.arrival_rate_lambda + rate_service_1 + rate_service_2 + self.discount
+                self.arrival_rate_lambda
+                + rate_service_1
+                + rate_service_2
+                + self.discount
             )
             c1 = chosen_1 * self.CS + m1 * self.CH
             c2 = chosen_2 * self.CS + m2 * self.CH

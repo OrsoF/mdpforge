@@ -8,7 +8,6 @@ from mdpforge.solvers import list_solvers
 from tests._contracts import assert_optimal_solution
 from tests._fake_backends import install_madupite
 
-
 # (name, family, Krylov solver, preconditioner, inner iteration budget)
 PROFILES = [
     ("madupite_vi", "vi", "richardson", "none", 1),

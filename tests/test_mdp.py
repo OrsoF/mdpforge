@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from numpy.testing import assert_allclose, assert_array_equal
+from numpy.testing import assert_allclose
 from scipy.sparse import coo_matrix, csr_matrix
 
 from mdpforge.core.mdp import MDP

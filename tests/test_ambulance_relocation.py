@@ -17,7 +17,9 @@ def test_ambulance_dynamics_costs_and_optimal_value(state_dim, action_dim):
     for state, location in enumerate(model.state_grid):
         for action, target in enumerate(model.action_grid):
             response = np.dot(model.arrival_probs, np.abs(model.state_grid - target))
-            expected_rewards[state, action] = -(response + 0.25 * abs(target - location))
+            expected_rewards[state, action] = -(
+                response + 0.25 * abs(target - location)
+            )
     assert_array_equal(model.reward_matrix, expected_rewards)
 
     probabilities = np.where(model.arrival_probs > 1e-12, model.arrival_probs, 0)
@@ -38,7 +40,9 @@ def test_ambulance_dynamics_costs_and_optimal_value(state_dim, action_dim):
     first = model.transition_matrix[0]
     for transition in model.transition_matrix[1:]:
         for field in ("data", "indices", "indptr"):
-            assert not np.shares_memory(getattr(first, field), getattr(transition, field))
+            assert not np.shares_memory(
+                getattr(first, field), getattr(transition, field)
+            )
 
 
 def test_ambulance_preserves_transition_cutoff_without_renormalizing(monkeypatch):

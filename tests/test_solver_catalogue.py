@@ -54,8 +54,7 @@ def test_solver_filters_combine_fields_with_and_and_values_with_or(solver_catalo
         e["name"] for e in list_solvers(family=["vi", "pi"], backend="mdpforge")
     ] == ["a_vi", "c_pi"]
     assert [
-        e["name"]
-        for e in list_solvers(family="vi", backend=("mdpforge", "external"))
+        e["name"] for e in list_solvers(family="vi", backend=("mdpforge", "external"))
     ] == ["a_vi", "b_vi_gs"]
     with pytest.raises(ValueError, match="No catalogue solver matches"):
         list_solvers(family="pi", backend="external")
@@ -80,5 +79,11 @@ def test_existing_solver_metadata_covers_the_catalogue():
     assert entries
     assert {e["family"] for e in entries} == {"vi", "pi", "mpi", "lp"}
     for entry in entries:
-        assert set(entry) == {"name", "display_name", "family", "backend", "description"}
+        assert set(entry) == {
+            "name",
+            "display_name",
+            "family",
+            "backend",
+            "description",
+        }
         assert all(isinstance(value, str) and value for value in entry.values())
