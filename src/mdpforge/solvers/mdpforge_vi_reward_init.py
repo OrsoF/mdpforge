@@ -6,7 +6,7 @@ from mdpforge.core.solver import GenericSolver
 
 METADATA = {
     "display_name": "VI · mdpforge · reward init",
-    "family": "vi",
+    "family": "experimental",
     "backend": "mdpforge",
     "description": (
         "Synchronous value iteration initialized from maximum immediate "

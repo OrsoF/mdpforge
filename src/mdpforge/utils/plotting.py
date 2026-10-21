@@ -21,8 +21,10 @@ def _ordered_solver_labels(solver_names, experiment):
 
     def solver_order(name):
         fields = metadata.get(name, {})
-        family = {"vi": 0, "pi": 1, "mpi": 2, "lp": 3}.get(fields.get("family"), 4)
-        if family == 4:
+        family = {"vi": 0, "pi": 1, "mpi": 2, "lp": 3, "experimental": 4}.get(
+            fields.get("family"), 5
+        )
+        if family == 5:
             return (family, "", "", ())
         parts = solver_labels[name].split(" · ")
         return (

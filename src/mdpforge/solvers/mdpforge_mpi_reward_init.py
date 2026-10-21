@@ -8,7 +8,7 @@ from mdpforge.utils.solver_options import positive_integer, positive_real
 
 METADATA = {
     "display_name": "MPI · mdpforge · reward init",
-    "family": "mpi",
+    "family": "experimental",
     "backend": "mdpforge",
     "description": (
         "Modified policy iteration with synchronous, truncated evaluation and "

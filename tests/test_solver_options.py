@@ -19,7 +19,7 @@ def test_exact_pi_runs_through_benchmark_without_precision_argument(chain):
     solver.run()
     assert_optimal_solution(solver, chain, 0.9, 1e-4)
 
-    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench = Benchmark().add_mdp(chain)
     bench.add_solver("exact", solve_function=PI, max_iterations=10)
     result = bench.run(discount=0.9, precision=1e-4, repeats=1)
     assert result.rows[0]["status"] == "success", result.rows[0]["error"]

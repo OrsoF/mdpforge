@@ -190,7 +190,8 @@ def test_profile_rejects_invalid_max_factor():
 def test_import_export_preserves_comparisons(tmp_path):
     pytest.importorskip("pandas")
     original = comparison_result()
-    path = original.export_csv(tmp_path / "benchmark.csv")
+    path = tmp_path / "benchmark.csv"
+    assert original.export_csv(path) == path
     loaded = BenchmarkResult.from_csv(path)
     assert len(loaded.rows) == len(original.rows)
     assert loaded.experiment["settings"]["repeats"] == 2

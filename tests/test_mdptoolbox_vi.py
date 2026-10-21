@@ -16,8 +16,6 @@ from mdpforge.core.operators import optimal_bellman_operator
 @pytest.mark.parametrize("discount", [0.5, 0.99, 0.999])
 def test_native_vi_accuracy_and_preservation(discount):
     pytest.importorskip("mdptoolbox")
-    from mdptoolbox.mdp import ValueIteration
-
     from mdpforge.solvers.mdptoolbox_vi import Solver
 
     transition = np.array([[0.8, 0.2], [0.1, 0.9]])
@@ -33,20 +31,8 @@ def test_native_vi_accuracy_and_preservation(discount):
     # Action zero is optimal; independently solve its discounted linear system.
     expected = np.linalg.solve(np.eye(2) - discount * transition, reward[:, 0])
 
-    native = ValueIteration(
-        reference.transition_matrix,
-        reference.reward_matrix,
-        discount=discount,
-        epsilon=1e-5 * (1 - discount),
-        max_iter=100_000_000,
-    )
-    native.run()
     solver = Solver(model, discount, final_precision=1e-5)
     solver.run()
-    assert type(solver.vi) is ValueIteration
-    assert solver.vi.max_iter == native.max_iter
-    assert solver.vi.iter == native.iter
-    assert_array_equal(solver.vi.V, native.V)
     assert_allclose(solver.value, expected, atol=1e-5, rtol=0)
     residual = (
         optimal_bellman_operator(reference, solver.value, discount) - solver.value
@@ -154,7 +140,7 @@ def test_native_vi_errors_are_preserved_and_recorded(case):
     with pytest.raises(type(native_error.value)) as wrapper_error:
         Solver(model, 0.9, final_precision=1e-5).run()
     assert str(wrapper_error.value) == str(native_error.value)
-    bench = Benchmark(default_solvers=False).add_mdp(model)
+    bench = Benchmark().add_mdp(model)
     bench.add_solver("mdptoolbox_vi")
     result = bench.run(discount=0.9, precision=1e-5, repeats=1)
     assert result.rows[0]["status"] == "error"

@@ -10,6 +10,7 @@ from scipy.sparse.linalg import spsolve
 
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import compute_transition_reward_policy
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.utils.gurobi import gurobi_model_creation
 from mdpforge.utils.solver_options import positive_integer, positive_real
 
@@ -90,7 +91,7 @@ class Solver:
                 "Contrainte",
             )
 
-    def run(self):
+    def run(self) -> SolveResult:
         start_time = time.time()
         self.model = gurobi_model_creation(
             threads=self.threads, memory_limit_gb=self.memory_limit_gb
@@ -121,3 +122,4 @@ class Solver:
         self.value = spsolve(
             eye(self.env.state_dim, format="csr") - self.discount * transition, reward
         )
+        return SolveResult.from_solver(self)

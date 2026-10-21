@@ -9,7 +9,7 @@ from mdpforge.core.solver import GenericSolver
 
 METADATA = {
     "display_name": "MPI · CMA-ES evaluation (experimental)",
-    "family": "mpi",
+    "family": "experimental",
     "backend": "cma",
     "description": (
         "Experimental policy iteration with CMA-ES minimization of the squared "

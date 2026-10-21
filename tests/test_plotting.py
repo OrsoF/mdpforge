@@ -45,7 +45,7 @@ def test_benchmark_plot_uses_recorded_metadata_labels(chain):
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench = Benchmark().add_mdp(chain)
     bench.add_solver("mdpforge_vi", solve_function=VI)
     result = bench.run(0.9, repeats=1)
     metadata = result.experiment["solvers"]["mdpforge_vi"]["metadata"]
@@ -70,7 +70,7 @@ def test_benchmark_plot_sorts_rows_without_changing_reference_or_results(chain):
         ("mpi_forge", "mpi", "mdpforge", "MPI · mdpforge", 8.0),
         ("mpi", "mpi", "mdpsolver", "MPI · MDPSolver", 2.0),
         ("pi", "pi", "mdptoolbox", "PI · MDPToolbox", 4.0),
-        ("envelope", "vi", "mdpforge", "Envelope VI · mdpforge", 16.0),
+        ("envelope", "experimental", "mdpforge", "Envelope VI · mdpforge", 16.0),
         ("custom_z", None, None, "custom_z", 1.0),
         ("custom_a", None, None, "custom_a", 0.5),
     ]
@@ -102,24 +102,24 @@ def test_benchmark_plot_sorts_rows_without_changing_reference_or_results(chain):
     fig, ax = result.plot_heat(show=False)
     try:
         assert [label.get_text() for label in ax.get_yticklabels()] == [
-            "Envelope VI · mdpforge",
             "VI · Marmote",
             "PI · MDPToolbox",
             "MPI · mdpforge",
             "MPI · MDPSolver",
             "MPI · MDPSolver · GS",
             "LP · Gurobi · dual",
+            "Envelope VI · mdpforge",
             "custom_z",
             "custom_a",
         ]
         assert [label.get_text() for label in ax.texts] == [
+            "4.00×",
+            "2.00×",
+            "1.00×",
+            "4.00×",
+            "2.00×",
+            "1.00×",
             "0.50×",
-            "4.00×",
-            "2.00×",
-            "1.00×",
-            "4.00×",
-            "2.00×",
-            "1.00×",
             "8.00×",
             "16.00×",
         ]

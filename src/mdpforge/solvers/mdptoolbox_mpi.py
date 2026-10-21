@@ -9,6 +9,7 @@ from mdptoolbox.mdp import PolicyIterationModified
 
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.utils.solver_options import positive_integer, positive_real
 
 METADATA = {
@@ -49,7 +50,7 @@ class Solver:
         self.value: np.ndarray
         self.policy: np.ndarray
 
-    def run(self):
+    def run(self) -> SolveResult:
         start_time = time.time()
 
         self.mpi = PolicyIterationModified(
@@ -66,3 +67,4 @@ class Solver:
         )
         self.policy = np.array(self.mpi.policy)
         self.runtime = time.time() - start_time
+        return SolveResult.from_solver(self)

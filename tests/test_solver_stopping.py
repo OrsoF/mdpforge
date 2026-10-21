@@ -101,7 +101,7 @@ def test_solver_reports_numerically_unattainable_precision(
 def test_benchmark_forwards_iteration_limit_and_records_failure(
     solver_class, recurrent_model
 ):
-    bench = Benchmark(default_solvers=False).add_mdp(recurrent_model)
+    bench = Benchmark().add_mdp(recurrent_model)
     bench.add_solver("bounded", solve_function=solver_class, max_iterations=1)
     result = bench.run(discount=0.9, precision=1e-4, repeats=1)
 

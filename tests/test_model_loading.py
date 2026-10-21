@@ -95,7 +95,7 @@ def test_rounded_presets_use_actual_dimensions(
         "sizes": {"small": {"requested_state_dim": requested, "parameters": {}}},
     }
     monkeypatch.setattr(models, "list_models", lambda **kwargs: [entry])
-    bench = Benchmark(default_solvers=False).add_mdp(name, size="small")
+    bench = Benchmark().add_mdp(name, size="small")
     model = bench._mdps[0]
     assert model.requested_state_dim == requested
     assert model.state_dim == actual
@@ -106,7 +106,9 @@ def test_rounded_presets_use_actual_dimensions(
     assert result.rows[0]["error_bound"] <= 1e-3
     assert result.rows[0]["requested_state_dim"] == requested
     assert result.rows[0]["state_dim"] == actual
-    restored = BenchmarkResult.from_csv(result.export_csv(tmp_path / "rounded.csv"))
+    path = tmp_path / "rounded.csv"
+    result.export_csv(path)
+    restored = BenchmarkResult.from_csv(path)
     assert restored.rows[0]["requested_state_dim"] == requested
     assert restored.experiment["models"][model.name]["state_dim"] == actual
     assert restored.experiment["models"][model.name]["requested_state_dim"] == requested
@@ -157,6 +159,7 @@ def test_benchmark_selects_catalogue_models(
         model.reward_matrix[:, 0], [0] + [-1] * (expected_states - 1)
     )
     if expected_states == 4:
+        bench.add_solver("mdpforge_vi")
         results = bench.run(discount=0.9, precision=1e-4, repeats=1)
         assert len(results.rows) == 1
         assert results.rows[0]["status"] == "success", results.rows[0]["error"]
@@ -169,7 +172,7 @@ def test_benchmark_selection_preserves_existing_instances_and_previous_result(
 ):
     existing = Unichain(state_dim=4)
     existing.create_model()
-    bench = Benchmark().add_mdp(existing)
+    bench = Benchmark().add_mdp(existing).add_solver("mdpforge_vi")
     result = bench.run(0.9, repeats=1)
     snapshot = deepcopy((result.rows, result.experiment))
 
@@ -284,6 +287,7 @@ def test_named_model_sequences_preserve_order_presets_and_existing_instances(
     assert bench.add_mdp(model=tuple(names), **options) is bench
     assert len(bench._mdps) == 2
     assert all(actual is original for actual, original in zip(bench._mdps, existing))
+    bench.add_solver("mdpforge_vi")
     result = bench.run(0.9, precision=1e-4, repeats=1)
     assert len(result.rows) == 2
     assert all(row["status"] == "success" for row in result.rows)
@@ -355,7 +359,7 @@ def test_benchmark_selection_adds_multiple_models_and_preserves_previous_result(
         return SimpleNamespace(Model=build)
 
     monkeypatch.setattr("mdpforge.core.benchmark.import_module", import_recipe)
-    bench = Benchmark().add_mdp(chain)
+    bench = Benchmark().add_mdp(chain).add_solver("mdpforge_vi")
     result = bench.run(0.9, repeats=1)
     snapshot = deepcopy((result.rows, result.experiment))
     bench.add_mdp(size="small", category="abstract")
@@ -474,6 +478,7 @@ def test_collective_additions_continue_after_missing_dependencies(
     model = bench._mdps[0]
     validate_model(model)
     np.testing.assert_allclose(model.reward_matrix, chain.reward_matrix)
+    bench.add_solver("mdpforge_vi")
     results = bench.run(discount=0.9, precision=1e-4, repeats=1)
     assert len(results.rows) == 1
     assert results.rows[0]["status"] == "success", results.rows[0]["error"]

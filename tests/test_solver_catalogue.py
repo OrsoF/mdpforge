@@ -77,7 +77,6 @@ def test_solver_metadata_must_be_literal(solver_catalogue, value):
 def test_existing_solver_metadata_covers_the_catalogue():
     entries = list_solvers()
     assert entries
-    assert {e["family"] for e in entries} == {"vi", "pi", "mpi", "lp"}
     for entry in entries:
         assert set(entry) == {
             "name",

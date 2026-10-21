@@ -27,6 +27,7 @@ import numpy as np
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import bellman_operator, compact_optimal_bellman_operator
 from mdpforge.core.partition import Partition
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.utils.solver_options import (
     bounded_iterations,
     positive_integer,
@@ -35,7 +36,7 @@ from mdpforge.utils.solver_options import (
 
 METADATA = {
     "display_name": "Envelope VI · mdpforge",
-    "family": "vi",
+    "family": "experimental",
     "backend": "mdpforge",
     "description": (
         "Progressive Bellman-envelope iteration with compressed transitions, "
@@ -313,7 +314,7 @@ class Solver:
             if float(np.max(hi - lo)) <= 2 * self.epsilon:
                 return lo, hi
 
-    def run(self):
+    def run(self) -> SolveResult:
         """Return when the certified sup-norm value error is <= final_precision."""
         start = perf_counter()
         n = self.model.state_dim
@@ -330,11 +331,11 @@ class Solver:
 
         if float(np.max(hi - lo)) <= 2 * self.epsilon:
             self._finish(lo, hi, start)
-            return
+            return SolveResult.from_solver(self)
         if self.partition.n_regions >= self.switch_to_vi_ratio * n:
             lo, hi = self._ground_fallback(lo, hi)
             self._finish(lo, hi, start)
-            return
+            return SolveResult.from_solver(self)
 
         self._precompute()
         xlo = self._reduce(lo, lower=True)
@@ -350,7 +351,7 @@ class Solver:
                 gap = float(np.max(xhi - xlo))
                 if gap <= 2 * self.epsilon:
                     self._finish(xlo[self._labels], xhi[self._labels], start)
-                    return
+                    return SolveResult.from_solver(self)
 
             K = self._K
             self.region_history.append((K, gap))
@@ -359,7 +360,7 @@ class Solver:
                     xlo[self._labels], xhi[self._labels]
                 )
                 self._finish(ground_lo, ground_hi, start)
-                return
+                return SolveResult.from_solver(self)
 
             # Two cheap compressed ground Bellman images. Using only the gap
             # is invalid because it is constant within each block.
@@ -379,7 +380,7 @@ class Solver:
                     xlo[self._labels], xhi[self._labels]
                 )
                 self._finish(ground_lo, ground_hi, start)
-                return
+                return SolveResult.from_solver(self)
 
             self.n_refinements += 1
             # Refined regions are subsets of the old regions: previous bounds
@@ -391,7 +392,7 @@ class Solver:
             if self.partition.n_regions >= self.switch_to_vi_ratio * n:
                 ground_lo, ground_hi = self._ground_fallback(ground_lo, ground_hi)
                 self._finish(ground_lo, ground_hi, start)
-                return
+                return SolveResult.from_solver(self)
             self._precompute()
             xlo = self._reduce(ground_lo, lower=True)
             xhi = self._reduce(ground_hi, lower=False)

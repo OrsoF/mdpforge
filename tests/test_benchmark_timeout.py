@@ -86,7 +86,7 @@ def test_timeout_stops_trial_and_continues(
     original = deepcopy(matrix_chain)
     children = {process.pid for process in multiprocessing.active_children()}
     marker = tmp_path / "entered.txt"
-    bench = Benchmark(default_solvers=False).add_mdp(matrix_chain)
+    bench = Benchmark().add_mdp(matrix_chain)
     bench.add_solver(
         "blocked", solve_function=constructor, outcome=outcome, marker=marker
     )
@@ -109,7 +109,8 @@ def test_timeout_stops_trial_and_continues(
     ):
         for field in ("data", "indices", "indptr"):
             assert_array_equal(getattr(actual, field), getattr(expected, field))
-    path = results.export_csv(tmp_path / "timeouts.csv")
+    path = tmp_path / "timeouts.csv"
+    results.export_csv(path)
     with path.open(newline="", encoding="utf-8") as handle:
         statuses = [row["status"] for row in csv.DictReader(handle)]
     assert statuses == ["timeout", "success"]
@@ -123,7 +124,7 @@ def test_isolated_failures_are_recorded_and_inputs_preserved(
     matrix_chain, constructor, outcome
 ):
     original = deepcopy(matrix_chain)
-    bench = Benchmark(default_solvers=False).add_mdp(matrix_chain)
+    bench = Benchmark().add_mdp(matrix_chain)
     bench.add_solver("broken", solve_function=constructor, outcome=outcome)
     bench.add_solver("mdpforge_vi")
     failed, successful = bench.run(0.9, repeats=1, timeout=10).rows
@@ -155,7 +156,7 @@ def test_spawn_reproduces_paired_seeds_and_restores_parent_rng(
     matrix_chain, constructor
 ):
     numpy_state, random_state = np.random.get_state(), random.getstate()
-    bench = Benchmark(default_solvers=False).add_mdp(matrix_chain)
+    bench = Benchmark().add_mdp(matrix_chain)
     bench.add_solver("first", solve_function=constructor, outcome="success")
     bench.add_solver("second", solve_function=constructor, outcome="success")
     direct = bench.run(0.9, precision=1e-4, repeats=2, seed=7)
@@ -187,7 +188,7 @@ def test_large_result_does_not_block_worker_exit():
     model = MDP.from_matrices(
         "large_result", [eye(16384, format="csr")], np.ones((16384, 1))
     )
-    bench = Benchmark(default_solvers=False).add_mdp(model)
+    bench = Benchmark().add_mdp(model)
     bench.add_solver("constant", solve_function=constant_reward_trial)
     row = bench.run(0.9, repeats=1, timeout=10).rows[0]
     assert row["status"] == "success", row["error"]
@@ -198,7 +199,7 @@ def test_unpickleable_solver_is_reported_and_next_trial_runs(matrix_chain):
     def local_solver(*args):
         pytest.fail("A local solver must not run with spawn")
 
-    bench = Benchmark(default_solvers=False).add_mdp(matrix_chain)
+    bench = Benchmark().add_mdp(matrix_chain)
     bench.add_solver("local", solve_function=local_solver)
     bench.add_solver("mdpforge_vi")
     failed, successful = bench.run(0.9, repeats=1, timeout=10).rows

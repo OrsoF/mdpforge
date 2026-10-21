@@ -29,7 +29,7 @@ def fixed_provenance(monkeypatch):
 def test_manifest_matches_csv_and_is_a_run_snapshot(chain, tmp_path):
     chain.parameters = {"temperature": np.float64(0.5)}
     initial_value = np.array([1.8, 2.0, 0.0])
-    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench = Benchmark().add_mdp(chain)
     bench.add_solver("warm VI", solve_function=VI, initial_value=initial_value)
     results = bench.run(0.9, precision=1e-4, repeats=2, seed=7)
     original_manifest = deepcopy(results.experiment)
@@ -40,7 +40,8 @@ def test_manifest_matches_csv_and_is_a_run_snapshot(chain, tmp_path):
     # Later changes must not rewrite the configuration that produced these rows.
     chain.parameters["temperature"] = 10
     initial_value[:] = -99
-    path = results.export_csv(tmp_path / "nested" / "results.csv")
+    path = tmp_path / "nested" / "results.csv"
+    results.export_csv(path)
     manifest = json.loads(path.with_suffix(".experiment.json").read_text())
     assert manifest["results_file"] == "results.csv"
     assert manifest["experiment_id"] == experiment_id
@@ -69,7 +70,7 @@ def test_defaults_are_recorded_without_extra_solver_construction(chain):
             calls.append((budget, mode))
             super().__init__(model, discount, final_precision)
 
-    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench = Benchmark().add_mdp(chain)
     bench.add_solver("configured", solve_function=Solver, budget=4)
     result = bench.run(0.9, repeats=1)
     assert calls == [(4, "plain")]
@@ -131,7 +132,7 @@ def test_external_and_custom_model_configurations(chain):
 
 
 def test_ids_change_between_runs_and_registration_preserves_previous_results(chain):
-    bench = Benchmark().add_mdp(chain)
+    bench = Benchmark().add_mdp(chain).add_solver("mdpforge_vi")
     first = bench.run(0.9, repeats=1)
     first_snapshot = deepcopy((first.rows, first.experiment))
     second = bench.run(0.9, repeats=1)
@@ -150,11 +151,12 @@ def test_failed_trials_export_strict_json_with_unsupported_options(chain, tmp_pa
     ):
         raise RuntimeError("deliberately broken")
 
-    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench = Benchmark().add_mdp(chain)
     bench.add_solver("broken", solve_function=broken_solver, token=object())
     result = bench.run(0.9, repeats=1)
     assert result.rows[0]["status"] == "error"
-    path = result.export_csv(tmp_path / "failed.csv")
+    path = tmp_path / "failed.csv"
+    result.export_csv(path)
 
     def reject_non_json_constant(value):
         raise AssertionError(f"Non-JSON constant: {value}")
@@ -180,14 +182,14 @@ def test_function_defaults_use_calling_convention_not_parameter_names(chain):
     def solver(p, r, gamma, epsilon, *, env="example"):
         return np.array([2 * gamma, 2, 0])
 
-    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench = Benchmark().add_mdp(chain)
     bench.add_solver("function", solve_function=solver)
     result = bench.run(0.9, repeats=1)
     assert result.experiment["solvers"]["function"]["parameters"] == {"env": "example"}
 
 
 def test_solver_catalogue_metadata_is_a_snapshot_for_aliases(chain, monkeypatch):
-    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench = Benchmark().add_mdp(chain)
     bench.add_solver("aliased VI", solve_function=VI)
     result = bench.run(0.9, repeats=1)
     record = result.experiment["solvers"]["aliased VI"]["metadata"]
@@ -200,7 +202,7 @@ def test_custom_callable_named_like_catalogue_solver_is_not_misclassified(chain)
     def custom(transitions, rewards, discount, precision):
         return np.array([2 * discount, 2, 0])
 
-    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench = Benchmark().add_mdp(chain)
     bench.add_solver("mdpforge_vi", solve_function=custom)
     result = bench.run(0.9, repeats=1)
     assert result.experiment["solvers"]["mdpforge_vi"]["metadata"] == {}

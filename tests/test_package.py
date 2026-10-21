@@ -33,7 +33,7 @@ assert model_cache_path(model).is_file()
 matrix_model = MDP.from_matrices('matrix_chain', model.transition_matrix, model.reward_matrix)
 assert isinstance(model, MDP) and isinstance(matrix_model, MDP)
 np.testing.assert_allclose(matrix_model.optimal_value_function(0.9), [1.8, 2, 0])
-bench = Benchmark().add_mdp('chain', transitions=model.transition_matrix, reward=model.reward_matrix)
+bench = Benchmark().add_mdp('chain', transitions=model.transition_matrix, reward=model.reward_matrix).add_solver('mdpforge_vi')
 results = bench.run(discount=0.9, repeats=1)
 assert isinstance(results, BenchmarkResult)
 assert len(results.rows) == 1

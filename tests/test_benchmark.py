@@ -17,16 +17,18 @@ from mdpforge.solvers.mdpforge_vi import Solver as VI
 from mdpforge.utils import persistence
 
 
-@pytest.mark.parametrize("default_solvers", [False, True])
+@pytest.mark.parametrize("with_defaults", [False, True])
 @pytest.mark.parametrize(
     "reset_options",
     [{}, {"models": False}, {"solvers": False}, {"models": False, "solvers": False}],
 )
 def test_reset_preserves_selected_registrations_and_allows_reuse(
-    chain, default_solvers, reset_options
+    chain, with_defaults, reset_options
 ):
     initial_value = np.array([1.8, 2.0, 0.0])
-    bench = Benchmark(default_solvers=default_solvers).add_mdp(chain)
+    bench = Benchmark().add_mdp(chain)
+    if with_defaults:
+        bench.add_default_solvers()
     bench.add_solver("custom", solve_function=VI, initial_value=initial_value)
     results = bench.run(discount=0.9, precision=1e-4, repeats=1)
     assert isinstance(results, BenchmarkResult)
@@ -46,7 +48,7 @@ def test_reset_preserves_selected_registrations_and_allows_reuse(
         assert len(bench._mdps) == 1
         assert bench._mdps[0] is chain
     if reset_options.get("solvers", True):
-        assert bench._solvers == ({"VI": (VI, {})} if default_solvers else {})
+        assert bench._solvers == {}
         bench.add_solver("custom", solve_function=VI, initial_value=initial_value)
     else:
         assert bench._solvers.keys() == registered_solvers.keys()
@@ -61,14 +63,14 @@ def test_reset_preserves_selected_registrations_and_allows_reuse(
         new_results.experiment["experiment_id"] != results.experiment["experiment_id"]
     )
     assert (results.rows, results.experiment) == snapshot
-    assert len(new_results.rows) == len(registered_solvers)
+    assert len(new_results.rows) == len(bench._solvers)
     assert all(row["status"] == "success" for row in new_results.rows)
     assert all(row["error_bound"] <= 1e-4 for row in new_results.rows)
 
 
 def test_reset_keeps_cached_models_and_exported_results(chain, tmp_path):
     persistence.save_model(chain)
-    bench = Benchmark().add_mdp(chain)
+    bench = Benchmark().add_mdp(chain).add_solver("mdpforge_vi")
     results = bench.run(discount=0.9, repeats=1)
     results.export_csv(tmp_path / "results.csv")
     saved_files = {
@@ -84,7 +86,7 @@ def test_reset_keeps_cached_models_and_exported_results(chain, tmp_path):
 
 
 def test_catalogue_solver_loads_class_and_forwards_options(chain):
-    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench = Benchmark().add_mdp(chain)
     bench.add_solver(solver_name="mdpforge_vi", initial_value=np.array([1.8, 2.0, 0.0]))
     results = bench.run(discount=0.9, precision=1e-4, repeats=1)
     assert len(results.rows) == 1
@@ -93,10 +95,66 @@ def test_catalogue_solver_loads_class_and_forwards_options(chain):
     assert results.rows[0]["error_bound"] <= 1e-4
 
 
+def test_default_solvers_are_explicit_and_preserve_configuration(chain):
+    bench = Benchmark().add_mdp(chain)
+    assert bench._solvers == {}
+    with pytest.raises(ValueError, match="No solver registered"):
+        bench.run(0.9)
+
+    bench.add_solver("mdpforge_vi", max_iterations=1000)
+    assert bench.add_default_solvers() is bench
+    assert list(bench._solvers) == ["mdpforge_vi", "mdpforge_mpi"]
+    assert bench._solvers["mdpforge_vi"] == (VI, {"max_iterations": 1000})
+    assert bench.add_default_solvers() is bench
+    assert list(bench._solvers) == ["mdpforge_vi", "mdpforge_mpi"]
+    results = bench.run(0.9, precision=1e-4, repeats=1)
+    assert all(row["status"] == "success" for row in results.rows)
+    assert all(row["error_bound"] <= 1e-4 for row in results.rows)
+
+    bench.reset(models=False)
+    assert bench._mdps == [chain]
+    assert bench._solvers == {}
+
+    conflict = Benchmark().add_solver("mdpforge_mpi", solve_function=VI)
+    with pytest.raises(ValueError, match="different implementation"):
+        conflict.add_default_solvers()
+    assert conflict._solvers == {"mdpforge_mpi": (VI, {})}
+
+
+def test_default_mdps_use_small_presets_and_preserve_existing(chain, monkeypatch):
+    requested = []
+
+    def import_catalogue(path):
+        name = path.rsplit(".", 1)[1]
+
+        def build(*, state_dim):
+            requested.append((name, state_dim))
+            model = type(chain)(3, 2)
+            model.name = f"default_{name}"
+            return model
+
+        return SimpleNamespace(Model=build)
+
+    monkeypatch.setattr("mdpforge.core.benchmark.import_module", import_catalogue)
+    bench = Benchmark().add_mdp(chain)
+    assert bench.add_default_mdps() is bench
+    assert [model.name for model in bench._mdps] == [
+        chain.name,
+        "default_rooms",
+        "default_mountain",
+        "default_garnet",
+    ]
+    assert requested == [("rooms", 19200), ("mountain", 10800), ("garnet", 300)]
+    assert bench.add_default_mdps() is bench
+    assert len(bench._mdps) == 4
+    for model in bench._mdps:
+        validate_model(model)
+
+
 def test_add_all_mdps_builds_defaults_and_preserves_existing(chain, monkeypatch):
     existing = SimpleNamespace(**vars(chain))
     existing.name = "built_alpha"
-    bench = Benchmark(default_solvers=False).add_mdp(existing)
+    bench = Benchmark().add_mdp(existing)
 
     def import_catalogue(path):
         name = path.rsplit(".", 1)[1]
@@ -122,8 +180,8 @@ def test_add_all_mdps_builds_defaults_and_preserves_existing(chain, monkeypatch)
         validate_model(model)
 
 
-def test_add_all_solvers_preserves_default_vi_and_skips_missing(monkeypatch):
-    bench = Benchmark()
+def test_add_all_solvers_preserves_existing_vi_and_skips_missing(monkeypatch):
+    bench = Benchmark().add_solver("baseline", solve_function=VI)
 
     def import_catalogue(path):
         name = path.rsplit(".", 1)[1]
@@ -141,14 +199,14 @@ def test_add_all_solvers_preserves_default_vi_and_skips_missing(monkeypatch):
             UserWarning, match="Skipping solver 'missing'.*missing_backend"
         ):
             assert bench.add_all_solvers() is bench
-    assert list(bench._solvers) == ["VI", "other"]
-    assert bench._solvers["VI"] == (VI, {})
+    assert list(bench._solvers) == ["baseline", "other"]
+    assert bench._solvers["baseline"] == (VI, {})
     assert bench._solvers["other"] == (MPI, {})
 
 
 def test_add_all_solvers_keeps_configured_entries_and_is_idempotent(monkeypatch):
     initial_value = np.array([1.8, 2.0, 0.0])
-    bench = Benchmark(default_solvers=False)
+    bench = Benchmark()
     bench.add_solver("configured", solve_function=VI, initial_value=initial_value)
     registration = bench._solvers["configured"]
     imported = []
@@ -182,7 +240,7 @@ def test_unknown_solver_lists_catalogue_without_importing_it(monkeypatch):
         ValueError,
         match="Unknown solver 'missing_solver'.*Available solvers:.*mdpforge_vi",
     ):
-        Benchmark(default_solvers=False).add_solver("missing_solver")
+        Benchmark().add_solver("missing_solver")
 
 
 def test_custom_solver_takes_priority_and_rejects_duplicates(chain, monkeypatch):
@@ -193,7 +251,7 @@ def test_custom_solver_takes_priority_and_rejects_duplicates(chain, monkeypatch)
         return np.array([2 * discount, 2, 0])
 
     monkeypatch.setattr("mdpforge.core.benchmark.import_module", fail_import)
-    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench = Benchmark().add_mdp(chain)
     bench.add_solver("mdpforge_vi", solve_function=custom_solver)
     results = bench.run(discount=0.9, repeats=1)
     assert results.rows[0]["solver"] == "mdpforge_vi"
@@ -211,7 +269,7 @@ def test_custom_solver_takes_priority_and_rejects_duplicates(chain, monkeypatch)
 @pytest.mark.parametrize("solver_name", [None, 0, "", " "])
 def test_add_solver_requires_nonempty_name(solver_name):
     with pytest.raises(ValueError, match="nonempty string name"):
-        Benchmark(default_solvers=False).add_solver(solver_name)
+        Benchmark().add_solver(solver_name)
 
 
 def test_function_solver_receives_matrices_and_options_alongside_classes(chain):
@@ -228,10 +286,11 @@ def test_function_solver_receives_matrices_and_options_alongside_classes(chain):
         )
 
     bench = Benchmark().add_mdp(chain)
+    bench.add_solver("mdpforge_vi")
     bench.add_solver(solver_name="mon_solver", solve_function=mon_solver, scale=1.0)
     results = bench.run(discount=0.9, precision=1e-4, repeats=2)
     assert len(results.rows) == 4
-    assert {row["solver"] for row in results.rows} == {"VI", "mon_solver"}
+    assert {row["solver"] for row in results.rows} == {"mdpforge_vi", "mon_solver"}
     assert calls == [(0.9, 1e-4, 1.0)] * 2
     for row in results.rows:
         assert row["status"] == "success", row["error"]
@@ -252,7 +311,7 @@ def test_function_solver_failures_are_recorded_and_trials_isolated(chain, outcom
             raise RuntimeError("broken function")
         return np.zeros(rewards.shape[0] - (outcome == "invalid"))
 
-    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench = Benchmark().add_mdp(chain)
     bench.add_solver("broken", solve_function=broken_solver)
     bench.add_solver("VI", solve_function=VI)
     results = bench.run(discount=0.9, repeats=2)
@@ -276,7 +335,7 @@ def test_catalogue_model_uses_own_defaults(isolated_model_cache):
     from mdpforge.models.rooms import Model
 
     expected = Model()
-    bench = Benchmark().add_mdp("rooms")
+    bench = Benchmark().add_mdp("rooms").add_solver("mdpforge_vi")
     model = bench._mdps[0]
     assert model.name == expected.name
     assert (model.state_dim, model.action_dim) == (
@@ -295,7 +354,7 @@ def test_impatience_catalogue_model_uses_current_mdp_contract(isolated_model_cac
     from mdpforge.models.impatience import Model
 
     expected = Model()
-    bench = Benchmark(default_solvers=False).add_mdp("impatience")
+    bench = Benchmark().add_mdp("impatience")
     model = bench._mdps[0]
     assert isinstance(model, MDP)
     assert (model.state_dim, model.action_dim) == (
@@ -334,17 +393,18 @@ def test_add_mdp_leaves_dimensions_to_model(option):
 
 
 @pytest.mark.parametrize("dense_input", [False, True])
-def test_matrix_benchmark_uses_default_solvers(chain, dense_input):
+def test_matrix_benchmark_uses_explicit_vi(chain, dense_input):
     transitions = chain.transition_matrix
     if dense_input:
         transitions = np.array([matrix.toarray() for matrix in transitions])
     bench = Benchmark().add_mdp(
         "my_mdp", transitions=transitions, reward=chain.reward_matrix.tolist()
     )
+    bench.add_solver("mdpforge_vi")
 
     results = bench.run(discount=0.9)
     assert len(results.rows) == 3
-    assert {row["solver"] for row in results.rows} == {"VI"}
+    assert {row["solver"] for row in results.rows} == {"mdpforge_vi"}
     for row in results.rows:
         assert row["model"] == "my_mdp"
         assert (row["state_dim"], row["action_dim"]) == (3, 2)
@@ -382,7 +442,7 @@ def test_benchmark_accepts_generated_matrix_and_external_mdps(chain, dense_input
         transition_matrix=chain.transition_matrix,
         reward_matrix=chain.reward_matrix,
     )
-    bench = Benchmark(default_solvers=False)
+    bench = Benchmark()
     for model in (chain, matrix_mdp, external_mdp):
         bench.add_mdp(model)
     for name, constructor in (("VI", VI), ("MPI", MPI)):
@@ -411,7 +471,7 @@ def test_benchmark_measures_vi_and_mpi(chain):
         transition_matrix=chain.transition_matrix,
         reward_matrix=chain.reward_matrix,
     )
-    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench = Benchmark().add_mdp(chain)
     bench.add_solver("VI", solve_function=VI)
     bench.add_solver("MPI", solve_function=MPI)
     results = bench.run(discount=0.9, repeats=2)
@@ -446,7 +506,7 @@ def test_benchmark_checks_original_model_and_isolates_trials(chain):
         def run(self):
             pass
 
-    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench = Benchmark().add_mdp(chain)
     bench.add_solver("mutating", solve_function=MutatingSolver)
     bench.add_solver("VI", solve_function=VI)
     results = bench.run(discount=0.9, repeats=2)
@@ -473,7 +533,7 @@ def test_benchmark_records_exceptions_and_continues(chain, fail_in_constructor):
         def run(self):
             raise RuntimeError("broken run")
 
-    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench = Benchmark().add_mdp(chain)
     bench.add_solver("broken", solve_function=BrokenSolver)
     bench.add_solver("VI", solve_function=VI)
     results = bench.run(discount=0.9, repeats=1)
@@ -494,7 +554,7 @@ def test_benchmark_rejects_invalid_values(chain, value):
         def run(self):
             pass
 
-    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench = Benchmark().add_mdp(chain)
     bench.add_solver("invalid", solve_function=InvalidSolver)
     row = bench.run(discount=0.9, repeats=1).rows[0]
     assert row["status"] == "error"
@@ -510,7 +570,7 @@ def test_benchmark_pairs_seeds_and_restores_rng_states(chain):
             super().run()
 
     numpy_state, random_state = np.random.get_state(), random.getstate()
-    bench = Benchmark(default_solvers=False).add_mdp(chain)
+    bench = Benchmark().add_mdp(chain)
     bench.add_solver("first", solve_function=RandomSolver)
     bench.add_solver("second", solve_function=RandomSolver)
     results = bench.run(discount=0.9, repeats=2, seed=7)
@@ -524,14 +584,15 @@ def test_benchmark_pairs_seeds_and_restores_rng_states(chain):
     assert random.getstate() == random_state
 
 
-def test_export_csv_round_trip(chain, tmp_path):
-    bench = Benchmark().add_mdp(chain)
+def test_csv_round_trip(chain, tmp_path):
+    bench = Benchmark().add_mdp(chain).add_solver("mdpforge_vi")
     results = bench.run(discount=0.9, repeats=1)
-    path = results.export_csv(tmp_path / "nested" / "benchmark.csv")
+    path = tmp_path / "nested" / "benchmark.csv"
+    assert results.export_csv(path) == path
     with path.open(encoding="utf-8", newline="") as handle:
         rows = list(csv.DictReader(handle))
     assert len(rows) == 1
-    assert rows[0]["solver"] == "VI"
+    assert rows[0]["solver"] == "mdpforge_vi"
     assert rows[0]["status"] == "success"
     assert float(rows[0]["runtime"]) == results.rows[0]["runtime"]
     bench.reset()

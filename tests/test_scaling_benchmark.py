@@ -92,7 +92,7 @@ def _scaling_result():
 
 
 def test_scaling_family_registers_distinct_seeded_models():
-    bench = ScalingBenchmark(default_solvers=False)
+    bench = ScalingBenchmark()
     assert (
         bench.add_family(_family, [2, 4], instances=2, seed=10, family="toy") is bench
     )
@@ -129,7 +129,7 @@ def test_invalid_study_parameters(sizes, instances, seed):
 
 
 def test_scaling_benchmark_returns_standard_result():
-    bench = ScalingBenchmark(default_solvers=False)
+    bench = ScalingBenchmark()
     bench.add_family(_zero_family, [2, 3], instances=2, seed=17, family="identity")
     bench.add_solver("zeros", solve_function=_zero_solver)
     result = bench.run(0.9, repeats=1)
@@ -142,7 +142,7 @@ def test_scaling_benchmark_returns_standard_result():
 
 def test_scaling_merges_rounded_requests_at_actual_dimensions(tmp_path):
     pytest.importorskip("pandas")
-    bench = ScalingBenchmark(default_solvers=False)
+    bench = ScalingBenchmark()
     bench.add_family(_rounded_zero_family, [5, 6, 7], instances=2)
     bench.add_solver("zeros", solve_function=_zero_solver)
     result = bench.run(0.9, repeats=1)
@@ -155,7 +155,9 @@ def test_scaling_merges_rounded_requests_at_actual_dimensions(tmp_path):
     assert table.loc[4, "n_instances"] == 2
     assert table.loc[6, "n_instances"] == 4
     assert table.loc[6, "success_rate"] == 1
-    restored = BenchmarkResult.from_csv(result.export_csv(tmp_path / "rounded.csv"))
+    path = tmp_path / "rounded.csv"
+    result.export_csv(path)
+    restored = BenchmarkResult.from_csv(path)
     assert restored.experiment["study"] == study
     assert restored.scaling_summary().equals(result.scaling_summary())
 
@@ -165,7 +167,7 @@ def test_scaling_plot_uses_actual_dimensions():
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    bench = ScalingBenchmark(default_solvers=False)
+    bench = ScalingBenchmark()
     bench.add_family(_rounded_zero_family, [5, 6, 7], instances=1)
     bench.add_solver("zeros", solve_function=_zero_solver)
     result = bench.run(0.9, repeats=1)
@@ -196,7 +198,9 @@ def test_scaling_summary_aggregates_instances_after_repeats():
 
 def test_scaling_validation_and_export(tmp_path):
     result = _scaling_result()
-    loaded = BenchmarkResult.from_csv(result.export_csv(tmp_path / "scale.csv"))
+    path = tmp_path / "scale.csv"
+    result.export_csv(path)
+    loaded = BenchmarkResult.from_csv(path)
     assert loaded.experiment["study"] == result.experiment["study"]
     pytest.importorskip("pandas")
     assert loaded.scaling_summary().equals(result.scaling_summary())

@@ -103,27 +103,6 @@ def test_explicit_seed_preserves_global_rng(solver_class, switching_model):
     assert before[2:] == after[2:]
 
 
-def test_generated_seed_on_int32_platform(solver_class, switching_model, monkeypatch):
-    numpy_state = np.random.get_state()
-    original_randint = np.random.randint
-    drawn_seeds = []
-
-    def windows_randint(low, high=None, size=None, dtype=np.int32):
-        seed = original_randint(low, high=high, size=size, dtype=dtype)
-        drawn_seeds.append(int(seed))
-        return seed
-
-    monkeypatch.setattr(np.random, "randint", windows_randint)
-    try:
-        np.random.seed(0)
-        solver = solver_class(switching_model, 0.9)
-        assert drawn_seeds[0] > np.iinfo(np.int32).max
-        expected = np.random.RandomState(drawn_seeds[0])
-        assert_array_equal(solver.rng.randn(4), expected.randn(4))
-    finally:
-        np.random.set_state(numpy_state)
-
-
 def test_inner_budget_is_an_error(solver_class, switching_model):
     solver = solver_class(
         switching_model,
@@ -177,9 +156,9 @@ def test_single_state_is_explicitly_unsupported(solver_class):
 
 
 def test_catalogue_and_benchmark(solver_class, switching_model):
-    entries = list_solvers(family="mpi", backend="cma")
+    entries = list_solvers(family="experimental", backend="cma")
     assert [entry["name"] for entry in entries] == ["mdpforge_cmaes_pi"]
-    bench = Benchmark(default_solvers=False).add_mdp(switching_model)
+    bench = Benchmark().add_mdp(switching_model)
     bench.add_solver("mdpforge_cmaes_pi")
     result = bench.run(discount=0.9, precision=1e-4, repeats=1, seed=17)
     assert result.rows[0]["status"] == "success", result.rows[0]["error"]

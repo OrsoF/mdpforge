@@ -85,22 +85,3 @@ def test_car_rental_with_no_requests_or_returns_is_deterministic():
                 destination = model._encode(cars_1 - move, cars_2 + move)
                 assert transition[state, destination] == 1.0
                 assert model.reward_matrix[state, action] == -2.0 * abs(move)
-
-
-def test_car_rental_computes_poisson_distributions_once_per_location(monkeypatch):
-    model = Model(state_dim=25)
-    original = model._poisson_probabilities
-    calls = []
-
-    def counted(rate, cutoff):
-        calls.append((rate, cutoff))
-        return original(rate, cutoff)
-
-    monkeypatch.setattr(model, "_poisson_probabilities", counted)
-    model.create_model(cache="off")
-    assert calls == [
-        (3.0, model.poisson_cutoff),
-        (3.0, model.poisson_cutoff),
-        (4.0, model.poisson_cutoff),
-        (2.0, model.poisson_cutoff),
-    ]

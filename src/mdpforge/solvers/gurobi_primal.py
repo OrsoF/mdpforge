@@ -7,6 +7,7 @@ import time
 import numpy as np
 
 from mdpforge.core.model import MDPProtocol
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.utils.gurobi import gurobi_model_creation
 from mdpforge.utils.solver_options import positive_integer, positive_real
 
@@ -84,7 +85,7 @@ class Solver:
                 )
         self.model.update()
 
-    def run(self):
+    def run(self) -> SolveResult:
         start_time = time.time()
         self.model = gurobi_model_creation(
             threads=self.threads, memory_limit_gb=self.memory_limit_gb
@@ -105,3 +106,4 @@ class Solver:
         self.solving_time = self.model.Runtime
         self.value = np.array(self.model.x)
         self.policy = None
+        return SolveResult.from_solver(self)

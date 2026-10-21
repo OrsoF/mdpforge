@@ -11,6 +11,7 @@ from marmote.mdp import DiscountedMDP, SolutionMDP
 from mdpforge.core.conversion import compute_marmote_args
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.solver_options import positive_integer
 
@@ -54,7 +55,7 @@ class Solver(GenericSolver):
 
         self.transitions, self.rewards = compute_marmote_args(self.model)
 
-    def run(self):
+    def run(self) -> SolveResult:
         self.state_space = MarmoteInterval(0, int(self.model.state_dim - 1))
         self.action_space = MarmoteInterval(0, int(self.model.action_dim - 1))
 
@@ -79,3 +80,4 @@ class Solver(GenericSolver):
         self.value = certify_value(self.model, self.value, self.discount, self.epsilon)
         self.policy = None
         self.runtime = time() - self.start_time
+        return SolveResult.from_solver(self)

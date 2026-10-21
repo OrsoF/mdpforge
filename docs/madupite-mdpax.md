@@ -25,7 +25,7 @@ mdp = MDP.from_matrices(
 )
 
 print(list_solvers(backend=["madupite", "mdpax"]))
-benchmark = Benchmark(default_solvers=False)
+benchmark = Benchmark()
 benchmark.add_mdp(mdp)
 benchmark.add_solver("madupite_ipi")
 benchmark.add_solver("madupite_vi")

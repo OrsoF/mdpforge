@@ -5,6 +5,7 @@ import numpy as np
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import bellman_operator, compact_optimal_bellman_operator
 from mdpforge.core.partition import Partition
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.utils.bellman import (
     apply_obo_until_var_small,
     optimal_bellman_residual,
@@ -22,7 +23,7 @@ from mdpforge.utils.solver_options import (
 
 METADATA = {
     "display_name": "Aggregated VI · mdpforge",
-    "family": "vi",
+    "family": "experimental",
     "backend": "mdpforge",
     "description": (
         "Value iteration with progressively refined state aggregation, "
@@ -115,7 +116,7 @@ class Solver:
             max_projected_iterations, "max_projected_iterations"
         )
 
-    def run(self):
+    def run(self) -> SolveResult:
         start_time = time()
         contracted_value = np.zeros(self.partition.n_regions)
 
@@ -135,7 +136,7 @@ class Solver:
                 )
 
                 self._finish(value, start_time)
-                return
+                return SolveResult.from_solver(self)
 
             self.partition.compute_agg_trans_reward_v()
             norm_weights = self._norm_weights()
@@ -183,7 +184,7 @@ class Solver:
                     self.model, value, self.discount
                 ) <= self.epsilon * (1 - self.discount):
                     self._finish(value, start_time)
-                    return
+                    return SolveResult.from_solver(self)
 
     def _bellman_steps(self, contracted_value: np.ndarray) -> np.ndarray:
         """Optimal Bellman operator."""

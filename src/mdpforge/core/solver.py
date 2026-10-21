@@ -4,6 +4,7 @@ import numpy as np
 
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import optimal_bellman_operator
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.utils.exact_value_function import distance_to_optimal, get_exact_value
 
 
@@ -41,8 +42,8 @@ class GenericSolver:
         self.policy: np.ndarray | None = None
         self.runtime: float = 0.0
 
-    def run(self) -> None:
-        """Run the algorithm, store NumPy values and measure elapsed seconds."""
+    def run(self) -> SolveResult:
+        """Run the algorithm and return its result."""
         start = perf_counter()
         self.iterations = 0
         self.stop_reason = None
@@ -50,6 +51,7 @@ class GenericSolver:
             self.value = np.asarray(self._solve())
         finally:
             self.runtime = perf_counter() - start
+        return SolveResult.from_solver(self)
 
     def _check_iteration(
         self,

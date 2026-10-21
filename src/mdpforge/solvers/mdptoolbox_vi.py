@@ -9,6 +9,7 @@ from mdptoolbox.mdp import ValueIteration
 
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 
 METADATA = {
@@ -52,7 +53,7 @@ class Solver(GenericSolver):
         self.value: np.ndarray
         self.policy: np.ndarray
 
-    def run(self):
+    def run(self) -> SolveResult:
         start_time = time.time()
 
         self.vi = ValueIteration(
@@ -69,3 +70,4 @@ class Solver(GenericSolver):
 
         self.value = certify_value(self.model, self.value, self.discount, self.epsilon)
         self.runtime = time.time() - start_time
+        return SolveResult.from_solver(self)
