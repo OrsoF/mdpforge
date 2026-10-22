@@ -2,14 +2,13 @@
 Solver calling the MDP Toolbox Modified Policy Iteration solver.
 """
 
-import time
-
 import numpy as np
 from mdptoolbox.mdp import PolicyIterationModified
 
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
 from mdpforge.core.solve_result import SolveResult
+from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.solver_options import positive_integer, positive_real
 
 METADATA = {
@@ -23,7 +22,7 @@ METADATA = {
 }
 
 
-class Solver:
+class Solver(GenericSolver):
     def __init__(
         self,
         model: MDPProtocol,
@@ -39,6 +38,7 @@ class Solver:
             10.
         """
         assert 0 < discount < 1, "discount must be strictly between 0 and 1"
+        super().__init__(model, discount, final_precision)
         self.model = model
         self.gamma = discount
         self.epsilon = positive_real(final_precision, "final_precision")
@@ -47,11 +47,7 @@ class Solver:
         )
 
         self.name = "MPI MDPToolbox"
-        self.value: np.ndarray
-        self.policy: np.ndarray
-
-    def run(self) -> SolveResult:
-        start_time = time.time()
+    def _solve(self) -> SolveResult:
 
         self.mpi = PolicyIterationModified(
             self.model.transition_matrix,
@@ -62,9 +58,8 @@ class Solver:
         )
         self.mpi.run()
 
-        self.value = certify_value(
+        value = certify_value(
             self.model, np.asarray(self.mpi.V), self.gamma, self.epsilon
         )
-        self.policy = np.array(self.mpi.policy)
-        self.runtime = time.time() - start_time
-        return SolveResult.from_solver(self)
+        policy = np.array(self.mpi.policy)
+        return SolveResult(value, policy, 0.0)

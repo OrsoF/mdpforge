@@ -117,8 +117,7 @@ def _solver_trial(model, constructor, options, discount, precision, seed):
         start = perf_counter()
         if isinstance(constructor, type):
             solver = constructor(trial_model, discount, **precision_options, **options)
-            solver.run()
-            value = solver.value
+            value = solver.run().value
         else:
             value = constructor(
                 trial_model.transition_matrix,

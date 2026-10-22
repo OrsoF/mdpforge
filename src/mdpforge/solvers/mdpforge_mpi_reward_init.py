@@ -88,6 +88,5 @@ class Solver(GenericSolver):
                     and np.array_equal(new_policy, policy)
                 ),
             ):
-                self.policy = new_policy
-                return self._result(value)
+                return self._result(value, new_policy)
             policy = new_policy

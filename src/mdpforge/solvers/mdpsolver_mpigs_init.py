@@ -50,7 +50,7 @@ class Solver(GenericSolver):
         self.mdl = create_mdpsolver(model, discount, mdpsolver)
 
     def _solve(self) -> SolveResult:
-        value, self.policy = solve_mdpsolver(
+        value, policy = solve_mdpsolver(
             self.mdl,
             algorithm="mpi",
             tolerance=self.final_precision,
@@ -65,4 +65,4 @@ class Solver(GenericSolver):
             parIterLim=self.max_evaluation_iterations,
         )
 
-        return self._result(value)
+        return self._result(value, policy)

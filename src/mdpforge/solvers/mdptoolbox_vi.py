@@ -2,8 +2,6 @@
 Solver calling the MDP Toolbox Value Iteration solver.
 """
 
-import time
-
 import numpy as np
 from mdptoolbox.mdp import ValueIteration
 
@@ -50,24 +48,19 @@ class Solver(GenericSolver):
         self.name = "VI MDPToolbox"
         self.max_iterations = max_iterations
 
-        self.value: np.ndarray
-        self.policy: np.ndarray
-
-    def run(self) -> SolveResult:
-        start_time = time.time()
+    def _solve(self) -> SolveResult:
 
         self.vi = ValueIteration(
             self.model.transition_matrix,
             self.model.reward_matrix,
             discount=self.discount,
-            epsilon=self.epsilon * (1 - self.discount),
+            epsilon=self.epsilon,
             max_iter=self.max_iterations,
         )
         self.vi.run()
 
-        self.value = np.array(self.vi.V)
-        self.policy = np.array(self.vi.policy)
+        value = np.array(self.vi.V)
+        policy = np.array(self.vi.policy)
 
-        self.value = certify_value(self.model, self.value, self.discount, self.epsilon)
-        self.runtime = time.time() - start_time
-        return SolveResult.from_solver(self)
+        value = certify_value(self.model, value, self.discount, self.epsilon)
+        return SolveResult(value, policy, 0.0)

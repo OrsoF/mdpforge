@@ -2,8 +2,6 @@
 Solver calling the MDP Toolbox Gauss-Seidel Value Iteration solver.
 """
 
-import time
-
 import numpy as np
 from mdptoolbox.mdp import ValueIterationGS
 
@@ -50,11 +48,7 @@ class Solver(GenericSolver):
         self.name = "VIGS MDPToolbox"
         self.max_iterations = max_iterations
 
-        self.value: np.ndarray
-        self.policy: np.ndarray
-
-    def run(self) -> SolveResult:
-        start_time = time.time()
+    def _solve(self) -> SolveResult:
 
         transitions = np.array(
             [matrix.toarray() for matrix in self.model.transition_matrix]
@@ -73,9 +67,8 @@ class Solver(GenericSolver):
         )
         self.vi.run()
 
-        self.value = np.array(self.vi.V)
-        self.policy = np.array(self.vi.policy)
+        value = np.array(self.vi.V)
+        policy = np.array(self.vi.policy)
 
-        self.value = certify_value(self.model, self.value, self.discount, self.epsilon)
-        self.runtime = time.time() - start_time
-        return SolveResult.from_solver(self)
+        value = certify_value(self.model, value, self.discount, self.epsilon)
+        return SolveResult(value, policy, 0.0)

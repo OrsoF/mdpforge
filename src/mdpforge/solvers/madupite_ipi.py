@@ -125,5 +125,4 @@ class Solver(GenericSolver):
         ):
             raise RuntimeError("madupite returned an invalid policy")
         value = certify_value(self.model, values, self.discount, self.final_precision)
-        self.policy = policy
-        return self._result(value)
+        return self._result(value, policy)

@@ -2,8 +2,6 @@
 Solver calling the MDP Toolbox Value Iteration solver.
 """
 
-import time
-
 import numpy as np
 from mdptoolbox.mdp import PolicyIteration
 
@@ -40,11 +38,7 @@ class Solver(GenericSolver):
         self.name = "PI MDPToolbox"
         self.max_iterations = max_iterations
 
-        self.value: np.ndarray
-        self.policy: np.ndarray
-
-    def run(self) -> SolveResult:
-        start_time = time.time()
+    def _solve(self) -> SolveResult:
 
         self.vi = PolicyIteration(
             self.model.transition_matrix,
@@ -53,8 +47,6 @@ class Solver(GenericSolver):
             max_iter=self.max_iterations,
         )
         self.vi.run()
-        self.runtime = time.time() - start_time
-
-        self.value = np.array(self.vi.V)
-        self.policy = np.array(self.vi.policy)
-        return SolveResult.from_solver(self)
+        value = np.array(self.vi.V)
+        policy = np.array(self.vi.policy)
+        return SolveResult(value, policy, 0.0)

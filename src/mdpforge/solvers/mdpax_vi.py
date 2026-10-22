@@ -72,5 +72,4 @@ class Solver(GenericSolver):
         ):
             raise RuntimeError("MDPax returned an invalid policy")
         values = certify_value(self.model, values, self.discount, self.final_precision)
-        self.policy = policy
-        return self._result(values)
+        return self._result(values, policy)

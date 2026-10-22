@@ -56,7 +56,7 @@ class Solver(GenericSolver):
         self.mdl = create_mdpsolver(model, discount, mdpsolver)
 
     def _solve(self) -> SolveResult:
-        value, self.policy = solve_mdpsolver(
+        value, policy = solve_mdpsolver(
             self.mdl,
             algorithm="pi",
             tolerance=self.final_precision,
@@ -74,5 +74,6 @@ class Solver(GenericSolver):
         )
 
         return self._result(
-            certify_value(self.model, value, self.discount, self.final_precision)
+            certify_value(self.model, value, self.discount, self.final_precision),
+            policy,
         )
