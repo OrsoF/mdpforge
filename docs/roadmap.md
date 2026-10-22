@@ -7,7 +7,6 @@
 - [ ] Pourquoi ça ne tourne pas en local ? OSError c'esst quoi ce truc
 - [ ] Lister et ajouter des version alternatives de VI. Pourquoi VIGS tourne bien sous C++ et pas sous python ?
 - [ ] Plusieurs paramétrages pour visor ?
-- [ ] Auditer les tests: est-ce qu'ils vont trop loin ?
 - [ ] Pourquoi git se lance pas dans le terminal local ?
 - [ ] Supprimer tous les tests: écrire seulement ceux les plus importants. En particulier: 
     - test de l'out de chaque solveur: a precision crtierion. Est-ce que le mettrait pas dans SolveResult directement ?
@@ -17,4 +16,3 @@
 - [ ] Raccourcir les docs md si possible.
 - [ ] D'autres solveurs à ajouter ?
 - [ ] Comment on finetune un paramètres dans un solveur MDP ?
-

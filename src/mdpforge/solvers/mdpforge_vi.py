@@ -2,6 +2,7 @@ import numpy as np
 
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import optimal_bellman_operator
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 
 METADATA = {
@@ -46,7 +47,7 @@ class Solver(GenericSolver):
             raise ValueError("initial_value must contain one finite value per state")
         self.name = "mdpforge VI"
 
-    def _solve(self) -> np.ndarray:
+    def _solve(self) -> SolveResult:
         value = self.initial_value.copy()
         tolerance = self.final_precision * (1 - self.discount)
 
@@ -60,5 +61,5 @@ class Solver(GenericSolver):
                 new_value,
                 stagnated=np.array_equal(new_value, value),
             ):
-                return new_value
+                return self._result(new_value)
             value = new_value

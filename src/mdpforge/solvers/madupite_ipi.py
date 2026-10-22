@@ -8,6 +8,7 @@ import numpy as np
 
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.madupite import madupite_matrices
 from mdpforge.utils.solver_options import positive_integer
@@ -59,7 +60,7 @@ class Solver(GenericSolver):
         self.pc_type = pc_type
         self.name = "madupite iPI"
 
-    def _solve(self) -> np.ndarray:
+    def _solve(self) -> SolveResult:
         # mdpforge independently manages processes and checks one complete
         # vector on each trial. An external mpirun needs a separate runner.
         _rank, size = md.mpi_rank_size()
@@ -125,4 +126,4 @@ class Solver(GenericSolver):
             raise RuntimeError("madupite returned an invalid policy")
         value = certify_value(self.model, values, self.discount, self.final_precision)
         self.policy = policy
-        return value
+        return self._result(value)

@@ -5,6 +5,7 @@ from cma import CMAEvolutionStrategy
 
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import bellman_operator, compute_transition_reward_policy
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 
 METADATA = {
@@ -164,7 +165,7 @@ class Solver(GenericSolver):
             f"error bound {error_bound:g}; budget or optimizer stopping criterion."
         )
 
-    def _solve(self) -> np.ndarray:
+    def _solve(self) -> SolveResult:
         """Return only when both value and policy quality are certified."""
         tolerance = self.final_precision * (1 - self.discount)
         states = np.arange(self.model.state_dim)
@@ -179,7 +180,7 @@ class Solver(GenericSolver):
                 np.isfinite(optimal_residual + policy_residual)
                 and optimal_residual + policy_residual <= tolerance
             ):
-                return self.value
+                return self._result(self.value)
             self.policy = q_value.argmax(axis=1)
 
         raise RuntimeError(

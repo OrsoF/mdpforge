@@ -6,6 +6,7 @@ import mdpsolver
 import numpy as np
 
 from mdpforge.core.model import MDPProtocol
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpsolver import create_mdpsolver, solve_mdpsolver
 from mdpforge.utils.solver_options import initial_vectors, positive_integer
@@ -55,7 +56,7 @@ class Solver(GenericSolver):
         self.name = "MPI MDPSolver"
         self.mdl = create_mdpsolver(model, discount, mdpsolver)
 
-    def _solve(self) -> np.ndarray:
+    def _solve(self) -> SolveResult:
         value, self.policy = solve_mdpsolver(
             self.mdl,
             algorithm="mpi",
@@ -72,4 +73,4 @@ class Solver(GenericSolver):
             verbose=False,
         )
 
-        return value
+        return self._result(value)

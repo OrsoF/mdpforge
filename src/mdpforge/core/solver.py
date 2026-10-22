@@ -9,7 +9,7 @@ from mdpforge.utils.exact_value_function import distance_to_optimal, get_exact_v
 
 
 class GenericSolver:
-    """Base for solvers that implement _solve() and return a value vector.
+    """Base for solvers that implement _solve() and return a SolveResult.
 
     Constructor options are available to the algorithm as instance attributes.
     The algorithm may also set self.policy; otherwise it remains None.
@@ -48,10 +48,22 @@ class GenericSolver:
         self.iterations = 0
         self.stop_reason = None
         try:
-            self.value = np.asarray(self._solve())
+            result = self._solve()
+            self.value = np.asarray(result.value)
+            self.policy = result.policy
+            self.iterations = result.iterations or 0
+            self.stop_reason = result.stop_reason
         finally:
             self.runtime = perf_counter() - start
-        return SolveResult.from_solver(self)
+        result.value = self.value
+        result.runtime = self.runtime
+        return result
+
+    def _result(self, value: np.ndarray) -> SolveResult:
+        """Package a computed value with the current policy and stop details."""
+        return SolveResult(
+            np.asarray(value), self.policy, 0.0, self.iterations or None, self.stop_reason
+        )
 
     def _check_iteration(
         self,
@@ -82,8 +94,8 @@ class GenericSolver:
             f"(Bellman residual={residual:g}, tolerance={tolerance:g})"
         )
 
-    def _solve(self) -> np.ndarray:
-        """Return one value per state; optionally set self.policy."""
+    def _solve(self) -> SolveResult:
+        """Return the computed value and available solution details."""
         raise NotImplementedError("Subclasses must implement _solve().")
 
     def distance_to_optimal(self):
