@@ -7,8 +7,7 @@ mdpforge benchmarks new finite MDPs and new MDP solvers. Prefer small, useful ch
 - Inspect the working-tree status, affected files, and relevant callers. Read the whole repository or run a baseline only when needed to understand the change.
 - Make the smallest robust change. Avoid unrelated refactors, wrappers, compatibility layers, new hierarchies, and repository-wide formatting.
 - Preserve user changes and deliberate deletions. Do not restore removed models or solvers, or modify baseline algorithms, unless the task calls for it.
-- Do not modify `README.md` unless the user explicitly asks for it.
-- Verify paths and interfaces before documenting them. Update only documentation affected by the change.
+- Do not create or modify documentation unless the user explicitly asks for it. When requested, write concisely and compactly, and verify paths and interfaces before documenting them.
 - In all Markdown (`.md`) files, keep each prose paragraph on a single source line, including paragraphs within list items; do not insert manual line wrapping. Preserve structural line breaks in lists, tables, code blocks, and other Markdown constructs.
 - Keep function and method docstrings very short: one sentence by default. For public options, list each keyword, its accepted values and a brief meaning. Include only essential constraints; put longer explanations in dedicated docs.
 
@@ -23,7 +22,7 @@ mdpforge benchmarks new finite MDPs and new MDP solvers. Prefer small, useful ch
 
 ## Validation
 
-Do not add tests unless explicitly requested. Do not run tests or Ruff automatically; run them only when explicitly requested. When pytest is requested, run the full suite without a separate backend mode. Tests run all installed backends automatically; skip only missing dependencies. When adding tests is requested, cover meaningful behavior changes using small deterministic instances, numerical invariants, and value/policy quality. Run requested checks once after the change stabilizes; repeat only after a failure or further edits. Do not run heavy benchmarks unless needed for the task. Respect requests to skip checks.
+Do not add new tests unless the user explicitly requests them. Do not run tests or Ruff automatically; run them only when explicitly requested. When pytest is requested, run the full suite without a separate backend mode. Tests run all installed backends automatically; skip only missing dependencies. When adding tests is requested, cover meaningful behavior changes using small deterministic instances, numerical invariants, and value/policy quality. Run requested checks once after the change stabilizes; repeat only after a failure or further edits. Do not run heavy benchmarks unless needed for the task. Respect requests to skip checks.
 
 ## Checkpush
 
