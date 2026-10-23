@@ -45,7 +45,8 @@ class GenericSolver:
         self._stop_reason = None
         result = self._solve()
         result.value = np.asarray(result.value)
-        result.runtime = perf_counter() - start
+        if result.runtime == 0.0:
+            result.runtime = perf_counter() - start
         return result
 
     def _result(self, value: np.ndarray, policy: np.ndarray | None = None) -> SolveResult:

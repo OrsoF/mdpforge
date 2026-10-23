@@ -8,6 +8,7 @@ import numpy as np
 
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.solve_result import SolveResult
+from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.gurobi import gurobi_model_creation
 from mdpforge.utils.solver_options import positive_integer, positive_real
 
@@ -22,7 +23,7 @@ METADATA = {
 }
 
 
-class Solver:
+class Solver(GenericSolver):
     def __init__(
         self,
         model: MDPProtocol,
@@ -37,6 +38,7 @@ class Solver:
         memory_limit_gb: finite float > 0; Gurobi memory limit in GB; default 16.0.
         """
         assert 0 < discount < 1, "discount must be strictly between 0 and 1"
+        super().__init__(model, discount, None)
         self.env = model
         self.threads = positive_integer(threads, "threads")
         self.memory_limit_gb = positive_real(memory_limit_gb, "memory_limit_gb")
@@ -85,7 +87,7 @@ class Solver:
                 )
         self.model.update()
 
-    def run(self) -> SolveResult:
+    def _solve(self) -> SolveResult:
         start_time = time.time()
         self.model = gurobi_model_creation(
             threads=self.threads, memory_limit_gb=self.memory_limit_gb
@@ -102,8 +104,7 @@ class Solver:
 
         self.model.optimize()
 
-        self.runtime = time.time() - start_time
+        runtime = time.time() - start_time
         self.solving_time = self.model.Runtime
-        self.value = np.array(self.model.x)
-        self.policy = None
-        return SolveResult.from_solver(self)
+        value = np.array(self.model.x)
+        return SolveResult(value, None, runtime)

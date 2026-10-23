@@ -65,7 +65,7 @@ class Solver(GenericSolver):
 
         self.transitions, self.rewards = compute_marmote_args(self.model)
 
-    def run(self) -> SolveResult:
+    def _solve(self) -> SolveResult:
         self.state_space = MarmoteInterval(0, int(self.model.state_dim - 1))
         self.action_space = MarmoteInterval(0, int(self.model.action_dim - 1))
 
@@ -78,7 +78,7 @@ class Solver(GenericSolver):
             self.discount,
         )
 
-        self.start_time = time()
+        start_time = time()
 
         self.opt: FeedbackSolutionMDP = self.mdp.PolicyIterationModified(
             self.epsilon_outer,
@@ -87,10 +87,9 @@ class Solver(GenericSolver):
             self.max_evaluation_iterations,
         )
 
-        self.runtime = time() - self.start_time
+        runtime = time() - start_time
 
-        self.value = np.array(
+        value = np.array(
             [self.opt.getValueIndex(ss) for ss in range(self.model.state_dim)]
         )
-        self.policy = None
-        return SolveResult.from_solver(self)
+        return SolveResult(value, None, runtime)

@@ -2,6 +2,8 @@
 Solver calling the MDP Toolbox Modified Policy Iteration solver.
 """
 
+import time
+
 import numpy as np
 from mdptoolbox.mdp import PolicyIterationModified
 
@@ -48,6 +50,7 @@ class Solver(GenericSolver):
 
         self.name = "MPI MDPToolbox"
     def _solve(self) -> SolveResult:
+        start_time = time.time()
 
         self.mpi = PolicyIterationModified(
             self.model.transition_matrix,
@@ -62,4 +65,4 @@ class Solver(GenericSolver):
             self.model, np.asarray(self.mpi.V), self.gamma, self.epsilon
         )
         policy = np.array(self.mpi.policy)
-        return SolveResult(value, policy, 0.0)
+        return SolveResult(value, policy, time.time() - start_time)
