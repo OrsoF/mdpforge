@@ -44,7 +44,7 @@ class Model(MDP):
         self.max_rounds = max_rounds
         self.tie_probability = float(tie_probability)
         self.delay = max(
-            2, round(((state_dim - 2) / (2 * (max_rounds + 1))) ** 0.5) - 1
+            2, round((max(0, state_dim - 2) / (2 * (max_rounds + 1))) ** 0.5) - 1
         )
         super().__init__(2 * (self.delay + 1) ** 2 * (max_rounds + 1) + 2, 3)
         self.requested_state_dim = state_dim

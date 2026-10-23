@@ -39,11 +39,15 @@ def test_solver_iteration_limit_and_rerun(solver_class, recurrent_model):
     assert solver.iterations == 1
     assert np.isfinite(solver.runtime) and solver.runtime >= 0
 
-    solver.max_iterations = 1_000
+    solver = solver_class(
+        recurrent_model, 0.9, final_precision=1e-4, max_iterations=1_000
+    )
     solver.run()
 
     assert solver.stop_reason == "converged"
     assert 1 < solver.iterations <= solver.max_iterations
+    assert_optimal_solution(solver, recurrent_model, 0.9, 1e-4)
+    solver.run()
     assert_optimal_solution(solver, recurrent_model, 0.9, 1e-4)
 
 

@@ -44,7 +44,7 @@ class Model(MDP):
         self.max_collisions = max_collisions
         self.external_interference = float(external_interference)
         self.backoff_limit = max(
-            1, round(((state_dim - 2) / (4 * (max_collisions + 1))) ** 0.5) - 1
+            1, round((max(0, state_dim - 2) / (4 * (max_collisions + 1))) ** 0.5) - 1
         )
         super().__init__(
             4 * (self.backoff_limit + 1) ** 2 * (max_collisions + 1) + 2, 3

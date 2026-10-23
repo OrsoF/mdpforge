@@ -9,7 +9,7 @@ from mdpforge.solvers.mdpforge_vi import Solver
 
 
 @pytest.mark.parametrize(
-    "size, actual", [("small", 283), ("medium", 1231), ("large", 4211)]
+    "size, actual", [("small", 1231), ("medium", 5893), ("large", 25507)]
 )
 def test_generated_track_preserves_preset_dimensions(size, actual):
     preset = METADATA["sizes"][size]

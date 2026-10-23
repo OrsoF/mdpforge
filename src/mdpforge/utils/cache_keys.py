@@ -107,7 +107,10 @@ def recipe_identity(model, *, normalize_reward=False):
     if config is None:
         return None
     implementation = type(model)
-    source_file = inspect.getsourcefile(implementation)
+    try:
+        source_file = inspect.getsourcefile(implementation)
+    except (OSError, TypeError):
+        source_file = None
     # Source changes invalidate recipes; missing source requires explicit versioning.
     source_hash = (
         hashlib.sha256(Path(source_file).read_bytes()).hexdigest()

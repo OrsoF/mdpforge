@@ -62,9 +62,10 @@ def test_recipes_same_name_with_different_parameters_do_not_collide(caches):
 )
 def test_cache_modes_on_miss(caches, mode, expected_builds, has_cache):
     model = RecipeModel()
+    path = persistence.model_cache_path(model)
     model.create_model(cache=mode)
     assert RecipeModel.builds == expected_builds
-    assert persistence.model_cache_path(model).exists() is has_cache
+    assert path.exists() is has_cache
 
 
 def test_refresh_rebuilds_while_readonly_reuses_without_writing(caches):

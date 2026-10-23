@@ -37,7 +37,7 @@ class Model(MDP):
             raise ValueError("state_dim must be a positive integer")
         if not 0 <= traffic_delay <= 1 or not 0 <= cargo_damage <= 1:
             raise ValueError("probabilities must be in [0, 1]")
-        self.locations = max(3, round(((state_dim - 2) / 2) ** 0.5))
+        self.locations = max(3, round((max(0, state_dim - 2) / 2) ** 0.5))
         self.traffic_delay = float(traffic_delay)
         self.cargo_damage = float(cargo_damage)
         super().__init__(2 * self.locations**2 + 2, 5)

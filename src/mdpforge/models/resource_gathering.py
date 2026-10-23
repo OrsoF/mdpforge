@@ -41,7 +41,9 @@ class Model(MDP):
         self.energy = energy
         self.slip_probability = float(slip_probability)
         self.hazard_probability = float(hazard_probability)
-        self.width = max(3, round(math.sqrt((state_dim - 2) / (4 * (energy + 1)))))
+        self.width = max(
+            3, round(math.sqrt(max(0, state_dim - 2) / (4 * (energy + 1))))
+        )
         self.cells = self.width**2
         super().__init__(self.cells * 4 * (energy + 1) + 2, 5)
         self.requested_state_dim = state_dim

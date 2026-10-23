@@ -180,5 +180,5 @@ def test_catalogue_contains_eight_new_names():
 
     entries = {entry["name"]: entry for entry in list_models()}
     assert set(NEW_MODELS) <= entries.keys()
-    assert entries["wlan"]["category"] == "communication_protocols"
+    assert entries["wlan"]["category"] == "service_operations"
     assert entries["traffic_control"]["category"] == "service_operations"

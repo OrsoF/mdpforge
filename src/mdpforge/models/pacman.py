@@ -25,7 +25,7 @@ class Model(MDP):
     def __init__(self, state_dim: int = 326):
         if type(state_dim) is not int or state_dim < 1:
             raise ValueError("state_dim must be a positive integer")
-        self.width = max(3, round(((state_dim - 2) / 4) ** 0.25))
+        self.width = max(3, round((max(0, state_dim - 2) / 4) ** 0.25))
         self.cells = self.width * self.width
         super().__init__(4 * self.cells * self.cells + 2, 4)
         self.requested_state_dim = state_dim

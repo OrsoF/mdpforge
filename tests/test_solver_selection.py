@@ -6,6 +6,7 @@ from numpy.testing import assert_allclose
 
 from mdpforge import Benchmark, list_solvers
 from mdpforge.solvers.mdpforge_vi import Solver as VI
+from tests._contracts import run_solver_preserving_input
 
 
 def select_fake_solvers(monkeypatch, constructors, backend="mdpforge"):
@@ -31,8 +32,7 @@ def test_filtered_pi_solvers_preserve_solution_quality(chain):
         assert row["status"] == "success", row["error"]
         assert row["error_bound"] <= 1e-4
     for constructor, options in bench._solvers.values():
-        solver = constructor(chain, 0.9, final_precision=1e-4, **options)
-        solver.run()
+        solver = run_solver_preserving_input(constructor, chain, 0.9, 1e-4, **options)
         assert_allclose(solver.value, [1.8, 2, 0], atol=1e-4, rtol=0)
 
 
