@@ -16,6 +16,7 @@ from mdpforge.core.operators import (
 )
 from mdpforge.core.partition import Partition
 from mdpforge.core.precision import certify_value
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.utils.bellman import (
     iterative_policy_evaluation,
 )
@@ -27,7 +28,7 @@ from mdpforge.utils.solver_options import (
 
 METADATA = {
     "display_name": "Bertsekas adaptive PI · mdpforge",
-    "family": "pi",
+    "family": "experimental",
     "backend": "mdpforge",
     "description": (
         "Policy iteration combining synchronous policy evaluation with "
@@ -81,7 +82,7 @@ class Solver:
     def span_state_space(self, value: np.ndarray) -> float:
         return value.max() - value.min()
 
-    def run(self):
+    def run(self) -> SolveResult:
         start_time = time.time()
         self.policy = np.zeros(self.model.state_dim, dtype=int)
         self.value = np.zeros(self.model.state_dim)
@@ -114,6 +115,8 @@ class Solver:
                 break
             else:
                 self.policy = new_policy
+
+        return SolveResult.from_solver(self)
 
     def _greedy_policy(self, value: np.ndarray, policy: np.ndarray) -> np.ndarray:
         q_value = bellman_operator(self.model, value, self.discount)

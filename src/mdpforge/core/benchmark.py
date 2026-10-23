@@ -117,8 +117,7 @@ def _solver_trial(model, constructor, options, discount, precision, seed):
         start = perf_counter()
         if isinstance(constructor, type):
             solver = constructor(trial_model, discount, **precision_options, **options)
-            solver.run()
-            value = solver.value
+            value = solver.run().value
         else:
             value = constructor(
                 trial_model.transition_matrix,
@@ -195,9 +194,6 @@ def _isolated_solver_trial(
 class Benchmark:
     """Compare catalogue, matrix-defined or already-built finite discounted MDPs.
 
-    VI is registered by default; use default_solvers=False to select
-    only your own solvers.
-
     Models must expose ``name``, ``state_dim``, ``action_dim``,
     ``transition_matrix`` and ``reward_matrix``. Solver functions accept
     ``(transitions, rewards, discount, precision)`` and return a value vector.
@@ -208,21 +204,15 @@ class Benchmark:
     but excludes model copying, validation and independent precision verification.
     """
 
-    def __init__(self, *, default_solvers=True):
-        self._default_solvers = default_solvers
+    def __init__(self):
         self._mdps: list[MDPProtocol] = []
         self._solvers = {}  # label -> (solver class/function, options)
-        if default_solvers:
-            from mdpforge.solvers.mdpforge_vi import Solver as VI
-
-            self.add_solver("VI", solve_function=VI)
 
     def reset(self, *, models=True, solvers=True):
         """Reset registrations; previously returned BenchmarkResult objects are kept.
 
         models: True removes all registered MDPs; False keeps them.
-        solvers: True restores VI alone if constructed with default_solvers=True,
-            otherwise removes all solvers. False keeps solvers and their options.
+        solvers: True removes all solvers; False keeps them and their options.
 
         Return self for chaining. Cached models and exported files are kept.
         """
@@ -230,10 +220,6 @@ class Benchmark:
             self._mdps.clear()
         if solvers:
             self._solvers.clear()
-            if self._default_solvers:
-                from mdpforge.solvers.mdpforge_vi import Solver as VI
-
-                self.add_solver("VI", solve_function=VI)
         return self
 
     def add_mdp(
@@ -353,6 +339,32 @@ class Benchmark:
             print(f"Added MDP {name!r}", flush=True)
         return self
 
+    def remove_model(self, model_name: str):
+        """Remove a registered model by name and return self.
+
+        model_name: exact registered name or unique catalogue ID.
+        """
+        if not isinstance(model_name, str) or not model_name.strip():
+            raise ValueError("model_name must be a nonempty string")
+        for index, model in enumerate(self._mdps):
+            if model.name == model_name:
+                del self._mdps[index]
+                return self
+        matches = [
+            index
+            for index, model in enumerate(self._mdps)
+            if type(model).__module__ == f"{models.__name__}.{model_name}"
+        ]
+        if len(matches) == 1:
+            del self._mdps[matches[0]]
+            return self
+        if matches:
+            raise ValueError(
+                f"Multiple models from {model_name!r} are registered; "
+                "use the exact model.name."
+            )
+        raise ValueError(f"Model {model_name!r} is not registered.")
+
     def _add_catalogue_model(self, name, *, preset=None, grouped=False, verbose=False):
         """Build a recipe; groups skip duplicates and missing dependencies."""
         if verbose:
@@ -415,6 +427,12 @@ class Benchmark:
             )
         return self
 
+    def add_default_mdps(self, *, verbose=False):
+        """Add small Rooms, Mountain Car and Garnet models; return self."""
+        return self.add_mdp(
+            ("rooms", "mountain", "garnet"), size="small", verbose=verbose
+        )
+
     def add_solver(
         self,
         solver_name: str | None = None,
@@ -431,7 +449,8 @@ class Benchmark:
         solve_function: custom function/class, or None for catalogue solvers.
             Requires solver_name; cannot accompany metadata filters.
         family: "vi" (value iteration), "pi" (policy iteration),
-            "mpi" (modified policy iteration), "lp" (linear programming).
+            "mpi" (modified policy iteration), "lp" (linear programming),
+            or "experimental" (experimental methods and variants).
         backend: implementation library: "mdpforge", "mdpsolver", "marmote",
             "mdptoolbox", "madupite", "mdpax", "gurobi" or "cma".
         **options: selected solver's constructor/function keywords, e.g.
@@ -491,6 +510,18 @@ class Benchmark:
         self._solvers[solver_name] = (solve_function, options)
         return self
 
+    def remove_solver(self, solver_name: str):
+        """Remove a registered solver by label and return self.
+
+        solver_name: nonempty label previously passed to add_solver().
+        """
+        if not isinstance(solver_name, str) or not solver_name.strip():
+            raise ValueError("A solver must have a nonempty string name.")
+        if solver_name not in self._solvers:
+            raise ValueError(f"Solver {solver_name!r} is not registered.")
+        del self._solvers[solver_name]
+        return self
+
     def _add_solver_group(self, entries, options):
         """Check the entire selection before committing new registrations."""
         pending = {}
@@ -517,12 +548,21 @@ class Benchmark:
             self._solvers.update(pending)
         return self
 
-    def add_all_solvers(self):
-        """Add all catalogue solvers with defaults, preserving existing entries.
+    def add_default_solvers(self):
+        """Add catalogue mdpforge VI and MPI solvers; return self."""
+        pending = {}
+        for name in ("mdpforge_vi", "mdpforge_mpi"):
+            constructor = _load_solver(name)
+            if name in self._solvers:
+                if self._solvers[name][0] is not constructor:
+                    raise ValueError(f"Solver {name!r} has a different implementation")
+            else:
+                pending[name] = (constructor, {})
+        self._solvers.update(pending)
+        return self
 
-        Default VI is not duplicated under its catalogue name. Missing
-        dependencies are skipped with a warning; other errors propagate.
-        """
+    def add_all_solvers(self):
+        """Add all catalogue solvers, preserving existing entries."""
         # Pass names only to preserve the existing backend checks.
         entries = (
             {"name": entry["name"]}

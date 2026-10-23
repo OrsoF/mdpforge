@@ -11,8 +11,7 @@ def compute_value_function(model: MDPProtocol, discount: float, precision: float
     from mdpforge.solvers.mdpforge_vi import Solver
 
     solver = Solver(model, discount, precision)
-    solver.run()
-    return solver.value
+    return solver.run().value
 
 
 def get_exact_value(

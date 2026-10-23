@@ -103,9 +103,9 @@ def enumerate_optimal_value(model, discount):
     )
 
 
-def assert_optimal_solution(solver, model, discount, precision, *, expected=None):
+def assert_optimal_solution(result, model, discount, precision, *, expected=None):
     """Assert the value bound and the returned policy's actual optimality."""
-    value = np.asarray(solver.value)
+    value = np.asarray(result.value)
     assert value.shape == (model.state_dim,)
     assert np.isfinite(value).all()
     if expected is None:
@@ -114,7 +114,7 @@ def assert_optimal_solution(solver, model, discount, precision, *, expected=None
     residual = np.max(np.abs(optimal_bellman_operator(model, value, discount) - value))
     assert residual <= precision * (1 - discount) * (1 + 1e-8)
 
-    policy = solver.policy
+    policy = result.policy
     if policy is None:
         policy = bellman_operator(model, value, discount).argmax(axis=1)
     policy = np.asarray(policy)
@@ -123,7 +123,7 @@ def assert_optimal_solution(solver, model, discount, precision, *, expected=None
     assert np.all((0 <= policy) & (policy < model.action_dim))
     policy_value = evaluate_policy(model, policy, discount)
     assert_allclose(policy_value, expected, atol=precision, rtol=0)
-    assert np.isfinite(solver.runtime) and solver.runtime >= 0
+    assert np.isfinite(result.runtime) and result.runtime >= 0
     return value.copy(), policy_value
 
 
@@ -141,7 +141,7 @@ def run_solver_preserving_input(
         solver = solver_class(model, discount, **precision_options, **options)
         assert_model_unchanged(model, reference)
         try:
-            solver.run()
+            result = solver.run()
         finally:
             assert_model_unchanged(model, reference)
-    return solver
+    return result

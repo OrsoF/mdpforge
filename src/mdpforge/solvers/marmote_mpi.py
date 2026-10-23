@@ -10,6 +10,7 @@ from marmote.mdp import DiscountedMDP, FeedbackSolutionMDP
 
 from mdpforge.core.conversion import compute_marmote_args
 from mdpforge.core.model import MDPProtocol
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.solver_options import positive_integer, positive_real
 
@@ -64,7 +65,7 @@ class Solver(GenericSolver):
 
         self.transitions, self.rewards = compute_marmote_args(self.model)
 
-    def run(self):
+    def _solve(self) -> SolveResult:
         self.state_space = MarmoteInterval(0, int(self.model.state_dim - 1))
         self.action_space = MarmoteInterval(0, int(self.model.action_dim - 1))
 
@@ -77,7 +78,7 @@ class Solver(GenericSolver):
             self.discount,
         )
 
-        self.start_time = time()
+        start_time = time()
 
         self.opt: FeedbackSolutionMDP = self.mdp.PolicyIterationModified(
             self.epsilon_outer,
@@ -86,9 +87,9 @@ class Solver(GenericSolver):
             self.max_evaluation_iterations,
         )
 
-        self.runtime = time() - self.start_time
+        runtime = time() - start_time
 
-        self.value = np.array(
+        value = np.array(
             [self.opt.getValueIndex(ss) for ss in range(self.model.state_dim)]
         )
-        self.policy = None
+        return SolveResult(value, None, runtime)

@@ -4,6 +4,7 @@ from scipy.sparse.linalg import spsolve
 
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import bellman_operator, compute_transition_reward_policy
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.solver_options import initial_vectors
 
@@ -40,10 +41,10 @@ class Solver(GenericSolver):
         )
         self.name = "mdpforge PI"
 
-    def _solve(self) -> np.ndarray:
+    def _solve(self) -> SolveResult:
         policy = self.initial_policy.copy()
         for iteration in range(1, self.max_iterations + 1):
-            self.iterations = iteration
+            self._iterations = iteration
             value = self._policy_evaluation_matrix(policy)
             new_policy = bellman_operator(self.model, value, self.discount).argmax(
                 axis=1
@@ -51,14 +52,13 @@ class Solver(GenericSolver):
             policy_stable = np.array_equal(new_policy, policy)
 
             if not np.all(np.isfinite(value)):
-                self.stop_reason = "non_finite"
+                self._stop_reason = "non_finite"
                 raise RuntimeError("PI stopped: non_finite policy values")
             if policy_stable:
-                self.policy = policy
-                self.stop_reason = "converged"
-                return value
+                self._stop_reason = "converged"
+                return self._result(value, policy)
             policy = new_policy
-        self.stop_reason = "max_iterations"
+        self._stop_reason = "max_iterations"
         raise RuntimeError("PI stopped: max_iterations reached")
 
     def _policy_evaluation_matrix(self, policy: np.ndarray) -> np.ndarray:

@@ -15,6 +15,7 @@ from mdpforge.core.operators import (
     q_optimal_bellman_operator,
 )
 from mdpforge.core.partition import Partition
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.bellman import (
     apply_obo_until_var_small,
@@ -32,7 +33,7 @@ from mdpforge.utils.solver_options import (
 
 METADATA = {
     "display_name": "Aggregated QVI · mdpforge",
-    "family": "vi",
+    "family": "experimental",
     "backend": "mdpforge",
     "description": (
         "Q-value iteration with progressive state aggregation, synchronous "
@@ -100,7 +101,7 @@ class Solver(GenericSolver):
         self.epsilon_pbr = self.epsilon * (1 - self.discount) / 2
         self.epsilon_span = self.epsilon * (1 - self.discount) / 2
 
-    def run(self):
+    def run(self) -> SolveResult:
         start_time = time()
         contracted_q_value = np.zeros(
             (len(self.partition.states_in_region), self.model.action_dim)
@@ -124,7 +125,7 @@ class Solver(GenericSolver):
                     self.model, self.value[:, None], self.discount
                 )
                 self._finish(self.q_value, start_time)
-                return
+                return SolveResult.from_solver(self)
 
             self.partition.compute_agg_trans_reward_q()
 
@@ -165,7 +166,7 @@ class Solver(GenericSolver):
                 ) <= self.epsilon * (1 - self.discount):
                     self.contracted_q_value = contracted_q_value
                     self._finish(q_value, start_time)
-                    return
+                    return SolveResult.from_solver(self)
 
     def _bellman_steps(self, q_value: np.ndarray) -> np.ndarray:
         value = q_value.max(axis=1)

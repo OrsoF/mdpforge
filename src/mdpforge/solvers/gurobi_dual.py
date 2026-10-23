@@ -10,6 +10,8 @@ from scipy.sparse.linalg import spsolve
 
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import compute_transition_reward_policy
+from mdpforge.core.solve_result import SolveResult
+from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.gurobi import gurobi_model_creation
 from mdpforge.utils.solver_options import positive_integer, positive_real
 
@@ -24,7 +26,7 @@ METADATA = {
 }
 
 
-class Solver:
+class Solver(GenericSolver):
     def __init__(
         self,
         model: MDPProtocol,
@@ -39,6 +41,7 @@ class Solver:
         memory_limit_gb: finite float > 0; Gurobi memory limit in GB; default 16.0.
         """
         assert 0 < discount < 1, "discount must be strictly between 0 and 1"
+        super().__init__(model, discount, None)
         self.env = model
         self.threads = positive_integer(threads, "threads")
         self.memory_limit_gb = positive_real(memory_limit_gb, "memory_limit_gb")
@@ -90,7 +93,7 @@ class Solver:
                 "Contrainte",
             )
 
-    def run(self):
+    def _solve(self) -> SolveResult:
         start_time = time.time()
         self.model = gurobi_model_creation(
             threads=self.threads, memory_limit_gb=self.memory_limit_gb
@@ -108,7 +111,7 @@ class Solver:
         # Solving
         self.model.optimize()
 
-        self.runtime = time.time() - start_time
+        runtime = time.time() - start_time
         self.solving_time = self.model.Runtime
 
         occupancy = np.zeros((self.env.state_dim, self.env.action_dim))
@@ -116,8 +119,9 @@ class Solver:
             for a in range(self.env.action_dim):
                 occupancy[s, a] = self.var[(s, a)].X
 
-        self.policy = occupancy.argmax(axis=1)
-        transition, reward = compute_transition_reward_policy(self.env, self.policy)
-        self.value = spsolve(
+        policy = occupancy.argmax(axis=1)
+        transition, reward = compute_transition_reward_policy(self.env, policy)
+        value = spsolve(
             eye(self.env.state_dim, format="csr") - self.discount * transition, reward
         )
+        return SolveResult(value, policy, runtime)

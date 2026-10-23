@@ -8,6 +8,7 @@ import numpy as np
 from mdptoolbox.mdp import PolicyIteration
 
 from mdpforge.core.model import MDPProtocol
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 
 METADATA = {
@@ -39,10 +40,7 @@ class Solver(GenericSolver):
         self.name = "PI MDPToolbox"
         self.max_iterations = max_iterations
 
-        self.value: np.ndarray
-        self.policy: np.ndarray
-
-    def run(self):
+    def _solve(self) -> SolveResult:
         start_time = time.time()
 
         self.vi = PolicyIteration(
@@ -52,7 +50,7 @@ class Solver(GenericSolver):
             max_iter=self.max_iterations,
         )
         self.vi.run()
-        self.runtime = time.time() - start_time
-
-        self.value = np.array(self.vi.V)
-        self.policy = np.array(self.vi.policy)
+        runtime = time.time() - start_time
+        value = np.array(self.vi.V)
+        policy = np.array(self.vi.policy)
+        return SolveResult(value, policy, runtime)

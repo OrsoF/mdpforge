@@ -2,13 +2,14 @@ import numpy as np
 
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import bellman_operator, compute_transition_reward_policy
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.bellman import iterative_policy_evaluation
 from mdpforge.utils.solver_options import positive_integer, positive_real
 
 METADATA = {
     "display_name": "MPI · mdpforge · reward init",
-    "family": "mpi",
+    "family": "experimental",
     "backend": "mdpforge",
     "description": (
         "Modified policy iteration with synchronous, truncated evaluation and "
@@ -52,7 +53,7 @@ class Solver(GenericSolver):
             max_evaluation_iterations, "max_evaluation_iterations"
         )
 
-    def _solve(self) -> np.ndarray:
+    def _solve(self) -> SolveResult:
         policy = np.argmax(self.model.reward_matrix, axis=1)
         value = self.model.reward_matrix.max(axis=1)
         evaluation_tolerance = self.evaluation_precision * (1 - self.discount)
@@ -87,6 +88,5 @@ class Solver(GenericSolver):
                     and np.array_equal(new_policy, policy)
                 ),
             ):
-                self.policy = new_policy
-                return value
+                return self._result(value, new_policy)
             policy = new_policy

@@ -9,9 +9,9 @@ Contraintes d'intégration au catalogue, en complément des [consignes du dépô
 - Utiliser les données du modèle construit par `create_model()` : `state_dim`, `action_dim`, `transition_matrix[a]` (CSR SciPy de forme `(S, S)`) et `reward_matrix[s, a]` (NumPy de forme `(S, A)`). Ne pas exiger de méthodes du modèle.
 - Préserver les entrées, y compris leur représentation. Garder toute conversion propre au backend dans le solveur ; éviter les matrices denses inutiles.
 - Appeler les API publiques des backends sans remplacer leur initialisation ni modifier leurs attributs internes pour contourner les contrôles, bornes ou critères d'arrêt. Les erreurs natives doivent être remontées et enregistrées par le benchmark.
-- Après `run()`, exposer `name`, `value` (tableau NumPy fini de forme `(S,)`), `policy` (`None` ou tableau NumPy d'entiers de forme `(S,)`, actions dans `[0, A)`) et `runtime` (secondes, fini et positif ou nul).
+- `run()` retourne un [`SolveResult`](../src/mdpforge/core/solve_result.py) contenant `value` (tableau NumPy fini de forme `(S,)`), `policy` (`None` ou tableau NumPy d'entiers de forme `(S,)`, actions dans `[0, A)`), `runtime` (secondes, fini et positif ou nul), `iterations` (entier ou `None`) et `stop_reason` (texte ou `None`). Exposer aussi `name`, `value`, `policy` et `runtime` sur le solveur pour le benchmark.
 
-Base recommandée : [`GenericSolver`](../src/mdpforge/core/solver.py). Appeler son constructeur, définir `self.name` comme libellé lisible et implémenter `_solve()`, qui applique le critère d'arrêt, renvoie la valeur et peut renseigner `self.policy`. `run()` stocke la valeur dans `self.value`, mesure `self.runtime` et renvoie `None`. Voir [`mdpforge_vi.py`](../src/mdpforge/solvers/mdpforge_vi.py).
+Base recommandée : [`GenericSolver`](../src/mdpforge/core/solver.py). Appeler son constructeur, définir `self.name` comme libellé lisible et implémenter `_solve()`, qui applique le critère d'arrêt, renvoie la valeur et peut renseigner `self.policy`. Son `run()` stocke la valeur dans `self.value`, mesure `self.runtime` et retourne `SolveResult`. Pour un `run()` propre au backend, retourner `SolveResult.from_solver(self)` après avoir renseigné ces attributs. Voir [`mdpforge_vi.py`](../src/mdpforge/solvers/mdpforge_vi.py).
 
 ## Catalogue et dépendances
 
@@ -20,7 +20,7 @@ Définir un dictionnaire **littéral** `METADATA`, lu sans importer le backend :
 | Champ           | Contenu                                                                                      |
 | --------------- | -------------------------------------------------------------------------------------------- |
 | `display_name`  | Libellé du catalogue, distinct de l'identifiant du fichier                                    |
-| `family`        | Famille : actuellement `vi`, `pi`, `mpi`, `lp`                                               |
+| `family`        | Famille : `vi`, `pi`, `mpi`, `lp` ou `experimental`                                          |
 | `backend`       | Bibliothèque : actuellement `mdpforge`, `mdptoolbox`, `mdpsolver`, `marmote`, `madupite`, `mdpax`, `gurobi`, `cma` |
 | `description`   | Algorithme et particularités en une phrase                                                   |
 

@@ -1,0 +1,423 @@
+{
+  "schema_version": 1,
+  "experiment_id": "cf112443-a82d-42ad-8cbb-8efe2c0f32f3",
+  "created_at_utc": "2026-10-21T17:02:49.241441+00:00",
+  "settings": {
+    "discount": 0.99,
+    "precision": 0.001,
+    "repeats": 3,
+    "seed": 0,
+    "trial_seeds": [
+      0,
+      1,
+      2
+    ],
+    "seed_scope": "solver trials; model generation is not reseeded",
+    "timeout": 5.0,
+    "execution_mode": "spawn"
+  },
+  "models": {
+    "620_10_block_0.85_10": {
+      "class": "mdpforge.models.block.Model",
+      "source_sha256": "ab3bae040e2106b0ed19d497a7c35f717fe592927e6385d0484bf73383c1a82f",
+      "state_dim": 620,
+      "requested_state_dim": 625,
+      "action_dim": 10,
+      "nnz": 362199,
+      "config": {
+        "requested_state_dim": 625,
+        "block_dim": 62,
+        "action_dim": 10,
+        "sparsity_block": 0.85,
+        "block_number": 10,
+        "state_dim": 620,
+        "connection_ratio": 0.1
+      },
+      "transition_sha256": [
+        "ba87b3b85fcfb997b18c10566193073194d98f80dd6b8154a4a36d6a28e52f64",
+        "0c72dc61c23e1048770bdd97ab77e4669b6d184317e034f262e457fb0bc6d1b2",
+        "38c5d0152f4eada251b5459b3073cd16d889684fe4052ea4f459c6fe268f7631",
+        "2ac849692645233a844577a43de9982cc94bce318982b90877f78552c89f843d",
+        "355c3e56a1caa911a589cecd2c36f03b2290bc229f2aad3e35a114fef995e875",
+        "49de72b25826406355ee30ed45ce3a8ed190679b079a6cad538fc6b22e5cc780",
+        "5577236a188cf524c5bfb063618c240e7ea2988e7a8fff47fc3348e18a05476d",
+        "f7c4649b93141aa9846e244cb932e97008e5f8c1f3c38cacad0b8fee5e6a4f1c",
+        "c5aed2b13a386f8b236f1aadde53a387da55a8505c43460448e7d5e6ca88d1b9",
+        "a0f06bf86962e1384f489bffb839fb090a0d4bc52f189bb42a9a0d635153a50c"
+      ],
+      "reward_sha256": "03426e34ec2e861ff11e3a3cf4ed855379f6f23984e06f082a88976485da3af3",
+      "data_sha256": "01e1d733c607b0f2df4329bcc03abc428a47ea6ad1d04ac09ba6cf1fdee758bf"
+    },
+    "14700_2_chain_walk": {
+      "class": "mdpforge.models.chain_walk.Model",
+      "source_sha256": "3fc6c7a70ad84ff72cb0ab838a21d124d5e235bed89269dd700913033e439dd1",
+      "state_dim": 14700,
+      "requested_state_dim": 14700,
+      "action_dim": 2,
+      "nnz": 58800,
+      "config": {
+        "requested_state_dim": 14700,
+        "state_dim": 14700,
+        "action_dim": 2,
+        "success_probability": 0.9
+      },
+      "transition_sha256": [
+        "4e66cc4d49732e58ffd85227d701958d4408219f958f333dbeb6182864c526c4",
+        "3edf7040e731eaee554257bf3f6988733a7a17e9dfb76be14cfff7a4e74d787f"
+      ],
+      "reward_sha256": "5cb83c74bc3fab2fdd0735fd25e129768f8060430545377e8ff3bf72b2065852",
+      "data_sha256": "b81b560b25e8cf26f495101366b8ce55e771ceba66c38a9e791a9523b7a3b6eb"
+    },
+    "12602_3_consensus_v1_n3_bound788": {
+      "class": "mdpforge.models.consensus.Model",
+      "source_sha256": "16d7764ea4a6014999eafafb863d15e74a8b19fd7783cfe48480d451ba8a40c7",
+      "state_dim": 12602,
+      "requested_state_dim": 12600,
+      "action_dim": 3,
+      "nnz": 75606,
+      "config": {
+        "processes": 3,
+        "masks": 8,
+        "bound": 788,
+        "requested_state_dim": 12600,
+        "state_dim": 12602,
+        "action_dim": 3,
+        "decide_zero": 12600,
+        "decide_one": 12601
+      },
+      "transition_sha256": [
+        "88c1e5125bff8e154b101839232cd360af2c76d3c6435b1f83503b5766e960e3",
+        "f15b3c4a0b16738d582d6e232d30012a04cd2ca9b7e14badd17ebbb6faadb75f",
+        "116ac76e6892ffb1e1c211a52b38548b5cebd9fe4a8e8397664209a86375c2ac"
+      ],
+      "reward_sha256": "6abf64899d03f964ea8945e0e5caa455fafbdde02c947800f13dc2d6915a51ea",
+      "data_sha256": "ba9ea431283c3929d32639afbae0a6aca8a1671ba08fa1b60ba40c61be38c858"
+    },
+    "21634_3_firewire_v1_delay51_rounds3_tie0.2": {
+      "class": "mdpforge.models.firewire.Model",
+      "source_sha256": "a816b52fa7cd0a5c0d7dd9b78e6ebbf88b3b6b46bdc03a7db712cd04c81b574a",
+      "state_dim": 21634,
+      "requested_state_dim": 22000,
+      "action_dim": 3,
+      "nnz": 108166,
+      "config": {
+        "max_rounds": 3,
+        "tie_probability": 0.2,
+        "delay": 51,
+        "requested_state_dim": 22000,
+        "state_dim": 21634,
+        "action_dim": 3,
+        "elected": 21632,
+        "deadline": 21633
+      },
+      "transition_sha256": [
+        "81a2c6484e09faefea34d1095042da3db0919f76bfe65aab7ba48f80510981d1",
+        "780eae7cff1e325f49de6f037bcaaaf6143a79626c42a70ca5da5af85233571e",
+        "eb34898f051df9eaf212ddf5f2b743eb3e0232a5a0410fb5dc1d90bf00321e69"
+      ],
+      "reward_sha256": "d2863a471460ceb2101963ccd6ed0ca06b15976b6beb1d4de674394409c24937",
+      "data_sha256": "fb507c0c2125f989e4614fe3259eb96a10f9e9646ca2c85853efa2319410cbf0"
+    },
+    "300_10_garnet_0.85_1.0": {
+      "class": "mdpforge.models.garnet.Model",
+      "source_sha256": "5536d2e0872211c3bc45b36330331e3af1af4367e89d0458415f799dcc047cd3",
+      "state_dim": 300,
+      "requested_state_dim": 300,
+      "action_dim": 10,
+      "nnz": 765432,
+      "config": {
+        "requested_state_dim": 300,
+        "state_dim": 300,
+        "action_dim": 10,
+        "sparsity_transition": 0.85,
+        "reward_std": 1.0
+      },
+      "transition_sha256": [
+        "535dcee777cd5d99e6b4463559abe0ef541b3b9563f003475a59c00faf1d3a78",
+        "f5f96e29258c8361c10e45adc52bf5394fd0f21a8b38ffaf16a26168349c0926",
+        "cdf74ca226ab787238d2a1b6652c3c97744a76d9b2657188119634b3725b3534",
+        "60c765cadf2681302a41b1c9219526b9be132b34bd3e578c6d901ead6837f800",
+        "fcca1e7da15a12bb798178419894b8c6fd8a28d48f481649fe5282afa05cf304",
+        "a917e35b6d6b434ef7968be99057de2fdb5afeb2f3e060e7303adac73fe239ab",
+        "ca0582168cf1cceb39a0fe33bf48e476a400f101cae8c25309510bc74bb07b5e",
+        "cca43d9732526c848874e0515b965c59fa2ba8a1915948fd06f94116a3c6628a",
+        "50780f9bc82fecb31ea1bde4e47e452832636cc763d803dc054d8f81abfcfb0c",
+        "f515866241938c42f7a9ffa61969c8758c507ca6155421ef6395f02b6c437990"
+      ],
+      "reward_sha256": "d6cf372a3708312c727db8397d425e096075b00e7635e7211917c3e38aa6c6d3",
+      "data_sha256": "145ea5b682795d2d55deda5985e06b5903f1bd4a78e05f941b3b22e08e2f7985"
+    },
+    "15600_2_random_walk": {
+      "class": "mdpforge.models.random_walk.Model",
+      "source_sha256": "88baa7abfcc4a2751520561cef5be1471118874b3b1742ef17c57893fbb72aa7",
+      "state_dim": 15600,
+      "requested_state_dim": 15600,
+      "action_dim": 2,
+      "nnz": 62396,
+      "config": {
+        "requested_state_dim": 15600,
+        "state_dim": 15600,
+        "action_dim": 2,
+        "direction_probability": 0.8
+      },
+      "transition_sha256": [
+        "b09e8919c4d7703c70794d26c71b060b0dd0e2293eeb591e40378e4702efd0d3",
+        "012a021752e211bb33390dc437090781c191c4912cd3ed70349d3d1c71576228"
+      ],
+      "reward_sha256": "bf6cc323f88d8ce4ae0c7463efdf5e271c22c9851901a9dae3c88c602ad34edc",
+      "data_sha256": "73a75e06a866fa62a2f7242579a933dce8f3c5c9f5e412427a6e3d18cecddca9"
+    },
+    "20400_2_unichain": {
+      "class": "mdpforge.models.unichain.Model",
+      "source_sha256": "7715e1e2e1e7ebbddba19399d430bd9342dc41bae6644042ee50399efa6b513b",
+      "state_dim": 20400,
+      "requested_state_dim": 20400,
+      "action_dim": 2,
+      "nnz": 40800,
+      "config": {
+        "requested_state_dim": 20400,
+        "state_dim": 20400,
+        "action_dim": 2
+      },
+      "transition_sha256": [
+        "a1b6767bb76f6da50f18ca3ace78cfda0436f46136b5643e8a294db300b86c5e",
+        "6530d83978092b727038ca1affeb04e3a850829d9cbd0524627f758a597e8200"
+      ],
+      "reward_sha256": "f2ed492bd265d7d48e75f86e669b856caac9748b949e849a57f92301f0688168",
+      "data_sha256": "f4c9b4f62aebdfd8e9e980b965872258be55c8a1c59ed2b2e1c0f1eebd994999"
+    }
+  },
+  "solvers": {
+    "VI": {
+      "callable": "mdpforge.solvers.mdpforge_vi.Solver",
+      "source_sha256": "0efdeb0b7949b7c6eb6f7499b41d8c3da76000f34ad557785147f4b534f94791",
+      "options": {},
+      "parameters": {
+        "initial_value": null,
+        "max_iterations": 100000
+      },
+      "metadata": {
+        "display_name": "VI · mdpforge",
+        "family": "vi",
+        "backend": "mdpforge",
+        "description": "Synchronous value iteration with a full Bellman-residual stopping threshold for absolute value precision."
+      }
+    },
+    "aggregated_qvi": {
+      "callable": "mdpforge.solvers.aggregated_qvi.Solver",
+      "source_sha256": "270629b552b019badf6f4f3f2785b17bbe1e208fadbd92cb986dc77ff13a9ed3",
+      "options": {},
+      "parameters": {
+        "bellman_iterations": 50,
+        "max_projected_iterations": 100,
+        "max_iterations": 100000,
+        "max_fallback_iterations": 100000,
+        "switch_to_vi_ratio": 0.9
+      },
+      "metadata": {
+        "display_name": "Aggregated QVI · mdpforge",
+        "family": "vi",
+        "backend": "mdpforge",
+        "description": "Q-value iteration with progressive state aggregation, synchronous Bellman backups and a full-state VI fallback."
+      }
+    },
+    "aggregated_vi": {
+      "callable": "mdpforge.solvers.aggregated_vi.Solver",
+      "source_sha256": "03f47f315706b7b55be3ca6bbcb8f987ca38fbe1ca1fa1e9c8b61d80f2e9aabb",
+      "options": {},
+      "parameters": {
+        "bellman_iterations": 10,
+        "refinement": "width",
+        "norm_method": "region_size",
+        "with_norm_weights": false,
+        "n_tiles": null,
+        "max_projected_iterations": 100,
+        "max_iterations": 100000,
+        "max_fallback_iterations": 100000,
+        "switch_to_vi_ratio": 0.9
+      },
+      "metadata": {
+        "display_name": "Aggregated VI · mdpforge",
+        "family": "vi",
+        "backend": "mdpforge",
+        "description": "Value iteration with progressively refined state aggregation, projected Bellman backups and a full-state VI fallback."
+      }
+    },
+    "chen_td": {
+      "callable": "mdpforge.solvers.chen_td.Solver",
+      "source_sha256": "334a0b591e5a6930f7256e8b42ee8efa53a7b6619fac7cf258830b7bcb4aa2a6",
+      "options": {},
+      "parameters": {
+        "aggregation_iterations": 40,
+        "bellman_iterations": 100,
+        "max_iterations": 100000,
+        "step_size": 0.001
+      },
+      "metadata": {
+        "display_name": "Chen aggregated VI · mdpforge",
+        "family": "vi",
+        "backend": "mdpforge",
+        "description": "Value iteration alternating synchronous ground-state Bellman sweeps and stochastic approximation on sampled aggregate states."
+      }
+    },
+    "envelope_vi": {
+      "callable": "mdpforge.solvers.envelope_vi.Solver",
+      "source_sha256": "97683b5a4b902f790603ffee831d7f7320054884502e28a2f012de30f9ce69fe",
+      "options": {},
+      "parameters": {
+        "refinement": "width",
+        "n_tiles": null,
+        "max_projected_iterations": 100,
+        "refinement_width": null,
+        "switch_to_vi_ratio": 0.9,
+        "stop_criterion": "residual",
+        "max_iterations": 100000,
+        "max_fallback_iterations": 100000
+      },
+      "metadata": {
+        "display_name": "Envelope VI · mdpforge",
+        "family": "vi",
+        "backend": "mdpforge",
+        "description": "Progressive Bellman-envelope iteration with compressed transitions, certified lower and upper bounds, and optional residual polishing."
+      }
+    },
+    "mdpforge_vi_reward_init": {
+      "callable": "mdpforge.solvers.mdpforge_vi_reward_init.Solver",
+      "source_sha256": "4be01dc94f1d18835787126b5a4cdb9163bfc3c440050e4a785965cf76caede0",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000
+      },
+      "metadata": {
+        "display_name": "VI · mdpforge · reward init",
+        "family": "vi",
+        "backend": "mdpforge",
+        "description": "Synchronous value iteration initialized from maximum immediate rewards divided by one minus the discount."
+      }
+    },
+    "mdpforge_vi_span": {
+      "callable": "mdpforge.solvers.mdpforge_vi_span.Solver",
+      "source_sha256": "13636fad288c5efee074d0f84911a21280bf0b62ee2765fb27a9b3dfa2383cfc",
+      "options": {},
+      "parameters": {
+        "initial_value": null,
+        "max_iterations": 100000
+      },
+      "metadata": {
+        "display_name": "VI · mdpforge · Span",
+        "family": "vi",
+        "backend": "mdpforge",
+        "description": "Synchronous value iteration with span-residual stopping and constant-shift correction for absolute value precision."
+      }
+    }
+  },
+  "environment": {
+    "python": "3.13.14",
+    "mdpforge": "0.1.0",
+    "numpy": "2.5.0",
+    "scipy": "1.18.0",
+    "threadpoolctl": "3.7.0",
+    "backends": {}
+  },
+  "machine": {
+    "os": "Windows",
+    "os_release": "11",
+    "architecture": "AMD64",
+    "processor": "12th Gen Intel(R) Core(TM) i7-12700H",
+    "logical_cpu_count": 20,
+    "thread_environment": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null,
+      "BLIS_NUM_THREADS": null,
+      "VECLIB_MAXIMUM_THREADS": null,
+      "NUMEXPR_NUM_THREADS": null
+    },
+    "capture_scope": "benchmark process before solver execution",
+    "numpy_build": {
+      "Compilers": {
+        "c": {
+          "name": "msvc",
+          "linker": "link",
+          "version": "19.44.35228",
+          "commands": "cl.exe"
+        },
+        "cython": {
+          "name": "cython",
+          "linker": "cython",
+          "version": "3.2.5",
+          "commands": "cython"
+        },
+        "c++": {
+          "name": "msvc",
+          "linker": "link",
+          "version": "19.44.35228",
+          "commands": "cl.exe"
+        }
+      },
+      "Machine Information": {
+        "host": {
+          "cpu": "x86_64",
+          "family": "x86_64",
+          "endian": "little",
+          "system": "windows"
+        },
+        "build": {
+          "cpu": "x86_64",
+          "family": "x86_64",
+          "endian": "little",
+          "system": "windows"
+        }
+      },
+      "Build Dependencies": {
+        "blas": {
+          "name": "blas",
+          "found": true,
+          "version": "3.9.0",
+          "detection method": "pkgconfig",
+          "include directory": "C:/Users/orsof/miniconda3/envs/benchmark/Library/include",
+          "lib directory": "C:/Users/orsof/miniconda3/envs/benchmark/Library/lib",
+          "openblas configuration": "unknown",
+          "pc file directory": "C:/Users/orsof/miniconda3/envs/benchmark/Library/lib/pkgconfig"
+        },
+        "lapack": {
+          "name": "lapack",
+          "found": true,
+          "version": "3.9.0",
+          "detection method": "pkgconfig",
+          "include directory": "C:/Users/orsof/miniconda3/envs/benchmark/Library/include",
+          "lib directory": "C:/Users/orsof/miniconda3/envs/benchmark/Library/lib",
+          "openblas configuration": "unknown",
+          "pc file directory": "C:/Users/orsof/miniconda3/envs/benchmark/Library/lib/pkgconfig"
+        }
+      },
+      "Python Information": {
+        "path": "C:/Users/orsof/miniconda3/envs/benchmark/python.exe",
+        "version": "3.13"
+      },
+      "SIMD Extensions": {
+        "baseline": [
+          "X86_V2"
+        ],
+        "found": [
+          "X86_V3"
+        ]
+      }
+    },
+    "thread_pools": [
+      {
+        "user_api": "blas",
+        "internal_api": "mkl",
+        "num_threads": 14,
+        "prefix": "mkl_rt",
+        "filepath": "C:\\Users\\orsof\\miniconda3\\envs\\benchmark\\Library\\bin\\mkl_rt.3.dll",
+        "version": "2026.0-Product",
+        "threading_layer": "intel"
+      }
+    ]
+  },
+  "code": {
+    "git": null
+  },
+  "results_file": "bench_2026-10-21_17-07-07_928401.csv"
+}

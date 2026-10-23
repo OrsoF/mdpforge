@@ -6,8 +6,8 @@ from mdpforge.core.benchmark import Benchmark
 class ScalingBenchmark(Benchmark):
     """Benchmark independent instances of one parameterized MDP family."""
 
-    def __init__(self, *, default_solvers=True):
-        super().__init__(default_solvers=default_solvers)
+    def __init__(self):
+        super().__init__()
         self._scaling_study = None
 
     def add_family(self, factory, sizes, *, instances=3, seed=0, family=None):
@@ -100,6 +100,15 @@ class ScalingBenchmark(Benchmark):
         if models:
             self._scaling_study = None
         return self
+
+    def remove_model(self, model_name: str):
+        """Remove a model only when no scaling family is registered.
+
+        model_name: exact registered name or unique catalogue ID.
+        """
+        if self._scaling_study is not None:
+            raise ValueError("Reset the scaling family before removing a model")
+        return super().remove_model(model_name)
 
     def run(self, *args, **kwargs):
         """Execute the inherited benchmark and attach the scaling study metadata."""

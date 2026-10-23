@@ -2,6 +2,7 @@ import numpy as np
 
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import bellman_operator, compute_transition_reward_policy
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.bellman import iterative_policy_evaluation
 from mdpforge.utils.solver_options import positive_integer, positive_real
@@ -51,7 +52,7 @@ class Solver(GenericSolver):
             else positive_real(evaluation_precision, "evaluation_precision")
         )
 
-    def _solve(self) -> np.ndarray:
+    def _solve(self) -> SolveResult:
         policy = np.random.randint(0, self.model.action_dim, size=self.model.state_dim)
         value = np.zeros(self.model.state_dim)
         evaluation_tolerance = self.evaluation_precision * (1 - self.discount)
@@ -86,6 +87,5 @@ class Solver(GenericSolver):
                     and np.array_equal(new_policy, policy)
                 ),
             ):
-                self.policy = new_policy
-                return value
+                return self._result(value, new_policy)
             policy = new_policy

@@ -20,6 +20,7 @@ from mdpforge.core.operators import (
     norminf,
 )
 from mdpforge.core.partition import Partition
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.utils.bellman import (
     iterative_policy_evaluation,
 )
@@ -34,7 +35,7 @@ from mdpforge.utils.solver_options import (
 
 METADATA = {
     "display_name": "Aggregated MPI · mdpforge",
-    "family": "mpi",
+    "family": "experimental",
     "backend": "mdpforge",
     "description": (
         "Modified policy iteration with progressively refined aggregate "
@@ -119,7 +120,7 @@ class Solver:
 
         self.partition = Partition(self.model)
 
-    def run(self):
+    def run(self) -> SolveResult:
         start_time = time.perf_counter()
 
         self.policy = np.zeros(
@@ -160,6 +161,8 @@ class Solver:
                 break
 
             self.policy = new_policy
+
+        return SolveResult.from_solver(self)
 
     def _compute_transition_reward_policy(
         self,

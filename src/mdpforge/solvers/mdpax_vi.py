@@ -5,6 +5,7 @@ from mdpax.solvers import ValueIteration
 
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpax import make_mdpax_problem
 from mdpforge.utils.solver_options import positive_integer
@@ -50,7 +51,7 @@ class Solver(GenericSolver):
         self.max_batch_size = positive_integer(max_batch_size, "max_batch_size")
         self.name = "MDPax VI"
 
-    def _solve(self) -> np.ndarray:
+    def _solve(self) -> SolveResult:
         problem = make_mdpax_problem(self.model, self.max_event_entries)
         solver = ValueIteration(
             problem,
@@ -71,5 +72,4 @@ class Solver(GenericSolver):
         ):
             raise RuntimeError("MDPax returned an invalid policy")
         values = certify_value(self.model, values, self.discount, self.final_precision)
-        self.policy = policy
-        return values
+        return self._result(values, policy)

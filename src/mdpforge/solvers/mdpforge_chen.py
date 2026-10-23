@@ -13,6 +13,7 @@ from mdpforge.core.operators import (
     norminf,
 )
 from mdpforge.core.partition import Partition
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.utils.solver_options import (
     bounded_iterations,
     positive_integer,
@@ -21,7 +22,7 @@ from mdpforge.utils.solver_options import (
 
 METADATA = {
     "display_name": "Chen aggregated VI · mdpforge",
-    "family": "vi",
+    "family": "experimental",
     "backend": "mdpforge",
     "description": (
         "Value iteration alternating synchronous ground-state Bellman sweeps "
@@ -79,7 +80,7 @@ class Solver:
         self.partition = Partition(self.model)
         self.contracted_value: np.ndarray
 
-    def run(self):
+    def run(self) -> SolveResult:
         start_time = time()
         tolerance = self.epsilon * (1 - self.discount)
         self.value = np.zeros((self.model.state_dim))
@@ -92,7 +93,7 @@ class Solver:
                 )
                 if norminf(new_value - self.value) < tolerance:
                     self.runtime = time() - start_time
-                    return
+                    return SolveResult.from_solver(self)
                 self.value = new_value
 
             self.partition = Partition(self.model)

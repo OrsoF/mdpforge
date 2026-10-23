@@ -9,6 +9,7 @@ from mdptoolbox.mdp import ValueIterationGS
 
 from mdpforge.core.model import MDPProtocol
 from mdpforge.core.precision import certify_value
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 
 METADATA = {
@@ -49,10 +50,7 @@ class Solver(GenericSolver):
         self.name = "VIGS MDPToolbox"
         self.max_iterations = max_iterations
 
-        self.value: np.ndarray
-        self.policy: np.ndarray
-
-    def run(self):
+    def _solve(self) -> SolveResult:
         start_time = time.time()
 
         transitions = np.array(
@@ -72,8 +70,8 @@ class Solver(GenericSolver):
         )
         self.vi.run()
 
-        self.value = np.array(self.vi.V)
-        self.policy = np.array(self.vi.policy)
+        value = np.array(self.vi.V)
+        policy = np.array(self.vi.policy)
 
-        self.value = certify_value(self.model, self.value, self.discount, self.epsilon)
-        self.runtime = time.time() - start_time
+        value = certify_value(self.model, value, self.discount, self.epsilon)
+        return SolveResult(value, policy, time.time() - start_time)
