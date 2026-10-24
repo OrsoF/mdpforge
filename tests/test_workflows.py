@@ -40,12 +40,12 @@ def run_external_test(request, tmp_path):
     return True
 
 
-@pytest.mark.parametrize("discount", [0.5, 0.99])
 def test_all_solvers_meet_precision_and_preserve_inputs(
-    solver_module, mdp_case, discount, request, tmp_path
+    solver_case, request, tmp_path
 ):
     if run_external_test(request, tmp_path):
         return
+    solver_module, mdp_case, discount = solver_case
     solver_class = import_module(solver_module).Solver
     precision = 1e-4
     previous = None

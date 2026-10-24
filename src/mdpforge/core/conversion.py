@@ -50,6 +50,17 @@ def build_marmote_transition_list(
         marmote_transitions_list.append(transition)
     return marmote_transitions_list
 
+def compute_marmote_args(model: "MDP") -> tuple:
+    """Build native Marmote matrices without changing the CSR model."""
+    return (
+        build_marmote_transition_list(
+            model.state_dim, model.action_dim, model.transition_matrix
+        ),
+        build_marmote_reward_matrix(
+            model.state_dim, model.action_dim, model.reward_matrix
+        ),
+    )
+
 
 ####### MDPSOLVER #######
 
@@ -77,13 +88,3 @@ def compute_mdpsolver_args(model: "MDP") -> tuple:
 ####### DISPATCH #######
 
 
-def compute_marmote_args(model: "MDP") -> tuple:
-    """Build native Marmote matrices without changing the CSR model."""
-    return (
-        build_marmote_transition_list(
-            model.state_dim, model.action_dim, model.transition_matrix
-        ),
-        build_marmote_reward_matrix(
-            model.state_dim, model.action_dim, model.reward_matrix
-        ),
-    )

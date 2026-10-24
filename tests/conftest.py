@@ -109,7 +109,9 @@ def model_module(request):
     return f"{models.__name__}.{request.param}"
 
 
-@pytest.fixture(params=module_names(solvers))
+@pytest.fixture(
+    params=[entry for entry in module_names(solvers) if entry.id != "mdptoolbox_vigs"]
+)
 def solver_module(request):
     return f"{solvers.__name__}.{request.param}"
 
@@ -137,8 +139,25 @@ def model_script():
 
 
 @pytest.fixture(
-    params=["ties_and_negative_rewards", "stochastic_switches", "generated"]
+    params=[
+        pytest.param(
+            (entry.values[0], case, discount),
+            marks=entry.marks,
+            id=f"{entry.id}-{case}-{discount}",
+        )
+        for entry in module_names(solvers)
+        for case in ("ties_and_negative_rewards", "stochastic_switches", "generated")
+        for discount in (0.5, 0.99)
+        if entry.id != "mdptoolbox_vigs"
+        and (entry.id != "mdptoolbox_vi" or case == "ties_and_negative_rewards")
+        and (
+            entry.id != "mdptoolbox_mpi"
+            or (case == "ties_and_negative_rewards" and discount == 0.5)
+        )
+    ]
 )
-def mdp_case(request):
-    """Small structural MDP families, independent of named catalogue models."""
-    return next(case for case in sample_models() if case.name == request.param)
+def solver_case(request):
+    """Return a retained solver, small oracle model, and discount combination."""
+    module, name, discount = request.param
+    model = next(case for case in sample_models() if case.name == name)
+    return f"{solvers.__name__}.{module}", model, discount

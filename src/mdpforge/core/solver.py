@@ -43,6 +43,3 @@ class GenericSolver:
     def _solve(self) -> SolveResult:
         """Return the computed value and available solution details."""
         raise NotImplementedError("Subclasses must implement _solve().")
-
-    def distance_to_optimal(self, result: SolveResult):
-        return distance_to_optimal(result.value, self.model, self.discount)
