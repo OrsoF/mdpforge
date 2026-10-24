@@ -5,8 +5,7 @@ Solver calling MDPSolver VI with SOR updates.
 import mdpsolver
 import numpy as np
 
-from mdpforge.core.model import MDPProtocol
-from mdpforge.core.precision import certify_value
+from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpsolver import create_mdpsolver, solve_mdpsolver
@@ -18,7 +17,7 @@ METADATA = {
     "backend": "mdpsolver",
     "description": (
         "MDPSolver value iteration with successive over-relaxation Bellman "
-        "updates and independent residual certification."
+        "updates."
     ),
 }
 
@@ -28,7 +27,7 @@ class Solver(GenericSolver):
 
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-3,
         parallel: bool = False,
@@ -65,17 +64,12 @@ class Solver(GenericSolver):
             tolerance=self.final_precision * (1 - self.discount),
             update="sor",
             parallel=self.parallel,
-            initValueVector=(
-                [] if self.initial_value is None else self.initial_value.tolist()
-            ),
-            initPolicy=(
-                [] if self.initial_policy is None else self.initial_policy.tolist()
-            ),
+            initial_value=self.initial_value,
+            initial_policy=self.initial_policy,
             SORrelaxation=self.relaxation,
             verbose=False,
         )
 
-        return self._result(
-            certify_value(self.model, value, self.discount, self.final_precision),
-            policy,
+        return SolveResult(
+            np.asarray(value), policy, self._iterations or None, self._stop_reason
         )

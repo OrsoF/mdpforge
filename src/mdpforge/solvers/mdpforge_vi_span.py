@@ -1,9 +1,10 @@
 import numpy as np
 
-from mdpforge.core.model import MDPProtocol
+from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
+from mdpforge.utils.solver_options import initial_vectors
 
 METADATA = {
     "display_name": "VI · mdpforge · Span",
@@ -21,7 +22,7 @@ class Solver(GenericSolver):
 
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-3,
         initial_value: np.ndarray | None = None,
@@ -37,15 +38,8 @@ class Solver(GenericSolver):
         super().__init__(
             model, discount, final_precision, max_iterations=max_iterations
         )
-        self.initial_value = (
-            np.zeros(model.state_dim)
-            if initial_value is None
-            else np.array(initial_value, dtype=float, copy=True)
-        )
-        if self.initial_value.shape != (model.state_dim,) or not np.all(
-            np.isfinite(self.initial_value)
-        ):
-            raise ValueError("initial_value must contain one finite value per state")
+        value, _ = initial_vectors(model, initial_value)
+        self.initial_value = np.zeros(model.state_dim) if value is None else value
         self.name = "mdpforge VI Span"
 
     def _solve(self) -> SolveResult:
@@ -65,13 +59,16 @@ class Solver(GenericSolver):
                     self.discount * midpoint / (1 - self.discount)
                 )
 
-            if self._check_iteration(
-                iteration,
-                bellman_span,
-                tolerance,
-                corrected_value,
-                stagnated=np.array_equal(new_value, value),
-            ):
-                return self._result(corrected_value)
-
+            if not np.isfinite(bellman_span) or not np.isfinite(corrected_value).all():
+                raise RuntimeError("VI Span stopped: non_finite values")
+            if bellman_span < tolerance:
+                return SolveResult(
+                    np.asarray(corrected_value),
+                    None,
+                    iteration,
+                    "converged",
+                )
+            if np.array_equal(new_value, value):
+                raise RuntimeError("VI Span stopped: stagnation")
             value = new_value
+        raise RuntimeError("VI Span stopped: max_iterations reached")

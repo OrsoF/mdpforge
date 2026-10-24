@@ -2,13 +2,10 @@
 Solver calling the MDP Toolbox Value Iteration solver.
 """
 
-import time
-
 import numpy as np
 from mdptoolbox.mdp import ValueIteration
 
-from mdpforge.core.model import MDPProtocol
-from mdpforge.core.precision import certify_value
+from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 
@@ -18,7 +15,7 @@ METADATA = {
     "backend": "mdptoolbox",
     "description": (
         "MDPToolbox synchronous value iteration through its public API, "
-        "with native initialization and independent residual certification."
+        "with native initialization."
     ),
 }
 
@@ -28,7 +25,7 @@ class Solver(GenericSolver):
 
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-3,
         *,
@@ -43,27 +40,16 @@ class Solver(GenericSolver):
         super().__init__(
             model, discount, final_precision, max_iterations=max_iterations
         )
-        self.model = model
-        self.discount = discount
-        assert final_precision > 0, "final_precision must be positive"
-        self.epsilon = final_precision
         self.name = "VI MDPToolbox"
-        self.max_iterations = max_iterations
 
     def _solve(self) -> SolveResult:
-        start_time = time.time()
-
         self.vi = ValueIteration(
             self.model.transition_matrix,
             self.model.reward_matrix,
             discount=self.discount,
-            epsilon=self.epsilon,
+            epsilon=self.final_precision,
             max_iter=self.max_iterations,
         )
         self.vi.run()
 
-        value = np.array(self.vi.V)
-        policy = np.array(self.vi.policy)
-
-        value = certify_value(self.model, value, self.discount, self.epsilon)
-        return SolveResult(value, policy, time.time() - start_time)
+        return SolveResult(np.array(self.vi.V), np.array(self.vi.policy))

@@ -17,7 +17,6 @@ import numpy as np
 
 from mdpforge import models, solvers
 from mdpforge.core.mdp import MDP
-from mdpforge.core.model import MDPProtocol
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.result import BenchmarkResult
 from mdpforge.core.validation import validate_model
@@ -205,7 +204,7 @@ class Benchmark:
     """
 
     def __init__(self):
-        self._mdps: list[MDPProtocol] = []
+        self._mdps: list[MDP] = []
         self._solvers = {}  # label -> (solver class/function, options)
 
     def reset(self, *, models=True, solvers=True):
@@ -224,7 +223,7 @@ class Benchmark:
 
     def add_mdp(
         self,
-        model: MDPProtocol | str | Sequence[str] | None = None,
+        model: MDP | str | Sequence[str] | None = None,
         *,
         transitions=None,
         reward=None,

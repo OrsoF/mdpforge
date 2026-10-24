@@ -7,11 +7,9 @@ the state space to update by block the current
 value function V^pi.
 """
 
-import time
-
 import numpy as np
 
-from mdpforge.core.model import MDPProtocol
+from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import (
     bellman_operator,
     bellman_policy_operator,
@@ -47,7 +45,7 @@ METADATA = {
 class Solver:
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-1,
         bellman_iterations: int = 10,
@@ -121,8 +119,6 @@ class Solver:
         self.partition = Partition(self.model)
 
     def run(self) -> SolveResult:
-        start_time = time.perf_counter()
-
         self.policy = np.zeros(
             self.model.state_dim,
             dtype=int,
@@ -157,7 +153,6 @@ class Solver:
 
             if condition_variation:
                 self.policy = new_policy
-                self.runtime = time.perf_counter() - start_time
                 break
 
             self.policy = new_policy

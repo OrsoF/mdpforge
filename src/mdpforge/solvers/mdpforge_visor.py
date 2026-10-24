@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from mdpforge.core.model import MDPProtocol
+from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.solvers.mdpforge_vi import Solver as ValueIterationSolver
@@ -24,7 +24,7 @@ class Solver(ValueIterationSolver):
 
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-3,
         initial_value: np.ndarray | None = None,
@@ -75,11 +75,15 @@ class Solver(ValueIterationSolver):
                 optimal_bellman_operator(self.model, value, self.discount) - value,
                 ord=np.inf,
             )
-            if self._check_iteration(
-                iteration,
-                residual,
-                tolerance,
-                value,
-                stagnated=np.array_equal(value, previous_value),
-            ):
-                return self._result(value)
+            if not np.isfinite(residual) or not np.isfinite(value).all():
+                raise RuntimeError("VISOR stopped: non_finite values")
+            if residual < tolerance:
+                return SolveResult(
+                    np.asarray(value),
+                    None,
+                    iteration,
+                    "converged",
+                )
+            if np.array_equal(value, previous_value):
+                raise RuntimeError("VISOR stopped: stagnation")
+        raise RuntimeError("VISOR stopped: max_iterations reached")

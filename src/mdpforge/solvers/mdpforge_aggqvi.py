@@ -4,11 +4,9 @@ Here, the Q-value is updated by blocks
 following an iteratively refined partition.
 """
 
-from time import time
-
 import numpy as np
 
-from mdpforge.core.model import MDPProtocol
+from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import (
     compact_optimal_bellman_operator,
     norminf,
@@ -47,7 +45,7 @@ class Solver(GenericSolver):
 
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-3,
         bellman_iterations: int = 50,
@@ -69,7 +67,6 @@ class Solver(GenericSolver):
             default 0.9.
         """
         assert 0 < discount < 1, "discount must be strictly between 0 and 1"
-        # Class arguments
         positive_real(final_precision, "final_precision")
         self.max_iterations = positive_integer(max_iterations, "max_iterations")
         self.max_fallback_iterations = positive_integer(
@@ -82,7 +79,6 @@ class Solver(GenericSolver):
             raise ValueError("switch_to_vi_ratio must belong to (0, 1]")
         self.model = model
         self.discount = discount
-        assert final_precision > 0, "final_precision must be positive"
         self.epsilon = final_precision
         self.bellman_iterations = positive_integer(
             bellman_iterations, "bellman_iterations"
@@ -102,7 +98,6 @@ class Solver(GenericSolver):
         self.epsilon_span = self.epsilon * (1 - self.discount) / 2
 
     def run(self) -> SolveResult:
-        start_time = time()
         contracted_q_value = np.zeros(
             (len(self.partition.states_in_region), self.model.action_dim)
         )
@@ -124,7 +119,7 @@ class Solver(GenericSolver):
                 self.q_value = q_optimal_bellman_operator(
                     self.model, self.value[:, None], self.discount
                 )
-                self._finish(self.q_value, start_time)
+                self._finish(self.q_value)
                 return SolveResult.from_solver(self)
 
             self.partition.compute_agg_trans_reward_q()
@@ -165,7 +160,7 @@ class Solver(GenericSolver):
                     self.model, q_value.max(axis=1), self.discount
                 ) <= self.epsilon * (1 - self.discount):
                     self.contracted_q_value = contracted_q_value
-                    self._finish(q_value, start_time)
+                    self._finish(q_value)
                     return SolveResult.from_solver(self)
 
     def _bellman_steps(self, q_value: np.ndarray) -> np.ndarray:
@@ -176,8 +171,7 @@ class Solver(GenericSolver):
             )
         return q_optimal_bellman_operator(self.model, value[:, None], self.discount)
 
-    def _finish(self, q_value: np.ndarray, start_time: float):
+    def _finish(self, q_value: np.ndarray):
         self.q_value = q_value
         self.value = q_value.max(axis=1)
         self.policy = q_value.argmax(axis=1)
-        self.runtime = time() - start_time

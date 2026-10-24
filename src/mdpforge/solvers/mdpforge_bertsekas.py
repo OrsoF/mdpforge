@@ -4,18 +4,15 @@ Implementation of the Policy Iteration algorithm given page 8 of
 Dynamic Programming" - Bertsekas, Castanon.
 """
 
-import time
-
 import numpy as np
 
-from mdpforge.core.model import MDPProtocol
+from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import (
     bellman_operator,
     bellman_policy_operator,
     compute_transition_reward_policy,
 )
 from mdpforge.core.partition import Partition
-from mdpforge.core.precision import certify_value
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.utils.bellman import (
     iterative_policy_evaluation,
@@ -40,7 +37,7 @@ METADATA = {
 class Solver:
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-4,
         beta_1: float = 1e-1,
@@ -83,7 +80,6 @@ class Solver:
         return value.max() - value.min()
 
     def run(self) -> SolveResult:
-        start_time = time.time()
         self.policy = np.zeros(self.model.state_dim, dtype=int)
         self.value = np.zeros(self.model.state_dim)
 
@@ -107,11 +103,7 @@ class Solver:
                     self.value,
                     max_iterations=self.max_evaluation_iterations,
                 )
-                self.value = certify_value(
-                    self.model, self.value, self.discount, self.final_precision
-                )
 
-                self.runtime = time.time() - start_time
                 break
             else:
                 self.policy = new_policy

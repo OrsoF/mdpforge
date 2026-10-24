@@ -1,8 +1,6 @@
-from time import time
-
 import numpy as np
 
-from mdpforge.core.model import MDPProtocol
+from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import bellman_operator, compact_optimal_bellman_operator
 from mdpforge.core.partition import Partition
 from mdpforge.core.solve_result import SolveResult
@@ -44,7 +42,7 @@ class Solver:
 
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-3,
         bellman_iterations: int = 10,
@@ -93,7 +91,6 @@ class Solver:
             raise ValueError("switch_to_vi_ratio must belong to (0, 1]")
         self.model = model
         self.discount = discount
-        assert final_precision > 0, "final_precision must be positive"
         self.epsilon = final_precision
         self.bellman_iterations = positive_integer(
             bellman_iterations, "bellman_iterations"
@@ -117,7 +114,6 @@ class Solver:
         )
 
     def run(self) -> SolveResult:
-        start_time = time()
         contracted_value = np.zeros(self.partition.n_regions)
 
         for _ in bounded_iterations(self.max_iterations, "aggregation"):
@@ -135,7 +131,7 @@ class Solver:
                     max_iterations=self.max_fallback_iterations,
                 )
 
-                self._finish(value, start_time)
+                self._finish(value)
                 return SolveResult.from_solver(self)
 
             self.partition.compute_agg_trans_reward_v()
@@ -183,7 +179,7 @@ class Solver:
                 if optimal_bellman_residual(
                     self.model, value, self.discount
                 ) <= self.epsilon * (1 - self.discount):
-                    self._finish(value, start_time)
+                    self._finish(value)
                     return SolveResult.from_solver(self)
 
     def _bellman_steps(self, contracted_value: np.ndarray) -> np.ndarray:
@@ -213,10 +209,9 @@ class Solver:
         if norm_method not in self.norm_methods:
             raise ValueError(f"norm_method must be one of {sorted(self.norm_methods)}")
 
-    def _finish(self, value: np.ndarray, start_time: float):
+    def _finish(self, value: np.ndarray):
         self.value = value
         self.policy = bellman_operator(self.model, value, self.discount).argmax(axis=1)
-        self.runtime = time() - start_time
 
     def _name(self) -> str:
         if self.with_norm_weights:

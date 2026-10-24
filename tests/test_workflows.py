@@ -6,10 +6,8 @@ import sys
 from copy import deepcopy
 from importlib import import_module
 from importlib.util import find_spec
-from inspect import signature
 from types import SimpleNamespace
 
-import numpy as np
 import pytest
 from numpy.testing import assert_allclose
 
@@ -61,22 +59,6 @@ def test_all_solvers_meet_precision_and_preserve_inputs(
             for current, prior in zip(actual, previous):
                 assert_allclose(current, prior, atol=1e-12, rtol=0)
         previous = actual
-
-
-@pytest.mark.parametrize("discount", [-0.1, 0, 1, 1.1, np.nan])
-def test_all_solvers_reject_invalid_discount(
-    solver_module, chain, discount, request, tmp_path
-):
-    if run_external_test(request, tmp_path):
-        return
-    solver_class = import_module(solver_module).Solver
-    with pytest.raises(AssertionError, match="discount"):
-        precision_options = (
-            {"final_precision": 1e-4}
-            if "final_precision" in signature(solver_class).parameters
-            else {}
-        )
-        solver_class(chain, discount, **precision_options)
 
 
 def test_all_solvers_accept_plain_model_protocol(

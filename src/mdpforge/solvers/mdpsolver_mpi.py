@@ -5,7 +5,7 @@ Solver calling MDPSolver Modified Policy Iteration.
 import mdpsolver
 import numpy as np
 
-from mdpforge.core.model import MDPProtocol
+from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpsolver import create_mdpsolver, solve_mdpsolver
@@ -25,7 +25,7 @@ METADATA = {
 class Solver(GenericSolver):
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         final_precision: float,
         parallel: bool = False,
@@ -63,14 +63,12 @@ class Solver(GenericSolver):
             tolerance=self.final_precision,
             update="standard",
             parallel=self.parallel,
-            initValueVector=(
-                [] if self.initial_value is None else self.initial_value.tolist()
-            ),
-            initPolicy=(
-                [] if self.initial_policy is None else self.initial_policy.tolist()
-            ),
+            initial_value=self.initial_value,
+            initial_policy=self.initial_policy,
             parIterLim=self.max_evaluation_iterations,
             verbose=False,
         )
 
-        return self._result(value, policy)
+        return SolveResult(
+            np.asarray(value), policy, self._iterations or None, self._stop_reason
+        )

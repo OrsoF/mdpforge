@@ -2,14 +2,12 @@
 Solver calling the Marmote Modified Policy Iteration solver in C++.
 """
 
-from time import time
-
 import numpy as np
 from marmote.core import MarmoteInterval
 from marmote.mdp import DiscountedMDP, FeedbackSolutionMDP
 
 from mdpforge.core.conversion import compute_marmote_args
-from mdpforge.core.model import MDPProtocol
+from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.solver_options import positive_integer, positive_real
@@ -28,7 +26,7 @@ METADATA = {
 class Solver(GenericSolver):
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-3,
         *,
@@ -48,17 +46,13 @@ class Solver(GenericSolver):
         super().__init__(
             model, discount, final_precision, max_iterations=max_iterations
         )
-        self.model = model
-        self.discount = discount
         self.name = "MPI Marmote"
 
-        self.epsilon_inner = (
+        self.evaluation_precision = (
             final_precision
             if evaluation_precision is None
             else positive_real(evaluation_precision, "evaluation_precision")
         )
-        self.epsilon_outer = final_precision
-        self.max_iterations = positive_integer(max_iterations, "max_iterations")
         self.max_evaluation_iterations = positive_integer(
             max_evaluation_iterations, "max_evaluation_iterations"
         )
@@ -78,18 +72,14 @@ class Solver(GenericSolver):
             self.discount,
         )
 
-        start_time = time()
-
         self.opt: FeedbackSolutionMDP = self.mdp.PolicyIterationModified(
-            self.epsilon_outer,
+            self.final_precision,
             self.max_iterations,
-            self.epsilon_inner,
+            self.evaluation_precision,
             self.max_evaluation_iterations,
         )
 
-        runtime = time() - start_time
-
-        value = np.array(
-            [self.opt.getValueIndex(ss) for ss in range(self.model.state_dim)]
+        return SolveResult(
+            np.array([self.opt.getValueIndex(s) for s in range(self.model.state_dim)]),
+            None,
         )
-        return SolveResult(value, None, runtime)

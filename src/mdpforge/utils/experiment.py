@@ -1,6 +1,5 @@
 """Capture experiment provenance without changing solver inputs or RNG state."""
 
-import ast
 import hashlib
 import inspect
 import json
@@ -8,7 +7,6 @@ import math
 import os
 import platform
 import subprocess
-import sys
 from datetime import datetime, timezone
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
@@ -16,8 +14,10 @@ from uuid import uuid4
 
 import numpy as np
 import scipy
-from scipy.sparse import csr_matrix, issparse
+from scipy.sparse import issparse
 from threadpoolctl import threadpool_info
+
+from mdpforge.utils.cache_keys import array_digest, sparse_digest
 
 
 def _qualified_name(value):
@@ -44,7 +44,7 @@ def _json_value(value):
             "values": _json_value(value.tolist()),
         }
     if issparse(value):
-        return {"shape": list(value.shape), "sha256": _sparse_hash(value)}
+        return {"shape": list(value.shape), "sha256": sparse_digest(value)}
     if isinstance(value, Path):
         return str(value)
     if isinstance(value, dict):
@@ -69,48 +69,18 @@ def _json_value(value):
 
 
 def model_config(model):
-    """Serialize public attributes; model recipes may override MDP.get_config()."""
-    excluded = {"name", "transition_matrix", "reward_matrix"}
-    attributes = dict(getattr(model, "__dict__", {}))
-    for cls in type(model).__mro__:
-        slots = cls.__dict__.get("__slots__", ())
-        if isinstance(slots, str):
-            slots = (slots,)
-        for name in slots:
-            if hasattr(model, name):
-                attributes[name] = getattr(model, name)
+    """Serialize stored constructor parameters; models may override get_config()."""
+    try:
+        parameters = inspect.signature(type(model)).parameters
+    except (TypeError, ValueError):
+        return {}
     return {
-        name: _json_value(value)
-        for name, value in attributes.items()
-        if not name.startswith("_") and name not in excluded
+        name: _json_value(getattr(model, f"requested_{name}", getattr(model, name)))
+        for name, parameter in parameters.items()
+        if parameter.kind
+        not in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+        and hasattr(model, name)
     }
-
-
-def _update_array(digest, value):
-    array = np.asarray(value)
-    dtype = array.dtype.newbyteorder("<")
-    array = np.ascontiguousarray(array, dtype=dtype)
-    digest.update(json.dumps([array.shape, dtype.str]).encode("ascii"))
-    digest.update(array.tobytes())
-
-
-def _array_hash(value):
-    digest = hashlib.sha256()
-    _update_array(digest, value)
-    return digest.hexdigest()
-
-
-def _sparse_hash(value):
-    matrix = csr_matrix(value, copy=True)
-    matrix.sum_duplicates()
-    matrix.sort_indices()
-    matrix.eliminate_zeros()
-    digest = hashlib.sha256()
-    _update_array(digest, np.asarray(matrix.shape, dtype="<i8"))
-    _update_array(digest, matrix.indptr.astype("<i8"))
-    _update_array(digest, matrix.indices.astype("<i8"))
-    _update_array(digest, matrix.data)
-    return digest.hexdigest()
 
 
 def _source_hash(implementation):
@@ -168,27 +138,16 @@ def _package_version(distribution):
         return None
 
 
-def _backend_versions(implementations):
-    # Read imports, including lazy imports, without loading any optional backend.
-    roots = set()
-    for implementation in implementations:
-        roots.add(getattr(implementation, "__module__", "").split(".")[0])
-        module = inspect.getmodule(implementation)
-        try:
-            tree = ast.parse(inspect.getsource(module))
-        except (OSError, TypeError, SyntaxError):
-            continue
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Import):
-                roots.update(alias.name.split(".")[0] for alias in node.names)
-            elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
-                roots.add(node.module.split(".")[0])
-    aliases = {"mdptoolbox": "pymdptoolbox", "stable_baselines3": "stable-baselines3"}
-    roots -= sys.stdlib_module_names | {"", "__main__", "mdpforge", "numpy", "scipy"}
+def _backend_versions(solvers):
+    names = {record["metadata"].get("backend") for record in solvers.values()} - {
+        None,
+        "mdpforge",
+    }
+    aliases = {"gurobi": "gurobipy", "mdptoolbox": "pymdptoolbox"}
     backends = {}
-    for root in sorted(roots):
-        distribution = aliases.get(root, root)
-        backends[root] = {
+    for name in sorted(names):
+        distribution = aliases.get(name, name)
+        backends[name] = {
             "distribution": distribution,
             "version": _package_version(distribution),
         }
@@ -215,24 +174,6 @@ def _git_metadata():
 
 
 def _machine_metadata():
-    processor = platform.processor() or os.environ.get("PROCESSOR_IDENTIFIER")
-    if sys.platform == "win32":
-        import winreg
-
-        try:
-            path = r"HARDWARE\DESCRIPTION\System\CentralProcessor\0"
-            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, path) as key:
-                processor = winreg.QueryValueEx(key, "ProcessorNameString")[0].strip()
-        except OSError:
-            pass
-    elif sys.platform.startswith("linux"):
-        try:
-            for line in Path("/proc/cpuinfo").read_text().splitlines():
-                if line.startswith("model name"):
-                    processor = line.split(":", 1)[1].strip()
-                    break
-        except OSError:
-            pass
     thread_variables = (
         "OMP_NUM_THREADS",
         "OPENBLAS_NUM_THREADS",
@@ -245,7 +186,6 @@ def _machine_metadata():
         "os": platform.system(),
         "os_release": platform.release(),
         "architecture": platform.machine(),
-        "processor": processor or None,
         "logical_cpu_count": os.cpu_count(),
         "thread_environment": {name: os.environ.get(name) for name in thread_variables},
         "thread_pools": threadpool_info(),
@@ -260,8 +200,8 @@ def capture_experiment(
     """Freeze metadata once per run, before any solver is constructed."""
     model_metadata = {}
     for model in models:
-        transitions = [_sparse_hash(matrix) for matrix in model.transition_matrix]
-        rewards = _array_hash(model.reward_matrix)
+        transitions = [sparse_digest(matrix) for matrix in model.transition_matrix]
+        rewards = array_digest(model.reward_matrix)
         get_config = getattr(model, "get_config", None)
         model_metadata[model.name] = {
             "class": _qualified_name(model),
@@ -281,11 +221,12 @@ def capture_experiment(
                 "".join([*transitions, rewards]).encode("ascii")
             ).hexdigest(),
         }
-    implementations = [type(model) for model in models] + [
-        constructor for constructor, _ in solvers.values()
-    ]
+    solver_metadata = {
+        name: _solver_metadata(constructor, options)
+        for name, (constructor, options) in solvers.items()
+    }
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "experiment_id": str(uuid4()),
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "settings": {
@@ -299,17 +240,14 @@ def capture_experiment(
             "execution_mode": "in_process" if timeout is None else "spawn",
         },
         "models": model_metadata,
-        "solvers": {
-            name: _solver_metadata(constructor, options)
-            for name, (constructor, options) in solvers.items()
-        },
+        "solvers": solver_metadata,
         "environment": {
             "python": platform.python_version(),
             "mdpforge": _package_version("mdpforge"),
             "numpy": np.__version__,
             "scipy": scipy.__version__,
             "threadpoolctl": _package_version("threadpoolctl"),
-            "backends": _backend_versions(implementations),
+            "backends": _backend_versions(solver_metadata),
         },
         "machine": _machine_metadata(),
         "code": {"git": _git_metadata()},

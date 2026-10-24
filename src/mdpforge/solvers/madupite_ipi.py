@@ -6,8 +6,7 @@ from tempfile import TemporaryDirectory
 import madupite as md
 import numpy as np
 
-from mdpforge.core.model import MDPProtocol
-from mdpforge.core.precision import certify_value
+from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.madupite import madupite_matrices
@@ -19,7 +18,7 @@ METADATA = {
     "backend": "madupite",
     "description": (
         "madupite distributed inexact policy iteration, running on one MPI rank "
-        "with PETSc file conversion and independent residual certification."
+        "with PETSc file conversion."
     ),
 }
 
@@ -31,7 +30,7 @@ class Solver(GenericSolver):
 
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-3,
         *,
@@ -49,10 +48,11 @@ class Solver(GenericSolver):
         ksp_type: nonempty PETSc Krylov solver name; default "gmres".
         pc_type: nonempty PETSc preconditioner name; default "none".
         """
-        super().__init__(model, discount, final_precision)
+        super().__init__(
+            model, discount, final_precision, max_iterations=max_iterations
+        )
         if not ksp_type or not pc_type:
             raise ValueError("PETSc solver names must be nonempty")
-        self.max_iterations = positive_integer(max_iterations, "max_iterations")
         self.max_evaluation_iterations = positive_integer(
             max_evaluation_iterations, "max_evaluation_iterations"
         )
@@ -124,5 +124,6 @@ class Solver(GenericSolver):
             (policy < 0) | (policy >= self.model.action_dim)
         ):
             raise RuntimeError("madupite returned an invalid policy")
-        value = certify_value(self.model, values, self.discount, self.final_precision)
-        return self._result(value, policy)
+        return SolveResult(
+            np.asarray(values), policy, self._iterations or None, self._stop_reason
+        )

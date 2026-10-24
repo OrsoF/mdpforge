@@ -5,7 +5,7 @@ from typing import Tuple
 import numpy as np
 from scipy.sparse import csr_matrix
 
-from mdpforge.core.model import MDPProtocol
+from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import (
     bellman_policy_operator,
     norminf,
@@ -54,7 +54,7 @@ def iterative_policy_evaluation(
 
 
 def apply_obo_until_var_small(
-    model: MDPProtocol,
+    model: MDP,
     discount: float,
     variation_tol: float,
     initial_value: np.ndarray,
@@ -81,6 +81,6 @@ def apply_obo_until_var_small(
     return value, variation
 
 
-def optimal_bellman_residual(model: MDPProtocol, value: np.ndarray, discount: float):
+def optimal_bellman_residual(model: MDP, value: np.ndarray, discount: float):
     """Returns ||V - T^* V||_inf."""
     return norminf(optimal_bellman_operator(model, value, discount) - value)

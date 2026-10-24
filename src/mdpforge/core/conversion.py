@@ -8,7 +8,7 @@ from scipy.sparse import csr_matrix
 if TYPE_CHECKING:
     from marmote.core import FullMatrix
 
-    from mdpforge.core.model import MDPProtocol
+    from mdpforge.core.mdp import MDP
 
 
 def _nonzero_entries(matrix: csr_matrix):
@@ -54,7 +54,7 @@ def build_marmote_transition_list(
 ####### MDPSOLVER #######
 
 
-def compute_mdpsolver_args(model: "MDPProtocol") -> tuple:
+def compute_mdpsolver_args(model: "MDP") -> tuple:
     """Convert transition and reward matrices to MDPSolver input lists."""
     transitions = []
     for action in range(model.action_dim):
@@ -77,7 +77,7 @@ def compute_mdpsolver_args(model: "MDPProtocol") -> tuple:
 ####### DISPATCH #######
 
 
-def compute_marmote_args(model: "MDPProtocol") -> tuple:
+def compute_marmote_args(model: "MDP") -> tuple:
     """Build native Marmote matrices without changing the CSR model."""
     return (
         build_marmote_transition_list(

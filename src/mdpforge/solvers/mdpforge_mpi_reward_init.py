@@ -1,6 +1,6 @@
 import numpy as np
 
-from mdpforge.core.model import MDPProtocol
+from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import bellman_operator, compute_transition_reward_policy
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
@@ -21,7 +21,7 @@ METADATA = {
 class Solver(GenericSolver):
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-3,
         *,
@@ -77,16 +77,22 @@ class Solver(GenericSolver):
             new_policy = q_value.argmax(axis=1)
             bellman_residual = np.abs(q_value.max(axis=1) - value).max()
 
-            if self._check_iteration(
-                iteration,
-                bellman_residual,
-                tolerance,
-                value,
-                q_value,
-                stagnated=(
-                    np.array_equal(value, previous_value)
-                    and np.array_equal(new_policy, policy)
-                ),
+            if (
+                not np.isfinite(bellman_residual)
+                or not np.isfinite(value).all()
+                or not np.isfinite(q_value).all()
             ):
-                return self._result(value, new_policy)
+                raise RuntimeError("MPI stopped: non_finite values")
+            if bellman_residual < tolerance:
+                return SolveResult(
+                    np.asarray(value),
+                    new_policy,
+                    iteration,
+                    "converged",
+                )
+            if np.array_equal(value, previous_value) and np.array_equal(
+                new_policy, policy
+            ):
+                raise RuntimeError("MPI stopped: stagnation")
             policy = new_policy
+        raise RuntimeError("MPI stopped: max_iterations reached")

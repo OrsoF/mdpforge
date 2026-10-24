@@ -129,12 +129,12 @@ def recipe_identity(model, *, normalize_reward=False):
     return hashlib.sha256(stable_json(identity).encode()).hexdigest()
 
 
-def value_identity(model, discount, precision):
-    """Key value references by exact numerical content and solve settings."""
+def value_metadata(model, discount, precision):
+    """Describe the numerical content and solve settings of a value reference."""
     from mdpforge.solvers import mdpforge_vi
 
     source_path = Path(mdpforge_vi.__file__)
-    details = {
+    return {
         "schema": SCHEMA_VERSION,
         "kind": "value",
         "model_sha256": numerical_identity(model),
@@ -143,4 +143,3 @@ def value_identity(model, discount, precision):
         "solver": "mdpforge_vi",
         "source_sha256": hashlib.sha256(source_path.read_bytes()).hexdigest(),
     }
-    return hashlib.sha256(stable_json(details).encode()).hexdigest()

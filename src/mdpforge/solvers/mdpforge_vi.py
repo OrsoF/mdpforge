@@ -1,9 +1,10 @@
 import numpy as np
 
-from mdpforge.core.model import MDPProtocol
+from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
+from mdpforge.utils.solver_options import initial_vectors
 
 METADATA = {
     "display_name": "VI · mdpforge",
@@ -21,7 +22,7 @@ class Solver(GenericSolver):
 
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-3,
         initial_value: np.ndarray | None = None,
@@ -36,15 +37,8 @@ class Solver(GenericSolver):
         super().__init__(
             model, discount, final_precision, max_iterations=max_iterations
         )
-        self.initial_value = (
-            np.zeros(model.state_dim)
-            if initial_value is None
-            else np.array(initial_value, dtype=float, copy=True)
-        )
-        if self.initial_value.shape != (model.state_dim,) or not np.all(
-            np.isfinite(self.initial_value)
-        ):
-            raise ValueError("initial_value must contain one finite value per state")
+        value, _ = initial_vectors(model, initial_value)
+        self.initial_value = np.zeros(model.state_dim) if value is None else value
         self.name = "mdpforge VI"
 
     def _solve(self) -> SolveResult:
@@ -54,12 +48,16 @@ class Solver(GenericSolver):
         for iteration in range(1, self.max_iterations + 1):
             new_value = optimal_bellman_operator(self.model, value, self.discount)
             bellman_residual = np.linalg.norm(new_value - value, ord=np.inf)
-            if self._check_iteration(
-                iteration,
-                bellman_residual,
-                tolerance,
-                new_value,
-                stagnated=np.array_equal(new_value, value),
-            ):
-                return self._result(new_value)
+            if not np.isfinite(bellman_residual) or not np.isfinite(new_value).all():
+                raise RuntimeError("VI stopped: non_finite values")
+            if bellman_residual < tolerance:
+                return SolveResult(
+                    np.asarray(new_value),
+                    None,
+                    iteration,
+                    "converged",
+                )
+            if np.array_equal(new_value, value):
+                raise RuntimeError("VI stopped: stagnation")
             value = new_value
+        raise RuntimeError("VI stopped: max_iterations reached")

@@ -123,7 +123,6 @@ def assert_optimal_solution(result, model, discount, precision, *, expected=None
     assert np.all((0 <= policy) & (policy < model.action_dim))
     policy_value = evaluate_policy(model, policy, discount)
     assert_allclose(policy_value, expected, atol=precision, rtol=0)
-    assert np.isfinite(result.runtime) and result.runtime >= 0
     return value.copy(), policy_value
 
 

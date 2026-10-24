@@ -1,6 +1,6 @@
 """Certified progressive Bellman-envelope value iteration (precomputed transitions).
 
-Compatible with mdpforge's MDPProtocol and Partition interfaces (October 2026).
+Compatible with mdpforge's MDP and Partition interfaces (October 2026).
 For a partition with n states and K regions, precompute P_a @ phi once.
 All envelope backups subsequently use *K-dimensional* vectors:
 
@@ -20,11 +20,9 @@ The lower/upper bounds are *not* projected Bellman means. They cannot in
 general be represented by a single ordinary aggregated MDP.
 """
 
-from time import perf_counter
-
 import numpy as np
 
-from mdpforge.core.model import MDPProtocol
+from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import bellman_operator, compact_optimal_bellman_operator
 from mdpforge.core.partition import Partition
 from mdpforge.core.solve_result import SolveResult
@@ -50,7 +48,7 @@ class Solver:
 
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-3,
         refinement: str = "width",
@@ -80,8 +78,7 @@ class Solver:
         max_iterations: int > 0; outer iteration budget; default 100_000.
         max_fallback_iterations: int > 0; full-state iteration budget; default 100_000.
         """
-        if not 0 < discount < 1:
-            raise AssertionError("discount must belong to (0, 1)")
+        assert 0 < discount < 1, "discount must belong to (0, 1)"
         positive_real(final_precision, "final_precision")
         self.max_iterations = positive_integer(max_iterations, "max_iterations")
         self.max_fallback_iterations = positive_integer(
@@ -129,12 +126,10 @@ class Solver:
         self.upper_value = None
         self.certified_error = None
         self.residual_error_bound = None
-        self.runtime = None
         self.n_envelope_updates = 0
         self.n_precomputations = 0
         self.n_refinements = 0
         self.n_ground_bellman_updates = 0
-        self.precompute_time = 0.0
         self.region_history = []
         self.used_exact_vi = False
 
@@ -145,7 +140,6 @@ class Solver:
         K-by-K averaged matrices used for Q-value aggregation. The distinction
         matters: min/max must be taken over *ground states* in each region.
         """
-        start = perf_counter()
         transitions, rewards = self.partition.compute_agg_trans_reward_v()
         self._transitions = transitions  # list of CSR arrays, each shape (N, K)
         self._rewards = np.asarray(rewards, dtype=float)  # (N, A)
@@ -168,7 +162,6 @@ class Solver:
             raise ValueError("Partition contains an empty region")
         self._starts = np.r_[0, np.cumsum(counts)[:-1]]
         self.n_precomputations += 1
-        self.precompute_time += perf_counter() - start
 
     def _compressed_bellman(self, x: np.ndarray) -> np.ndarray:
         """Ground Bellman image T(phi x), with O(sum_a nnz(P_a phi)) work."""
@@ -258,7 +251,7 @@ class Solver:
             # eventual termination when threshold is above floating noise.
             value = updated
 
-    def _finish(self, lo: np.ndarray, hi: np.ndarray, start: float):
+    def _finish(self, lo: np.ndarray, hi: np.ndarray):
         lo = np.asarray(lo, dtype=float).reshape(-1)
         hi = np.asarray(hi, dtype=float).reshape(-1)
         if not np.all(np.isfinite(lo)) or not np.all(np.isfinite(hi)):
@@ -301,7 +294,6 @@ class Solver:
         self.policy = bellman_operator(self.model, self.value, self.discount).argmax(
             axis=1
         )
-        self.runtime = perf_counter() - start
 
     def _ground_fallback(self, lo: np.ndarray, hi: np.ndarray):
         """Certified fallback: full VI on both endpoints, not residual heuristics."""
@@ -316,7 +308,6 @@ class Solver:
 
     def run(self) -> SolveResult:
         """Return when the certified sup-norm value error is <= final_precision."""
-        start = perf_counter()
         n = self.model.state_dim
         r = np.asarray(self.model.reward_matrix, dtype=float)
         lo = np.full(n, float(np.min(r)) / (1 - self.discount))
@@ -325,16 +316,15 @@ class Solver:
         self.n_precomputations = 0
         self.n_refinements = 0
         self.n_ground_bellman_updates = 0
-        self.precompute_time = 0.0
         self.used_exact_vi = False
         self.region_history = []
 
         if float(np.max(hi - lo)) <= 2 * self.epsilon:
-            self._finish(lo, hi, start)
+            self._finish(lo, hi)
             return SolveResult.from_solver(self)
         if self.partition.n_regions >= self.switch_to_vi_ratio * n:
             lo, hi = self._ground_fallback(lo, hi)
-            self._finish(lo, hi, start)
+            self._finish(lo, hi)
             return SolveResult.from_solver(self)
 
         self._precompute()
@@ -350,7 +340,7 @@ class Solver:
                 self.n_envelope_updates += 1
                 gap = float(np.max(xhi - xlo))
                 if gap <= 2 * self.epsilon:
-                    self._finish(xlo[self._labels], xhi[self._labels], start)
+                    self._finish(xlo[self._labels], xhi[self._labels])
                     return SolveResult.from_solver(self)
 
             K = self._K
@@ -359,7 +349,7 @@ class Solver:
                 ground_lo, ground_hi = self._ground_fallback(
                     xlo[self._labels], xhi[self._labels]
                 )
-                self._finish(ground_lo, ground_hi, start)
+                self._finish(ground_lo, ground_hi)
                 return SolveResult.from_solver(self)
 
             # Two cheap compressed ground Bellman images. Using only the gap
@@ -379,7 +369,7 @@ class Solver:
                 ground_lo, ground_hi = self._ground_fallback(
                     xlo[self._labels], xhi[self._labels]
                 )
-                self._finish(ground_lo, ground_hi, start)
+                self._finish(ground_lo, ground_hi)
                 return SolveResult.from_solver(self)
 
             self.n_refinements += 1
@@ -391,7 +381,7 @@ class Solver:
             # it at the next batch check.
             if self.partition.n_regions >= self.switch_to_vi_ratio * n:
                 ground_lo, ground_hi = self._ground_fallback(ground_lo, ground_hi)
-                self._finish(ground_lo, ground_hi, start)
+                self._finish(ground_lo, ground_hi)
                 return SolveResult.from_solver(self)
             self._precompute()
             xlo = self._reduce(ground_lo, lower=True)

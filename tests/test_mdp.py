@@ -63,18 +63,20 @@ def test_matrix_mdp_shares_densities_and_state_relabeling(chain):
     assert all(isinstance(matrix, csr_matrix) for matrix in model.transition_matrix)
 
 
-def test_matrix_mdp_values_are_cached_by_content_not_name(chain):
+def test_matrix_mdp_values_are_cached_by_discount_and_name(chain):
     model = MDP.from_matrices(
         "matrix_chain", chain.transition_matrix, chain.reward_matrix
     )
     expected = model.optimal_value_function(0.9)
     assert_allclose(expected, [1.8, 2, 0], rtol=0, atol=1e-3)
-    assert persistence.value_function_cache_path(model, 0.9).is_file()
+    path = persistence.value_function_cache_path(model, 0.9)
+    assert path.is_file()
+    assert path.name == f"0.9_{model.name}.npz"
 
     equivalent = MDP.from_matrices(
         "some_other_name", chain.transition_matrix, chain.reward_matrix
     )
-    assert persistence.value_function_cache_path(equivalent, 0.9) == (
+    assert persistence.value_function_cache_path(equivalent, 0.9) != (
         persistence.value_function_cache_path(model, 0.9)
     )
     assert_allclose(equivalent.optimal_value_function(0.9), expected, rtol=0, atol=0)

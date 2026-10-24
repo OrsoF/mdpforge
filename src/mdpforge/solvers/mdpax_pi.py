@@ -3,8 +3,7 @@
 import numpy as np
 from mdpax.solvers import PolicyIteration
 
-from mdpforge.core.model import MDPProtocol
-from mdpforge.core.precision import certify_value
+from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpax import make_mdpax_problem
@@ -14,10 +13,7 @@ METADATA = {
     "display_name": "PI · MDPax",
     "family": "pi",
     "backend": "mdpax",
-    "description": (
-        "MDPax JAX iterative policy evaluation and improvement with "
-        "independent Bellman-residual certification."
-    ),
+    "description": "MDPax JAX iterative policy evaluation and improvement.",
 }
 
 
@@ -28,7 +24,7 @@ class Solver(GenericSolver):
 
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-3,
         *,
@@ -46,8 +42,9 @@ class Solver(GenericSolver):
         max_event_entries: int > 0; padded transition-event capacity; default 2_000_000.
         max_batch_size: int > 0; backend batch-size limit; default 1024.
         """
-        super().__init__(model, discount, final_precision)
-        self.max_iterations = positive_integer(max_iterations, "max_iterations")
+        super().__init__(
+            model, discount, final_precision, max_iterations=max_iterations
+        )
         self.max_evaluation_iterations = positive_integer(
             max_evaluation_iterations, "max_evaluation_iterations"
         )
@@ -79,5 +76,6 @@ class Solver(GenericSolver):
             (policy < 0) | (policy >= self.model.action_dim)
         ):
             raise RuntimeError("MDPax returned an invalid policy")
-        values = certify_value(self.model, values, self.discount, self.final_precision)
-        return self._result(values, policy)
+        return SolveResult(
+            np.asarray(values), policy, self._iterations or None, self._stop_reason
+        )

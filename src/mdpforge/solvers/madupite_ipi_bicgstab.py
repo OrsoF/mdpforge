@@ -1,6 +1,6 @@
 """iPI BiCGStab profile for the optional madupite/PETSc backend."""
 
-from mdpforge.core.model import MDPProtocol
+from mdpforge.core.mdp import MDP
 from mdpforge.solvers.madupite_ipi import Solver as MadupiteIPISolver
 
 METADATA = {
@@ -20,7 +20,7 @@ class Solver(MadupiteIPISolver):
 
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-3,
         *,

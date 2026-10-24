@@ -3,11 +3,9 @@ This code allows to slice a state space progressively
 along an evolving value function.
 """
 
-from time import time
-
 import numpy as np
 
-from mdpforge.core.model import MDPProtocol
+from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import (
     compact_optimal_bellman_operator,
     norminf,
@@ -36,7 +34,7 @@ class Solver:
 
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         final_precision: float = 1e-3,
         aggregation_iterations: int = 40,
@@ -55,13 +53,11 @@ class Solver:
             default 0.001.
         """
         assert 0 < discount < 1, "discount must be strictly between 0 and 1"
-        # Class arguments
         positive_real(final_precision, "final_precision")
         self.max_iterations = positive_integer(max_iterations, "max_iterations")
         self.step_size = positive_real(step_size, "step_size")
         self.model = model
         self.discount = discount
-        assert final_precision > 0, "final_precision must be positive"
         self.epsilon = final_precision
         self.aggregation_iterations = positive_integer(
             aggregation_iterations, "aggregation_iterations"
@@ -76,12 +72,10 @@ class Solver:
             self.model.reward_matrix == self.model.reward_matrix[:, [0]]
         )
 
-        # Variables
         self.partition = Partition(self.model)
         self.contracted_value: np.ndarray
 
     def run(self) -> SolveResult:
-        start_time = time()
         tolerance = self.epsilon * (1 - self.discount)
         self.value = np.zeros((self.model.state_dim))
 
@@ -92,7 +86,6 @@ class Solver:
                     self.model, self.value, self.discount, self.shared_reward
                 )
                 if norminf(new_value - self.value) < tolerance:
-                    self.runtime = time() - start_time
                     return SolveResult.from_solver(self)
                 self.value = new_value
 

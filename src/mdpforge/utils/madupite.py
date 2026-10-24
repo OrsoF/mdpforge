@@ -3,10 +3,10 @@
 import numpy as np
 from scipy.sparse import hstack
 
-from mdpforge.core.model import MDPProtocol
+from mdpforge.core.mdp import MDP
 
 
-def madupite_matrices(model: MDPProtocol):
+def madupite_matrices(model: MDP):
     """Return (S,A) rewards and (S*A,S) CSR transitions in state-major order."""
     # Columns of the horizontal stack are ordered (action, next_state).
     # C-order reshape then maps a row to state * n_actions + action.

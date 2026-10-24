@@ -2,10 +2,10 @@
 
 import numpy as np
 
-from mdpforge.core.model import MDPProtocol
+from mdpforge.core.mdp import MDP
 
 
-def padded_transitions(model: MDPProtocol, max_event_entries: int):
+def padded_transitions(model: MDP, max_event_entries: int):
     """Pack variable-length CSR rows as state/action/event arrays."""
     if max_event_entries < 1:
         raise ValueError("max_event_entries must be positive")
@@ -28,7 +28,7 @@ def padded_transitions(model: MDPProtocol, max_event_entries: int):
     return successors, probabilities
 
 
-def make_mdpax_problem(model: MDPProtocol, max_event_entries: int):
+def make_mdpax_problem(model: MDP, max_event_entries: int):
     """Construct a JAX-compatible MDPax Problem from explicit transitions."""
     import jax
     import jax.numpy as jnp

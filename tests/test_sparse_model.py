@@ -1,3 +1,4 @@
+import pickle
 from copy import deepcopy
 
 import numpy as np
@@ -38,10 +39,9 @@ def test_create_model_finalizes_and_saves_csr(chain, matrix_type, monkeypatch):
 
 def test_legacy_dense_cache_is_ignored(chain, monkeypatch):
     matrices = np.array([matrix.toarray() for matrix in chain.transition_matrix])
-    persistence.save_pickle(
-        (3, 2, matrices, chain.reward_matrix),
-        persistence.legacy_model_cache_path(chain.name),
-    )
+    path = persistence.SAVED_MODELS_PATH / f"{chain.name}.pkl"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(pickle.dumps((3, 2, matrices, chain.reward_matrix)))
     model = type(chain)(3, 2)
     built = []
     real_build = model._build_model

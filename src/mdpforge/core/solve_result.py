@@ -7,11 +7,10 @@ import numpy as np
 
 @dataclass(slots=True)
 class SolveResult:
-    """Store a solver's value, policy, runtime, and available stop details."""
+    """Store a solver's value, policy, and available stop details."""
 
     value: np.ndarray
     policy: np.ndarray | None
-    runtime: float
     iterations: int | None = None
     stop_reason: str | None = None
 
@@ -21,7 +20,6 @@ class SolveResult:
         return cls(
             solver.value,
             solver.policy,
-            solver.runtime,
             getattr(solver, "iterations", None) or None,
             getattr(solver, "stop_reason", None),
         )

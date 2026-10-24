@@ -9,7 +9,12 @@ from zipfile import BadZipFile
 import numpy as np
 from scipy.sparse import csr_matrix
 
-from mdpforge.utils.cache_keys import numerical_identity, stable_json
+from mdpforge.utils.cache_keys import (
+    array_digest,
+    numerical_identity,
+    stable_json,
+    value_metadata,
+)
 
 
 class CacheCorruptError(ValueError):
@@ -159,6 +164,7 @@ def save_model_entry(path, key, model):
 
 
 def load_value_entry(path, key, model, discount, precision):
+    """Return a valid reference, or None when its inputs or precision are stale."""
     metadata, arrays = _read(path)
     if (
         metadata.get("schema") != 2
@@ -167,21 +173,25 @@ def load_value_entry(path, key, model, discount, precision):
     ):
         raise CacheCorruptError("Value cache identity mismatch")
     try:
+        stored_precision = float.fromhex(metadata["precision"])
+        if not np.isfinite(stored_precision) or stored_precision <= 0:
+            raise ValueError("Invalid cached precision")
+        expected = value_metadata(model, discount, precision)
+        if stored_precision > precision or any(
+            metadata.get(name) != value
+            for name, value in expected.items()
+            if name != "precision"
+        ):
+            return None
         value = arrays["value"]
         if value.shape != (model.state_dim,) or not np.isfinite(value).all():
             raise ValueError("Invalid value array")
-        if metadata.get("value_sha256") != __value_hash(value):
+        if metadata.get("value_sha256") != array_digest(value):
             raise ValueError("Value checksum mismatch")
         verify_value(model, value, discount, precision)
         return value
     except (KeyError, TypeError, ValueError) as exc:
         raise CacheCorruptError(f"Invalid value entry {path}: {exc}") from exc
-
-
-def __value_hash(value):
-    from mdpforge.utils.cache_keys import array_digest
-
-    return array_digest(value)
 
 
 def verify_value(model, value, discount, precision):
@@ -199,17 +209,18 @@ def verify_value(model, value, discount, precision):
 
 def save_value_entry(path, key, model, discount, precision, value, *, replace=False):
     value = verify_value(model, value, discount, precision)
-    metadata = {
-        "schema": 2,
-        "kind": "value",
+    metadata = value_metadata(model, discount, precision) | {
         "key": key,
-        "value_sha256": __value_hash(value),
+        "value_sha256": array_digest(value),
     }
     with _write_lock(path):
         if path.exists() and not replace:
             try:
-                return load_value_entry(path, key, model, discount, precision)
+                previous = load_value_entry(path, key, model, discount, precision)
             except CacheCorruptError:
                 pass
+            else:
+                if previous is not None:
+                    return previous
         _write(path, metadata, {"value": value})
     return value

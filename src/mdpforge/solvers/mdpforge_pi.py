@@ -2,7 +2,7 @@ import numpy as np
 from scipy.sparse import eye
 from scipy.sparse.linalg import spsolve
 
-from mdpforge.core.model import MDPProtocol
+from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import bellman_operator, compute_transition_reward_policy
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
@@ -22,7 +22,7 @@ METADATA = {
 class Solver(GenericSolver):
     def __init__(
         self,
-        model: MDPProtocol,
+        model: MDP,
         discount: float,
         *,
         max_iterations: int = 100_000,
@@ -56,7 +56,12 @@ class Solver(GenericSolver):
                 raise RuntimeError("PI stopped: non_finite policy values")
             if policy_stable:
                 self._stop_reason = "converged"
-                return self._result(value, policy)
+                return SolveResult(
+                    np.asarray(value),
+                    policy,
+                    self._iterations or None,
+                    self._stop_reason,
+                )
             policy = new_policy
         self._stop_reason = "max_iterations"
         raise RuntimeError("PI stopped: max_iterations reached")
