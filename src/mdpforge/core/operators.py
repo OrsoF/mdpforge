@@ -26,7 +26,9 @@ def bellman_operator(model: "MDP", value: np.ndarray, discount: float) -> np.nda
     return q_value
 
 
-def optimal_bellman_operator(model: "MDP", value: np.ndarray, discount: float) -> np.ndarray:
+def optimal_bellman_operator(
+    model: "MDP", value: np.ndarray, discount: float
+) -> np.ndarray:
     """Apply the optimal Bellman operator to a value function."""
     return np.max(bellman_operator(model, value, discount), axis=1)
 

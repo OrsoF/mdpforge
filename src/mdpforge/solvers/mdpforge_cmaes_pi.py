@@ -60,9 +60,7 @@ class Solver(GenericSolver):
             raise ValueError("seed must be None or an integer in [0, 2**32).")
 
         value, policy = initial_vectors(model, initial_value, initial_policy)
-        self.policy = (
-            np.zeros(model.state_dim, dtype=int) if policy is None else policy
-        )
+        self.policy = np.zeros(model.state_dim, dtype=int) if policy is None else policy
         self.value = np.zeros(model.state_dim) if value is None else value
         self.sigma0 = float(sigma0)
         self.max_generations = positive_integer(max_generations, "max_generations")

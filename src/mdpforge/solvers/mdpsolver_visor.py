@@ -16,8 +16,7 @@ METADATA = {
     "family": "vi",
     "backend": "mdpsolver",
     "description": (
-        "MDPSolver value iteration with successive over-relaxation Bellman "
-        "updates."
+        "MDPSolver value iteration with successive over-relaxation Bellman updates."
     ),
 }
 
