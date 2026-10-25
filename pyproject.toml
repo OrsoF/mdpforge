@@ -8,8 +8,12 @@ version = "0.1.0"
 description = "Finite Markov decision process models, solvers, and benchmarks"
 readme = "README.md"
 requires-python = ">=3.11"
-license = "MIT"
-license-files = ["LICENSE"]
+license = "MIT AND CC-BY-4.0"
+license-files = [
+    "LICENSE",
+    "src/mdpforge/models/_qvbs_data/LICENSE",
+    "src/mdpforge/models/_prism_data/LICENSE",
+]
 dependencies = ["numpy>=1.26", "scipy>=1.12", "threadpoolctl>=3.1"]
 
 [project.optional-dependencies]
@@ -23,13 +27,10 @@ mdpax = ["mdpax>=0.2.2,<0.3"]
 quantecon = ["quantecon>=0.10.1,<0.14"]
 # madupite requires MPI/PETSc; install via its upstream conda/source instructions.
 cma = ["cma>=4.4,<5"]
-deep = ["stable-baselines3", "gymnasium"]
 maze = ["mazelib"]
+qvbs = ["stormpy>=1.14,<2"]
 progress = ["tqdm"]
 notebooks = ["mdpforge[plot]", "ipython", "pandas", "seaborn", "openpyxl"]
-# Preserve the previous opt-in extras without duplicating dependency declarations.
-reference = ["mdpforge[mdptoolbox]"]
-legacy = ["mdpforge[notebooks,mdptoolbox,gurobi,mdpsolver,deep,maze,progress]"]
 
 [project.urls]
 Repository = "https://github.com/OrsoF/mdpforge"
@@ -41,6 +42,12 @@ include-package-data = false
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["mdpforge", "mdpforge.*"]
+
+[tool.setuptools.package-data]
+"mdpforge.models" = [
+    "_qvbs_data/*.jani", "_qvbs_data/*.json", "_qvbs_data/LICENSE",
+    "_prism_data/*.nm", "_prism_data/*.json", "_prism_data/LICENSE",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

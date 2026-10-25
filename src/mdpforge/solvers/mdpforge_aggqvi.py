@@ -23,7 +23,7 @@ from mdpforge.utils.projected_bellman import (
     apply_poqbo_until_var_small,
     projected_optimal_q_bellman_operator,
 )
-from mdpforge.utils.solver_options import bounded_iterations, solver_identifier
+from mdpforge.utils.solver_options import bounded_iterations
 
 METADATA = {
     "display_name": "Aggregated QVI · mdpforge",
@@ -80,17 +80,6 @@ class Solver(GenericSolver):
 
         self.epsilon_pbr = self.epsilon * (1 - self.discount) / 2
         self.epsilon_span = self.epsilon * (1 - self.discount) / 2
-
-        self.solver_id = solver_identifier(
-            __name__,
-            discount=self.discount,
-            final_precision=self.epsilon,
-            bellman_iterations=self.bellman_iterations,
-            max_projected_iterations=self.max_projected_iterations,
-            max_iterations=self.max_iterations,
-            max_fallback_iterations=self.max_fallback_iterations,
-            switch_to_vi_ratio=self.switch_to_vi_ratio,
-        )
 
     def run(self) -> SolveResult:
         contracted_q_value = np.zeros(

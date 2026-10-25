@@ -1,98 +1,76 @@
-"""Reduced IPv4 Zeroconf address-probing MDP, not the PRISM timed automaton."""
+"""Native PRISM zeroconf command semantics with discounted completion costs.
+
+States are reachable integer valuations; actions are local choice offsets.
+Disabled slots repeat a valid choice; terminal transitions are not removed.
+Costs are negated and zeroed on completion, with no terminal bonus or scaling.
+state_dim selects the closest bundled configuration unless parameters fix it.
+Original authors and CC-BY 4.0 source attribution: _prism_data/manifest.json.
+"""
 
 from mdpforge.core.mdp import MDP
-from mdpforge.models._benchmark_sparse import TransitionBuilder
+from mdpforge.models._prism import build_prism, configure_prism
 
 METADATA = {
     "category": "service_operations",
     "description": (
-        "Reduced Zeroconf: probe losses, occupied addresses and retries; "
-        "discounted rewards."
+        "PRISM Zeroconf with message buffers, digital clocks, defence and "
+        "reset semantics."
     ),
     "reference": (
-        "PRISM Benchmark Suite, IPv4 Zeroconf (KNPS06): "
-        "https://www.prismmodelchecker.org/benchmarks/models.php#mdps"
+        "Kwiatkowska, Norman and Parker, The PRISM Benchmark Suite, QEST "
+        "2012; CC-BY 4.0: "
+        "https://github.com/prismmodelchecker/prism-benchmarks"
     ),
     "sizes": {
-        "small": {"requested_state_dim": 30000, "parameters": {"probes": 4}},
-        "medium": {"requested_state_dim": 120000, "parameters": {"probes": 4}},
-        "large": {"requested_state_dim": 480000, "parameters": {"probes": 4}},
+        "small": {
+            "requested_state_dim": 670,
+            "parameters": {"probes": 2, "reset": True},
+        },
+        "medium": {
+            "requested_state_dim": 89586,
+            "parameters": {"probes": 2, "reset": False},
+        },
+        "large": {
+            "requested_state_dim": 307768,
+            "parameters": {"probes": 4, "reset": False},
+        },
     },
 }
 
-TEST_PARAMETERS = {"state_dim": 42, "probes": 2, "existing_hosts": 13004}
+TEST_PARAMETERS = {"state_dim": 670, "probes": 2, "reset": True}
 
 
 class Model(MDP):
-    """State (attempt, candidate_occupied, probes_sent) plus success/failure."""
+    """Construct the published reachable zeroconf MDP in Python."""
 
     def __init__(
         self,
-        state_dim: int = 102,
-        probes: int = 4,
+        state_dim: int = 670,
+        *,
+        probes: int | None = None,
         existing_hosts: int = 1000,
-        loss_probability: float = 0.1,
+        reset: bool = True,
+        reward: str = "time",
     ):
-        if type(state_dim) is not int or state_dim < 1:
-            raise ValueError("state_dim must be a positive integer")
-        if type(probes) is not int or probes < 1:
-            raise ValueError("probes must be a positive integer")
-        if type(existing_hosts) is not int or not 0 <= existing_hosts <= 65024:
-            raise ValueError("existing_hosts must be in [0, 65024]")
-        if not 0 <= loss_probability <= 1:
-            raise ValueError("loss_probability must be in [0, 1]")
-        self.probes = probes
-        self.existing_hosts = existing_hosts
-        self.loss_probability = float(loss_probability)
-        self.occupied_probability = existing_hosts / 65024
-        self.attempts = max(1, round((state_dim - 2) / (2 * (probes + 1))))
-        super().__init__(2 * (probes + 1) * self.attempts + 2, 2)
-        self.requested_state_dim = state_dim
-        self.success = self.state_dim - 2
-        self.failure = self.state_dim - 1
-        self.name = (
-            f"{self.state_dim}_{self.action_dim}_zeroconf_1"
-            f"_{probes}_{self.attempts}_{existing_hosts}"
-            f"_{self.loss_probability}"
+        """probes: None selects by state_dim, or 2, 4, 6, 8; native K; default None.
+        existing_hosts: 20 or 1000; native N; default 1000.
+        reset: bool; clear the concrete buffer on restart; default True.
+        Native message loss is 0.1; reward=time adds unit time cost until l=4."""
+        if probes is not None and (
+            type(probes) is not int or probes not in (2, 4, 6, 8)
+        ):
+            raise ValueError("probes must be None, 2, 4, 6 or 8")
+        if type(existing_hosts) is not int or existing_hosts not in (20, 1000):
+            raise ValueError("existing_hosts must be 20 or 1000")
+        if type(reset) is not bool:
+            raise ValueError("reset must be a bool")
+        configure_prism(
+            self,
+            "zeroconf",
+            state_dim,
+            {"probes": probes, "existing_hosts": existing_hosts, "reset": reset},
+            reward,
         )
 
-    def _encode(self, attempt, occupied, sent):
-        return (attempt * 2 + occupied) * (self.probes + 1) + sent
-
-    def _candidate(self, transitions, action, state, attempt, probability):
-        if attempt >= self.attempts:
-            transitions.add(action, state, self.failure, probability)
-        else:
-            p = self.occupied_probability
-            transitions.add(
-                action, state, self._encode(attempt, 0, 0), probability * (1 - p)
-            )
-            transitions.add(action, state, self._encode(attempt, 1, 0), probability * p)
-
     def _build_model(self):
-        builder = TransitionBuilder(self.state_dim, self.action_dim)
-        for attempt in range(self.attempts):
-            for occupied in (0, 1):
-                for sent in range(self.probes + 1):
-                    s = self._encode(attempt, occupied, sent)
-                    # Action 1 restarts with a newly sampled candidate IP.
-                    builder.rewards[s, 1] = -2.0
-                    self._candidate(builder, 1, s, attempt + 1, 1.0)
-                    # Action 0 sends the next probe; collisions can be missed.
-                    builder.rewards[s, 0] = -1.0
-                    if sent == self.probes:
-                        final = self.failure if occupied else self.success
-                        builder.add(0, s, final, 1.0)
-                        builder.rewards[s, 0] += -20 if occupied else 20
-                    elif occupied:
-                        detected = 1 - self.loss_probability
-                        self._candidate(builder, 0, s, attempt + 1, detected)
-                        builder.add(
-                            0, s, self._encode(attempt, 1, sent + 1), 1 - detected
-                        )
-                    else:
-                        builder.add(0, s, self._encode(attempt, 0, sent + 1), 1.0)
-        builder.absorbing(self.success)
-        builder.absorbing(self.failure)
-        self.transition_matrix = builder.finish()
-        self.reward_matrix = builder.rewards
+        build_prism(self)

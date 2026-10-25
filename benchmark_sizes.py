@@ -122,7 +122,7 @@ def build_model(request):
         }
     # A distinct name prevents loading reference caches or stale model parameters.
     model.name = f"size_scan_{request['case_id']}_{model.name}"
-    model.create_model(save=False)
+    model.create_model(cache="readonly")
     if (model.state_dim, model.action_dim) != (
         dimensions["state_dim"],
         dimensions["action_dim"],

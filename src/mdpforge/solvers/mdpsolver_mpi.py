@@ -9,7 +9,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpsolver import create_mdpsolver, solve_mdpsolver
-from mdpforge.utils.solver_options import initial_vectors, solver_identifier
+from mdpforge.utils.solver_options import initial_vectors
 
 METADATA = {
     "display_name": "MPI · MDPSolver",
@@ -48,21 +48,11 @@ class Solver(GenericSolver):
         super().__init__(model, discount, final_precision)
         self.parallel = parallel
         self.initial_value, self.initial_policy = initial_vectors(
-            model, initial_value, initial_policy
+            initial_value, initial_policy
         )
         self.max_evaluation_iterations = max_evaluation_iterations
         self.name = "MPI MDPSolver"
         self.mdl = create_mdpsolver(model, discount, mdpsolver)
-
-        self.solver_id = solver_identifier(
-            __name__,
-            discount=self.discount,
-            final_precision=self.final_precision,
-            parallel=self.parallel,
-            max_evaluation_iterations=self.max_evaluation_iterations,
-            initial_value=self.initial_value,
-            initial_policy=self.initial_policy,
-        )
 
     def _solve(self) -> SolveResult:
         value, policy = solve_mdpsolver(

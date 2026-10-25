@@ -1,6 +1,5 @@
 from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
-from mdpforge.utils.exact_value_function import distance_to_optimal
 
 
 class GenericSolver:

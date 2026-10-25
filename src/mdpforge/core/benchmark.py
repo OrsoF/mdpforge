@@ -613,7 +613,7 @@ class Benchmark:
         callables are unsupported in this mode. Only the dedicated worker is
         terminated, not any descendant processes started by a custom solver.
 
-        The result's ``experiment`` captures fingerprints, versions and
+        The result's ``experiment`` captures settings, versions and
         machine information before solver timing. Each row includes its ID.
         """
         if not np.isfinite(discount) or not 0 < discount < 1:

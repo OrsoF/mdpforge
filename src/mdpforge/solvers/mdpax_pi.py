@@ -7,7 +7,6 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpax import make_mdpax_problem
-from mdpforge.utils.solver_options import solver_identifier
 
 METADATA = {
     "display_name": "PI · MDPax",
@@ -49,16 +48,6 @@ class Solver(GenericSolver):
         self.max_event_entries = max_event_entries
         self.max_batch_size = max_batch_size
         self.name = "MDPax PI"
-
-        self.solver_id = solver_identifier(
-            __name__,
-            discount=self.discount,
-            final_precision=self.final_precision,
-            max_iterations=self.max_iterations,
-            max_evaluation_iterations=self.max_evaluation_iterations,
-            max_event_entries=self.max_event_entries,
-            max_batch_size=self.max_batch_size,
-        )
 
     def _solve(self) -> SolveResult:
         problem = make_mdpax_problem(self.model, self.max_event_entries)

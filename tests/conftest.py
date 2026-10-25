@@ -97,7 +97,7 @@ def isolated_model_cache(monkeypatch, tmp_path):
 @pytest.fixture
 def small_model(isolated_model_cache):
     model = FourStateModel(4, 2)
-    model.create_model(save=False)
+    model.create_model(cache="readonly")
     return model
 
 
@@ -122,7 +122,7 @@ def vi_module(request):
 def chain(tmp_path, monkeypatch, isolated_model_cache):
     monkeypatch.setattr(persistence, "SAVED_VALUE_FUNCTIONS_PATH", tmp_path / "values")
     model = ChainModel(3, 2)
-    model.create_model(save=False)
+    model.create_model(cache="readonly")
     return model
 
 

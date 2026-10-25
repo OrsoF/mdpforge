@@ -6,11 +6,10 @@ import numpy as np
 from marmote.core import MarmoteInterval
 from marmote.mdp import DiscountedMDP, SolutionMDP
 
-from mdpforge.utils.conversion import compute_marmote_args
+from mdpforge.utils.marmote import compute_marmote_args
 from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
-from mdpforge.utils.solver_options import solver_identifier
 
 METADATA = {
     "display_name": "VI · Marmote · GS",
@@ -42,13 +41,6 @@ class Solver(GenericSolver):
         self.name = "VIGS Marmote"
 
         self.transitions, self.rewards = compute_marmote_args(self.model)
-
-        self.solver_id = solver_identifier(
-            __name__,
-            discount=self.discount,
-            final_precision=self.final_precision,
-            max_iterations=self.max_iterations,
-        )
 
     def _solve(self) -> SolveResult:
         self.state_space = MarmoteInterval(0, int(self.model.state_dim - 1))

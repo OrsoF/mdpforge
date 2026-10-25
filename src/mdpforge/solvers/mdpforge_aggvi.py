@@ -13,7 +13,7 @@ from mdpforge.utils.projected_bellman import (
     apply_pobo_until_var_small,
     projected_optimal_bellman_operator_residual,
 )
-from mdpforge.utils.solver_options import bounded_iterations, solver_identifier
+from mdpforge.utils.solver_options import bounded_iterations
 
 METADATA = {
     "display_name": "Aggregated VI · mdpforge",
@@ -92,21 +92,6 @@ class Solver:
         self.epsilon_pbr = self.epsilon * (1 - self.discount) / 2
         self.epsilon_span = self.epsilon * (1 - self.discount) / 2
         self.max_projected_iterations = max_projected_iterations
-
-        self.solver_id = solver_identifier(
-            __name__,
-            discount=self.discount,
-            final_precision=final_precision,
-            bellman_iterations=self.bellman_iterations,
-            refinement=self.refinement,
-            norm_method=self.norm_method,
-            with_norm_weights=self.with_norm_weights,
-            n_tiles=self.n_tiles,
-            max_projected_iterations=self.max_projected_iterations,
-            max_iterations=self.max_iterations,
-            max_fallback_iterations=self.max_fallback_iterations,
-            switch_to_vi_ratio=self.switch_to_vi_ratio,
-        )
 
     def run(self) -> SolveResult:
         contracted_value = np.zeros(self.partition.n_regions)

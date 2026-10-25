@@ -1,6 +1,5 @@
 """Capture experiment provenance without changing solver inputs or RNG state."""
 
-import hashlib
 import inspect
 import json
 import math
@@ -16,8 +15,6 @@ import numpy as np
 import scipy
 from scipy.sparse import issparse
 from threadpoolctl import threadpool_info
-
-from mdpforge.utils.cache_keys import array_digest, sparse_digest
 
 
 def _qualified_name(value):
@@ -44,7 +41,11 @@ def _json_value(value):
             "values": _json_value(value.tolist()),
         }
     if issparse(value):
-        return {"shape": list(value.shape), "sha256": sparse_digest(value)}
+        return {
+            "dtype": str(value.dtype),
+            "shape": list(value.shape),
+            "nnz": int(value.nnz),
+        }
     if isinstance(value, Path):
         return str(value)
     if isinstance(value, dict):
@@ -83,14 +84,6 @@ def model_config(model):
     }
 
 
-def _source_hash(implementation):
-    try:
-        source = inspect.getsource(implementation).encode("utf-8")
-        return hashlib.sha256(source).hexdigest()
-    except (OSError, TypeError):
-        return None
-
-
 def _solver_metadata(constructor, options):
     module = inspect.getmodule(constructor)
     metadata = (
@@ -124,7 +117,6 @@ def _solver_metadata(constructor, options):
         defaults = {}
     return {
         "callable": _qualified_name(constructor),
-        "source_sha256": _source_hash(constructor),
         "options": _json_value(options),
         "parameters": _json_value(defaults | options),
         "metadata": _json_value(metadata),
@@ -167,7 +159,6 @@ def _git_metadata():
         return {
             "commit": git("rev-parse", "HEAD").decode().strip(),
             "dirty": bool(git("status", "--porcelain")),
-            "diff_sha256": hashlib.sha256(git("diff", "HEAD", "--binary")).hexdigest(),
         }
     except (OSError, subprocess.SubprocessError):
         return None
@@ -200,12 +191,9 @@ def capture_experiment(
     """Freeze metadata once per run, before any solver is constructed."""
     model_metadata = {}
     for model in models:
-        transitions = [sparse_digest(matrix) for matrix in model.transition_matrix]
-        rewards = array_digest(model.reward_matrix)
         get_config = getattr(model, "get_config", None)
         model_metadata[model.name] = {
             "class": _qualified_name(model),
-            "source_sha256": _source_hash(type(model)),
             "state_dim": int(model.state_dim),
             "requested_state_dim": _json_value(
                 getattr(model, "requested_state_dim", None)
@@ -215,11 +203,6 @@ def capture_experiment(
             "config": _json_value(
                 get_config() if callable(get_config) else model_config(model)
             ),
-            "transition_sha256": transitions,
-            "reward_sha256": rewards,
-            "data_sha256": hashlib.sha256(
-                "".join([*transitions, rewards]).encode("ascii")
-            ).hexdigest(),
         }
     solver_metadata = {
         name: _solver_metadata(constructor, options)

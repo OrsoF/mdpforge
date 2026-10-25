@@ -38,8 +38,8 @@ For each available size, use `{"requested_state_dim": <positive integer>, "param
 ## 3. Reproducibility and caching
 
 - Random generation: document the seed and reproduce the same matrices with the same parameters; prefer a local `np.random.default_rng(seed)` generator.
-- Cache identities use v2 recipe/content hashes, not `model.name` alone; see [cache identities](../src/mdpforge/utils/cache_keys.py). Preserve the VI reference precision of `1e-3` used by `model.optimal_value_function()`. Update the recipe version/configuration when dynamics or rewards change; documentation-only edits do not change numerical content.
-- Isolate caches in tests (`isolated_model_cache`): `create_model(save=False)` prevents writes, **not** reads from an existing cache. Use `cache="off"` to disable both.
+- Model caches use `model.name`; VI reference caches use `<discount>_<model.name>`. Preserve the reference precision of `1e-3` used by `model.optimal_value_function()`. Change the model name or use `cache="refresh"` when dynamics or rewards change.
+- Isolate caches in tests (`isolated_model_cache`): `create_model(cache="readonly")` prevents writes, **not** reads from an existing cache. Use `cache="off"` to disable both.
 
 ## 4. Tests and calibration
 

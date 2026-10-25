@@ -28,7 +28,7 @@ def reproducible_rng(seed=17):
 def matrix_model(name, transitions, rewards):
     """Create a CSR-backed model without touching the persistent model cache."""
     model = MDP.from_matrices(name, transitions, rewards)
-    model.create_model(save=False)
+    model.create_model(cache="readonly")
     return model
 
 

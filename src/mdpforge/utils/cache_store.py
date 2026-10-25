@@ -8,8 +8,6 @@ from zipfile import BadZipFile
 
 import numpy as np
 
-from mdpforge.utils.cache_keys import array_digest, stable_json, value_metadata
-
 
 class CacheCorruptError(ValueError):
     """A cache entry is incomplete, corrupted or incompatible."""
@@ -75,7 +73,7 @@ def write_npz(path, **arrays):
 
 
 def load_value_entry(path, key, model, discount, precision):
-    """Return a reference, or None when its inputs or precision are stale."""
+    """Return a named reference when its discount, shape and precision match."""
     metadata, arrays = _read(path)
     if (
         metadata.get("schema") != 2
@@ -87,16 +85,15 @@ def load_value_entry(path, key, model, discount, precision):
         stored_precision = float.fromhex(metadata["precision"])
         if not np.isfinite(stored_precision) or stored_precision <= 0:
             raise ValueError("Invalid cached precision")
-        expected = value_metadata(model, discount, precision)
-        if stored_precision > precision or any(
-            metadata.get(name) != value
-            for name, value in expected.items()
-            if name != "precision"
+        if (
+            stored_precision > precision
+            or metadata.get("discount") != float(discount).hex()
+            or metadata.get("solver") != "mdpforge_vi"
         ):
             return None
         value = arrays["value"]
-        if metadata.get("value_sha256") != array_digest(value):
-            raise ValueError("Value checksum mismatch")
+        if value.shape != (model.state_dim,) or not np.isfinite(value).all():
+            raise ValueError("Invalid cached value shape or nonfinite values")
         return value
     except (KeyError, TypeError, ValueError) as exc:
         raise CacheCorruptError(f"Invalid value entry {path}: {exc}") from exc
@@ -104,9 +101,15 @@ def load_value_entry(path, key, model, discount, precision):
 
 def save_value_entry(path, key, model, discount, precision, value, *, replace=False):
     value = np.asarray(value, dtype=float)
-    metadata = value_metadata(model, discount, precision) | {
+    if value.shape != (model.state_dim,) or not np.isfinite(value).all():
+        raise ValueError("Invalid value shape or nonfinite values")
+    metadata = {
+        "schema": 2,
+        "kind": "value",
         "key": key,
-        "value_sha256": array_digest(value),
+        "discount": float(discount).hex(),
+        "precision": float(precision).hex(),
+        "solver": "mdpforge_vi",
     }
     with _write_lock(path):
         if path.exists() and not replace:
@@ -119,7 +122,7 @@ def save_value_entry(path, key, model, discount, precision, value, *, replace=Fa
                     return previous
         write_npz(
             path,
-            metadata=np.frombuffer(stable_json(metadata).encode(), dtype=np.uint8),
+            metadata=np.frombuffer(json.dumps(metadata).encode(), dtype=np.uint8),
             value=value,
         )
     return value

@@ -8,7 +8,6 @@ from mdptoolbox.mdp import ValueIteration
 from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
-from mdpforge.utils.solver_options import solver_identifier
 
 METADATA = {
     "display_name": "VI · MDPToolbox",
@@ -42,13 +41,6 @@ class Solver(GenericSolver):
             model, discount, final_precision, max_iterations=max_iterations
         )
         self.name = "VI MDPToolbox"
-
-        self.solver_id = solver_identifier(
-            __name__,
-            discount=self.discount,
-            final_precision=self.final_precision,
-            max_iterations=self.max_iterations,
-        )
 
     def _solve(self) -> SolveResult:
         self.vi = ValueIteration(

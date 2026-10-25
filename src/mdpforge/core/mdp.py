@@ -66,18 +66,12 @@ class MDP:
     def create_model(
         self,
         check_transition: bool = False,
-        save: bool | None = None,
         *,
-        cache: str | None = None,
+        cache: str = "readwrite",
     ):
         """Build or load matrices using the selected cache policy."""
         from mdpforge.utils.persistence import validate_cache_mode
 
-        if cache is None:
-            # Backward-compatible save=False: allow reads but do not write.
-            cache = "readonly" if save is False else "readwrite"
-        elif save is not None:
-            raise ValueError("Specify either save or cache, not both")
         validate_cache_mode(cache)
         if self._is_model_built():
             if cache == "refresh":
@@ -87,9 +81,8 @@ class MDP:
                 self.test_model()
             return
 
-        loaded = (
-            cache in ("readwrite", "readonly")
-            and load_model(self, strict=cache == "readonly")
+        loaded = cache in ("readwrite", "readonly") and load_model(
+            self, strict=cache == "readonly"
         )
         if not loaded:
             self._build_model()
@@ -162,32 +155,11 @@ class MDP:
     def _is_model_built(self) -> bool:
         return hasattr(self, "transition_matrix") and hasattr(self, "reward_matrix")
 
-    ###### UTILITY METHODS ######
-
-    def plot_optimal_value(self, discount: float):
-        """Plot the optimal value function of the model."""
-        import matplotlib.pyplot as plt
-
-        optimal_value = self.optimal_value_function(discount)
-        square_size = int(np.sqrt(self.state_dim))
-        if square_size**2 == self.state_dim:
-            plt.imshow(optimal_value.reshape((square_size, square_size)), aspect="auto")
-            plt.colorbar()
-            plt.title("Optimal value function")
-            plt.show()
-        else:
-            plt.plot(optimal_value)
-            plt.title("Optimal value function")
-            plt.xlabel("States")
-            plt.ylabel("Value")
-            plt.legend()
-            plt.show()
-
     def optimal_value_function(
         self, discount: float, *, cache="readwrite"
     ) -> np.ndarray:
         """Get a VI reference at absolute value-error precision 1e-3."""
-        from mdpforge.utils.exact_value_function import compute_value_function
+        from mdpforge.utils.value_reference import compute_value_function
 
         return get_cached_value_function(
             self,

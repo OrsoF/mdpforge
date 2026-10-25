@@ -1,0 +1,910 @@
+{
+  "repository": "https://github.com/ahartmanns/qcomp",
+  "revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+  "license": "CC-BY-4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "citation": "Hartmanns, Klauck, Parker, Quatmann and Ruijters. The Quantitative Verification Benchmark Set. TACAS 2019, LNCS 11427.",
+  "adaptation": "Native step rewards with discounting; Emin costs are negated for maximization; reach targets become zero-reward absorbing states; finite property horizons are replaced by discounting; missing action slots duplicate the first enabled choice.",
+  "models": {
+    "consensus": {
+      "file": "consensus.2.jani",
+      "sha256": "476e495452f3479d07bb189491d26496e9d1902733b0d764e79da0e5abadef33",
+      "constants": {
+        "K": 2
+      },
+      "default_objective": "steps_min",
+      "objectives": {
+        "steps_max": {
+          "accumulate": [
+            "exit"
+          ],
+          "exp": "steps",
+          "op": "Emax",
+          "reach": "finished"
+        },
+        "steps_min": {
+          "accumulate": [
+            "exit"
+          ],
+          "exp": "steps",
+          "op": "Emin",
+          "reach": "finished"
+        }
+      },
+      "author": [
+        "James Aspnes <james.aspnes@yale.edu>",
+        "Maurice Herlihy <mph@cs.brown.edu>"
+      ],
+      "submitter": "Michaela Klauck <klauck@depend.uni-saarland.de>",
+      "reference": "https://doi.org/10.1016/0196-6774(90)90021-6",
+      "references": [
+        "https://doi.org/10.1109/QEST.2012.14",
+        "http://www.prismmodelchecker.org/casestudies/consensus.php"
+      ],
+      "conversion": {
+        "tool": "Storm-conv",
+        "version": "1.2.4 (dev)",
+        "url": "http://www.stormchecker.org",
+        "command": "storm-conv --prism consensus.2.prism --tojani consensus.2.jani --prop consensus.props --globalvars"
+      },
+      "file_parameters": [
+        {
+          "name": "N",
+          "value": 2
+        }
+      ],
+      "published_state_counts": [
+        {
+          "note": "Storm",
+          "number": 272
+        }
+      ],
+      "scaling": {
+        "kind": "affine",
+        "parameters": [
+          "K"
+        ],
+        "minimum": 1,
+        "slope": 128,
+        "intercept": 16,
+        "basis": "Two-process source: published counts are 272, 528, 1040 and 2064 for K=2,4,8,16."
+      }
+    },
+    "csma": {
+      "file": "csma.2-2.jani",
+      "sha256": "901f191b3313cf7f6a288ba12acc246437d4b4cf7b3c21137f31346b6119e5be",
+      "constants": {},
+      "default_objective": "time_min",
+      "objectives": {
+        "time_max": {
+          "accumulate": [
+            "steps"
+          ],
+          "exp": "time",
+          "op": "Emax",
+          "reach": "all_delivered"
+        },
+        "time_min": {
+          "accumulate": [
+            "steps"
+          ],
+          "exp": "time",
+          "op": "Emin",
+          "reach": "all_delivered"
+        }
+      },
+      "author": "IEEE",
+      "submitter": "Michaela Klauck <klauck@depend.uni-saarland.de>",
+      "reference": "http://www.cs.bilkent.edu.tr/~tugrul/CS518/Papers/802.3-2000.pdf",
+      "references": [
+        "https://doi.org/10.1109/QEST.2012.14",
+        "http://www.prismmodelchecker.org/casestudies/csma.php",
+        "https://doi.org/10.1109/32.159837"
+      ],
+      "conversion": {
+        "tool": "Storm-conv",
+        "version": "1.2.4 (dev)",
+        "url": "http://www.stormchecker.org",
+        "command": "storm-conv --prism csma.2-2.prism --tojani csma.2-2.jani --prop csma.props --globalvars"
+      },
+      "file_parameters": [
+        {
+          "name": "N",
+          "value": 2
+        },
+        {
+          "name": "K",
+          "value": 2
+        }
+      ],
+      "published_state_counts": [
+        {
+          "note": "Storm",
+          "number": 1038
+        }
+      ],
+      "scaling": {
+        "kind": "variants"
+      },
+      "variants": [
+        {
+          "file": "csma.2-2.jani",
+          "sha256": "901f191b3313cf7f6a288ba12acc246437d4b4cf7b3c21137f31346b6119e5be",
+          "states": 1038,
+          "state_count_source": "Storm",
+          "constants": {},
+          "file_parameters": [
+            {
+              "name": "N",
+              "value": 2
+            },
+            {
+              "name": "K",
+              "value": 2
+            }
+          ],
+          "conversion": {
+            "tool": "Storm-conv",
+            "version": "1.2.4 (dev)",
+            "url": "http://www.stormchecker.org",
+            "command": "storm-conv --prism csma.2-2.prism --tojani csma.2-2.jani --prop csma.props --globalvars"
+          },
+          "source_url": "https://github.com/ahartmanns/qcomp/blob/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/csma/csma.2-2.jani"
+        },
+        {
+          "file": "csma.2-4.jani",
+          "sha256": "340a315569d56dab0ccd6c28ec84c74d59f2b8bcbe4a34464902ff6c77ba4948",
+          "states": 7958,
+          "state_count_source": "Storm",
+          "constants": {},
+          "file_parameters": [
+            {
+              "name": "N",
+              "value": 2
+            },
+            {
+              "name": "K",
+              "value": 4
+            }
+          ],
+          "conversion": {
+            "tool": "Storm-conv",
+            "version": "1.2.4 (dev)",
+            "url": "http://www.stormchecker.org",
+            "command": "storm-conv --prism csma.2-4.prism --tojani csma.2-4.jani --prop csma.props --globalvars"
+          },
+          "source_url": "https://github.com/ahartmanns/qcomp/blob/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/csma/csma.2-4.jani"
+        },
+        {
+          "file": "csma.3-2.jani",
+          "sha256": "dc6c92d150fdfb2addf9dc76410e313b2a6abb5b1824438a8a460c63b8b67c8c",
+          "states": 36850,
+          "state_count_source": "Storm",
+          "constants": {},
+          "file_parameters": [
+            {
+              "name": "N",
+              "value": 3
+            },
+            {
+              "name": "K",
+              "value": 2
+            }
+          ],
+          "conversion": {
+            "tool": "Storm-conv",
+            "version": "1.2.4 (dev)",
+            "url": "http://www.stormchecker.org",
+            "command": "storm-conv --prism csma.3-2.prism --tojani csma.3-2.jani --prop csma.props --globalvars"
+          },
+          "source_url": "https://github.com/ahartmanns/qcomp/blob/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/csma/csma.3-2.jani"
+        },
+        {
+          "file": "csma.2-6.jani",
+          "sha256": "67381153af9c90accc6ea83c5e8d96440c11813bce2da0d3eb931a7440d3316c",
+          "states": 66718,
+          "state_count_source": "Storm",
+          "constants": {},
+          "file_parameters": [
+            {
+              "name": "N",
+              "value": 2
+            },
+            {
+              "name": "K",
+              "value": 6
+            }
+          ],
+          "conversion": {
+            "tool": "Storm-conv",
+            "version": "1.2.4 (dev)",
+            "url": "http://www.stormchecker.org",
+            "command": "storm-conv --prism csma.2-6.prism --tojani csma.2-6.jani --prop csma.props --globalvars"
+          },
+          "source_url": "https://github.com/ahartmanns/qcomp/blob/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/csma/csma.2-6.jani"
+        },
+        {
+          "file": "csma.4-2.jani",
+          "sha256": "22700672c0b3f63c7c42d2ce3b195773e9a74c3d85966048e627574b5d37f2bf",
+          "states": 761962,
+          "state_count_source": "Storm",
+          "constants": {},
+          "file_parameters": [
+            {
+              "name": "N",
+              "value": 4
+            },
+            {
+              "name": "K",
+              "value": 2
+            }
+          ],
+          "conversion": {
+            "tool": "Storm-conv",
+            "version": "1.2.4 (dev)",
+            "url": "http://www.stormchecker.org",
+            "command": "storm-conv --prism csma.4-2.prism --tojani csma.4-2.jani --prop csma.props --globalvars"
+          },
+          "source_url": "https://github.com/ahartmanns/qcomp/blob/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/csma/csma.4-2.jani"
+        },
+        {
+          "file": "csma.3-4.jani",
+          "sha256": "094b1032248e3a6d8e178508cdd770ea0a4a385d37f002adb551a5f73eafd31b",
+          "states": 1460287,
+          "state_count_source": "Storm",
+          "constants": {},
+          "file_parameters": [
+            {
+              "name": "N",
+              "value": 3
+            },
+            {
+              "name": "K",
+              "value": 4
+            }
+          ],
+          "conversion": {
+            "tool": "Storm-conv",
+            "version": "1.2.4 (dev)",
+            "url": "http://www.stormchecker.org",
+            "command": "storm-conv --prism csma.3-4.prism --tojani csma.3-4.jani --prop csma.props --globalvars"
+          },
+          "source_url": "https://github.com/ahartmanns/qcomp/blob/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/csma/csma.3-4.jani"
+        },
+        {
+          "file": "csma.3-6.jani",
+          "sha256": "c01e19926fe624452415d4725d7f96364922dd9ec0b599378c3bca5086458da6",
+          "states": 84856004,
+          "state_count_source": "Storm",
+          "constants": {},
+          "file_parameters": [
+            {
+              "name": "N",
+              "value": 3
+            },
+            {
+              "name": "K",
+              "value": 6
+            }
+          ],
+          "conversion": {
+            "tool": "Storm-conv",
+            "version": "1.2.4 (dev)",
+            "url": "http://www.stormchecker.org",
+            "command": "storm-conv --prism csma.3-6.prism --tojani csma.3-6.jani --prop csma.props --globalvars"
+          },
+          "source_url": "https://github.com/ahartmanns/qcomp/blob/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/csma/csma.3-6.jani"
+        },
+        {
+          "file": "csma.4-4.jani",
+          "sha256": "3fce5095c2c7ebc1b3aa7f0e2784e16fd5084edb50bf7548e89a8120de7151e4",
+          "states": 133301572,
+          "state_count_source": "Storm",
+          "constants": {},
+          "file_parameters": [
+            {
+              "name": "N",
+              "value": 4
+            },
+            {
+              "name": "K",
+              "value": 4
+            }
+          ],
+          "conversion": {
+            "tool": "Storm-conv",
+            "version": "1.2.4 (dev)",
+            "url": "http://www.stormchecker.org",
+            "command": "storm-conv --prism csma.4-4.prism --tojani csma.4-4.jani --prop csma.props --globalvars"
+          },
+          "source_url": "https://github.com/ahartmanns/qcomp/blob/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/csma/csma.4-4.jani"
+        },
+        {
+          "file": "csma.4-6.jani",
+          "sha256": "4b97a0a3b12eb679b5a382fee6f9aa3dab728b6040b87e6d505ff4d87566d3e8",
+          "states": 39051159469,
+          "state_count_source": "Storm/dd",
+          "constants": {},
+          "file_parameters": [
+            {
+              "name": "N",
+              "value": 4
+            },
+            {
+              "name": "K",
+              "value": 6
+            }
+          ],
+          "conversion": {
+            "tool": "Storm-conv",
+            "version": "1.2.4 (dev)",
+            "url": "http://www.stormchecker.org",
+            "command": "storm-conv --prism csma.4-6.prism --tojani csma.4-6.jani --prop csma.props --globalvars"
+          },
+          "source_url": "https://github.com/ahartmanns/qcomp/blob/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/csma/csma.4-6.jani"
+        }
+      ]
+    },
+    "eajs": {
+      "file": "eajs.2.jani",
+      "sha256": "a28a5b62758205a08806f211ee9b7ede7f3074d3b71d4bd8c755d1a460d5bc33",
+      "constants": {
+        "energy_capacity": 100,
+        "B": 5
+      },
+      "default_objective": "ExpUtil",
+      "objectives": {
+        "ExpUtil": {
+          "accumulate": [
+            "steps"
+          ],
+          "exp": "utilityLocal",
+          "op": "Emax",
+          "reach": {
+            "left": "battery_load",
+            "op": "=",
+            "right": 0
+          }
+        }
+      },
+      "author": [
+        "Marcus Daum"
+      ],
+      "submitter": "Joachim Klein <klein@tcs.inf.tu-dresden.de>",
+      "reference": "https://doi.org/10.1007/978-3-319-06200-6_24",
+      "references": [
+        "https://doi.org/10.1007/s10009-017-0456-3"
+      ],
+      "conversion": {
+        "tool": "Storm-conv",
+        "version": "1.2.4 (dev)",
+        "url": "http://www.stormchecker.org",
+        "command": "storm-conv --prism eajs.2.prism --tojani eajs.2.jani --prop eajs.props --globalvars"
+      },
+      "file_parameters": [
+        {
+          "name": "N",
+          "value": 2
+        }
+      ],
+      "published_state_counts": [
+        {
+          "note": "Storm",
+          "number": 12828
+        }
+      ],
+      "scaling": {
+        "kind": "power",
+        "parameters": [
+          "energy_capacity"
+        ],
+        "minimum": 1,
+        "anchors": [
+          [
+            100,
+            12828
+          ]
+        ],
+        "basis": "Linear size estimate from the published two-process instance; actual dimensions come from Storm."
+      }
+    },
+    "firewire": {
+      "file": "firewire.false.jani",
+      "sha256": "f8a0e50fdd849b99b70941c08c0cba3847679e3ec4771f74c9c22b7148bd52d8",
+      "constants": {
+        "delay": 3,
+        "deadline": 200
+      },
+      "default_objective": "time_min",
+      "objectives": {
+        "time_max": {
+          "accumulate": [
+            "steps"
+          ],
+          "exp": "time",
+          "op": "Emax",
+          "reach": "done"
+        },
+        "time_min": {
+          "accumulate": [
+            "steps"
+          ],
+          "exp": "time",
+          "op": "Emin",
+          "reach": "done"
+        },
+        "time_sending": {
+          "accumulate": [
+            "steps"
+          ],
+          "exp": "time_sending",
+          "op": "Emax",
+          "reach": "done"
+        }
+      },
+      "author": [
+        "Marielle Stoelinga <marielle@cs.kun.nl>",
+        "Frits Vaandrager <fvaan@cs.kun.nl>"
+      ],
+      "submitter": "Michaela Klauck <klauck@depend.uni-saarland.de>",
+      "reference": "https://doi.org/10.1007/3-540-48778-6_4",
+      "references": [
+        "https://doi.org/10.1109/QEST.2012.14",
+        "http://www.prismmodelchecker.org/casestudies/firewire.php"
+      ],
+      "conversion": {
+        "tool": "Storm-conv",
+        "version": "1.2.4 (dev)",
+        "url": "http://www.stormchecker.org",
+        "command": "storm-conv --prism firewire.false.prism --tojani firewire.false.jani --prop firewire.false.props --globalvars"
+      },
+      "file_parameters": [
+        {
+          "name": "explicit_timer",
+          "value": false
+        }
+      ],
+      "published_state_counts": [
+        {
+          "note": "mcsta",
+          "number": 4093
+        }
+      ],
+      "scaling": {
+        "kind": "power",
+        "parameters": [
+          "delay"
+        ],
+        "minimum": 1,
+        "anchors": [
+          [
+            3,
+            4093
+          ],
+          [
+            36,
+            212268
+          ]
+        ],
+        "basis": "Power-law interpolation/extrapolation between the published explicit_timer=false instances; actual dimensions come from Storm."
+      }
+    },
+    "firewire_abst": {
+      "file": "firewire_abst.jani",
+      "sha256": "1e9369c830260fcf0d85416ab5fd228f91b31c33c30135c8aba577955a87e9a9",
+      "constants": {
+        "delay": 3
+      },
+      "default_objective": "rounds",
+      "objectives": {
+        "rounds": {
+          "accumulate": [
+            "steps"
+          ],
+          "exp": "rounds",
+          "op": "Emin",
+          "reach": "done"
+        },
+        "time_max": {
+          "accumulate": [
+            "steps"
+          ],
+          "exp": "time",
+          "op": "Emax",
+          "reach": "done"
+        },
+        "time_min": {
+          "accumulate": [
+            "steps"
+          ],
+          "exp": "time",
+          "op": "Emin",
+          "reach": "done"
+        }
+      },
+      "author": [
+        "Marielle Stoelinga <marielle@cs.kun.nl>",
+        "Frits Vaandrager <fvaan@cs.kun.nl>"
+      ],
+      "submitter": "Michaela Klauck <klauck@depend.uni-saarland.de>",
+      "reference": "https://doi.org/10.1007/3-540-48778-6_4",
+      "references": [
+        "https://doi.org/10.1109/QEST.2012.14",
+        "http://www.prismmodelchecker.org/casestudies/firewire.php",
+        "https://doi.org/10.1007/3-540-48778-6_4"
+      ],
+      "conversion": {
+        "tool": "Storm-conv",
+        "version": "1.2.4 (dev)",
+        "url": "http://www.stormchecker.org",
+        "command": "storm-conv --prism firewire_abst.prism --tojani firewire_abst.jani --prop firewire_abst.props --globalvars"
+      },
+      "file_parameters": [],
+      "published_state_counts": [
+        {
+          "note": "Storm",
+          "number": 611
+        }
+      ],
+      "scaling": {
+        "kind": "affine",
+        "parameters": [
+          "delay"
+        ],
+        "minimum": 1,
+        "maximum": 168,
+        "slope": 5,
+        "intercept": 596,
+        "basis": "Five start states with delay+1 clock valuations plus 591 other reachable states; the native clock saturates at kx+1=168."
+      }
+    },
+    "resource-gathering": {
+      "file": "resource-gathering.jani",
+      "sha256": "b985011ba103e7f0d9fb84c261592e7e0ccf79c59434ae53f62cccb2efe2a60e",
+      "constants": {
+        "B": 200,
+        "GOLD_TO_COLLECT": 15,
+        "GEM_TO_COLLECT": 15
+      },
+      "default_objective": "expgold",
+      "objectives": {
+        "expgold": {
+          "accumulate": [
+            "steps"
+          ],
+          "exp": "rew_gold",
+          "op": "Emax",
+          "step-instant": "B"
+        }
+      },
+      "author": "Tim Quatmann <tim.quatmann@cs.rwth-aachen.de>",
+      "submitter": "Tim Quatmann <tim.quatmann@cs.rwth-aachen.de>",
+      "reference": "https://doi.org/10.1145/1390156.1390162",
+      "references": [
+        "https://doi.org/10.1007/s10994-010-5232-5"
+      ],
+      "conversion": {
+        "tool": "Storm-conv",
+        "version": "1.2.4 (dev)",
+        "url": "http://www.stormchecker.org",
+        "command": "storm-conv --prism resource-gathering.pm --tojani resource-gathering.jani --prop resource-gathering.prctl --globalvars"
+      },
+      "file_parameters": [],
+      "published_state_counts": [
+        {
+          "note": "Storm",
+          "number": 24064
+        }
+      ],
+      "scaling": {
+        "kind": "quotas",
+        "parameters": [
+          "GOLD_TO_COLLECT",
+          "GEM_TO_COLLECT"
+        ],
+        "minimum": 0,
+        "states_per_counter_pair": 94,
+        "basis": "94 native robot valuations times (quota+1)^2 counter pairs; reproduces published quotas 0,15,30,100."
+      }
+    },
+    "wlan": {
+      "file": "wlan.0.jani",
+      "sha256": "4be9881218d9020deecd753f93831fc66199332e58e5b2aeb812dba8ee58431f",
+      "constants": {
+        "COL": 0
+      },
+      "default_objective": "cost_min",
+      "objectives": {
+        "cost_max": {
+          "accumulate": [
+            "steps"
+          ],
+          "exp": "cost",
+          "op": "Emax",
+          "reach": {
+            "left": {
+              "left": "s1",
+              "op": "=",
+              "right": 12
+            },
+            "op": "∧",
+            "right": {
+              "left": "s2",
+              "op": "=",
+              "right": 12
+            }
+          }
+        },
+        "cost_min": {
+          "accumulate": [
+            "steps"
+          ],
+          "exp": "cost",
+          "op": "Emin",
+          "reach": {
+            "left": {
+              "left": "s1",
+              "op": "=",
+              "right": 12
+            },
+            "op": "∧",
+            "right": {
+              "left": "s2",
+              "op": "=",
+              "right": 12
+            }
+          }
+        },
+        "num_collisions": {
+          "accumulate": [
+            "steps"
+          ],
+          "exp": "collisions",
+          "op": "Emax",
+          "reach": {
+            "left": {
+              "left": "s1",
+              "op": "=",
+              "right": 12
+            },
+            "op": "∧",
+            "right": {
+              "left": "s2",
+              "op": "=",
+              "right": 12
+            }
+          }
+        },
+        "time_max": {
+          "accumulate": [
+            "steps"
+          ],
+          "exp": "time",
+          "op": "Emax",
+          "reach": {
+            "left": {
+              "left": "s1",
+              "op": "=",
+              "right": 12
+            },
+            "op": "∧",
+            "right": {
+              "left": "s2",
+              "op": "=",
+              "right": 12
+            }
+          }
+        },
+        "time_min": {
+          "accumulate": [
+            "steps"
+          ],
+          "exp": "time",
+          "op": "Emin",
+          "reach": {
+            "left": {
+              "left": "s1",
+              "op": "=",
+              "right": 12
+            },
+            "op": "∧",
+            "right": {
+              "left": "s2",
+              "op": "=",
+              "right": 12
+            }
+          }
+        }
+      },
+      "author": [
+        "Marta Kwiatkowska <Marta.Kwiatkowska@cs.ox.ac.uk>",
+        "Gethin Norman <gethin.norman@glasgow.ac.uk>",
+        "Jeremy Sproston <sproston@di.unito.it>"
+      ],
+      "submitter": "Michaela Klauck <klauck@depend.uni-saarland.de>",
+      "reference": "https://doi.org/10.1007/3-540-45605-8_11",
+      "references": [
+        "https://doi.org/10.1109/QEST.2012.14",
+        "http://www.prismmodelchecker.org/casestudies/wlan.php"
+      ],
+      "conversion": {
+        "tool": "Storm-conv",
+        "version": "1.2.4 (dev)",
+        "url": "http://www.stormchecker.org",
+        "command": "storm-conv --prism wlan.0.prism --tojani wlan.0.jani --prop wlan.props --globalvars"
+      },
+      "file_parameters": [
+        {
+          "name": "MAX_BACKOFF",
+          "value": 0
+        }
+      ],
+      "published_state_counts": [
+        {
+          "note": "Storm",
+          "number": 2954
+        }
+      ],
+      "scaling": {
+        "kind": "variants"
+      },
+      "variants": [
+        {
+          "file": "wlan.0.jani",
+          "sha256": "4be9881218d9020deecd753f93831fc66199332e58e5b2aeb812dba8ee58431f",
+          "states": 2954,
+          "state_count_source": "Storm",
+          "constants": {
+            "COL": 0
+          },
+          "file_parameters": [
+            {
+              "name": "MAX_BACKOFF",
+              "value": 0
+            }
+          ],
+          "conversion": {
+            "tool": "Storm-conv",
+            "version": "1.2.4 (dev)",
+            "url": "http://www.stormchecker.org",
+            "command": "storm-conv --prism wlan.0.prism --tojani wlan.0.jani --prop wlan.props --globalvars"
+          },
+          "source_url": "https://github.com/ahartmanns/qcomp/blob/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/wlan/wlan.0.jani"
+        },
+        {
+          "file": "wlan.1.jani",
+          "sha256": "7714f223a716e989846f23255fe88d548762db925fac103d22631d5195cfeac2",
+          "states": 8625,
+          "state_count_source": "Storm",
+          "constants": {
+            "COL": 0
+          },
+          "file_parameters": [
+            {
+              "name": "MAX_BACKOFF",
+              "value": 1
+            }
+          ],
+          "conversion": {
+            "tool": "Storm-conv",
+            "version": "1.2.4 (dev)",
+            "url": "http://www.stormchecker.org",
+            "command": "storm-conv --prism wlan.1.prism --tojani wlan.1.jani --prop wlan.props --globalvars"
+          },
+          "source_url": "https://github.com/ahartmanns/qcomp/blob/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/wlan/wlan.1.jani"
+        },
+        {
+          "file": "wlan.2.jani",
+          "sha256": "bbf196f36e868a1853e439d4d312a2d6ccd71a8b06f565a5737b67b9c04526f5",
+          "states": 28480,
+          "state_count_source": "Storm",
+          "constants": {
+            "COL": 0
+          },
+          "file_parameters": [
+            {
+              "name": "MAX_BACKOFF",
+              "value": 2
+            }
+          ],
+          "conversion": {
+            "tool": "Storm-conv",
+            "version": "1.2.4 (dev)",
+            "url": "http://www.stormchecker.org",
+            "command": "storm-conv --prism wlan.2.prism --tojani wlan.2.jani --prop wlan.props --globalvars"
+          },
+          "source_url": "https://github.com/ahartmanns/qcomp/blob/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/wlan/wlan.2.jani"
+        },
+        {
+          "file": "wlan.3.jani",
+          "sha256": "dc3325aa2db1a7869adf0116558d4b68a6151a3b12471e85f6ad9558797dd91d",
+          "states": 96302,
+          "state_count_source": "Storm",
+          "constants": {
+            "COL": 0
+          },
+          "file_parameters": [
+            {
+              "name": "MAX_BACKOFF",
+              "value": 3
+            }
+          ],
+          "conversion": {
+            "tool": "Storm-conv",
+            "version": "1.2.4 (dev)",
+            "url": "http://www.stormchecker.org",
+            "command": "storm-conv --prism wlan.3.prism --tojani wlan.3.jani --prop wlan.props --globalvars"
+          },
+          "source_url": "https://github.com/ahartmanns/qcomp/blob/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/wlan/wlan.3.jani"
+        },
+        {
+          "file": "wlan.4.jani",
+          "sha256": "9813a5dc1fd0c4644d3fc1a7408eff3951941ba8dca5ab28850d23db9307ad74",
+          "states": 345000,
+          "state_count_source": "Storm",
+          "constants": {
+            "COL": 0
+          },
+          "file_parameters": [
+            {
+              "name": "MAX_BACKOFF",
+              "value": 4
+            }
+          ],
+          "conversion": {
+            "tool": "Storm-conv",
+            "version": "1.2.4 (dev)",
+            "url": "http://www.stormchecker.org",
+            "command": "storm-conv --prism wlan.4.prism --tojani wlan.4.jani --prop wlan.props --globalvars"
+          },
+          "source_url": "https://github.com/ahartmanns/qcomp/blob/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/wlan/wlan.4.jani"
+        },
+        {
+          "file": "wlan.5.jani",
+          "sha256": "85cd2e48772d1e22f071a7a60afd2547c6d82417dc4dd91b4ef3e2fb6643badc",
+          "states": 1295218,
+          "state_count_source": "Storm",
+          "constants": {
+            "COL": 0
+          },
+          "file_parameters": [
+            {
+              "name": "MAX_BACKOFF",
+              "value": 5
+            }
+          ],
+          "conversion": {
+            "tool": "Storm-conv",
+            "version": "1.2.4 (dev)",
+            "url": "http://www.stormchecker.org",
+            "command": "storm-conv --prism wlan.5.prism --tojani wlan.5.jani --prop wlan.props --globalvars"
+          },
+          "source_url": "https://github.com/ahartmanns/qcomp/blob/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/wlan/wlan.5.jani"
+        },
+        {
+          "file": "wlan.6.jani",
+          "sha256": "311e7b977802e0ef242a2ecce7a9ba96bf7258e12ea581a534e4dc148172b679",
+          "states": 5007548,
+          "state_count_source": "Storm",
+          "constants": {
+            "COL": 0
+          },
+          "file_parameters": [
+            {
+              "name": "MAX_BACKOFF",
+              "value": 6
+            }
+          ],
+          "conversion": {
+            "tool": "Storm-conv",
+            "version": "1.2.4 (dev)",
+            "url": "http://www.stormchecker.org",
+            "command": "storm-conv --prism wlan.6.prism --tojani wlan.6.jani --prop wlan.props --globalvars"
+          },
+          "source_url": "https://github.com/ahartmanns/qcomp/blob/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/wlan/wlan.6.jani"
+        }
+      ]
+    }
+  },
+  "size_selection": "state_dim is a positive target, preserved as requested_state_dim; native constants or published JANI variants determine the actual reachable dimensions. Presets are size targets, not runtime calibrations."
+}

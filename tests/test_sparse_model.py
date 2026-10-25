@@ -32,7 +32,7 @@ def test_create_model_finalizes_and_saves_csr(chain, matrix_type, monkeypatch):
         for matrix, expected in zip(transitions, matrices):
             assert_allclose(matrix.toarray(), expected, rtol=0, atol=0)
     restored = type(chain)(3, 2)
-    restored.create_model(save=False)
+    restored.create_model(cache="readonly")
     assert all(isinstance(matrix, csr_matrix) for matrix in restored.transition_matrix)
     assert_allclose(restored.reward_matrix, chain.reward_matrix, rtol=0, atol=0)
 
@@ -60,7 +60,7 @@ def test_create_model_finalizes_already_built_transitions(chain):
     chain.transition_matrix = np.array(
         [matrix.toarray() for matrix in chain.transition_matrix]
     )
-    chain.create_model(save=False)
+    chain.create_model(cache="readonly")
     assert all(isinstance(matrix, csr_matrix) for matrix in chain.transition_matrix)
 
 

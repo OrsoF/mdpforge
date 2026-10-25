@@ -5,7 +5,6 @@ from mdpforge.core.operators import bellman_operator, compute_transition_reward_
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.bellman import iterative_policy_evaluation
-from mdpforge.utils.solver_options import solver_identifier
 
 METADATA = {
     "display_name": "MPI · mdpforge",
@@ -48,15 +47,6 @@ class Solver(GenericSolver):
             final_precision
             if evaluation_precision is None
             else float(evaluation_precision)
-        )
-
-        self.solver_id = solver_identifier(
-            __name__,
-            discount=self.discount,
-            final_precision=self.final_precision,
-            max_iterations=self.max_iterations,
-            max_evaluation_iterations=self.max_evaluation_iterations,
-            evaluation_precision=self.evaluation_precision,
         )
 
     def _solve(self) -> SolveResult:

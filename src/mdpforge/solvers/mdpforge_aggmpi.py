@@ -25,7 +25,7 @@ from mdpforge.utils.bellman import (
 from mdpforge.utils.projected_bellman import (
     apply_ppbo_until_var_small,
 )
-from mdpforge.utils.solver_options import bounded_iterations, solver_identifier
+from mdpforge.utils.solver_options import bounded_iterations
 
 METADATA = {
     "display_name": "Aggregated MPI · mdpforge",
@@ -82,11 +82,7 @@ class Solver:
         self.bellman_iterations = bellman_iterations
         self.refinement = refinement
 
-        self.n_tiles = (
-            int(model.state_dim**0.5) + 1
-            if n_tiles is None
-            else n_tiles
-        )
+        self.n_tiles = int(model.state_dim**0.5) + 1 if n_tiles is None else n_tiles
         self.shared_reward = np.all(
             self.model.reward_matrix == self.model.reward_matrix[:, [0]]
         )
@@ -96,20 +92,6 @@ class Solver:
         self.name = "PDMPI" if self.refinement == "width" else "PDMPItiles"
 
         self.partition = Partition(self.model)
-
-        self.solver_id = solver_identifier(
-            __name__,
-            discount=self.discount,
-            final_precision=final_precision,
-            bellman_iterations=self.bellman_iterations,
-            refinement=self.refinement,
-            n_tiles=self.n_tiles,
-            max_projected_iterations=self.max_projected_iterations,
-            max_iterations=self.max_iterations,
-            max_fallback_iterations=self.max_fallback_iterations,
-            switch_to_vi_ratio=self.switch_to_vi_ratio,
-            max_evaluation_iterations=self.max_evaluation_iterations,
-        )
 
     def run(self) -> SolveResult:
         self.policy = np.zeros(
