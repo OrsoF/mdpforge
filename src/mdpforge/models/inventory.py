@@ -31,8 +31,6 @@ METADATA = {
 
 
 class Model(MDP):
-    CACHE_VERSION = 1
-
     def __init__(self, state_dim: int = 500, action_dim: int = 10):
         self.requested_state_dim = int(state_dim)
         self._stock_size = (state_dim - 1) // 2  # Size of the stock

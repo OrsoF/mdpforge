@@ -40,8 +40,8 @@ class Model(MDP):
         self.requested_state_dim = state_dim
         self.treasure, self.drowned = self.state_dim - 2, self.state_dim - 1
         self.name = (
-            f"{self.state_dim}_{self.action_dim}_deep_sea_treasure_v1"
-            f"_depth{self.depth}_current{self.current_probability}"
+            f"{self.state_dim}_{self.action_dim}_deep_sea_treasure_1"
+            f"_{self.depth}_{self.current_probability}"
         )
 
     def _encode(self, depth, column, oxygen):

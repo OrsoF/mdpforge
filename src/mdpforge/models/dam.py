@@ -113,7 +113,7 @@ class Model(MDP):
         self._max_dam_capa, self._n_dam = find_closest_indices(state_dim)
         self._build_action_space()
         self._build_state_space()
-        self.name = f"{self.state_dim}_{self.action_dim}_dam_v2_seed{self.seed}"
+        self.name = f"{self.state_dim}_{self.action_dim}_dam_2_{self.seed}"
 
     def _build_action_space(self):
         # Action décrite par la turbinated water sur chaque dam

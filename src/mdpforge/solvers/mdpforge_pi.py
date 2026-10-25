@@ -6,7 +6,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import bellman_operator, compute_transition_reward_policy
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
-from mdpforge.utils.solver_options import initial_vectors
+from mdpforge.utils.solver_options import initial_vectors, solver_identifier
 
 METADATA = {
     "display_name": "PI · mdpforge",
@@ -41,10 +41,16 @@ class Solver(GenericSolver):
         )
         self.name = "mdpforge PI"
 
+        self.solver_id = solver_identifier(
+            __name__,
+            discount=self.discount,
+            max_iterations=self.max_iterations,
+            initial_policy=self.initial_policy,
+        )
+
     def _solve(self) -> SolveResult:
         policy = self.initial_policy.copy()
         for iteration in range(1, self.max_iterations + 1):
-            self._iterations = iteration
             value = self._policy_evaluation_matrix(policy)
             new_policy = bellman_operator(self.model, value, self.discount).argmax(
                 axis=1
@@ -52,18 +58,10 @@ class Solver(GenericSolver):
             policy_stable = np.array_equal(new_policy, policy)
 
             if not np.all(np.isfinite(value)):
-                self._stop_reason = "non_finite"
                 raise RuntimeError("PI stopped: non_finite policy values")
             if policy_stable:
-                self._stop_reason = "converged"
-                return SolveResult(
-                    np.asarray(value),
-                    policy,
-                    self._iterations or None,
-                    self._stop_reason,
-                )
+                return SolveResult(np.asarray(value), policy)
             policy = new_policy
-        self._stop_reason = "max_iterations"
         raise RuntimeError("PI stopped: max_iterations reached")
 
     def _policy_evaluation_matrix(self, policy: np.ndarray) -> np.ndarray:

@@ -32,6 +32,7 @@ def _load_solver(name, *, backend=None):
         "madupite": "madupite",
         "mdpax": "mdpax",
         "mdptoolbox": "mdptoolbox",
+        "quantecon": "quantecon",
     }.get(backend)
     if dependency and find_spec(dependency) is None:
         raise ModuleNotFoundError(
@@ -450,7 +451,7 @@ class Benchmark:
             "mpi" (modified policy iteration), "lp" (linear programming),
             or "experimental" (experimental methods and variants).
         backend: implementation library: "mdpforge", "mdpsolver", "marmote",
-            "mdptoolbox", "madupite", "mdpax", "gurobi" or "cma".
+            "mdptoolbox", "madupite", "mdpax", "quantecon", "gurobi" or "cma".
         **options: selected solver's constructor/function keywords, e.g.
             parallel=True or initial_value=array. See its signature for options;
             problem data, discount and precision are supplied by run().

@@ -5,6 +5,7 @@ from mdpforge.core.operators import bellman_operator, compute_transition_reward_
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.bellman import iterative_policy_evaluation
+from mdpforge.utils.solver_options import solver_identifier
 
 METADATA = {
     "display_name": "MPI · mdpforge",
@@ -49,6 +50,15 @@ class Solver(GenericSolver):
             else float(evaluation_precision)
         )
 
+        self.solver_id = solver_identifier(
+            __name__,
+            discount=self.discount,
+            final_precision=self.final_precision,
+            max_iterations=self.max_iterations,
+            max_evaluation_iterations=self.max_evaluation_iterations,
+            evaluation_precision=self.evaluation_precision,
+        )
+
     def _solve(self) -> SolveResult:
         policy = np.random.randint(0, self.model.action_dim, size=self.model.state_dim)
         value = np.zeros(self.model.state_dim)
@@ -80,12 +90,7 @@ class Solver(GenericSolver):
             ):
                 raise RuntimeError("MPI stopped: non_finite values")
             if bellman_residual < tolerance:
-                return SolveResult(
-                    np.asarray(value),
-                    new_policy,
-                    iteration,
-                    "converged",
-                )
+                return SolveResult(np.asarray(value), new_policy)
             if np.array_equal(value, previous_value) and np.array_equal(
                 new_policy, policy
             ):

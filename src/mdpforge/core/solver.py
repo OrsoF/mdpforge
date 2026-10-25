@@ -24,8 +24,6 @@ class GenericSolver:
         self.discount = discount
         self.final_precision = final_precision
         self.max_iterations = max_iterations
-        self._iterations = 0
-        self._stop_reason: str | None = None
 
     def run(self) -> SolveResult:
         """Run the algorithm and return its result."""
@@ -33,5 +31,5 @@ class GenericSolver:
         return result
 
     def _solve(self) -> SolveResult:
-        """Return the computed value and available solution details."""
+        """Return the computed value and policy."""
         raise NotImplementedError("Subclasses must implement _solve().")

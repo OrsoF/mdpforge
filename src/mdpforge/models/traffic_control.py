@@ -46,8 +46,8 @@ class Model(MDP):
         super().__init__(2 * (self.capacity + 1) ** 2, 2)
         self.requested_state_dim = state_dim
         self.name = (
-            f"{self.state_dim}_{self.action_dim}_traffic_control_v1"
-            f"_q{self.capacity}_n{self.arrival_north}_e{self.arrival_east}"
+            f"{self.state_dim}_{self.action_dim}_traffic_control_1"
+            f"_{self.capacity}_{self.arrival_north}_{self.arrival_east}"
         )
 
     def _encode(self, north, east, phase):

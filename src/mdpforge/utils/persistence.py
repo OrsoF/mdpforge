@@ -2,17 +2,18 @@
 
 from collections.abc import Callable
 from pathlib import Path
+from types import SimpleNamespace
 from urllib.parse import quote
+from zipfile import BadZipFile
 
 import numpy as np
+from scipy.sparse import csr_matrix
 
-from mdpforge.utils.cache_keys import recipe_identity
 from mdpforge.utils.cache_store import (
     CacheCorruptError,
-    load_model_entry,
     load_value_entry,
-    save_model_entry,
     save_value_entry,
+    write_npz,
 )
 from mdpforge.utils.paths import SAVED_MODELS_PATH, SAVED_VALUE_FUNCTIONS_PATH
 
@@ -25,22 +26,9 @@ def validate_cache_mode(cache):
     return cache
 
 
-def _entry_path(directory, key):
-    return Path(directory) / "v2" / key[:2] / f"{key}.npz"
-
-
-def model_cache_path(model, *, normalize_reward=False):
-    """Return a v2 path for a cacheable model recipe, or None."""
-    if isinstance(model, str):
-        raise TypeError("Provide a model instance; names are not cache identities")
-    if hasattr(model, "_cache_recipe_key"):
-        key = model._cache_recipe_key
-    elif hasattr(model, "transition_matrix") and hasattr(model, "reward_matrix"):
-        # There is no trustworthy pre-build recipe for a pre-populated model.
-        return None
-    else:
-        key = recipe_identity(model, normalize_reward=normalize_reward)
-    return _entry_path(SAVED_MODELS_PATH, key) if key else None
+def model_cache_path(model):
+    """Return the NPZ path identified by the model's unique name."""
+    return Path(SAVED_MODELS_PATH) / f"{quote(model.name, safe='')}.npz"
 
 
 def value_function_cache_path(model, discount):
@@ -51,18 +39,51 @@ def value_function_cache_path(model, discount):
     return Path(SAVED_VALUE_FUNCTIONS_PATH) / f"{name}.npz"
 
 
-def load_model(model, *, key, strict=False):
-    """Load v2 matrices if their recipe and checksums match."""
-    path = _entry_path(SAVED_MODELS_PATH, key)
+def load_model(model, *, strict=False):
+    """Load and validate named matrices before updating the model."""
+    from mdpforge.core.validation import validate_model
+
+    path = model_cache_path(model)
     if not path.exists():
         return False
     try:
-        candidate = load_model_entry(path, key)
-        if candidate.action_dim != model.action_dim:
-            raise CacheCorruptError("Cached action count differs from requested model")
-    except CacheCorruptError:
+        with np.load(path, allow_pickle=False) as arrays:
+            rewards = arrays["rewards"]
+            states, actions = rewards.shape
+            if actions != model.action_dim:
+                raise ValueError("Cached action count differs from requested model")
+            matrices = [
+                csr_matrix(
+                    (
+                        arrays[f"t{i}_data"],
+                        arrays[f"t{i}_indices"],
+                        arrays[f"t{i}_indptr"],
+                    ),
+                    shape=(states, states),
+                )
+                for i in range(actions)
+            ]
+        for matrix in matrices:
+            matrix.check_format(full_check=True)
+        candidate = SimpleNamespace(
+            name=model.name,
+            state_dim=states,
+            action_dim=actions,
+            transition_matrix=matrices,
+            reward_matrix=rewards,
+        )
+        validate_model(candidate)
+    except (
+        OSError,
+        ValueError,
+        KeyError,
+        BadZipFile,
+        EOFError,
+        TypeError,
+        IndexError,
+    ) as exc:
         if strict:
-            raise
+            raise CacheCorruptError(f"Invalid model cache {path}: {exc}") from exc
         return False
     model.state_dim = candidate.state_dim
     model.action_dim = candidate.action_dim
@@ -71,9 +92,14 @@ def load_model(model, *, key, strict=False):
     return True
 
 
-def save_model(model, *, key):
-    """Save matrices under a previously captured recipe identity."""
-    save_model_entry(_entry_path(SAVED_MODELS_PATH, key), key, model)
+def save_model(model):
+    """Atomically save CSR transitions and rewards under the model's name."""
+    arrays = {"rewards": model.reward_matrix}
+    for i, matrix in enumerate(model.transition_matrix):
+        arrays[f"t{i}_data"] = matrix.data
+        arrays[f"t{i}_indices"] = matrix.indices
+        arrays[f"t{i}_indptr"] = matrix.indptr
+    write_npz(model_cache_path(model), **arrays)
 
 
 def get_cached_value_function(

@@ -53,9 +53,9 @@ class Model(MDP):
         self.requested_state_dim = state_dim
         self.rescued, self.lost = self.state_dim - 2, self.state_dim - 1
         self.name = (
-            f"{self.state_dim}_{self.action_dim}_search_and_rescue_v1"
-            f"_z{self.zones}_u{max_urgency}"
-            f"_survey{survey_success}_pickup{pickup_success}_loss{per_step_loss}"
+            f"{self.state_dim}_{self.action_dim}_search_and_rescue_1"
+            f"_{self.zones}_{max_urgency}"
+            f"_{survey_success}_{pickup_success}_{per_step_loss}"
         )
 
     def _encode(self, zone, status, onboard, urgency):

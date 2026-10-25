@@ -39,8 +39,6 @@ METADATA = {
 
 
 class Model(MDP):
-    CACHE_VERSION = 1
-
     def __init__(self, state_dim: int = 256, action_dim: int = 10):
         self.requested_state_dim = int(state_dim)
         del action_dim

@@ -17,11 +17,13 @@ def test_seeded_garnet_generation_is_reproducible_without_cache(isolated_model_c
         for _ in range(2):
             with reproducible_rng(seed):
                 model = Model(state_dim=7, action_dim=3)
-                model.create_model(save=False)
+                model.create_model(cache="off")
             generated.append(model)
         first, second = generated
         assert_model_unchanged(first, second)
-        assert persistence.model_cache_path(first) is None
+        path = persistence.model_cache_path(first)
+        assert path.name == f"{first.name}.npz"
+        assert not path.exists()
 
 
 def test_generated_model_uses_mdp_and_preserves_identity(chain):

@@ -28,8 +28,6 @@ METADATA = {
 
 
 class Model(MDP):
-    CACHE_VERSION = 1
-
     """
     Windy Gridworld finite MDP.
 

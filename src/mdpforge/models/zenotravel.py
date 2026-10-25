@@ -49,9 +49,9 @@ class Model(MDP):
         self.requested_state_dim = state_dim
         self.delivered, self.accident = self.state_dim - 2, self.state_dim - 1
         self.name = (
-            f"{self.state_dim}_{self.action_dim}_zenotravel_v1"
-            f"_n{self.cities}_fuel{fuel_capacity}"
-            f"_failure{flight_failure}_accident{accident_probability}"
+            f"{self.state_dim}_{self.action_dim}_zenotravel_1"
+            f"_{self.cities}_{fuel_capacity}"
+            f"_{flight_failure}_{accident_probability}"
         )
 
     def _encode(self, city, fuel, boarded):

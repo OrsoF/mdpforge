@@ -11,6 +11,7 @@ from mdpforge.core.operators import compute_transition_reward_policy
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.gurobi import gurobi_model_creation
+from mdpforge.utils.solver_options import solver_identifier
 
 METADATA = {
     "display_name": "LP · Gurobi · dual",
@@ -43,6 +44,13 @@ class Solver(GenericSolver):
         self.memory_limit_gb = float(memory_limit_gb)
         self.name = "Gurobi LP Dual"
         self.incoming_transitions = self._build_incoming_transitions()
+
+        self.solver_id = solver_identifier(
+            __name__,
+            discount=self.discount,
+            threads=self.threads,
+            memory_limit_gb=self.memory_limit_gb,
+        )
 
     def _build_incoming_transitions(self):
         incoming_transitions = []

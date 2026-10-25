@@ -153,7 +153,7 @@ def test_dam_seed_is_reproducible_and_independent_of_build_order(seed):
     second = dam.Model(state_dim=64, seed=seed)
     second.create_model(cache="off")
     assert_array_equal(first.reward_matrix, second.reward_matrix)
-    assert first.name == second.name == f"64_8_dam_v2_seed{seed}"
+    assert first.name == second.name == f"64_8_dam_2_{seed}"
     assert first.get_config()["seed"] == int(seed)
     for left, right in zip(first.transition_matrix, second.transition_matrix):
         assert_array_equal(left.toarray(), right.toarray())

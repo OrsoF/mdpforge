@@ -37,8 +37,8 @@ class Model(MDP):
         self.requested_state_dim = state_dim
         self.decide_zero, self.decide_one = self.state_dim - 2, self.state_dim - 1
         self.name = (
-            f"{self.state_dim}_{self.action_dim}_consensus_v1"
-            f"_n{processes}_bound{self.bound}"
+            f"{self.state_dim}_{self.action_dim}_consensus_1"
+            f"_{processes}_{self.bound}"
         )
 
     def _encode(self, position, mask):

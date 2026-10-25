@@ -50,8 +50,8 @@ class Model(MDP):
         self.requested_state_dim = state_dim
         self.elected, self.deadline = self.state_dim - 2, self.state_dim - 1
         self.name = (
-            f"{self.state_dim}_{self.action_dim}_firewire_v1"
-            f"_delay{self.delay}_rounds{max_rounds}_tie{tie_probability}"
+            f"{self.state_dim}_{self.action_dim}_firewire_1"
+            f"_{self.delay}_{max_rounds}_{tie_probability}"
         )
 
     def _encode(self, a, b, rounds, phase):

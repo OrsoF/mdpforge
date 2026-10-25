@@ -35,8 +35,8 @@ class Model(MDP):
         super().__init__(5**self.philosophers, self.philosophers)
         self.requested_state_dim = state_dim
         self.name = (
-            f"{self.state_dim}_{self.action_dim}_dining_philosophers_v1"
-            f"_n{self.philosophers}"
+            f"{self.state_dim}_{self.action_dim}_dining_philosophers_1"
+            f"_{self.philosophers}"
         )
 
     def _encode(self, statuses):

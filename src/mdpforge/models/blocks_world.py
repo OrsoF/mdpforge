@@ -33,8 +33,6 @@ METADATA = {
 
 
 class Model(MDP):
-    CACHE_VERSION = 1
-
     """Factored Blocks World with exactly ``state_dim`` states.
 
     A 96-state level contains the original red/blue/green puzzle. With more

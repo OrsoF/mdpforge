@@ -36,8 +36,8 @@ class Model(MDP):
         self.requested_state_dim = state_dim
         self.success, self.failure = self.state_dim - 2, self.state_dim - 1
         self.name = (
-            f"{self.state_dim}_{self.action_dim}_csma_v1"
-            f"_window{backoff}_collisions{self.collisions}"
+            f"{self.state_dim}_{self.action_dim}_csma_1"
+            f"_{backoff}_{self.collisions}"
         )
 
     def _encode(self, mask, collisions, b0, b1):

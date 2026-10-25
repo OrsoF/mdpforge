@@ -12,7 +12,7 @@ from mdpforge.core.operators import (
 )
 from mdpforge.core.partition import Partition
 from mdpforge.core.solve_result import SolveResult
-from mdpforge.utils.solver_options import bounded_iterations
+from mdpforge.utils.solver_options import bounded_iterations, solver_identifier
 
 METADATA = {
     "display_name": "Chen aggregated VI · mdpforge",
@@ -64,6 +64,16 @@ class Solver:
 
         self.partition = Partition(self.model)
         self.contracted_value: np.ndarray
+
+        self.solver_id = solver_identifier(
+            __name__,
+            discount=self.discount,
+            final_precision=final_precision,
+            aggregation_iterations=self.aggregation_iterations,
+            bellman_iterations=self.bellman_iterations,
+            max_iterations=self.max_iterations,
+            step_size=self.step_size,
+        )
 
     def run(self) -> SolveResult:
         tolerance = self.epsilon * (1 - self.discount)

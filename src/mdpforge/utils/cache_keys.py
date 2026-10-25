@@ -1,50 +1,13 @@
-"""Stable recipe and numerical identities for versioned MDP caches."""
+"""Numerical fingerprints for cached values and experiment metadata."""
 
 import hashlib
-import inspect
 import json
-import math
 from pathlib import Path
 
 import numpy as np
-from scipy.sparse import csr_matrix, issparse
+from scipy.sparse import csr_matrix
 
 SCHEMA_VERSION = 2
-
-
-class CacheIdentityError(ValueError):
-    """A model recipe cannot be represented with a reliable cache identity."""
-
-
-def _canonical(value):
-    """Encode only values with deterministic, unambiguous representations."""
-    if value is None or isinstance(value, (str, bool, np.bool_)):
-        return bool(value) if isinstance(value, np.bool_) else value
-    if isinstance(value, (int, np.integer)):
-        return {"int": str(int(value))}
-    if isinstance(value, (float, np.floating)):
-        number = float(value)
-        if not math.isfinite(number):
-            raise CacheIdentityError("Non-finite recipe parameter")
-        return {"float": number.hex()}
-    if isinstance(value, Path):
-        return {"path": str(value)}
-    if isinstance(value, np.ndarray):
-        if value.dtype.kind not in "biuf":
-            raise CacheIdentityError("Array parameter needs a numeric dtype")
-        return {"array": array_digest(value)}
-    if issparse(value):
-        return {"sparse": sparse_digest(value)}
-    if isinstance(value, (list, tuple)):
-        return {type(value).__name__: [_canonical(v) for v in value]}
-    if isinstance(value, dict):
-        pairs = [(_canonical(k), _canonical(v)) for k, v in value.items()]
-        pairs.sort(key=lambda pair: stable_json(pair[0]))
-        return {"dict": pairs}
-    if isinstance(value, (set, frozenset)):
-        elements = sorted((_canonical(v) for v in value), key=stable_json)
-        return {"set": elements}
-    raise CacheIdentityError(f"Unsupported recipe parameter: {type(value).__name__}")
 
 
 def stable_json(value):
@@ -54,7 +17,7 @@ def stable_json(value):
 def _update_array(digest, value):
     arr = np.asarray(value)
     if arr.dtype.kind not in "biuf":
-        raise CacheIdentityError(f"Unsupported numerical dtype: {arr.dtype}")
+        raise ValueError(f"Unsupported numerical dtype: {arr.dtype}")
     dtype = arr.dtype.newbyteorder("<")
     arr = np.ascontiguousarray(arr, dtype=dtype)
     digest.update(stable_json([list(arr.shape), dtype.str]).encode())
@@ -94,39 +57,6 @@ def numerical_identity(model):
         digest.update(bytes.fromhex(sparse_digest(matrix)))
     digest.update(bytes.fromhex(array_digest(model.reward_matrix)))
     return digest.hexdigest()
-
-
-def recipe_identity(model, *, normalize_reward=False):
-    """Return a recipe identity or None when the model does not opt in."""
-    version = getattr(model, "CACHE_VERSION", None)
-    if version is None:
-        return None
-    if not isinstance(version, int) or version < 1:
-        raise CacheIdentityError("CACHE_VERSION must be a positive integer or None")
-    config = model.get_cache_config()
-    if config is None:
-        return None
-    implementation = type(model)
-    try:
-        source_file = inspect.getsourcefile(implementation)
-    except (OSError, TypeError):
-        source_file = None
-    # Source changes invalidate recipes; missing source requires explicit versioning.
-    source_hash = (
-        hashlib.sha256(Path(source_file).read_bytes()).hexdigest()
-        if source_file and Path(source_file).is_file()
-        else None
-    )
-    identity = {
-        "schema": SCHEMA_VERSION,
-        "kind": "model",
-        "class": f"{implementation.__module__}.{implementation.__qualname__}",
-        "version": version,
-        "source_sha256": source_hash,
-        "normalization": bool(normalize_reward),
-        "config": _canonical(config),
-    }
-    return hashlib.sha256(stable_json(identity).encode()).hexdigest()
 
 
 def value_metadata(model, discount, precision):

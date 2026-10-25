@@ -51,9 +51,9 @@ class Model(MDP):
         self.success = self.state_dim - 2
         self.failure = self.state_dim - 1
         self.name = (
-            f"{self.state_dim}_{self.action_dim}_zeroconf_v1"
-            f"_k{probes}_attempts{self.attempts}_hosts{existing_hosts}"
-            f"_loss{self.loss_probability}"
+            f"{self.state_dim}_{self.action_dim}_zeroconf_1"
+            f"_{probes}_{self.attempts}_{existing_hosts}"
+            f"_{self.loss_probability}"
         )
 
     def _encode(self, attempt, occupied, sent):

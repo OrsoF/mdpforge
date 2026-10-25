@@ -17,7 +17,7 @@ from mdpforge.core.solve_result import SolveResult
 from mdpforge.utils.bellman import (
     iterative_policy_evaluation,
 )
-from mdpforge.utils.solver_options import bounded_iterations
+from mdpforge.utils.solver_options import bounded_iterations, solver_identifier
 
 METADATA = {
     "display_name": "Bertsekas adaptive PI · mdpforge",
@@ -67,6 +67,17 @@ class Solver:
         self.name = "BertsekasAdaptivePI"
 
         self.fixed_partition = Partition(self.model)
+
+        self.solver_id = solver_identifier(
+            __name__,
+            discount=self.discount,
+            final_precision=final_precision,
+            beta_1=self.beta_1,
+            beta_2=self.beta_2,
+            n_regions=self.n_regions,
+            max_iterations=self.max_iterations,
+            max_evaluation_iterations=self.max_evaluation_iterations,
+        )
 
     def span_state_space(self, value: np.ndarray) -> float:
         return value.max() - value.min()

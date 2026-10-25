@@ -3,8 +3,9 @@
 <p align="center"><strong>Benchmark finite MDPs. Compare solvers at a shared accuracy.</strong></p>
 
 <p align="center">
-  <a href="https://github.com/OrsoF/mdpforge/actions/workflows/ci.yml"><img src="https://github.com/OrsoF/mdpforge/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
-  <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.11%2B-2563eb" alt="Python 3.11 or later"></a>
+  <a href="https://github.com/OrsoF/mdpforge/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/OrsoF/mdpforge/ci.yml?branch=main&amp;label=Tests" alt="Tests"></a>
+  <a href="https://github.com/OrsoF/mdpforge/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/OrsoF/mdpforge/ci.yml?branch=main&amp;label=Code%20Quality" alt="Code Quality"></a>
+  <a href="pyproject.toml"><img src="https://img.shields.io/badge/Python_versions-3.11%2B-blue" alt="Python versions: 3.11 or later"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-008c87" alt="MIT license"></a>
 </p>
 

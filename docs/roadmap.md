@@ -2,7 +2,7 @@
 
 - [ ] Test that each solver returns a valid and accurate `SolveResult`.
 - [ ] Add an output-precision check for the value function in the benchmark, with an automated test that validates this check.
-- [ ] Stop exposing `value`, `policy`, `runtime`, `iterations` and `stop_reason` as solver result attributes; migrate solvers with custom `run()` methods, the benchmark, the cache and other callers to `SolveResult`.
+- [ ] Stop exposing `value`, `policy` and `runtime` as solver result attributes; migrate solvers with custom `run()` methods, the benchmark, the cache and other callers to `SolveResult`.
 - [ ] Simplify the benchmark class by moving functions into utilities or splitting responsibilities across classes.
 - [ ] List and add VI variants; clarify the VIGS performance gap between C++ and Python.
 - [ ] Support several VISOR configurations?

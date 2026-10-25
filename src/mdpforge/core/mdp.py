@@ -27,23 +27,11 @@ class MDP:
         self.transition_matrix: list[csr_matrix]
         self.reward_matrix: np.ndarray
 
-    # Opt in per deterministic model recipe. Unspecified/custom models are rebuilt.
-    CACHE_VERSION = None
-
     def get_config(self) -> dict:
-        """Return descriptive experiment metadata (not a cache recipe)."""
+        """Return descriptive experiment metadata."""
         from mdpforge.utils.experiment import model_config
 
         return model_config(self)
-
-    def get_cache_config(self) -> dict:
-        """Return pre-build parameters; override for custom deterministic recipes."""
-        return {
-            key: value
-            for key, value in vars(self).items()
-            if key not in {"transition_matrix", "reward_matrix", "name"}
-            and not key.startswith("_cache_")
-        }
 
     @classmethod
     def from_matrices(cls, name: str, transition_matrix, reward_matrix) -> "MDP":
@@ -78,13 +66,11 @@ class MDP:
     def create_model(
         self,
         check_transition: bool = False,
-        normalize_reward: bool = False,
         save: bool | None = None,
         *,
         cache: str | None = None,
     ):
         """Build or load matrices using the selected cache policy."""
-        from mdpforge.utils.cache_keys import CacheIdentityError, recipe_identity
         from mdpforge.utils.persistence import validate_cache_mode
 
         if cache is None:
@@ -101,28 +87,17 @@ class MDP:
                 self.test_model()
             return
 
-        key = None
-        if cache != "off":
-            try:
-                key = recipe_identity(self, normalize_reward=normalize_reward)
-            except CacheIdentityError:
-                # An unrepresentable recipe must not use an ambiguous cache key.
-                key = None
-        self._cache_recipe_key = key
         loaded = (
-            key is not None
-            and cache in ("readwrite", "readonly")
-            and load_model(self, key=key, strict=cache == "readonly")
+            cache in ("readwrite", "readonly")
+            and load_model(self, strict=cache == "readonly")
         )
         if not loaded:
             self._build_model()
         self.transition_matrix = [csr_matrix(m) for m in self.transition_matrix]
-        if not loaded and normalize_reward:
-            self._normalize_reward_matrix()
-        if check_transition or loaded:
+        if check_transition and not loaded:
             self.test_model()
-        if not loaded and key is not None and cache in ("readwrite", "refresh"):
-            save_model(self, key=key)
+        if not loaded and cache in ("readwrite", "refresh"):
+            save_model(self)
 
     def _build_model(self):
         raise NotImplementedError(
@@ -133,21 +108,6 @@ class MDP:
         from mdpforge.core.validation import validate_model
 
         validate_model(self)
-
-    def _normalize_reward_matrix(self):
-        """
-        Transform the reward matrix of the model :
-        0 <= self.reward_matrix <= 1 after application.
-        """
-        min_reward = self.reward_matrix.min()
-        max_reward = self.reward_matrix.max()
-        reward_range = max_reward - min_reward
-
-        if np.isclose(reward_range, 0.0):
-            self.reward_matrix = np.zeros_like(self.reward_matrix)
-            return
-
-        self.reward_matrix = (self.reward_matrix - min_reward) / reward_range
 
     def randomize_states(
         self, seed: int | None = None, permutation: np.ndarray | None = None

@@ -20,6 +20,7 @@ gurobi = ["gurobipy"]
 mdpsolver = ["mdpsolver>=0.10.2"]
 marmote = ["marmote"]
 mdpax = ["mdpax>=0.2.2,<0.3"]
+quantecon = ["quantecon>=0.10.1,<0.14"]
 # madupite requires MPI/PETSc; install via its upstream conda/source instructions.
 cma = ["cma>=4.4,<5"]
 deep = ["stable-baselines3", "gymnasium"]

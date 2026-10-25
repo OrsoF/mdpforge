@@ -4,7 +4,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
-from mdpforge.utils.solver_options import initial_vectors
+from mdpforge.utils.solver_options import initial_vectors, solver_identifier
 
 METADATA = {
     "display_name": "VI · mdpforge · Span",
@@ -42,6 +42,14 @@ class Solver(GenericSolver):
         self.initial_value = np.zeros(model.state_dim) if value is None else value
         self.name = "mdpforge VI Span"
 
+        self.solver_id = solver_identifier(
+            __name__,
+            discount=self.discount,
+            final_precision=self.final_precision,
+            initial_value=self.initial_value,
+            max_iterations=self.max_iterations,
+        )
+
     def _solve(self) -> SolveResult:
         value = self.initial_value.copy()
         tolerance = 2 * self.final_precision * (1 - self.discount) / self.discount
@@ -62,12 +70,7 @@ class Solver(GenericSolver):
             if not np.isfinite(bellman_span) or not np.isfinite(corrected_value).all():
                 raise RuntimeError("VI Span stopped: non_finite values")
             if bellman_span < tolerance:
-                return SolveResult(
-                    np.asarray(corrected_value),
-                    None,
-                    iteration,
-                    "converged",
-                )
+                return SolveResult(np.asarray(corrected_value), None)
             if np.array_equal(new_value, value):
                 raise RuntimeError("VI Span stopped: stagnation")
             value = new_value

@@ -26,7 +26,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import bellman_operator, compact_optimal_bellman_operator
 from mdpforge.core.partition import Partition
 from mdpforge.core.solve_result import SolveResult
-from mdpforge.utils.solver_options import bounded_iterations
+from mdpforge.utils.solver_options import bounded_iterations, solver_identifier
 
 METADATA = {
     "display_name": "Envelope VI · mdpforge",
@@ -111,6 +111,20 @@ class Solver:
         self.n_ground_bellman_updates = 0
         self.region_history = []
         self.used_exact_vi = False
+
+        self.solver_id = solver_identifier(
+            __name__,
+            discount=self.discount,
+            final_precision=final_precision,
+            refinement=self.refinement,
+            n_tiles=self.n_tiles,
+            max_projected_iterations=self.max_projected_iterations,
+            refinement_width=self.refinement_width,
+            switch_to_vi_ratio=self.switch_to_vi_ratio,
+            stop_criterion=self.stop_criterion,
+            max_iterations=self.max_iterations,
+            max_fallback_iterations=self.max_fallback_iterations,
+        )
 
     def _precompute(self) -> None:
         """Build the K-column compressed ground-state transitions *once* per partition.

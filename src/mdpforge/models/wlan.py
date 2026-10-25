@@ -52,9 +52,9 @@ class Model(MDP):
         self.requested_state_dim = state_dim
         self.success, self.failure = self.state_dim - 2, self.state_dim - 1
         self.name = (
-            f"{self.state_dim}_{self.action_dim}_wlan_v1"
-            f"_b{self.backoff_limit}_col{max_collisions}"
-            f"_interference{external_interference}"
+            f"{self.state_dim}_{self.action_dim}_wlan_1"
+            f"_{self.backoff_limit}_{max_collisions}"
+            f"_{external_interference}"
         )
 
     def _encode(self, backoff_a, backoff_b, collisions, delivered):

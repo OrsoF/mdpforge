@@ -7,6 +7,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpax import make_mdpax_problem
+from mdpforge.utils.solver_options import solver_identifier
 
 METADATA = {
     "display_name": "VI · MDPax",
@@ -45,6 +46,15 @@ class Solver(GenericSolver):
         self.max_batch_size = max_batch_size
         self.name = "MDPax VI"
 
+        self.solver_id = solver_identifier(
+            __name__,
+            discount=self.discount,
+            final_precision=self.final_precision,
+            max_iterations=self.max_iterations,
+            max_event_entries=self.max_event_entries,
+            max_batch_size=self.max_batch_size,
+        )
+
     def _solve(self) -> SolveResult:
         problem = make_mdpax_problem(self.model, self.max_event_entries)
         solver = ValueIteration(
@@ -59,6 +69,4 @@ class Solver(GenericSolver):
         result = solver.solve(max_iterations=self.max_iterations)
         values = np.asarray(result.values, dtype=float).reshape(-1)
         policy = np.asarray(result.policy, dtype=int).reshape(-1)
-        return SolveResult(
-            np.asarray(values), policy, self._iterations or None, self._stop_reason
-        )
+        return SolveResult(np.asarray(values), policy)

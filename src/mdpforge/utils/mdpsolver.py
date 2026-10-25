@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from mdpforge.core.conversion import compute_mdpsolver_args
+from mdpforge.utils.conversion import compute_mdpsolver_args
 from mdpforge.core.mdp import MDP
 
 
