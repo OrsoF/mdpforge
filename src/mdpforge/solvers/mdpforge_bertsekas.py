@@ -17,11 +17,7 @@ from mdpforge.core.solve_result import SolveResult
 from mdpforge.utils.bellman import (
     iterative_policy_evaluation,
 )
-from mdpforge.utils.solver_options import (
-    bounded_iterations,
-    positive_integer,
-    positive_real,
-)
+from mdpforge.utils.solver_options import bounded_iterations
 
 METADATA = {
     "display_name": "Bertsekas adaptive PI · mdpforge",
@@ -57,20 +53,16 @@ class Solver:
         max_evaluation_iterations: int > 0; policy-evaluation iteration budget; default
             100_000.
         """
-        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
-        positive_real(final_precision, "final_precision")
-        self.max_iterations = positive_integer(max_iterations, "max_iterations")
-        self.max_evaluation_iterations = positive_integer(
-            max_evaluation_iterations, "max_evaluation_iterations"
-        )
+        self.max_iterations = max_iterations
+        self.max_evaluation_iterations = max_evaluation_iterations
         self.model = model
         self.discount = discount
         self.final_precision = final_precision
         self.epsilon_policy_evaluation = final_precision / 10
         self.epsilon_final_policy_evaluation = final_precision * (1 - discount) / 10
-        self.beta_1 = positive_real(beta_1, "beta_1")
-        self.beta_2 = positive_real(beta_2, "beta_2")
-        self.n_regions = positive_integer(n_regions, "n_regions")
+        self.beta_1 = float(beta_1)
+        self.beta_2 = float(beta_2)
+        self.n_regions = n_regions
 
         self.name = "BertsekasAdaptivePI"
 

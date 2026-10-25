@@ -157,7 +157,7 @@ def model_script():
     ]
 )
 def solver_case(request):
-    """Return a retained solver, small oracle model, and discount combination."""
+    """Return a retained solver, small model, and discount combination."""
     module, name, discount = request.param
     model = next(case for case in sample_models() if case.name == name)
     return f"{solvers.__name__}.{module}", model, discount

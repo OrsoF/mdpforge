@@ -7,8 +7,6 @@ from mdpforge.core.mdp import MDP
 
 def padded_transitions(model: MDP, max_event_entries: int):
     """Pack variable-length CSR rows as state/action/event arrays."""
-    if max_event_entries < 1:
-        raise ValueError("max_event_entries must be positive")
     s, a = model.state_dim, model.action_dim
     width = max(int(np.diff(p.indptr).max(initial=0)) for p in model.transition_matrix)
     if s * a * width > max_event_entries:

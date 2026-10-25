@@ -1,17 +1,25 @@
-# Tests de mdpforge
+# mdpforge tests
 
-La suite sépare les **contrats communs**, les **propriétés scientifiques** et les **régressions spécifiques**. Les tests ne doivent pas dupliquer l'algorithme qu'ils vérifient.
+Keep **shared contracts**, **scientific properties** and **specific regressions** distinct. Tests must not duplicate the algorithms they check.
 
-## Ajouter un solveur
+## Adding a solver
 
-Le catalogue est découvert par `tests/conftest.py`. Un module `src/mdpforge/solvers/<nom>.py` est automatiquement soumis aux tests de `tests/test_workflows.py` : précision de la fonction de valeur via un oracle indépendant, résidu de Bellman, politique optimale, reproductibilité et conservation des données d'entrée. L'oracle énumère les politiques sur des MDP suffisamment petits pour rester indépendant des solveurs de production ; ses identités mathématiques sont vérifiées dans `tests/test_scientific_properties.py`.
+[`conftest.py`](conftest.py) discovers solver modules and configures the cases used by [`test_workflows.py`](test_workflows.py). The current workflow checks input preservation and compatibility with a plain object exposing model data. Some backends and model/discount combinations are currently excluded; the fixture definitions show the exact coverage.
 
-Les tests des solveurs passent par leurs options de construction et `run()`, puis contrôlent leurs sorties et erreurs publiques. Ils n'appellent pas leurs fonctions internes et ne figent ni les étapes de calcul, ni les compteurs internes des backends. Les tests d'adaptation peuvent vérifier les arguments transmis aux API publiques des backends.
+Tests use constructor options and argument-free `run()` calls. They exercise public behavior without calling solver internals or fixing backend computation steps and counters. Adapter tests may check arguments passed to public backend APIs.
 
-Les backends optionnels sont exécutés en environnement isolé uniquement si leurs dépendances sont présentes. Les variantes de madupite utilisent une seule simulation de backend dans `tests/_fake_backends.py` ; les propriétés PETSc de chaque profil sont déclarées dans une table. Les deux solveurs MDPax partagent le même contrôle de sorties.
+The previous comparisons with `V*`, Bellman-residual bounds, policy-quality checks and output-reproducibility checks have been removed. A new shared value-function check is planned in the [roadmap](../docs/roadmap.md). The sparse-model tests still check that policy solvers preserve CSR transitions without densifying them.
 
-Un test spécifique reste justifié pour une propriété **non couverte** par l'interface commune : cas pathologique, conversion externe, précision numérique demandée, partitionnement, cache, timeout ou export. Conserver un contre-exemple concret lorsqu'il empêche le retour d'une régression réelle.
+Optional native backends run in isolated processes when their dependencies are installed; missing dependencies are skipped. [`_contracts.py`](_contracts.py) provides shared fixtures and input checks, while [`_fake_backends.py`](_fake_backends.py) provides controlled backend doubles. These are helpers, not standalone tests.
 
-## Commandes
+When tests are explicitly requested, add a specific regression only for behavior beyond the common interface: a pathological case, external conversion, requested numerical precision, partitioning, caching, timeout or export. Keep concrete counterexamples that prevent real regressions from returning.
 
-Après installation du projet en mode développement et des dépendances de test : `python -m pytest`. Les backends natifs ne sont testés que s'ils sont installés ; les tests simulés madupite/MDPax fonctionnent sans ces dépendances. Pour parcourir la liste de tests sans les exécuter : `python -m pytest --collect-only -q`. Les fichiers `tests/_contracts.py` et `tests/_fake_backends.py` sont des utilitaires de test, pas des tests à lancer directement.
+## Commands
+
+Use Python 3.11+ in Conda `benchmark`, with the project and development dependencies installed. **Run tests only when explicitly requested.** Run the full suite, including installed backends, without a separate backend mode:
+
+```text
+conda run -n benchmark python -m pytest
+```
+
+To list tests without executing them, use `conda run -n benchmark python -m pytest --collect-only -q` when requested. See [AGENTS.md](../AGENTS.md) for development and reporting rules.

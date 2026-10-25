@@ -1,0 +1,530 @@
+{
+  "schema_version": 2,
+  "experiment_id": "6946ec4a-feff-49cb-bbba-cc97fe05e262",
+  "created_at_utc": "2026-10-25T17:44:01.108906+00:00",
+  "settings": {
+    "discount": 0.9,
+    "precision": 0.001,
+    "repeats": 3,
+    "seed": 0,
+    "trial_seeds": [
+      0,
+      1,
+      2
+    ],
+    "seed_scope": "solver trials; model generation is not reseeded",
+    "timeout": 5.0,
+    "execution_mode": "spawn"
+  },
+  "models": {
+    "620_10_block_0.85_10": {
+      "class": "mdpforge.models.block.Model",
+      "source_sha256": "ab3bae040e2106b0ed19d497a7c35f717fe592927e6385d0484bf73383c1a82f",
+      "state_dim": 620,
+      "requested_state_dim": 625,
+      "action_dim": 10,
+      "nnz": 362170,
+      "config": {
+        "state_dim": 625,
+        "action_dim": 10
+      },
+      "transition_sha256": [
+        "0110759b2bc83545a3d5e2ef1744395b50a78d8d0324c4221cb437287cb349a4",
+        "56342be23bcc3ffa011e8068abee874e0f67f66ba14876e8e0c31b52e9f94f46",
+        "74158eb443e6a11824cff5c4b5ccdcbd77f629cfdac2d01bddd98d4c5b582ce1",
+        "bbafba9c1290529467682f4515447fd607e2bdc73d6d0cd937b2dfe0bf8012eb",
+        "912235fa1200760b1fc70a386a8c4cbc043d0b4ff1e8e30e2300ca1a98dccee9",
+        "6b308bc4de797489ef245e289cad45c9359b687cf92699f259b874da3ae51f84",
+        "5007d7840a24e8952fe66ebecf3a5edd269a8c2fe888e8815186ade3b230850e",
+        "40a821c65bf31e254c3d7b7e15dd0aa4254f3fdfc5ee2205e686139600a15a6d",
+        "1bc883189d51ebd8a4ff8fc5e8eb58b53d07b003aaa2319c541001ea82ec4f92",
+        "0f75738c6390484d350ea006b3b50d57653718d15e625ccd00678956d4a89050"
+      ],
+      "reward_sha256": "58eb2e4fc9cf6df539670e0abe7e4be7b3fed489db46375c9c3cc4008a0e39ff",
+      "data_sha256": "678daa3d5165f8f8e8e4d3e82a9750733a7b1af8ae4e6b7ed0474aa25842f6df"
+    },
+    "14700_2_chain_walk": {
+      "class": "mdpforge.models.chain_walk.Model",
+      "source_sha256": "3fc6c7a70ad84ff72cb0ab838a21d124d5e235bed89269dd700913033e439dd1",
+      "state_dim": 14700,
+      "requested_state_dim": 14700,
+      "action_dim": 2,
+      "nnz": 58800,
+      "config": {
+        "state_dim": 14700,
+        "action_dim": 2
+      },
+      "transition_sha256": [
+        "e55226738661165b9f86ca69bedadbe641b5a968ed1128b9390594a8e08b431d",
+        "6ca2a5367faa3bb6a94d2b36de34d2ab31d12eb0bb3c6b342ec6673766ceaf80"
+      ],
+      "reward_sha256": "97d12e4840e816eaf9bfd728a7c414a17b57f34daa18ac1f5a4d6d2f711f6f8c",
+      "data_sha256": "6b06ea6e95e501267d2fbb053014da6a9e4cb2c2da5966752349672f637ba6af"
+    },
+    "12602_3_consensus_v1_n3_bound788": {
+      "class": "mdpforge.models.consensus.Model",
+      "source_sha256": "16d7764ea4a6014999eafafb863d15e74a8b19fd7783cfe48480d451ba8a40c7",
+      "state_dim": 12602,
+      "requested_state_dim": 12600,
+      "action_dim": 3,
+      "nnz": 75606,
+      "config": {
+        "state_dim": 12600,
+        "processes": 3
+      },
+      "transition_sha256": [
+        "bed07027c6c08c5e4b18b235b5dc637af2b39e47e3f85a8495715a055ed95c79",
+        "cea9dc6d11f82679cacf7e3e3338dc7583d2336a66cad85866284c54f8402da7",
+        "45793f7196a0f870b63fda60b54d5a80163a79f39f65454d13b5616159454736"
+      ],
+      "reward_sha256": "3ff66dfdc6eab6aa2b052e65ec1fe2b2ccab39823fa9d68a83928303416ab3e7",
+      "data_sha256": "8a8ecab436260f57f59dc7d565fd17db030f2a49c006093924a34a58635dc415"
+    },
+    "21634_3_firewire_v1_delay51_rounds3_tie0.2": {
+      "class": "mdpforge.models.firewire.Model",
+      "source_sha256": "3eac6e4c850ca0fca34d177b682ce80ef3feec5ac826de521703802a956ec9bd",
+      "state_dim": 21634,
+      "requested_state_dim": 22000,
+      "action_dim": 3,
+      "nnz": 108166,
+      "config": {
+        "state_dim": 22000,
+        "max_rounds": 3,
+        "tie_probability": 0.2
+      },
+      "transition_sha256": [
+        "80ff6c4b5b20ab5dca198adc9c46b19940a751cfa29d1af3feb6d67b29f54802",
+        "f3e90393f220c0060916f217700c150b6a1030e6d645c6f037e696056199d713",
+        "88928626c046f910a484f22c01bc9e5b3d7031a40575a67456b58ce616696a3c"
+      ],
+      "reward_sha256": "31db791be014d4df78dedc5dd04bb4b1e73a8f394c40ca6c1b6bb5789d6b2764",
+      "data_sha256": "3f980f939334de880f896325e059236a828a6df23d0d9cfc3dc454714a57d9a4"
+    },
+    "300_10_garnet_0.85_1.0": {
+      "class": "mdpforge.models.garnet.Model",
+      "source_sha256": "5536d2e0872211c3bc45b36330331e3af1af4367e89d0458415f799dcc047cd3",
+      "state_dim": 300,
+      "requested_state_dim": 300,
+      "action_dim": 10,
+      "nnz": 765420,
+      "config": {
+        "state_dim": 300,
+        "action_dim": 10
+      },
+      "transition_sha256": [
+        "6aeb967bdec98f20edf3a289aff7863995a2b3ed33a0518533e832fba9673f35",
+        "7781fac6cb6af760fddb70d0402ccbaa8a3116b4df1d3a46509894005de1484e",
+        "604feebadba1337810a747c8d4273f82089d0705e1232eeb129616f30ee80bc1",
+        "6a1339689356dcf93718828b14acade2d57caef4a2dfd71015cc60fb8bdfb695",
+        "278f0e2b08df7b1d3589b04b3dbd46d41cb833bec6f48ae96c258ec223b3dd78",
+        "fd7ae742cebbdef3b4d067d84fea62761717a717828fd98dbdaae55c153f146e",
+        "d071c0862687a17deef9938740813df0707011a528a11d9a419fc1df628bd49e",
+        "ed5386ccecab637574371cb47be1e841b1a8ce234d430d2bedda0ba1de2b661c",
+        "e24251ddc40837fcb287fe4d2959e114f3648c4c184246080b73469d2abccafc",
+        "b48151cd625b67399b3595227b9ed1803c768f73004c2223747a45239d39577f"
+      ],
+      "reward_sha256": "e3ae3ff44b68d2c6ebd052102b68e3e2852ae6a5374f1ec0e29373689b68ecad",
+      "data_sha256": "71bbb1be3d714e27c1238d14b63bd63a112750c8990ad863858239e550820bc8"
+    },
+    "15600_2_random_walk": {
+      "class": "mdpforge.models.random_walk.Model",
+      "source_sha256": "88baa7abfcc4a2751520561cef5be1471118874b3b1742ef17c57893fbb72aa7",
+      "state_dim": 15600,
+      "requested_state_dim": 15600,
+      "action_dim": 2,
+      "nnz": 62396,
+      "config": {
+        "state_dim": 15600,
+        "action_dim": 2
+      },
+      "transition_sha256": [
+        "a1b9894b52b335c3304c80250ab860e398248ada28733222d7cd7ad24d7042aa",
+        "5abf55a7bc1259c58ab8620adc83428e9e715a01d7c957c66769ff097e566816"
+      ],
+      "reward_sha256": "4deccda01bda72bef3609661413ae5116ba2f7b780c5afe9b5ea4c132713aeda",
+      "data_sha256": "8841b6c287b0d9231e0deb35567173d22ac82b321749bfd3083da9b7735b9079"
+    },
+    "20400_2_unichain": {
+      "class": "mdpforge.models.unichain.Model",
+      "source_sha256": "7715e1e2e1e7ebbddba19399d430bd9342dc41bae6644042ee50399efa6b513b",
+      "state_dim": 20400,
+      "requested_state_dim": 20400,
+      "action_dim": 2,
+      "nnz": 40800,
+      "config": {
+        "state_dim": 20400,
+        "action_dim": 2
+      },
+      "transition_sha256": [
+        "bad5bdb42047b12bbe0e4ad56d926a4ec7649726e72ae3f41a7825fc3ede7ba9",
+        "a11bf599feb805302c68de5c2c83f41f4688c8dfa37a93f3b9826cbde4f9ea64"
+      ],
+      "reward_sha256": "993074ef693eaa4523bb542f0e71fa8239f057151c6e3445e719ed653c1484b0",
+      "data_sha256": "8c6dda327c5081f78c0afbcbde1035f4d2cb49fa17857425c416e5ce74263bb2"
+    }
+  },
+  "solvers": {
+    "mdpforge_aggmpi": {
+      "callable": "mdpforge.solvers.mdpforge_aggmpi.Solver",
+      "source_sha256": "243074092dd1370d127455fdf79c4a7cc70840d5a4424455c9fc217c07387f0d",
+      "options": {},
+      "parameters": {
+        "bellman_iterations": 10,
+        "refinement": "width",
+        "n_tiles": null,
+        "max_projected_iterations": 100,
+        "max_iterations": 100000,
+        "max_fallback_iterations": 100000,
+        "switch_to_vi_ratio": 0.9,
+        "max_evaluation_iterations": 100000
+      },
+      "metadata": {
+        "display_name": "Aggregated MPI · mdpforge",
+        "family": "experimental",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with progressively refined aggregate policy evaluation and ground-state Bellman updates."
+      }
+    },
+    "mdpforge_aggqvi": {
+      "callable": "mdpforge.solvers.mdpforge_aggqvi.Solver",
+      "source_sha256": "19534cab58d98065cff4bd22204b3a56ea5651cd085d09b4af165b1617db6a9c",
+      "options": {},
+      "parameters": {
+        "bellman_iterations": 50,
+        "max_projected_iterations": 100,
+        "max_iterations": 100000,
+        "max_fallback_iterations": 100000,
+        "switch_to_vi_ratio": 0.9
+      },
+      "metadata": {
+        "display_name": "Aggregated QVI · mdpforge",
+        "family": "experimental",
+        "backend": "mdpforge",
+        "description": "Q-value iteration with progressive state aggregation, synchronous Bellman backups and a full-state VI fallback."
+      }
+    },
+    "mdpforge_aggvi": {
+      "callable": "mdpforge.solvers.mdpforge_aggvi.Solver",
+      "source_sha256": "453ae9175ed24fa9858c3a2ee2bd630b438efc77e45e3ae1c161fd6ac3135d91",
+      "options": {},
+      "parameters": {
+        "bellman_iterations": 10,
+        "refinement": "width",
+        "norm_method": "region_size",
+        "with_norm_weights": false,
+        "n_tiles": null,
+        "max_projected_iterations": 100,
+        "max_iterations": 100000,
+        "max_fallback_iterations": 100000,
+        "switch_to_vi_ratio": 0.9
+      },
+      "metadata": {
+        "display_name": "Aggregated VI · mdpforge",
+        "family": "experimental",
+        "backend": "mdpforge",
+        "description": "Value iteration with progressively refined state aggregation, projected Bellman backups and a full-state VI fallback."
+      }
+    },
+    "mdpforge_bertsekas": {
+      "callable": "mdpforge.solvers.mdpforge_bertsekas.Solver",
+      "source_sha256": "806e53f354c7dd29a727264dd6c0da67bad21e8d8172746e202e546f6803b6f5",
+      "options": {},
+      "parameters": {
+        "beta_1": 0.1,
+        "beta_2": 0.1,
+        "n_regions": 5,
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 100000
+      },
+      "metadata": {
+        "display_name": "Bertsekas adaptive PI · mdpforge",
+        "family": "experimental",
+        "backend": "mdpforge",
+        "description": "Policy iteration combining synchronous policy evaluation with adaptive aggregate linear-system corrections."
+      }
+    },
+    "mdpforge_chen": {
+      "callable": "mdpforge.solvers.mdpforge_chen.Solver",
+      "source_sha256": "3bf2f8cf426882a860b4dc028f12776489a5f295de69f17fbf5ac8a8d40732ec",
+      "options": {},
+      "parameters": {
+        "aggregation_iterations": 40,
+        "bellman_iterations": 100,
+        "max_iterations": 100000,
+        "step_size": 0.001
+      },
+      "metadata": {
+        "display_name": "Chen aggregated VI · mdpforge",
+        "family": "experimental",
+        "backend": "mdpforge",
+        "description": "Value iteration alternating synchronous ground-state Bellman sweeps and stochastic approximation on sampled aggregate states."
+      }
+    },
+    "mdpforge_envvi": {
+      "callable": "mdpforge.solvers.mdpforge_envvi.Solver",
+      "source_sha256": "90f6124d3a3d9506b2a38673f64c0be435907bef3336a0a4a0ebd67d5dc91574",
+      "options": {},
+      "parameters": {
+        "refinement": "width",
+        "n_tiles": null,
+        "max_projected_iterations": 100,
+        "refinement_width": null,
+        "switch_to_vi_ratio": 0.9,
+        "stop_criterion": "residual",
+        "max_iterations": 100000,
+        "max_fallback_iterations": 100000
+      },
+      "metadata": {
+        "display_name": "Envelope VI · mdpforge",
+        "family": "experimental",
+        "backend": "mdpforge",
+        "description": "Progressive Bellman-envelope iteration with compressed transitions, certified lower and upper bounds, and optional residual polishing."
+      }
+    },
+    "mdpforge_mpi": {
+      "callable": "mdpforge.solvers.mdpforge_mpi.Solver",
+      "source_sha256": "3e0e2f03bd9406c723c5c75e7ecd7931b131a57ed28c3524dec8b912c27c06d6",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 10,
+        "evaluation_precision": null
+      },
+      "metadata": {
+        "display_name": "MPI · mdpforge",
+        "family": "mpi",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with synchronous, truncated policy evaluation and a randomly initialized policy."
+      }
+    },
+    "mdpforge_mpi_reward_init": {
+      "callable": "mdpforge.solvers.mdpforge_mpi_reward_init.Solver",
+      "source_sha256": "29263b7ade214bbd8d5af424dd728fda45e769ff4031a08fcf4f55d760ff7eb5",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000,
+        "max_evaluation_iterations": 100000000,
+        "evaluation_precision": null
+      },
+      "metadata": {
+        "display_name": "MPI · mdpforge · reward init",
+        "family": "experimental",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with synchronous, truncated evaluation and value and policy initialization from immediate rewards."
+      }
+    },
+    "mdpforge_pi": {
+      "callable": "mdpforge.solvers.mdpforge_pi.Solver",
+      "source_sha256": "3eeb6f4984c40effed806f6aaf6b15c8806b2b4364e67285141591ddbb9c55ba",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "PI · mdpforge",
+        "family": "pi",
+        "backend": "mdpforge",
+        "description": "Policy iteration with sparse linear-system policy evaluation and greedy policy improvement until policy stability."
+      }
+    },
+    "mdpforge_vi": {
+      "callable": "mdpforge.solvers.mdpforge_vi.Solver",
+      "source_sha256": "97c8aefdcab36d942f9934b9c4d5208841bcd8d1e33fde3feeb1802bf41fc102",
+      "options": {},
+      "parameters": {
+        "initial_value": null,
+        "max_iterations": 100000
+      },
+      "metadata": {
+        "display_name": "VI · mdpforge",
+        "family": "vi",
+        "backend": "mdpforge",
+        "description": "Synchronous value iteration with a full Bellman-residual stopping threshold for absolute value precision."
+      }
+    },
+    "mdpforge_vi_reward_init": {
+      "callable": "mdpforge.solvers.mdpforge_vi_reward_init.Solver",
+      "source_sha256": "d96f19fd6243a65f4aa526a3c52324340d22db36f79dc4bfe42413840566f875",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000
+      },
+      "metadata": {
+        "display_name": "VI · mdpforge · reward init",
+        "family": "experimental",
+        "backend": "mdpforge",
+        "description": "Synchronous value iteration initialized from maximum immediate rewards divided by one minus the discount."
+      }
+    },
+    "mdpforge_vi_span": {
+      "callable": "mdpforge.solvers.mdpforge_vi_span.Solver",
+      "source_sha256": "2ce61a178be054e9fde8e062a13e3d4e7a3fbdd85fe3eb446d4a0af5f9bfb212",
+      "options": {},
+      "parameters": {
+        "initial_value": null,
+        "max_iterations": 100000
+      },
+      "metadata": {
+        "display_name": "VI · mdpforge · Span",
+        "family": "experimental",
+        "backend": "mdpforge",
+        "description": "Synchronous value iteration with span-residual stopping and constant-shift correction for absolute value precision."
+      }
+    },
+    "mdpforge_visor": {
+      "callable": "mdpforge.solvers.mdpforge_visor.Solver",
+      "source_sha256": "605f92944a29692b98040d6cd5791800c41bb6202f6143467b2c542a9c8e3722",
+      "options": {},
+      "parameters": {
+        "initial_value": null,
+        "relaxation": 1.0,
+        "max_iterations": 100000
+      },
+      "metadata": {
+        "display_name": "VI · mdpforge · SOR",
+        "family": "vi",
+        "backend": "mdpforge",
+        "description": "Sequential Bellman updates with successive over-relaxation and full-residual stopping for absolute value precision."
+      }
+    }
+  },
+  "environment": {
+    "python": "3.12.12",
+    "mdpforge": "0.1.0",
+    "numpy": "2.4.2",
+    "scipy": "1.17.0",
+    "threadpoolctl": "3.7.0",
+    "backends": {}
+  },
+  "machine": {
+    "os": "Windows",
+    "os_release": "11",
+    "architecture": "AMD64",
+    "logical_cpu_count": 20,
+    "thread_environment": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null,
+      "BLIS_NUM_THREADS": null,
+      "VECLIB_MAXIMUM_THREADS": null,
+      "NUMEXPR_NUM_THREADS": null
+    },
+    "thread_pools": [
+      {
+        "user_api": "blas",
+        "internal_api": "mkl",
+        "num_threads": 14,
+        "prefix": "mkl_rt",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\mkl_rt.2.dll",
+        "version": "2025.3-Product",
+        "threading_layer": "intel"
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 20,
+        "prefix": "libiomp",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\libiomp5md.dll",
+        "version": null
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 20,
+        "prefix": "libomp",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\libomp.dll",
+        "version": null
+      },
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "num_threads": 20,
+        "prefix": "libscipy_openblas",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Lib\\site-packages\\scipy.libs\\libscipy_openblas-64eda39e79589aedb16f58e5547eb599.dll",
+        "version": "0.3.30",
+        "threading_layer": "pthreads",
+        "architecture": "Haswell"
+      }
+    ],
+    "capture_scope": "benchmark process before solver execution",
+    "numpy_build": {
+      "Compilers": {
+        "c": {
+          "name": "msvc",
+          "linker": "link",
+          "version": "19.44.35222",
+          "commands": "cl.exe"
+        },
+        "cython": {
+          "name": "cython",
+          "linker": "cython",
+          "version": "3.2.4",
+          "commands": "cython"
+        },
+        "c++": {
+          "name": "msvc",
+          "linker": "link",
+          "version": "19.44.35222",
+          "commands": "cl.exe"
+        }
+      },
+      "Machine Information": {
+        "host": {
+          "cpu": "x86_64",
+          "family": "x86_64",
+          "endian": "little",
+          "system": "windows"
+        },
+        "build": {
+          "cpu": "x86_64",
+          "family": "x86_64",
+          "endian": "little",
+          "system": "windows"
+        }
+      },
+      "Build Dependencies": {
+        "blas": {
+          "name": "blas",
+          "found": true,
+          "version": "3.9.0",
+          "detection method": "pkgconfig",
+          "include directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/include",
+          "lib directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib",
+          "openblas configuration": "unknown",
+          "pc file directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib/pkgconfig"
+        },
+        "lapack": {
+          "name": "lapack",
+          "found": true,
+          "version": "3.9.0",
+          "detection method": "pkgconfig",
+          "include directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/include",
+          "lib directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib",
+          "openblas configuration": "unknown",
+          "pc file directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib/pkgconfig"
+        }
+      },
+      "Python Information": {
+        "path": "C:/Users/orsof/anaconda3/envs/benchmark/python.exe",
+        "version": "3.12"
+      },
+      "SIMD Extensions": {
+        "baseline": [
+          "X86_V2"
+        ],
+        "found": [
+          "X86_V3"
+        ]
+      }
+    }
+  },
+  "code": {
+    "git": {
+      "commit": "517c7a53d62df0e27e6b1d8b4ca752f9523c4a06",
+      "dirty": true,
+      "diff_sha256": "6f3983c2a1ba0c56539e6ce1ce61a60bed9d9da52160c304015fef52ee8f60ba"
+    }
+  },
+  "results_file": "bench_2026-10-25_17-49-47_293799.csv"
+}

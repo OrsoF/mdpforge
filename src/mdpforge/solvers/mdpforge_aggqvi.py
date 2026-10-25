@@ -23,11 +23,7 @@ from mdpforge.utils.projected_bellman import (
     apply_poqbo_until_var_small,
     projected_optimal_q_bellman_operator,
 )
-from mdpforge.utils.solver_options import (
-    bounded_iterations,
-    positive_integer,
-    positive_real,
-)
+from mdpforge.utils.solver_options import bounded_iterations
 
 METADATA = {
     "display_name": "Aggregated QVI · mdpforge",
@@ -66,26 +62,14 @@ class Solver(GenericSolver):
         switch_to_vi_ratio: float in (0, 1]; region fraction triggering full-state VI;
             default 0.9.
         """
-        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
-        positive_real(final_precision, "final_precision")
-        self.max_iterations = positive_integer(max_iterations, "max_iterations")
-        self.max_fallback_iterations = positive_integer(
-            max_fallback_iterations, "max_fallback_iterations"
-        )
-        self.switch_to_vi_ratio = positive_real(
-            switch_to_vi_ratio, "switch_to_vi_ratio"
-        )
-        if self.switch_to_vi_ratio > 1:
-            raise ValueError("switch_to_vi_ratio must belong to (0, 1]")
+        self.max_iterations = max_iterations
+        self.max_fallback_iterations = max_fallback_iterations
+        self.switch_to_vi_ratio = float(switch_to_vi_ratio)
         self.model = model
         self.discount = discount
         self.epsilon = final_precision
-        self.bellman_iterations = positive_integer(
-            bellman_iterations, "bellman_iterations"
-        )
-        self.max_projected_iterations = positive_integer(
-            max_projected_iterations, "max_projected_iterations"
-        )
+        self.bellman_iterations = bellman_iterations
+        self.max_projected_iterations = max_projected_iterations
         self.shared_reward = np.all(
             self.model.reward_matrix == self.model.reward_matrix[:, [0]]
         )

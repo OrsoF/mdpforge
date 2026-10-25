@@ -1,15 +1,16 @@
 # Open questions
 
-- [ ] Tester que chaque solveur retourne un `SolveResult` valide et précis.
-- [ ] Ne plus exposer `value`, `policy`, `runtime`, `iterations` et `stop_reason` comme attributs de résultat des solveurs ; migrer les solveurs à `run()` propre, le benchmark, le cache et les autres appelants vers `SolveResult`.
-- [ ] Alléger la classe bench, ou avec des fonctions dans utils, ou bien en séparant en plusieurs instances
-- [ ] Lister et ajouter des variantes de VI ; éclaircir l'écart de performance VIGS entre C++ et Python.
-- [ ] Plusieurs paramétrages pour visor ?
-- [ ] Définir la couverture minimale restante des tests : arguments de chaque modèle et cas utiles au-delà du contrat commun.
-- [ ] Faire fonctionner madupite, pour l'instant aucun solveur ne fonctionne
-- [ ] Raccourcir les docs md si possible.
-- [ ] D'autres solveurs à ajouter ?
-- [ ] Comment on finetune un paramètres dans un solveur MDP ?
-- [ ] Traduire en anglais et raccourcir la doc à son strict minimum. Traduire la roadmap
-- [ ] Expériences à lancer: faire une liste des solveurs/approches usuelles pour savoir quelles améliorations peuvent être réellement implémentées et ajouter quelque chose.
-- [ ] Est-ce que je lance les tests sur la value function finale ou bien sur le residu de Bellman ?
+- [ ] Test that each solver returns a valid and accurate `SolveResult`.
+- [ ] Add an output-precision check for the value function in the benchmark, with an automated test that validates this check.
+- [ ] Stop exposing `value`, `policy`, `runtime`, `iterations` and `stop_reason` as solver result attributes; migrate solvers with custom `run()` methods, the benchmark, the cache and other callers to `SolveResult`.
+- [ ] Simplify the benchmark class by moving functions into utilities or splitting responsibilities across classes.
+- [ ] List and add VI variants; clarify the VIGS performance gap between C++ and Python.
+- [ ] Support several VISOR configurations?
+- [ ] Define the remaining minimum test coverage: each model's arguments and useful cases beyond the shared contract.
+- [ ] Get madupite working; none of its solvers currently work.
+- [ ] Shorten the Markdown documentation where possible.
+- [ ] Which other solvers should be added?
+- [ ] How should MDP solver parameters be tuned?
+- [ ] Translate the documentation into English and shorten it to the strict minimum. Translate the roadmap.
+- [ ] Plan experiments: list standard solvers/approaches, identify improvements that can actually be implemented, and add a contribution.
+- [ ] Should tests check the final value function or the Bellman residual?

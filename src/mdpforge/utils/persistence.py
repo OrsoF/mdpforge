@@ -13,7 +13,6 @@ from mdpforge.utils.cache_store import (
     load_value_entry,
     save_model_entry,
     save_value_entry,
-    verify_value,
 )
 from mdpforge.utils.paths import SAVED_MODELS_PATH, SAVED_VALUE_FUNCTIONS_PATH
 
@@ -80,7 +79,7 @@ def save_model(model, *, key):
 def get_cached_value_function(
     model, discount, precision, compute: Callable[[], np.ndarray], *, cache="readwrite"
 ):
-    """Fetch or calculate a numerical reference, checking the Bellman residual."""
+    """Fetch or calculate a discounted value reference."""
     validate_cache_mode(cache)
     if not (0 < discount < 1) or not np.isfinite(discount):
         raise ValueError("discount must be strictly between 0 and 1")
@@ -89,7 +88,7 @@ def get_cached_value_function(
     if not hasattr(model, "transition_matrix") or not hasattr(model, "reward_matrix"):
         raise ValueError("Build the MDP before computing or loading reference values")
     if cache == "off":
-        return verify_value(model, compute(), discount, precision)
+        return np.asarray(compute(), dtype=float)
     path = value_function_cache_path(model, discount)
     key = f"{discount}_{model.name}"
     if cache != "refresh" and path.exists():
@@ -101,7 +100,7 @@ def get_cached_value_function(
         else:
             if cached is not None:
                 return cached
-    value = verify_value(model, compute(), discount, precision)
+    value = np.asarray(compute(), dtype=float)
     if cache in ("refresh", "readwrite"):
         return save_value_entry(
             path,

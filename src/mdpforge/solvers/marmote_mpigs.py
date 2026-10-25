@@ -10,7 +10,6 @@ from mdpforge.core.conversion import compute_marmote_args
 from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
-from mdpforge.utils.solver_options import positive_integer, positive_real
 
 METADATA = {
     "display_name": "MPI · Marmote · GS",
@@ -51,11 +50,9 @@ class Solver(GenericSolver):
         self.evaluation_precision = (
             final_precision
             if evaluation_precision is None
-            else positive_real(evaluation_precision, "evaluation_precision")
+            else float(evaluation_precision)
         )
-        self.max_evaluation_iterations = positive_integer(
-            max_evaluation_iterations, "max_evaluation_iterations"
-        )
+        self.max_evaluation_iterations = max_evaluation_iterations
 
         self.transitions, self.rewards = compute_marmote_args(self.model)
 

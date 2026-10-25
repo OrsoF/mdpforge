@@ -5,7 +5,6 @@ from mdpforge.core.operators import bellman_operator, compute_transition_reward_
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.bellman import iterative_policy_evaluation
-from mdpforge.utils.solver_options import positive_integer, positive_real
 
 METADATA = {
     "display_name": "MPI · mdpforge",
@@ -43,13 +42,11 @@ class Solver(GenericSolver):
         )
         self.name = "mdpforge MPI"
 
-        self.max_evaluation_iterations = positive_integer(
-            max_evaluation_iterations, "max_evaluation_iterations"
-        )
+        self.max_evaluation_iterations = max_evaluation_iterations
         self.evaluation_precision = (
             final_precision
             if evaluation_precision is None
-            else positive_real(evaluation_precision, "evaluation_precision")
+            else float(evaluation_precision)
         )
 
     def _solve(self) -> SolveResult:

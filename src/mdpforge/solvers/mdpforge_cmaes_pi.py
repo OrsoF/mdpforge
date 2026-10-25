@@ -7,7 +7,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import bellman_operator, compute_transition_reward_policy
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
-from mdpforge.utils.solver_options import initial_vectors, positive_integer
+from mdpforge.utils.solver_options import initial_vectors
 
 METADATA = {
     "display_name": "MPI · CMA-ES evaluation (experimental)",
@@ -52,18 +52,12 @@ class Solver(GenericSolver):
         super().__init__(
             model, discount, final_precision, max_iterations=max_iterations
         )
-        if model.state_dim < 2:
-            raise ValueError("CMA-ES evaluation requires at least two states.")
-        if not np.isfinite(sigma0) or sigma0 <= 0:
-            raise ValueError("sigma0 must be finite and positive.")
-        if seed is not None and (type(seed) is not int or not 0 <= seed < 2**32):
-            raise ValueError("seed must be None or an integer in [0, 2**32).")
 
         value, policy = initial_vectors(model, initial_value, initial_policy)
         self.policy = np.zeros(model.state_dim, dtype=int) if policy is None else policy
         self.value = np.zeros(model.state_dim) if value is None else value
         self.sigma0 = float(sigma0)
-        self.max_generations = positive_integer(max_generations, "max_generations")
+        self.max_generations = max_generations
         # Derive the private RNG from the benchmark's seeded NumPy stream.
         seed = (
             int(np.random.randint(0, 2**32 - 1, dtype=np.int64))

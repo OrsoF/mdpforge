@@ -1,17 +1,15 @@
-"""Scientific contracts shared by every compatible finite discounted MDP solver."""
+"""Shared model fixtures and solver input checks."""
 
 import random
 from contextlib import contextmanager
 from copy import deepcopy
 from inspect import signature
-from itertools import product
 
 import numpy as np
-from numpy.testing import assert_allclose, assert_array_equal
+from numpy.testing import assert_array_equal
 from scipy.sparse import csr_matrix
 
 from mdpforge.core.mdp import MDP
-from mdpforge.core.operators import bellman_operator, optimal_bellman_operator
 
 
 @contextmanager
@@ -77,53 +75,6 @@ def assert_model_unchanged(model, reference):
         assert matrix.dtype == original.dtype
         for field in ("data", "indices", "indptr"):
             assert_array_equal(getattr(matrix, field), getattr(original, field))
-
-
-def evaluate_policy(model, policy, discount):
-    """Evaluate a policy with a dense linear solve on tiny oracle instances."""
-    states = np.arange(model.state_dim)
-    matrices = np.stack([matrix.toarray() for matrix in model.transition_matrix])
-    policy = np.asarray(policy, dtype=int)
-    return np.linalg.solve(
-        np.eye(model.state_dim) - discount * matrices[policy, states],
-        model.reward_matrix[states, policy],
-    )
-
-
-def enumerate_optimal_value(model, discount):
-    """Compute V* independently of all production solvers for tiny MDPs."""
-    if model.action_dim**model.state_dim > 1024:
-        raise ValueError("oracle is reserved for small MDPs")
-    return np.max(
-        [
-            evaluate_policy(model, policy, discount)
-            for policy in product(range(model.action_dim), repeat=model.state_dim)
-        ],
-        axis=0,
-    )
-
-
-def assert_optimal_solution(result, model, discount, precision, *, expected=None):
-    """Assert the value bound and the returned policy's actual optimality."""
-    value = np.asarray(result.value)
-    assert value.shape == (model.state_dim,)
-    assert np.isfinite(value).all()
-    if expected is None:
-        expected = enumerate_optimal_value(model, discount)
-    assert_allclose(value, expected, atol=precision, rtol=0)
-    residual = np.max(np.abs(optimal_bellman_operator(model, value, discount) - value))
-    assert residual <= precision * (1 - discount) * (1 + 1e-8)
-
-    policy = result.policy
-    if policy is None:
-        policy = bellman_operator(model, value, discount).argmax(axis=1)
-    policy = np.asarray(policy)
-    assert policy.shape == (model.state_dim,)
-    assert np.issubdtype(policy.dtype, np.integer)
-    assert np.all((0 <= policy) & (policy < model.action_dim))
-    policy_value = evaluate_policy(model, policy, discount)
-    assert_allclose(policy_value, expected, atol=precision, rtol=0)
-    return value.copy(), policy_value
 
 
 def run_solver_preserving_input(

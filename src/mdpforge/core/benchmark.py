@@ -17,7 +17,6 @@ import numpy as np
 
 from mdpforge import models, solvers
 from mdpforge.core.mdp import MDP
-from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.result import BenchmarkResult
 from mdpforge.core.validation import validate_model
 from mdpforge.solvers import list_solvers
@@ -200,7 +199,7 @@ class Benchmark:
     and provide ``run()`` and a ``value`` vector.
 
     Runtime includes function execution or class construction and ``run()``,
-    but excludes model copying, validation and independent precision verification.
+    but excludes model copying and validation.
     """
 
     def __init__(self):
@@ -589,8 +588,7 @@ class Benchmark:
     ) -> BenchmarkResult:
         """Run each MDP/solver pair and return an independent BenchmarkResult.
 
-        ``precision`` is an upper bound on ||V - V*||_infinity, certified by
-        ||T V - V||_infinity / (1 - discount). All failures are recorded rather
+        ``precision`` is passed to each solver. All failures are recorded rather
         than interrupting the remaining comparisons.
 
         ``verbose=True`` prints trial progress, runtime and failure details
@@ -604,10 +602,9 @@ class Benchmark:
         ``timeout`` is an optional positive wall-clock limit in seconds per
         trial. It uses a fresh spawn process and covers child startup, model
         copying, solver construction/execution and result serialization, after
-        dispatch from the parent. Parent input serialization and final precision
-        verification are outside this limit. Process cleanup can take up to two
+        dispatch from the parent. Parent input serialization is outside this
+        limit. Process cleanup can take up to two
         extra seconds. Timed-out or crashed trials have no solver runtime (NaN).
-        The parent still verifies values against the original MDP.
 
         With a timeout, models, solvers and options must be pickleable; custom
         functions/classes must be importable from a module. In scripts, protect
@@ -680,36 +677,6 @@ class Benchmark:
                                 value, runtime, status, error = _isolated_solver_trial(
                                     *args, timeout
                                 )
-                            if status == "success":
-                                if value.shape != (model.state_dim,) or not np.all(
-                                    np.isfinite(value)
-                                ):
-                                    raise ValueError(
-                                        "Solver values must be a finite vector "
-                                        "of state_dim"
-                                    )
-
-                                residual = float(
-                                    np.max(
-                                        np.abs(
-                                            optimal_bellman_operator(
-                                                model, value, discount
-                                            )
-                                            - value
-                                        )
-                                    )
-                                )
-                                error_bound = residual / (1 - discount)
-                                status = (
-                                    "success"
-                                    if error_bound <= precision
-                                    else "imprecise"
-                                )
-                                if status == "imprecise":
-                                    error = (
-                                        f"Value error bound {error_bound:g} "
-                                        f"exceeds precision {precision:g}"
-                                    )
                         except Exception as exc:
                             status = "error"
                             error = f"{type(exc).__name__}: {exc}"

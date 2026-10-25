@@ -13,11 +13,7 @@ from mdpforge.utils.projected_bellman import (
     apply_pobo_until_var_small,
     projected_optimal_bellman_operator_residual,
 )
-from mdpforge.utils.solver_options import (
-    bounded_iterations,
-    positive_integer,
-    positive_real,
-)
+from mdpforge.utils.solver_options import bounded_iterations
 
 METADATA = {
     "display_name": "Aggregated VI · mdpforge",
@@ -74,31 +70,17 @@ class Solver:
         switch_to_vi_ratio: float in (0, 1]; region fraction triggering full-state VI;
             default 0.9.
         """
-        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
-        if refinement not in {"width", "tiles"}:
-            raise ValueError("refinement must be 'width' or 'tiles'")
-        self._check_norm_method(norm_method)
-
-        positive_real(final_precision, "final_precision")
-        self.max_iterations = positive_integer(max_iterations, "max_iterations")
-        self.max_fallback_iterations = positive_integer(
-            max_fallback_iterations, "max_fallback_iterations"
-        )
-        self.switch_to_vi_ratio = positive_real(
-            switch_to_vi_ratio, "switch_to_vi_ratio"
-        )
-        if self.switch_to_vi_ratio > 1:
-            raise ValueError("switch_to_vi_ratio must belong to (0, 1]")
+        self.max_iterations = max_iterations
+        self.max_fallback_iterations = max_fallback_iterations
+        self.switch_to_vi_ratio = float(switch_to_vi_ratio)
         self.model = model
         self.discount = discount
         self.epsilon = final_precision
-        self.bellman_iterations = positive_integer(
-            bellman_iterations, "bellman_iterations"
-        )
+        self.bellman_iterations = bellman_iterations
         self.refinement = refinement
         self.norm_method = norm_method
         self.with_norm_weights = with_norm_weights
-        self.n_tiles = None if n_tiles is None else positive_integer(n_tiles, "n_tiles")
+        self.n_tiles = n_tiles
         self.shared_reward = np.all(
             self.model.reward_matrix == self.model.reward_matrix[:, [0]]
         )
@@ -109,9 +91,7 @@ class Solver:
         self.partition = Partition(self.model)
         self.epsilon_pbr = self.epsilon * (1 - self.discount) / 2
         self.epsilon_span = self.epsilon * (1 - self.discount) / 2
-        self.max_projected_iterations = positive_integer(
-            max_projected_iterations, "max_projected_iterations"
-        )
+        self.max_projected_iterations = max_projected_iterations
 
     def run(self) -> SolveResult:
         contracted_value = np.zeros(self.partition.n_regions)
@@ -204,10 +184,6 @@ class Solver:
         if not self.with_norm_weights:
             return None
         return aggregation_norm_weights(self.model, self.partition, self.norm_method)
-
-    def _check_norm_method(self, norm_method: str):
-        if norm_method not in self.norm_methods:
-            raise ValueError(f"norm_method must be one of {sorted(self.norm_methods)}")
 
     def _finish(self, value: np.ndarray):
         self.value = value

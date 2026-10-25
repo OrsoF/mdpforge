@@ -8,7 +8,6 @@ from mdptoolbox.mdp import PolicyIterationModified
 from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
-from mdpforge.utils.solver_options import positive_integer, positive_real
 
 METADATA = {
     "display_name": "MPI · MDPToolbox",
@@ -36,12 +35,8 @@ class Solver(GenericSolver):
         max_evaluation_iterations: int > 0; policy-evaluation iteration budget; default
             10.
         """
-        super().__init__(
-            model, discount, positive_real(final_precision, "final_precision")
-        )
-        self.max_evaluation_iterations = positive_integer(
-            max_evaluation_iterations, "max_evaluation_iterations"
-        )
+        super().__init__(model, discount, float(final_precision))
+        self.max_evaluation_iterations = max_evaluation_iterations
 
         self.name = "MPI MDPToolbox"
 

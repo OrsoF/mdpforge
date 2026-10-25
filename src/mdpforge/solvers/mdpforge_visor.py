@@ -6,7 +6,6 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.solvers.mdpforge_vi import Solver as ValueIterationSolver
-from mdpforge.utils.solver_options import positive_real
 
 METADATA = {
     "display_name": "VI · mdpforge · SOR",
@@ -46,9 +45,7 @@ class Solver(ValueIterationSolver):
             initial_value,
             max_iterations=max_iterations,
         )
-        self.relaxation = positive_real(relaxation, "relaxation")
-        if self.relaxation >= 2:
-            raise ValueError("relaxation must belong to (0, 2)")
+        self.relaxation = float(relaxation)
         self.name = "mdpforge VISOR"
 
     def _solve(self) -> SolveResult:

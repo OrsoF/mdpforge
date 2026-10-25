@@ -11,7 +11,7 @@ from mdpforge.core.operators import (
     norminf,
     optimal_bellman_operator,
 )
-from mdpforge.utils.solver_options import bounded_iterations, positive_integer
+from mdpforge.utils.solver_options import bounded_iterations
 
 
 def iterative_policy_evaluation(
@@ -29,11 +29,6 @@ def iterative_policy_evaluation(
     initial_value: starting vector of shape (S,), or None for zeros.
     max_iterations: None for no cap, or an int > 0; return the last update at the cap.
     """
-    assert 0 < discount < 1, "discount must be strictly between 0 and 1"
-    if max_iterations is not None and (
-        type(max_iterations) is not int or max_iterations < 1
-    ):
-        raise ValueError("max_iterations must be None or a positive integer")
     value = (
         np.zeros(transition_policy.shape[0]) if initial_value is None else initial_value
     )
@@ -62,10 +57,8 @@ def apply_obo_until_var_small(
     *,
     max_iterations: int = 100_000,
 ) -> Tuple[np.ndarray, float]:
-    assert 0 < discount < 1, "discount must be strictly between 0 and 1"
     value = initial_value
 
-    positive_integer(max_iterations, "max_iterations")
     for _ in bounded_iterations(max_iterations, "full-state VI"):
         new_value = optimal_bellman_operator(model, value, discount)
         delta = new_value - value

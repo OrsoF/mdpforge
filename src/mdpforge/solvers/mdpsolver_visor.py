@@ -9,7 +9,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpsolver import create_mdpsolver, solve_mdpsolver
-from mdpforge.utils.solver_options import initial_vectors, positive_real
+from mdpforge.utils.solver_options import initial_vectors
 
 METADATA = {
     "display_name": "VI · MDPSolver · SOR",
@@ -50,9 +50,7 @@ class Solver(GenericSolver):
         self.initial_value, self.initial_policy = initial_vectors(
             model, initial_value, initial_policy
         )
-        self.relaxation = positive_real(relaxation, "relaxation")
-        if self.relaxation >= 2:
-            raise ValueError("relaxation must belong to (0, 2)")
+        self.relaxation = float(relaxation)
         self.name = "VISOR MDPSolver"
         self.mdl = create_mdpsolver(model, discount, mdpsolver)
 

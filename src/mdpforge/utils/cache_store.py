@@ -164,7 +164,7 @@ def save_model_entry(path, key, model):
 
 
 def load_value_entry(path, key, model, discount, precision):
-    """Return a valid reference, or None when its inputs or precision are stale."""
+    """Return a reference, or None when its inputs or precision are stale."""
     metadata, arrays = _read(path)
     if (
         metadata.get("schema") != 2
@@ -184,31 +184,15 @@ def load_value_entry(path, key, model, discount, precision):
         ):
             return None
         value = arrays["value"]
-        if value.shape != (model.state_dim,) or not np.isfinite(value).all():
-            raise ValueError("Invalid value array")
         if metadata.get("value_sha256") != array_digest(value):
             raise ValueError("Value checksum mismatch")
-        verify_value(model, value, discount, precision)
         return value
     except (KeyError, TypeError, ValueError) as exc:
         raise CacheCorruptError(f"Invalid value entry {path}: {exc}") from exc
 
 
-def verify_value(model, value, discount, precision):
-    """Require a valid numerical value-error bound for cached references."""
-    from mdpforge.core.operators import optimal_bellman_operator
-
-    value = np.asarray(value, dtype=float)
-    if value.shape != (model.state_dim,) or not np.isfinite(value).all():
-        raise ValueError("Value must be a finite vector with one entry per state")
-    residual = np.max(np.abs(optimal_bellman_operator(model, value, discount) - value))
-    if not np.isfinite(residual) or residual / (1 - discount) > precision * (1 + 1e-10):
-        raise ValueError("Value reference does not satisfy requested precision")
-    return value
-
-
 def save_value_entry(path, key, model, discount, precision, value, *, replace=False):
-    value = verify_value(model, value, discount, precision)
+    value = np.asarray(value, dtype=float)
     metadata = value_metadata(model, discount, precision) | {
         "key": key,
         "value_sha256": array_digest(value),

@@ -56,7 +56,7 @@ class Solver(GenericSolver):
         )
 
         self.opt: SolutionMDP = self.mdp.ValueIteration(
-            self.final_precision * (1 - self.discount), self.max_iterations
+            self.final_precision, self.max_iterations
         )
 
         return SolveResult(

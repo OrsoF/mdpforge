@@ -12,11 +12,7 @@ from mdpforge.core.operators import (
 )
 from mdpforge.core.partition import Partition
 from mdpforge.core.solve_result import SolveResult
-from mdpforge.utils.solver_options import (
-    bounded_iterations,
-    positive_integer,
-    positive_real,
-)
+from mdpforge.utils.solver_options import bounded_iterations
 
 METADATA = {
     "display_name": "Chen aggregated VI · mdpforge",
@@ -52,19 +48,13 @@ class Solver:
         step_size: finite float > 0; coefficient of the decreasing learning rate;
             default 0.001.
         """
-        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
-        positive_real(final_precision, "final_precision")
-        self.max_iterations = positive_integer(max_iterations, "max_iterations")
-        self.step_size = positive_real(step_size, "step_size")
+        self.max_iterations = max_iterations
+        self.step_size = float(step_size)
         self.model = model
         self.discount = discount
         self.epsilon = final_precision
-        self.aggregation_iterations = positive_integer(
-            aggregation_iterations, "aggregation_iterations"
-        )
-        self.bellman_iterations = positive_integer(
-            bellman_iterations, "bellman_iterations"
-        )
+        self.aggregation_iterations = aggregation_iterations
+        self.bellman_iterations = bellman_iterations
 
         self.name = "Chen"
         self.policy = None

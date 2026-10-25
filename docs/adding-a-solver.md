@@ -1,40 +1,42 @@
-# Ajouter un solveur
+# Adding a solver
 
-Contrat d'intégration au catalogue mdpforge ; voir aussi [AGENTS.md](../AGENTS.md).
+Catalogue integration requirements for mdpforge; see also [AGENTS.md](../AGENTS.md).
 
 ## 1. Interface
 
-Créer `src/mdpforge/solvers/<nom>.py` (minuscules, underscores, sans underscore initial), exposant `Solver`. Découverte automatique : `<nom>` est l'identifiant de `list_solvers()` et `bench.add_solver("<nom>")`.
+Create `src/mdpforge/solvers/<name>.py` using lowercase letters and underscores, without a leading underscore, and expose `Solver`. Discovery is automatic: `<name>` is the identifier used by `list_solvers()` and `bench.add_solver("<name>")`.
 
-- API : `Solver(model, discount, ...)` avec options explicites, `assert 0 < discount < 1`, puis `run()` sans argument. Pour un solveur itératif : `final_precision` finie, > 0 ; **ne pas** la proposer si inutilisée (`mdpforge_pi`, `mdptoolbox_pi`, `gurobi_primal`, `gurobi_dual`). Le benchmark la transmet seulement si acceptée.
-- Données disponibles : `state_dim=S`, `action_dim=A`, `transition_matrix[a]` = SciPy CSR `(S,S)`, `reward_matrix` = NumPy `(S,A)`. Aucune méthode supplémentaire du modèle n'est requise. **Ne pas modifier les entrées**, ni leur format ; convertir uniquement dans le solveur, sans dense inutile.
-- `run()` → [`SolveResult`](../src/mdpforge/core/solve_result.py) : `value` NumPy fini `(S,)`, `policy` = `None` ou entiers `(S,)` dans `[0,A)`, `runtime` fini ≥ 0 (s), `iterations` entier/`None`, `stop_reason` texte/`None`. Exposer aussi `name`, `value`, `policy`, `runtime` sur l'instance.
+- API: `Solver(model, discount, ...)` with explicit options, `assert 0 < discount < 1`, then argument-free `run()`. Iterative solvers accept a finite, positive `final_precision`; **omit** it when unused (`mdpforge_pi`, `mdptoolbox_pi`, `gurobi_primal`, `gurobi_dual`). The benchmark passes it only when accepted.
+- Available data: `state_dim=S`, `action_dim=A`, `transition_matrix[a]` as SciPy CSR `(S, S)`, and `reward_matrix` as NumPy `(S, A)`. No additional model methods are required. **Preserve inputs**, including their representation; keep backend conversions local and avoid unnecessary dense matrices.
+- `run()` returns a [`SolveResult`](../src/mdpforge/core/solve_result.py): finite NumPy `value` `(S,)`, `policy` as `None` or integer actions `(S,)` in `[0, A)`, `iterations` as an integer or `None`, and `stop_reason` as text or `None`. Expose a readable solver `name`; callers consume results through `SolveResult`.
 
-**Préférer [`GenericSolver`](../src/mdpforge/core/solver.py)** : appeler son constructeur, définir `self.name`, implémenter `_solve()` (valeurs et éventuellement politique). `run()` mesure le temps et construit le résultat. Pour un `run()` spécifique, renseigner les attributs et retourner `SolveResult.from_solver(self)`. Exemple : [`mdpforge_vi.py`](../src/mdpforge/solvers/mdpforge_vi.py).
+**Prefer [`GenericSolver`](../src/mdpforge/core/solver.py):** call its constructor, set `self.name`, and implement `_solve()` to return `SolveResult` explicitly. `run()` forwards that result. A custom `run()` must return the same result type. Example: [`mdpforge_vi.py`](../src/mdpforge/solvers/mdpforge_vi.py).
+
+Timing belongs to the benchmark, which measures construction and `run()`, including conversions. `SolveResult` has no `runtime` field; durations remain in `BenchmarkResult` and benchmark CSV exports.
 
 ## 2. Catalogue
 
-Déclarer `METADATA` **littéral**, lisible sans importer le backend, avec quatre chaînes non vides :
+Declare a **literal** `METADATA` dictionary, readable without importing the backend, with four nonempty strings:
 
-- `display_name` (libellé), `description` (une phrase) ;
-- `family` : `vi`, `pi`, `mpi`, `lp`, `experimental` ;
-- `backend` : `mdpforge`, `mdptoolbox`, `mdpsolver`, `marmote`, `madupite`, `mdpax`, `gurobi`, `cma`.
+- `display_name` (label) and `description` (one sentence).
+- `family`: `vi`, `pi`, `mpi`, `lp`, `experimental`.
+- `backend`: `mdpforge`, `mdptoolbox`, `mdpsolver`, `marmote`, `madupite`, `mdpax`, `gurobi`, `cma`.
 
-Pour une VI, ajouter `solver_type = "vi"` (tests dédiés). Vérifier `list_solvers()` et `bench.add_solver("<nom>")`. Déclarer les dépendances dans `pyproject.toml` ; backend optionnel = extra, sans bloquer le cœur NumPy/SciPy ni le catalogue.
+For VI, add `solver_type = "vi"` for discovery by VI-specific fixtures. Check `list_solvers()` and `bench.add_solver("<name>")`. Declare dependencies in `pyproject.toml`; optional backends use extras and must not block the NumPy/SciPy core or the catalogue.
 
-## 3. Précision et comportement
+## 3. Precision and behavior
 
-- Documenter algorithme/référence, adaptations, initialisation, arrêt et options (valeurs admises). Aléatoire reproductible après reset des seeds NumPy/Python, y compris pour les RNG privés.
-- **Condition de précision** : `||T(V) − V||∞ / (1 − discount) <= final_precision` avec **Bellman optimal complet** ; ni variation entre itérations ni span seuls ne suffisent.
-- Précision non atteinte, limite dépassée, résultat non fini ⇒ **échec explicite**. Le benchmark mesure constructeur + `run()`, conversions/corrections incluses.
-- Backends : utiliser leurs **API publiques**, ne pas contourner initialisation/contrôles/bornes ; laisser remonter les erreurs natives. Ne pas changer implicitement récompenses, discount, conventions numériques, solveurs existants ni cache VI de référence.
+- Document the algorithm/reference, adaptations, initialization, stopping rule and accepted option values. Random behavior must reproduce after resetting NumPy/Python seeds, including private RNGs.
+- The benchmark currently assesses absolute value precision using `||T(V) - V||∞ / (1 - discount)`, with the **full optimal Bellman operator**. Iteration differences or span alone do not establish this bound. The output-precision check and its replacement test are tracked in the [roadmap](roadmap.md).
+- Report failures explicitly and preserve algorithm-specific stopping rules. The benchmark records unsuccessful or imprecise runs separately from successful solves.
+- Use **public backend APIs** without bypassing initialization, checks or bounds; propagate native errors. Preserve reward scales, discount conventions, numerical behavior, existing solver algorithms and the VI reference cache.
 
-**Options spécifiques** : budgets entiers > 0 : `max_iterations`, `max_evaluation_iterations`, `max_projected_iterations`, `max_fallback_iterations` ; mises à jour par lot : `bellman_iterations`, `aggregation_iterations`. Respecter les signatures/profils existants. Noms actuels : `initial_value`, `initial_policy`, `seed` (CMA-ES), `refinement` ; **aucun alias historique**. Pas de `verbose` au constructeur : affichage via `Benchmark.run(verbose=...)`.
+**Specific options:** positive integer budgets are `max_iterations`, `max_evaluation_iterations`, `max_projected_iterations` and `max_fallback_iterations`; batch update counts are `bellman_iterations` and `aggregation_iterations`. Respect existing signatures and profiles. Current names are `initial_value`, `initial_policy`, `seed` (CMA-ES) and `refinement`, with **no historical aliases**. Constructors do not expose `verbose`; benchmark output is controlled by `Benchmark.run(verbose=...)`.
 
-**Exceptions existantes à respecter** : `mdptoolbox_vi`/`mdptoolbox_vigs` passent `max_iterations` à `max_iter`, sans neutraliser les limites natives (`mdptoolbox_vi` utilise `ValueIteration`). MDPSolver ne borne que l'évaluation interne. MPIGS/MPISOR ont `max_evaluation_iterations=10` par défaut, et les profils `*_init` concernés gardent leur initialisation nulle. Les VI/MPI mdpforge appellent `GenericSolver._check_iteration()` : `stop_reason` = `converged`, `max_iterations`, `non_finite` ou `stagnation` ; échec → `RuntimeError`, convergence au dernier tour acceptée.
+**Existing backend behavior:** `mdptoolbox_vi`/`mdptoolbox_vigs` pass `max_iterations` as `max_iter` without overriding native limits; `mdptoolbox_vi` calls `ValueIteration`. MDPSolver budgets cover internal policy evaluation. MPIGS/MPISOR default to `max_evaluation_iterations=10`, and the relevant `*_init` profiles retain fixed zero initialization. Native mdpforge VI/MPI solvers handle convergence, nonfinite values, stagnation and iteration limits locally; failures raise `RuntimeError`, and convergence on the last allowed iteration is accepted.
 
 ## 4. Validation
 
-[`tests/test_workflows.py`](../tests/test_workflows.py) découvre et contrôle interface, entrées intactes, reproductibilité, résidu, valeurs et politiques (`discount=0.999`, `final_precision=1e-4`, tolérance de reproductibilité `1e-12` sur valeurs et valeurs de politique). Ajouter des tests déterministes des options spécifiques avec référence indépendante/analytique.
+[`tests/test_workflows.py`](../tests/test_workflows.py) currently checks solver interfaces and input preservation on the cases configured in [`tests/conftest.py`](../tests/conftest.py). The previous value/policy accuracy checks have been removed; the new shared value-function check is pending. See the [test guide](../tests/README.md).
 
-Python 3.11+, Conda `benchmark`. **Ne lancer pytest/Ruff que sur demande explicite** ; si demandés, suite complète, tous backends installés (ignorer seulement les dépendances absentes). Pas de benchmark lourd automatique. Documenter changements, vérifications réelles, résultats et limites ; commandes dans [AGENTS.md](../AGENTS.md).
+Use Python 3.11+ in Conda `benchmark`. **Add tests and run pytest/Ruff only when explicitly requested.** When pytest is requested, run the full suite, including installed backends; skip only missing dependencies. Do not run heavy benchmarks automatically. Report changes, checks actually performed, results and limitations; commands are in [AGENTS.md](../AGENTS.md).

@@ -9,10 +9,6 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.mdpsolver import create_mdpsolver, solve_mdpsolver
-from mdpforge.utils.solver_options import (
-    positive_integer,
-    positive_real,
-)
 
 METADATA = {
     "display_name": "MPI · MDPSolver · SOR · V₀=0",
@@ -48,12 +44,8 @@ class Solver(GenericSolver):
         self.parallel = parallel
         self.initial_value = np.zeros(model.state_dim)
         self.initial_policy = np.zeros(model.state_dim, dtype=int)
-        self.max_evaluation_iterations = positive_integer(
-            max_evaluation_iterations, "max_evaluation_iterations"
-        )
-        self.relaxation = positive_real(relaxation, "relaxation")
-        if self.relaxation >= 2:
-            raise ValueError("relaxation must belong to (0, 2)")
+        self.max_evaluation_iterations = max_evaluation_iterations
+        self.relaxation = float(relaxation)
         self.name = "MPISOR init MDPSolver"
         self.mdl = create_mdpsolver(model, discount, mdpsolver)
 

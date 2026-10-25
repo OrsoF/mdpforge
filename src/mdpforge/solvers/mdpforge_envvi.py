@@ -26,11 +26,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import bellman_operator, compact_optimal_bellman_operator
 from mdpforge.core.partition import Partition
 from mdpforge.core.solve_result import SolveResult
-from mdpforge.utils.solver_options import (
-    bounded_iterations,
-    positive_integer,
-    positive_real,
-)
+from mdpforge.utils.solver_options import bounded_iterations
 
 METADATA = {
     "display_name": "Envelope VI · mdpforge",
@@ -78,36 +74,19 @@ class Solver:
         max_iterations: int > 0; outer iteration budget; default 100_000.
         max_fallback_iterations: int > 0; full-state iteration budget; default 100_000.
         """
-        assert 0 < discount < 1, "discount must belong to (0, 1)"
-        positive_real(final_precision, "final_precision")
-        self.max_iterations = positive_integer(max_iterations, "max_iterations")
-        self.max_fallback_iterations = positive_integer(
-            max_fallback_iterations, "max_fallback_iterations"
-        )
-        if refinement not in {"width", "tiles"}:
-            raise ValueError("refinement must be 'width' or 'tiles'")
-        if refinement_width is not None and refinement_width <= 0:
-            raise ValueError("refinement_width must be positive")
-        if n_tiles is not None and n_tiles < 2:
-            raise ValueError("n_tiles must be >= 2")
-        if not 0 < switch_to_vi_ratio <= 1:
-            raise ValueError("switch_to_vi_ratio must belong to (0, 1]")
-        if stop_criterion not in {"envelope", "residual"}:
-            raise ValueError("stop_criterion must be 'envelope' or 'residual'")
-
+        self.max_iterations = max_iterations
+        self.max_fallback_iterations = max_fallback_iterations
         self.model = model
         self.discount = discount
         self.epsilon = final_precision
         self.refinement = refinement
-        self.n_tiles = None if n_tiles is None else positive_integer(n_tiles, "n_tiles")
-        self.max_projected_iterations = positive_integer(
-            max_projected_iterations, "max_projected_iterations"
-        )
+        self.n_tiles = n_tiles
+        self.max_projected_iterations = max_projected_iterations
         # A strict margin relative to 2 eps (1-gamma) ensures finite stopping.
         self.refinement_width = (
             final_precision * (1 - discount)
             if refinement_width is None
-            else positive_real(refinement_width, "refinement_width")
+            else float(refinement_width)
         )
         if self.refinement_width >= 2 * final_precision * (1 - discount):
             raise ValueError(

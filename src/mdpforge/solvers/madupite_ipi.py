@@ -10,7 +10,6 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.madupite import madupite_matrices
-from mdpforge.utils.solver_options import positive_integer
 
 METADATA = {
     "display_name": "iPI · madupite",
@@ -51,11 +50,7 @@ class Solver(GenericSolver):
         super().__init__(
             model, discount, final_precision, max_iterations=max_iterations
         )
-        if not ksp_type or not pc_type:
-            raise ValueError("PETSc solver names must be nonempty")
-        self.max_evaluation_iterations = positive_integer(
-            max_evaluation_iterations, "max_evaluation_iterations"
-        )
+        self.max_evaluation_iterations = max_evaluation_iterations
         self.ksp_type = ksp_type
         self.pc_type = pc_type
         self.name = "madupite iPI"
@@ -113,17 +108,7 @@ class Solver(GenericSolver):
             values = np.atleast_1d(np.loadtxt(value_path, dtype=float)).ravel()
             raw_policy = np.atleast_1d(np.loadtxt(policy_path, dtype=float)).ravel()
 
-        if not np.all(np.isfinite(raw_policy)) or not np.all(
-            raw_policy == np.rint(raw_policy)
-        ):
-            raise RuntimeError("madupite returned nonintegral policy actions")
         policy = raw_policy.astype(int)
-        if values.shape != (self.model.state_dim,):
-            raise RuntimeError("madupite returned an invalid value shape")
-        if policy.shape != (self.model.state_dim,) or np.any(
-            (policy < 0) | (policy >= self.model.action_dim)
-        ):
-            raise RuntimeError("madupite returned an invalid policy")
         return SolveResult(
             np.asarray(values), policy, self._iterations or None, self._stop_reason
         )

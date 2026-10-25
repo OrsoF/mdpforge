@@ -25,11 +25,7 @@ from mdpforge.utils.bellman import (
 from mdpforge.utils.projected_bellman import (
     apply_ppbo_until_var_small,
 )
-from mdpforge.utils.solver_options import (
-    bounded_iterations,
-    positive_integer,
-    positive_real,
-)
+from mdpforge.utils.solver_options import bounded_iterations
 
 METADATA = {
     "display_name": "Aggregated MPI · mdpforge",
@@ -74,45 +70,28 @@ class Solver:
         max_evaluation_iterations: int > 0; policy-evaluation iteration budget; default
             100_000.
         """
-        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
-        positive_real(final_precision, "final_precision")
-        self.max_iterations = positive_integer(max_iterations, "max_iterations")
-        self.max_fallback_iterations = positive_integer(
-            max_fallback_iterations, "max_fallback_iterations"
-        )
-        self.switch_to_vi_ratio = positive_real(
-            switch_to_vi_ratio, "switch_to_vi_ratio"
-        )
-        if self.switch_to_vi_ratio > 1:
-            raise ValueError("switch_to_vi_ratio must belong to (0, 1]")
-        self.max_evaluation_iterations = positive_integer(
-            max_evaluation_iterations, "max_evaluation_iterations"
-        )
+        self.max_iterations = max_iterations
+        self.max_fallback_iterations = max_fallback_iterations
+        self.switch_to_vi_ratio = float(switch_to_vi_ratio)
+        self.max_evaluation_iterations = max_evaluation_iterations
         self.model = model
         self.discount = discount
 
         self.epsilon_variation = final_precision
         self.epsilon_policy_evaluation = final_precision
-        self.bellman_iterations = positive_integer(
-            bellman_iterations, "bellman_iterations"
-        )
+        self.bellman_iterations = bellman_iterations
         self.refinement = refinement
 
         self.n_tiles = (
             int(model.state_dim**0.5) + 1
             if n_tiles is None
-            else positive_integer(n_tiles, "n_tiles")
+            else n_tiles
         )
         self.shared_reward = np.all(
             self.model.reward_matrix == self.model.reward_matrix[:, [0]]
         )
 
-        if self.refinement not in {"width", "tiles"}:
-            raise ValueError("refinement must be 'width' or 'tiles'.")
-
-        self.max_projected_iterations = positive_integer(
-            max_projected_iterations, "max_projected_iterations"
-        )
+        self.max_projected_iterations = max_projected_iterations
 
         self.name = "PDMPI" if self.refinement == "width" else "PDMPItiles"
 
