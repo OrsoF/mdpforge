@@ -3,13 +3,14 @@
 Only the integer-variable command subset used by these pinned sources is read.
 Reachable valuations are numbered in breadth-first order, starting at state 0.
 Actions are state-local choice offsets; unused slots duplicate the first choice.
-Transitions, including terminal loops, are preserved. Native costs are negated
-and stopped at the source target predicate; discounting replaces reachability
-reward queries. Zeroconf adds one unit of cost per native time transition.
-Source attribution and configuration counts are in _prism_data/manifest.json.
+Native costs are negated and stopped at the source target predicate.
+Optional first-passage adaptations absorb targets and add a unit step cost.
+Discounting replaces source verification queries; no scheduler fairness is imposed.
+Source attribution, licenses and counts are in _prism_data/manifest.json.
 """
 
 import ast
+import hashlib
 import json
 import keyword
 import math
@@ -81,7 +82,9 @@ class _Names(ast.NodeTransformer):
 
 
 class _Program:
-    def __init__(self, source, constants, reward, target):
+    def __init__(
+        self, source, constants, reward, target, *, expand_formulas=False, step_cost=False
+    ):
         source = re.sub(r"//[^\n]*", "", source)
         if not re.match(r"\s*mdp\b", source) or re.search(r"\bsystem\b", source):
             raise ValueError("Only the bundled default-composition MDPs are supported")
@@ -126,6 +129,22 @@ class _Program:
                     lambda m: replacements.get(m[0], m[0]),
                     modules[original],
                 )
+            elif expand_formulas:
+                for _ in range(len(self.formulas) + 1):
+                    expanded = re.sub(
+                        r"\b\w+\b",
+                        lambda m: (
+                            f"({self.formulas[m[0]]})"
+                            if m[0] in self.formulas
+                            else m[0]
+                        ),
+                        body,
+                    )
+                    if expanded == body:
+                        break
+                    body = expanded
+                else:
+                    raise ValueError("Cyclic PRISM formulas in module commands")
             modules[name] = body
         remainder.append(source[cursor:])
         self._declare("\n".join(remainder))
@@ -172,6 +191,10 @@ class _Program:
         )
         if reward == "time" and not structures:
             structures["time"] = "[time] true : 1;"
+        if step_cost:
+            if reward in structures:
+                raise ValueError("Adapted step cost would overwrite a native reward")
+            structures[reward] = "true : 1;"
         if reward not in structures:
             raise ValueError(f"Unknown native reward {reward!r}")
         self.rewards = []
@@ -323,8 +346,12 @@ def configure_prism(model, family, requested, parameters, reward):
         setattr(model, name, value)
     model.reward = reward
     model.initial_states = (0,)
-    model.source_revision = manifest["revision"]
-    model._prism_configuration = selected
+    model.source_revision = definition.get("revision", manifest["revision"])
+    if "sha256" in selected:
+        model.source_sha256 = selected["sha256"]
+        model.source_file = selected["file"]
+        model.source_repository = definition["repository"]
+    model._prism_configuration = {**definition.get("construction", {}), **selected}
     model._prism_target = definition["target"]
     suffix = "_".join(
         str(int(value)) if isinstance(value, bool) else str(value)
@@ -337,11 +364,19 @@ def build_prism(model):
     """Explore the source commands and construct padded CSR choice matrices."""
     config = model._prism_configuration
     source = files("mdpforge.models").joinpath("_prism_data", config["file"])
+    raw = source.read_bytes()
+    if "sha256" in config and hashlib.sha256(raw).hexdigest() != config["sha256"]:
+        raise ValueError(f"PRISM source checksum mismatch: {config['file']}")
+    text = raw.decode("utf-8")
+    if config.get("legacy_mdp"):
+        text = "mdp\n" + text
     program = _Program(
-        source.read_text(encoding="utf-8"),
+        text,
         config["constants"],
         model.reward,
         model._prism_target,
+        expand_formulas=config.get("expand_formulas", False),
+        step_cost=config.get("step_cost", False),
     )
     initial = tuple(program.initial)
     states, indices = [initial], {initial: 0}
@@ -351,9 +386,15 @@ def build_prism(model):
     rewards = np.zeros((model.state_dim, model.action_dim))
     maximum = 0
     native_choices = native_transitions = 0
+    terminal_states = (
+        np.zeros(model.state_dim, dtype=bool) if config.get("absorb_target") else None
+    )
     state_index = 0
     while state_index < len(states):
         choices = program.choices(states[state_index])
+        terminal = terminal_states is not None and program.target(states[state_index])
+        if terminal_states is not None:
+            terminal_states[state_index] = terminal
         maximum = max(maximum, len(choices))
         native_choices += len(choices)
         native_transitions += sum(len(outcomes) for outcomes, _ in choices)
@@ -373,7 +414,7 @@ def build_prism(model):
                     indices[successor] = target
                     states.append(successor)
                 rows[action].append(state_index)
-                columns[action].append(target)
+                columns[action].append(state_index if terminal else target)
                 probabilities[action].append(probability)
         state_index += 1
     if len(states) != model.state_dim:
@@ -389,4 +430,6 @@ def build_prism(model):
     model.native_max_choices = maximum
     model.native_choice_count = native_choices
     model.native_transition_count = native_transitions
+    if terminal_states is not None:
+        model.terminal_states = terminal_states
     return tuple(program.variables), states

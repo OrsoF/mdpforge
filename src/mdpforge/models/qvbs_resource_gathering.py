@@ -9,8 +9,6 @@ Finite property horizons are replaced by discounting, not reproduced.
 Source authors, conversion and CC-BY 4.0 attribution: _qvbs_data/manifest.json.
 """
 
-import stormpy  # noqa: F401
-
 from mdpforge.models._qvbs import QVBSModel
 
 METADATA = {

@@ -1,0 +1,1182 @@
+{
+  "schema_version": 2,
+  "experiment_id": "58a9dc0c-fa68-4a34-a2f2-d1d3df22c3a3",
+  "created_at_utc": "2026-10-28T11:20:38.128499+00:00",
+  "settings": {
+    "discount": 0.9,
+    "precision": 0.001,
+    "repeats": 3,
+    "seed": 0,
+    "trial_seeds": [
+      0,
+      1,
+      2
+    ],
+    "seed_scope": "solver trials; model generation is not reseeded",
+    "timeout": 5.0,
+    "execution_mode": "spawn"
+  },
+  "models": {
+    "500_2_access_control": {
+      "class": "mdpforge.models.access_control.Model",
+      "state_dim": 500,
+      "requested_state_dim": 500,
+      "action_dim": 2,
+      "nnz": 253984,
+      "config": {
+        "state_dim": 500,
+        "action_dim": 2
+      }
+    },
+    "10001_3_acrobot": {
+      "class": "mdpforge.models.acrobot.Model",
+      "state_dim": 10001,
+      "requested_state_dim": 10000,
+      "action_dim": 3,
+      "nnz": 30003,
+      "config": {
+        "state_dim": 10000,
+        "action_dim": 3
+      }
+    },
+    "8802_2_admission": {
+      "class": "mdpforge.models.admission.Model",
+      "state_dim": 8802,
+      "requested_state_dim": 8800,
+      "action_dim": 2,
+      "nnz": 151111,
+      "config": {
+        "state_dim": 8800,
+        "action_dim": 2
+      }
+    },
+    "200_10_ambulance": {
+      "class": "mdpforge.models.ambulance.Model",
+      "state_dim": 200,
+      "requested_state_dim": 200,
+      "action_dim": 10,
+      "nnz": 396000,
+      "config": {
+        "state_dim": 200,
+        "action_dim": 10
+      }
+    },
+    "200_10_ambulance_relocation": {
+      "class": "mdpforge.models.ambulance_relocation.Model",
+      "state_dim": 200,
+      "requested_state_dim": 200,
+      "action_dim": 10,
+      "nnz": 400000,
+      "config": {
+        "state_dim": 200,
+        "action_dim": 10
+      }
+    },
+    "8088_9_barto_3_0.1": {
+      "class": "mdpforge.models.barto.Model",
+      "state_dim": 8088,
+      "requested_state_dim": 9000,
+      "action_dim": 9,
+      "nnz": 286717,
+      "config": {
+        "state_dim": 9000,
+        "action_dim": 9
+      }
+    },
+    "620_10_block_0.85_10": {
+      "class": "mdpforge.models.block.Model",
+      "state_dim": 620,
+      "requested_state_dim": 625,
+      "action_dim": 10,
+      "nnz": 362213,
+      "config": {
+        "state_dim": 625,
+        "action_dim": 10
+      }
+    },
+    "8000_6_blocks_world": {
+      "class": "mdpforge.models.blocks_world.Model",
+      "state_dim": 8000,
+      "requested_state_dim": 8000,
+      "action_dim": 6,
+      "nnz": 48000,
+      "config": {
+        "state_dim": 8000,
+        "action_dim": 6
+      }
+    },
+    "20002_5_boxworld_1_100_0.2_0.025": {
+      "class": "mdpforge.models.boxworld.Model",
+      "state_dim": 20002,
+      "requested_state_dim": 20000,
+      "action_dim": 5,
+      "nnz": 189410,
+      "config": {
+        "state_dim": 20000,
+        "traffic_delay": 0.2,
+        "cargo_damage": 0.025
+      }
+    },
+    "289_9_car_rental": {
+      "class": "mdpforge.models.car_rental.Model",
+      "state_dim": 289,
+      "requested_state_dim": 300,
+      "action_dim": 9,
+      "nnz": 751689,
+      "config": {
+        "state_dim": 300,
+        "action_dim": 9
+      }
+    },
+    "14641_2_cartpole_11_11_11_11": {
+      "class": "mdpforge.models.cartpole.Model",
+      "state_dim": 14641,
+      "requested_state_dim": 16384,
+      "action_dim": 2,
+      "nnz": 29282,
+      "config": {
+        "state_dim": 16384,
+        "action_dim": 2
+      }
+    },
+    "14700_2_chain_walk": {
+      "class": "mdpforge.models.chain_walk.Model",
+      "state_dim": 14700,
+      "requested_state_dim": 14700,
+      "action_dim": 2,
+      "nnz": 58800,
+      "config": {
+        "state_dim": 14700,
+        "action_dim": 2
+      }
+    },
+    "14283_4_cliff": {
+      "class": "mdpforge.models.cliff.Model",
+      "state_dim": 14283,
+      "requested_state_dim": 14400,
+      "action_dim": 4,
+      "nnz": 57132,
+      "config": {
+        "state_dim": 14400,
+        "action_dim": 4
+      }
+    },
+    "1040_2_consensus_2_2_8_steps": {
+      "class": "mdpforge.models.consensus.Model",
+      "state_dim": 1040,
+      "requested_state_dim": 1040,
+      "action_dim": 2,
+      "nnz": 2588,
+      "config": {
+        "state_dim": 1040,
+        "processes": 2,
+        "bound": 8,
+        "reward": "steps"
+      }
+    },
+    "1038_2_csma_2_2_2_time": {
+      "class": "mdpforge.models.csma.Model",
+      "state_dim": 1038,
+      "requested_state_dim": 1038,
+      "action_dim": 2,
+      "nnz": 2512,
+      "config": {
+        "state_dim": 1038,
+        "stations": 2,
+        "backoff": 2,
+        "reward": "time"
+      }
+    },
+    "1024_32_dam_2_0": {
+      "class": "mdpforge.models.dam.Model",
+      "state_dim": 1024,
+      "requested_state_dim": 900,
+      "action_dim": 32,
+      "nnz": 65536,
+      "config": {
+        "state_dim": 900,
+        "action_dim": 32,
+        "seed": 0
+      }
+    },
+    "24194_5_deep_sea_treasure_1_62_0.15": {
+      "class": "mdpforge.models.deep_sea_treasure.Model",
+      "state_dim": 24194,
+      "requested_state_dim": 24000,
+      "action_dim": 5,
+      "nnz": 279466,
+      "config": {
+        "state_dim": 24000,
+        "current_probability": 0.15
+      }
+    },
+    "19994_4_drone_energy_1_1666_5_0.25_0.15": {
+      "class": "mdpforge.models.drone_energy.Model",
+      "state_dim": 19994,
+      "requested_state_dim": 20000,
+      "action_dim": 4,
+      "nnz": 219850,
+      "config": {
+        "state_dim": 20000,
+        "battery_capacity": 5,
+        "wind_probability": 0.25,
+        "stall_probability": 0.15
+      }
+    },
+    "7000_5_elevator_5": {
+      "class": "mdpforge.models.elevator.Model",
+      "state_dim": 7000,
+      "requested_state_dim": 7000,
+      "action_dim": 5,
+      "nnz": 40100,
+      "config": {
+        "state_dim": 7000,
+        "action_dim": 5,
+        "n_floors": 5
+      }
+    },
+    "4093_3_firewire_2_3_time": {
+      "class": "mdpforge.models.firewire.Model",
+      "state_dim": 4093,
+      "requested_state_dim": 4093,
+      "action_dim": 3,
+      "nnz": 12402,
+      "config": {
+        "state_dim": 4093,
+        "delay": 3,
+        "reward": "time"
+      }
+    },
+    "17200_2_forest": {
+      "class": "mdpforge.models.forest.Model",
+      "state_dim": 17200,
+      "requested_state_dim": 17200,
+      "action_dim": 2,
+      "nnz": 51600,
+      "config": {
+        "state_dim": 17200,
+        "action_dim": 2
+      }
+    },
+    "13924_4_frozen": {
+      "class": "mdpforge.models.frozen.Model",
+      "state_dim": 13924,
+      "requested_state_dim": 14000,
+      "action_dim": 4,
+      "nnz": 157122,
+      "config": {
+        "state_dim": 14000,
+        "action_dim": 4
+      }
+    },
+    "10001_10_gambler": {
+      "class": "mdpforge.models.gambler.Model",
+      "state_dim": 10001,
+      "requested_state_dim": 10000,
+      "action_dim": 10,
+      "nnz": 200000,
+      "config": {
+        "state_dim": 10000,
+        "action_dim": 10
+      }
+    },
+    "300_10_garnet_0.85_1.0": {
+      "class": "mdpforge.models.garnet.Model",
+      "state_dim": 300,
+      "requested_state_dim": 300,
+      "action_dim": 10,
+      "nnz": 765442,
+      "config": {
+        "state_dim": 300,
+        "action_dim": 10
+      }
+    },
+    "6859_6_hexagonal_grid_soccer": {
+      "class": "mdpforge.models.hexagonal_grid_soccer.Model",
+      "state_dim": 6859,
+      "requested_state_dim": 6859,
+      "action_dim": 6,
+      "nnz": 41154,
+      "config": {
+        "state_dim": 6859,
+        "action_dim": 6
+      }
+    },
+    "700_10_impatience_1e-08": {
+      "class": "mdpforge.models.impatience.Model",
+      "state_dim": 700,
+      "requested_state_dim": 700,
+      "action_dim": 10,
+      "nnz": 493981,
+      "config": {
+        "state_dim": 700,
+        "action_dim": 10,
+        "truncation_tol": 1e-08
+      }
+    },
+    "2599_10_inventory": {
+      "class": "mdpforge.models.inventory.Model",
+      "state_dim": 2599,
+      "requested_state_dim": 2600,
+      "action_dim": 10,
+      "nnz": 77966,
+      "config": {
+        "state_dim": 2600,
+        "action_dim": 10
+      }
+    },
+    "2870_10_inventory_leadtime_286_9": {
+      "class": "mdpforge.models.inventory_leadtime.Model",
+      "state_dim": 2870,
+      "requested_state_dim": 81800,
+      "action_dim": 10,
+      "nnz": 86060,
+      "config": {
+        "state_dim": 81800,
+        "action_dim": 10
+      }
+    },
+    "11663_4_local_perception_grid_world": {
+      "class": "mdpforge.models.local_perception_grid_world.Model",
+      "state_dim": 11663,
+      "requested_state_dim": 11600,
+      "action_dim": 4,
+      "nnz": 46652,
+      "config": {
+        "state_dim": 11600,
+        "action_dim": 4
+      }
+    },
+    "5800_10_lqregulator": {
+      "class": "mdpforge.models.lqregulator.Model",
+      "state_dim": 5800,
+      "requested_state_dim": 5800,
+      "action_dim": 10,
+      "nnz": 169696,
+      "config": {
+        "state_dim": 5800,
+        "action_dim": 10
+      }
+    },
+    "8010_4_m_maze": {
+      "class": "mdpforge.models.m_maze.Model",
+      "state_dim": 8010,
+      "requested_state_dim": 8000,
+      "action_dim": 4,
+      "nnz": 61518,
+      "config": {
+        "state_dim": 8000,
+        "action_dim": 4
+      }
+    },
+    "8600_4_maintenance": {
+      "class": "mdpforge.models.maintenance.Model",
+      "state_dim": 8600,
+      "requested_state_dim": 8600,
+      "action_dim": 4,
+      "nnz": 77393,
+      "config": {
+        "state_dim": 8600,
+        "action_dim": 4
+      }
+    },
+    "3969_4_maze_backtrack": {
+      "class": "mdpforge.models.maze_backtrack.Model",
+      "state_dim": 3969,
+      "requested_state_dim": 4000,
+      "action_dim": 4,
+      "nnz": 15876,
+      "config": {
+        "state_dim": 4000,
+        "action_dim": 4
+      }
+    },
+    "11881_4_maze_prims": {
+      "class": "mdpforge.models.maze_prims.Model",
+      "state_dim": 11881,
+      "requested_state_dim": 12000,
+      "action_dim": 4,
+      "nnz": 47524,
+      "config": {
+        "state_dim": 12000,
+        "action_dim": 4
+      }
+    },
+    "11881_4_maze_wilson": {
+      "class": "mdpforge.models.maze_wilson.Model",
+      "state_dim": 11881,
+      "requested_state_dim": 12000,
+      "action_dim": 4,
+      "nnz": 47524,
+      "config": {
+        "state_dim": 12000,
+        "action_dim": 4
+      }
+    },
+    "10609_3_mountain_103_103": {
+      "class": "mdpforge.models.mountain.Model",
+      "state_dim": 10609,
+      "requested_state_dim": 10800,
+      "action_dim": 3,
+      "nnz": 52221,
+      "config": {
+        "state_dim": 10800,
+        "action_dim": 3
+      }
+    },
+    "17424_4_ninerooms": {
+      "class": "mdpforge.models.ninerooms.Model",
+      "state_dim": 17424,
+      "requested_state_dim": 18000,
+      "action_dim": 4,
+      "nnz": 137829,
+      "config": {
+        "state_dim": 18000,
+        "action_dim": 4
+      }
+    },
+    "8096_4_office_world": {
+      "class": "mdpforge.models.office_world.Model",
+      "state_dim": 8096,
+      "requested_state_dim": 8000,
+      "action_dim": 4,
+      "nnz": 32384,
+      "config": {
+        "state_dim": 8000,
+        "action_dim": 4
+      }
+    },
+    "6200_10_oil": {
+      "class": "mdpforge.models.oil.Model",
+      "state_dim": 6200,
+      "requested_state_dim": 6200,
+      "action_dim": 10,
+      "nnz": 62000,
+      "config": {
+        "state_dim": 6200,
+        "action_dim": 10
+      }
+    },
+    "700_10_oil_discovery": {
+      "class": "mdpforge.models.oil_discovery.Model",
+      "state_dim": 700,
+      "requested_state_dim": 700,
+      "action_dim": 10,
+      "nnz": 1012006,
+      "config": {
+        "state_dim": 700,
+        "action_dim": 10
+      }
+    },
+    "35722_2_option_pricing_189_189": {
+      "class": "mdpforge.models.option_pricing.Model",
+      "state_dim": 35722,
+      "requested_state_dim": 36000,
+      "action_dim": 2,
+      "nnz": 106976,
+      "config": {
+        "state_dim": 36000,
+        "action_dim": 2
+      }
+    },
+    "26246_4_pacman_1_9_9": {
+      "class": "mdpforge.models.pacman.Model",
+      "state_dim": 26246,
+      "requested_state_dim": 26400,
+      "action_dim": 4,
+      "nnz": 333428,
+      "config": {
+        "state_dim": 26400
+      }
+    },
+    "640_64_peg_solitaire": {
+      "class": "mdpforge.models.peg_solitaire.Model",
+      "state_dim": 640,
+      "requested_state_dim": 640,
+      "action_dim": 64,
+      "nnz": 40960,
+      "config": {
+        "state_dim": 640,
+        "action_dim": 64
+      }
+    },
+    "956_6_prism_dining_philosophers_2_3_steps_to_target_target_1": {
+      "class": "mdpforge.models.prism_dining_philosophers.Model",
+      "state_dim": 956,
+      "requested_state_dim": 956,
+      "action_dim": 6,
+      "nnz": 6378,
+      "config": {
+        "state_dim": 956,
+        "philosophers": 3,
+        "target_philosopher": 1
+      }
+    },
+    "27766_3_prism_rabin_2_3_steps_to_target_target_1": {
+      "class": "mdpforge.models.prism_rabin.Model",
+      "state_dim": 27766,
+      "requested_state_dim": 27766,
+      "action_dim": 3,
+      "nnz": 332934,
+      "config": {
+        "state_dim": 27766,
+        "processes": 3,
+        "target_process": 1
+      }
+    },
+    "8000_3_queue_network_19": {
+      "class": "mdpforge.models.queue_network.Model",
+      "state_dim": 8000,
+      "requested_state_dim": 7000,
+      "action_dim": 3,
+      "nnz": 112559,
+      "config": {
+        "state_dim": 7000,
+        "action_dim": 3
+      }
+    },
+    "15600_2_random_walk": {
+      "class": "mdpforge.models.random_walk.Model",
+      "state_dim": 15600,
+      "requested_state_dim": 15600,
+      "action_dim": 2,
+      "nnz": 62396,
+      "config": {
+        "state_dim": 15600,
+        "action_dim": 2
+      }
+    },
+    "2700_10_replacement": {
+      "class": "mdpforge.models.replacement.Model",
+      "state_dim": 2700,
+      "requested_state_dim": 2700,
+      "action_dim": 10,
+      "nnz": 48591,
+      "config": {
+        "state_dim": 2700,
+        "action_dim": 10
+      }
+    },
+    "10000_4_rooms": {
+      "class": "mdpforge.models.rooms.Model",
+      "state_dim": 10000,
+      "requested_state_dim": 10000,
+      "action_dim": 4,
+      "nnz": 79205,
+      "config": {
+        "state_dim": 10000,
+        "action_dim": 4
+      }
+    },
+    "86400_3_schoolboy": {
+      "class": "mdpforge.models.schoolboy.Model",
+      "state_dim": 86400,
+      "requested_state_dim": 86400,
+      "action_dim": 3,
+      "nnz": 423769,
+      "config": {
+        "state_dim": 86400,
+        "action_dim": 3
+      }
+    },
+    "91202_5_search_and_rescue_1_3799_3_0.65_0.85_0.05": {
+      "class": "mdpforge.models.search_and_rescue.Model",
+      "state_dim": 91202,
+      "requested_state_dim": 91200,
+      "action_dim": 5,
+      "nnz": 843601,
+      "config": {
+        "state_dim": 91200,
+        "max_urgency": 3,
+        "survey_success": 0.65,
+        "pickup_success": 0.85,
+        "per_step_loss": 0.05
+      }
+    },
+    "5893_9_sutton": {
+      "class": "mdpforge.models.sutton.Model",
+      "state_dim": 5893,
+      "requested_state_dim": 6800,
+      "action_dim": 9,
+      "nnz": 199099,
+      "config": {
+        "state_dim": 6800,
+        "action_dim": 9
+      }
+    },
+    "15300_2_swim": {
+      "class": "mdpforge.models.swim.Model",
+      "state_dim": 15300,
+      "requested_state_dim": 15300,
+      "action_dim": 2,
+      "nnz": 61198,
+      "config": {
+        "state_dim": 15300,
+        "action_dim": 2
+      }
+    },
+    "2048_11_sysadmin_11": {
+      "class": "mdpforge.models.sysadmin.Model",
+      "state_dim": 2048,
+      "requested_state_dim": 2050,
+      "action_dim": 11,
+      "nnz": 242176,
+      "config": {
+        "state_dim": 2050,
+        "action_dim": 11
+      }
+    },
+    "3025_9_tandem": {
+      "class": "mdpforge.models.tandem.Model",
+      "state_dim": 3025,
+      "requested_state_dim": 3000,
+      "action_dim": 9,
+      "nnz": 97165,
+      "config": {
+        "state_dim": 3000,
+        "action_dim": 9
+      }
+    },
+    "400_100_tandem_choice": {
+      "class": "mdpforge.models.tandem_choice.Model",
+      "state_dim": 400,
+      "requested_state_dim": 400,
+      "action_dim": 100,
+      "nnz": 119800,
+      "config": {
+        "state_dim": 400,
+        "action_dim": 100
+      }
+    },
+    "5781_6_taxi": {
+      "class": "mdpforge.models.taxi.Model",
+      "state_dim": 5781,
+      "requested_state_dim": 6000,
+      "action_dim": 6,
+      "nnz": 34686,
+      "config": {
+        "state_dim": 6000,
+        "action_dim": 6
+      }
+    },
+    "15602_5_tireworld_1_1950_0.15": {
+      "class": "mdpforge.models.tireworld.Model",
+      "state_dim": 15602,
+      "requested_state_dim": 15600,
+      "action_dim": 5,
+      "nnz": 101390,
+      "config": {
+        "state_dim": 15600,
+        "puncture_probability": 0.15
+      }
+    },
+    "15488_2_traffic_control_1_87_0.45_0.35": {
+      "class": "mdpforge.models.traffic_control.Model",
+      "state_dim": 15488,
+      "requested_state_dim": 15600,
+      "action_dim": 2,
+      "nnz": 122850,
+      "config": {
+        "state_dim": 15600,
+        "arrival_north": 0.45,
+        "arrival_east": 0.35
+      }
+    },
+    "20400_2_unichain": {
+      "class": "mdpforge.models.unichain.Model",
+      "state_dim": 20400,
+      "requested_state_dim": 20400,
+      "action_dim": 2,
+      "nnz": 40800,
+      "config": {
+        "state_dim": 20400,
+        "action_dim": 2
+      }
+    },
+    "12099_4_windgrid": {
+      "class": "mdpforge.models.windgrid.Model",
+      "state_dim": 12099,
+      "requested_state_dim": 12000,
+      "action_dim": 4,
+      "nnz": 48396,
+      "config": {
+        "state_dim": 12000,
+        "action_dim": 4
+      }
+    },
+    "8625_3_wlan_2_1_time": {
+      "class": "mdpforge.models.wlan.Model",
+      "state_dim": 8625,
+      "requested_state_dim": 8625,
+      "action_dim": 3,
+      "nnz": 36660,
+      "config": {
+        "state_dim": 8625,
+        "backoff": 1,
+        "reward": "time"
+      }
+    },
+    "14400_6_wumpus_world": {
+      "class": "mdpforge.models.wumpus_world.Model",
+      "state_dim": 14400,
+      "requested_state_dim": 6800,
+      "action_dim": 6,
+      "nnz": 86400,
+      "config": {
+        "state_dim": 6800,
+        "action_dim": 6
+      }
+    },
+    "12000_6_zenotravel_1_857_6_0.12_0.015": {
+      "class": "mdpforge.models.zenotravel.Model",
+      "state_dim": 12000,
+      "requested_state_dim": 12000,
+      "action_dim": 6,
+      "nnz": 126768,
+      "config": {
+        "state_dim": 12000,
+        "fuel_capacity": 6,
+        "flight_failure": 0.12,
+        "accident_probability": 0.015
+      }
+    },
+    "1924_3_zeroconf_2_8_1000_1_time": {
+      "class": "mdpforge.models.zeroconf.Model",
+      "state_dim": 1924,
+      "requested_state_dim": 1924,
+      "action_dim": 3,
+      "nnz": 7060,
+      "config": {
+        "state_dim": 1924,
+        "probes": 8,
+        "existing_hosts": 1000,
+        "reset": true,
+        "reward": "time"
+      }
+    }
+  },
+  "solvers": {
+    "mdpforge_mpi_0.1_1": {
+      "callable": "mdpforge.solvers.mdpforge_mpi.Solver",
+      "options": {
+        "evaluation_precision": 0.1,
+        "max_evaluation_iterations": 10
+      },
+      "parameters": {
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 10,
+        "evaluation_precision": 0.1
+      },
+      "metadata": {
+        "display_name": "MPI · mdpforge",
+        "family": "mpi",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with synchronous, truncated policy evaluation and a randomly initialized policy."
+      },
+      "verbose_name": "MPI · mdpforge (eval=0.1)"
+    },
+    "mdpforge_mpi_0.1_50_1": {
+      "callable": "mdpforge.solvers.mdpforge_mpi.Solver",
+      "options": {
+        "evaluation_precision": 0.1,
+        "max_evaluation_iterations": 50
+      },
+      "parameters": {
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 50,
+        "evaluation_precision": 0.1
+      },
+      "metadata": {
+        "display_name": "MPI · mdpforge",
+        "family": "mpi",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with synchronous, truncated policy evaluation and a randomly initialized policy."
+      },
+      "verbose_name": "MPI · mdpforge (eval=0.1, 50)"
+    },
+    "mdpforge_mpi_0.1_100_1": {
+      "callable": "mdpforge.solvers.mdpforge_mpi.Solver",
+      "options": {
+        "evaluation_precision": 0.1,
+        "max_evaluation_iterations": 100
+      },
+      "parameters": {
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 100,
+        "evaluation_precision": 0.1
+      },
+      "metadata": {
+        "display_name": "MPI · mdpforge",
+        "family": "mpi",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with synchronous, truncated policy evaluation and a randomly initialized policy."
+      },
+      "verbose_name": "MPI · mdpforge (eval=0.1, 100)"
+    },
+    "mdpforge_mpi_0.01_1": {
+      "callable": "mdpforge.solvers.mdpforge_mpi.Solver",
+      "options": {
+        "evaluation_precision": 0.01,
+        "max_evaluation_iterations": 10
+      },
+      "parameters": {
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 10,
+        "evaluation_precision": 0.01
+      },
+      "metadata": {
+        "display_name": "MPI · mdpforge",
+        "family": "mpi",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with synchronous, truncated policy evaluation and a randomly initialized policy."
+      },
+      "verbose_name": "MPI · mdpforge (eval=0.01)"
+    },
+    "mdpforge_mpi_0.01_50_1": {
+      "callable": "mdpforge.solvers.mdpforge_mpi.Solver",
+      "options": {
+        "evaluation_precision": 0.01,
+        "max_evaluation_iterations": 50
+      },
+      "parameters": {
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 50,
+        "evaluation_precision": 0.01
+      },
+      "metadata": {
+        "display_name": "MPI · mdpforge",
+        "family": "mpi",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with synchronous, truncated policy evaluation and a randomly initialized policy."
+      },
+      "verbose_name": "MPI · mdpforge (eval=0.01, 50)"
+    },
+    "mdpforge_mpi_0.01_100_1": {
+      "callable": "mdpforge.solvers.mdpforge_mpi.Solver",
+      "options": {
+        "evaluation_precision": 0.01,
+        "max_evaluation_iterations": 100
+      },
+      "parameters": {
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 100,
+        "evaluation_precision": 0.01
+      },
+      "metadata": {
+        "display_name": "MPI · mdpforge",
+        "family": "mpi",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with synchronous, truncated policy evaluation and a randomly initialized policy."
+      },
+      "verbose_name": "MPI · mdpforge (eval=0.01, 100)"
+    },
+    "mdpforge_mpi_0.001_1": {
+      "callable": "mdpforge.solvers.mdpforge_mpi.Solver",
+      "options": {
+        "evaluation_precision": 0.001,
+        "max_evaluation_iterations": 10
+      },
+      "parameters": {
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 10,
+        "evaluation_precision": 0.001
+      },
+      "metadata": {
+        "display_name": "MPI · mdpforge",
+        "family": "mpi",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with synchronous, truncated policy evaluation and a randomly initialized policy."
+      },
+      "verbose_name": "MPI · mdpforge (eval=0.001)"
+    },
+    "mdpforge_mpi_0.001_50_1": {
+      "callable": "mdpforge.solvers.mdpforge_mpi.Solver",
+      "options": {
+        "evaluation_precision": 0.001,
+        "max_evaluation_iterations": 50
+      },
+      "parameters": {
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 50,
+        "evaluation_precision": 0.001
+      },
+      "metadata": {
+        "display_name": "MPI · mdpforge",
+        "family": "mpi",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with synchronous, truncated policy evaluation and a randomly initialized policy."
+      },
+      "verbose_name": "MPI · mdpforge (eval=0.001, 50)"
+    },
+    "mdpforge_mpi_0.001_100_1": {
+      "callable": "mdpforge.solvers.mdpforge_mpi.Solver",
+      "options": {
+        "evaluation_precision": 0.001,
+        "max_evaluation_iterations": 100
+      },
+      "parameters": {
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 100,
+        "evaluation_precision": 0.001
+      },
+      "metadata": {
+        "display_name": "MPI · mdpforge",
+        "family": "mpi",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with synchronous, truncated policy evaluation and a randomly initialized policy."
+      },
+      "verbose_name": "MPI · mdpforge (eval=0.001, 100)"
+    },
+    "mdpforge_mpi_0.0001_1": {
+      "callable": "mdpforge.solvers.mdpforge_mpi.Solver",
+      "options": {
+        "evaluation_precision": 0.0001,
+        "max_evaluation_iterations": 10
+      },
+      "parameters": {
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 10,
+        "evaluation_precision": 0.0001
+      },
+      "metadata": {
+        "display_name": "MPI · mdpforge",
+        "family": "mpi",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with synchronous, truncated policy evaluation and a randomly initialized policy."
+      },
+      "verbose_name": "MPI · mdpforge (eval=0.0001)"
+    },
+    "mdpforge_mpi_0.0001_50_1": {
+      "callable": "mdpforge.solvers.mdpforge_mpi.Solver",
+      "options": {
+        "evaluation_precision": 0.0001,
+        "max_evaluation_iterations": 50
+      },
+      "parameters": {
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 50,
+        "evaluation_precision": 0.0001
+      },
+      "metadata": {
+        "display_name": "MPI · mdpforge",
+        "family": "mpi",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with synchronous, truncated policy evaluation and a randomly initialized policy."
+      },
+      "verbose_name": "MPI · mdpforge (eval=0.0001, 50)"
+    },
+    "mdpforge_mpi_0.0001_100_1": {
+      "callable": "mdpforge.solvers.mdpforge_mpi.Solver",
+      "options": {
+        "evaluation_precision": 0.0001,
+        "max_evaluation_iterations": 100
+      },
+      "parameters": {
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 100,
+        "evaluation_precision": 0.0001
+      },
+      "metadata": {
+        "display_name": "MPI · mdpforge",
+        "family": "mpi",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with synchronous, truncated policy evaluation and a randomly initialized policy."
+      },
+      "verbose_name": "MPI · mdpforge (eval=0.0001, 100)"
+    },
+    "mdpforge_mpi_1e-05_1": {
+      "callable": "mdpforge.solvers.mdpforge_mpi.Solver",
+      "options": {
+        "evaluation_precision": 1e-05,
+        "max_evaluation_iterations": 10
+      },
+      "parameters": {
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 10,
+        "evaluation_precision": 1e-05
+      },
+      "metadata": {
+        "display_name": "MPI · mdpforge",
+        "family": "mpi",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with synchronous, truncated policy evaluation and a randomly initialized policy."
+      },
+      "verbose_name": "MPI · mdpforge (eval=1e-05)"
+    },
+    "mdpforge_mpi_1e-05_50_1": {
+      "callable": "mdpforge.solvers.mdpforge_mpi.Solver",
+      "options": {
+        "evaluation_precision": 1e-05,
+        "max_evaluation_iterations": 50
+      },
+      "parameters": {
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 50,
+        "evaluation_precision": 1e-05
+      },
+      "metadata": {
+        "display_name": "MPI · mdpforge",
+        "family": "mpi",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with synchronous, truncated policy evaluation and a randomly initialized policy."
+      },
+      "verbose_name": "MPI · mdpforge (eval=1e-05, 50)"
+    },
+    "mdpforge_mpi_1e-05_100_1": {
+      "callable": "mdpforge.solvers.mdpforge_mpi.Solver",
+      "options": {
+        "evaluation_precision": 1e-05,
+        "max_evaluation_iterations": 100
+      },
+      "parameters": {
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 100,
+        "evaluation_precision": 1e-05
+      },
+      "metadata": {
+        "display_name": "MPI · mdpforge",
+        "family": "mpi",
+        "backend": "mdpforge",
+        "description": "Modified policy iteration with synchronous, truncated policy evaluation and a randomly initialized policy."
+      },
+      "verbose_name": "MPI · mdpforge (eval=1e-05, 100)"
+    }
+  },
+  "environment": {
+    "python": "3.12.12",
+    "mdpforge": "0.1.0",
+    "numpy": "2.4.2",
+    "scipy": "1.17.0",
+    "threadpoolctl": "3.7.0",
+    "backends": {}
+  },
+  "machine": {
+    "os": "Windows",
+    "os_release": "11",
+    "architecture": "AMD64",
+    "logical_cpu_count": 20,
+    "thread_environment": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null,
+      "BLIS_NUM_THREADS": null,
+      "VECLIB_MAXIMUM_THREADS": null,
+      "NUMEXPR_NUM_THREADS": null
+    },
+    "thread_pools": [
+      {
+        "user_api": "blas",
+        "internal_api": "mkl",
+        "num_threads": 14,
+        "prefix": "mkl_rt",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\mkl_rt.2.dll",
+        "version": "2025.3-Product",
+        "threading_layer": "intel"
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 20,
+        "prefix": "libiomp",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\libiomp5md.dll",
+        "version": null
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 20,
+        "prefix": "libomp",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\libomp.dll",
+        "version": null
+      },
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "num_threads": 20,
+        "prefix": "libscipy_openblas",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Lib\\site-packages\\scipy.libs\\libscipy_openblas-64eda39e79589aedb16f58e5547eb599.dll",
+        "version": "0.3.30",
+        "threading_layer": "pthreads",
+        "architecture": "Haswell"
+      }
+    ],
+    "capture_scope": "benchmark process before solver execution",
+    "numpy_build": {
+      "Compilers": {
+        "c": {
+          "name": "msvc",
+          "linker": "link",
+          "version": "19.44.35222",
+          "commands": "cl.exe"
+        },
+        "cython": {
+          "name": "cython",
+          "linker": "cython",
+          "version": "3.2.4",
+          "commands": "cython"
+        },
+        "c++": {
+          "name": "msvc",
+          "linker": "link",
+          "version": "19.44.35222",
+          "commands": "cl.exe"
+        }
+      },
+      "Machine Information": {
+        "host": {
+          "cpu": "x86_64",
+          "family": "x86_64",
+          "endian": "little",
+          "system": "windows"
+        },
+        "build": {
+          "cpu": "x86_64",
+          "family": "x86_64",
+          "endian": "little",
+          "system": "windows"
+        }
+      },
+      "Build Dependencies": {
+        "blas": {
+          "name": "blas",
+          "found": true,
+          "version": "3.9.0",
+          "detection method": "pkgconfig",
+          "include directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/include",
+          "lib directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib",
+          "openblas configuration": "unknown",
+          "pc file directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib/pkgconfig"
+        },
+        "lapack": {
+          "name": "lapack",
+          "found": true,
+          "version": "3.9.0",
+          "detection method": "pkgconfig",
+          "include directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/include",
+          "lib directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib",
+          "openblas configuration": "unknown",
+          "pc file directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib/pkgconfig"
+        }
+      },
+      "Python Information": {
+        "path": "C:/Users/orsof/anaconda3/envs/benchmark/python.exe",
+        "version": "3.12"
+      },
+      "SIMD Extensions": {
+        "baseline": [
+          "X86_V2"
+        ],
+        "found": [
+          "X86_V3"
+        ]
+      }
+    }
+  },
+  "code": {
+    "git": {
+      "commit": "2e82ee149de0dae52ab7e033876d34134ef7e306",
+      "dirty": true
+    }
+  },
+  "results_file": "bench_2026-10-28_11-46-52_267574.csv"
+}

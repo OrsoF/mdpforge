@@ -22,7 +22,7 @@ def build_track(state_dim: int) -> np.ndarray:
 METADATA = {
     "sizes": {
         "small": {
-            "requested_state_dim": 1700,
+            "requested_state_dim": 6800,
             "parameters": {},
         },
         "medium": {

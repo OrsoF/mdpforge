@@ -546,6 +546,105 @@
           }
         }
       ]
+    },
+    "prism_rabin": {
+      "repository": "https://github.com/prismmodelchecker/prism",
+      "revision": "caf5bfe700d7dff29b5b13e79144753f3ce8a834",
+      "license": "GPL-2.0-only",
+      "license_file": "PRISM_COPYING.txt",
+      "attribution": "Gethin Norman and David Parker; original author/date headers retained in each unmodified PRISM source.",
+      "variant": "Source variant with scheduling self-loops commented out; atomic draw phases retained.",
+      "target": "p1=2",
+      "rewards": [
+        "steps_to_target"
+      ],
+      "adaptation": "Added -1 cost per source transition until the designated participant reaches its target, then zero cost and absorption. The full native reachable graph is enumerated before target rows are absorbed. Unused action slots repeat the first enabled choice. Discounted maximization imposes no fairness and does not reproduce source liveness queries. Original transition probabilities and step granularity are retained before the target.",
+      "construction": {
+        "expand_formulas": true,
+        "step_cost": true,
+        "absorb_target": true,
+        "legacy_mdp": false
+      },
+      "state_counts_source": "https://www.prismmodelchecker.org/casestudies/rabin.php",
+      "configurations": [
+        {
+          "file": "prism_rabin3.nm",
+          "source": "https://github.com/prismmodelchecker/prism/blob/caf5bfe700d7dff29b5b13e79144753f3ce8a834/prism-examples/mdps/rabin/rabin3.nm",
+          "sha256": "b2c7db66788c98c1c21a507c83ca06e4bc3cbe7bf9fce2f48e6070e5901530d8",
+          "states": 27766,
+          "actions": 3,
+          "parameters": {
+            "processes": 3
+          },
+          "constants": {}
+        },
+        {
+          "file": "prism_rabin4.nm",
+          "source": "https://github.com/prismmodelchecker/prism/blob/caf5bfe700d7dff29b5b13e79144753f3ce8a834/prism-examples/mdps/rabin/rabin4.nm",
+          "sha256": "0d3142de301f3ac62f69e9b429002df2bf688551361daa3143d3e07026c31aad",
+          "states": 668836,
+          "actions": 4,
+          "parameters": {
+            "processes": 4
+          },
+          "constants": {}
+        }
+      ]
+    },
+    "prism_dining_philosophers": {
+      "repository": "https://github.com/prismmodelchecker/prism",
+      "revision": "caf5bfe700d7dff29b5b13e79144753f3ce8a834",
+      "license": "GPL-2.0-only",
+      "license_file": "PRISM_COPYING.txt",
+      "attribution": "Gethin Norman and David Parker; original author/date headers retained in each unmodified PRISM source.",
+      "variant": "Original twelve-phase variant, including scheduling self-loops; no fairness restriction.",
+      "target": "p1>=8 & p1<=9",
+      "rewards": [
+        "steps_to_target"
+      ],
+      "adaptation": "Added -1 cost per source transition until the designated participant reaches its target, then zero cost and absorption. The full native reachable graph is enumerated before target rows are absorbed. Unused action slots repeat the first enabled choice. Discounted maximization imposes no fairness and does not reproduce source liveness queries. Original transition probabilities and step granularity are retained before the target.",
+      "construction": {
+        "expand_formulas": true,
+        "step_cost": true,
+        "absorb_target": true,
+        "legacy_mdp": true
+      },
+      "state_counts_source": "https://www.prismmodelchecker.org/casestudies/phil.php",
+      "configurations": [
+        {
+          "file": "prism_phil3.nm",
+          "source": "https://github.com/prismmodelchecker/prism/blob/caf5bfe700d7dff29b5b13e79144753f3ce8a834/prism-examples/mdps/phil/original/phil3.nm",
+          "sha256": "f2112a309a5d6ce2a0a9fc3d0a0e54a1765b440d03d43c34fd7d0a418349710f",
+          "states": 956,
+          "actions": 6,
+          "parameters": {
+            "philosophers": 3
+          },
+          "constants": {}
+        },
+        {
+          "file": "prism_phil4.nm",
+          "source": "https://github.com/prismmodelchecker/prism/blob/caf5bfe700d7dff29b5b13e79144753f3ce8a834/prism-examples/mdps/phil/original/phil4.nm",
+          "sha256": "6e738ea11698652ef361307e5e6e4ce25417a7b1ed7227e91cd9d6faeecdca50",
+          "states": 9440,
+          "actions": 8,
+          "parameters": {
+            "philosophers": 4
+          },
+          "constants": {}
+        },
+        {
+          "file": "prism_phil5.nm",
+          "source": "https://github.com/prismmodelchecker/prism/blob/caf5bfe700d7dff29b5b13e79144753f3ce8a834/prism-examples/mdps/phil/original/phil5.nm",
+          "sha256": "35a9b6139e7330ee992838b55f67ce2737e2592d74a08dad59e31b273431fde6",
+          "states": 93068,
+          "actions": 10,
+          "parameters": {
+            "philosophers": 5
+          },
+          "constants": {}
+        }
+      ]
     }
   }
 }

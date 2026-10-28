@@ -23,8 +23,8 @@ METADATA = {
     ),
     "sizes": {
         "small": {
-            "requested_state_dim": 670,
-            "parameters": {"probes": 2, "reset": True},
+            "requested_state_dim": 1924,
+            "parameters": {"probes": 8, "reset": True},
         },
         "medium": {
             "requested_state_dim": 89586,
