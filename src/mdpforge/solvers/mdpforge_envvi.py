@@ -26,6 +26,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import bellman_operator, compact_optimal_bellman_operator
 from mdpforge.core.partition import Partition
 from mdpforge.core.solve_result import SolveResult
+from mdpforge.utils.solver_names import solver_names
 from mdpforge.utils.solver_options import bounded_iterations
 
 METADATA = {
@@ -97,7 +98,7 @@ class Solver:
         self.stop_criterion = stop_criterion
         self.shared_reward = np.all(model.reward_matrix == model.reward_matrix[:, [0]])
         self.partition = Partition(model)
-        self.name = "EnvelopeVItiles" if refinement == "tiles" else "EnvelopeVI"
+        self.name, self.verbose_name = solver_names(Solver, locals())
 
         self.value = None
         self.policy = None

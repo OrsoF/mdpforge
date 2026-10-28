@@ -8,6 +8,7 @@ from mdptoolbox.mdp import PolicyIteration
 from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
+from mdpforge.utils.solver_names import solver_names
 
 METADATA = {
     "display_name": "PI · MDPToolbox",
@@ -33,7 +34,7 @@ class Solver(GenericSolver):
         max_iterations: int > 0; outer iteration budget; default 100_000_000.
         """
         super().__init__(model, discount, None, max_iterations=max_iterations)
-        self.name = "PI MDPToolbox"
+        self.name, self.verbose_name = solver_names(Solver, locals())
 
     def _solve(self) -> SolveResult:
         self.vi = PolicyIteration(

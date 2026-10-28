@@ -17,6 +17,7 @@ from mdpforge.core.solve_result import SolveResult
 from mdpforge.utils.bellman import (
     iterative_policy_evaluation,
 )
+from mdpforge.utils.solver_names import solver_names
 from mdpforge.utils.solver_options import bounded_iterations
 
 METADATA = {
@@ -64,7 +65,7 @@ class Solver:
         self.beta_2 = float(beta_2)
         self.n_regions = n_regions
 
-        self.name = "BertsekasAdaptivePI"
+        self.name, self.verbose_name = solver_names(Solver, locals())
 
         self.fixed_partition = Partition(self.model)
 

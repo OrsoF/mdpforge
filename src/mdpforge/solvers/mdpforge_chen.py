@@ -12,6 +12,7 @@ from mdpforge.core.operators import (
 )
 from mdpforge.core.partition import Partition
 from mdpforge.core.solve_result import SolveResult
+from mdpforge.utils.solver_names import solver_names
 from mdpforge.utils.solver_options import bounded_iterations
 
 METADATA = {
@@ -56,7 +57,7 @@ class Solver:
         self.aggregation_iterations = aggregation_iterations
         self.bellman_iterations = bellman_iterations
 
-        self.name = "Chen"
+        self.name, self.verbose_name = solver_names(Solver, locals())
         self.policy = None
         self.shared_reward = np.all(
             self.model.reward_matrix == self.model.reward_matrix[:, [0]]

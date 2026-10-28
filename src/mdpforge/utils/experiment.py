@@ -16,6 +16,8 @@ import scipy
 from scipy.sparse import issparse
 from threadpoolctl import threadpool_info
 
+from mdpforge.utils.solver_names import is_catalogue_solver, solver_names
+
 
 def _qualified_name(value):
     target = (
@@ -120,6 +122,11 @@ def _solver_metadata(constructor, options):
         "options": _json_value(options),
         "parameters": _json_value(defaults | options),
         "metadata": _json_value(metadata),
+        **(
+            {"verbose_name": solver_names(constructor, options)[1]}
+            if is_catalogue_solver(constructor)
+            else {}
+        ),
     }
 
 

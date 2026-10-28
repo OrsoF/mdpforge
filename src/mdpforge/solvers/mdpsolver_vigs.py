@@ -8,7 +8,8 @@ import numpy as np
 from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
-from mdpforge.utils.mdpsolver import create_mdpsolver, solve_mdpsolver
+from mdpforge.utils.solver_backends import create_mdpsolver, solve_mdpsolver
+from mdpforge.utils.solver_names import solver_names
 from mdpforge.utils.solver_options import initial_vectors
 
 METADATA = {
@@ -46,7 +47,7 @@ class Solver(GenericSolver):
         self.initial_value, self.initial_policy = initial_vectors(
             initial_value, initial_policy
         )
-        self.name = "VIGS MDPSolver"
+        self.name, self.verbose_name = solver_names(Solver, locals())
         self.mdl = create_mdpsolver(model, discount, mdpsolver)
 
     def _solve(self) -> SolveResult:

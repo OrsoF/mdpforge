@@ -7,7 +7,8 @@ import numpy as np
 from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
-from mdpforge.utils.gurobi import gurobi_model_creation
+from mdpforge.utils.solver_backends import gurobi_model_creation
+from mdpforge.utils.solver_names import solver_names
 
 METADATA = {
     "display_name": "LP · Gurobi · primal",
@@ -38,7 +39,7 @@ class Solver(GenericSolver):
         self.env = model
         self.threads = threads
         self.memory_limit_gb = float(memory_limit_gb)
-        self.name = "Gurobi LP Primal"
+        self.name, self.verbose_name = solver_names(Solver, locals())
         self.outgoing_transitions = self._build_outgoing_transitions()
 
     def _build_outgoing_transitions(self):

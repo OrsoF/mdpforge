@@ -6,10 +6,11 @@ import numpy as np
 from marmote.core import MarmoteInterval
 from marmote.mdp import DiscountedMDP, SolutionMDP
 
-from mdpforge.utils.marmote import compute_marmote_args
+from mdpforge.utils.solver_backends import compute_marmote_args
 from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
+from mdpforge.utils.solver_names import solver_names
 
 METADATA = {
     "display_name": "VI · Marmote",
@@ -38,7 +39,7 @@ class Solver(GenericSolver):
         super().__init__(
             model, discount, final_precision, max_iterations=max_iterations
         )
-        self.name = "VI Marmote"
+        self.name, self.verbose_name = solver_names(Solver, locals())
 
         self.transitions, self.rewards = compute_marmote_args(self.model)
 

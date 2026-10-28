@@ -7,6 +7,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import bellman_operator, compute_transition_reward_policy
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
+from mdpforge.utils.solver_names import solver_names
 from mdpforge.utils.solver_options import initial_vectors
 
 METADATA = {
@@ -52,6 +53,7 @@ class Solver(GenericSolver):
         super().__init__(
             model, discount, final_precision, max_iterations=max_iterations
         )
+        self.name, self.verbose_name = solver_names(Solver, locals())
 
         value, policy = initial_vectors(initial_value, initial_policy)
         self.policy = np.zeros(model.state_dim, dtype=int) if policy is None else policy
@@ -68,7 +70,6 @@ class Solver(GenericSolver):
         self.policy_iterations = 0
         self.generations = 0
         self.objective_evaluations = 0
-        self.name = "mdpforge MPI (CMA-ES evaluation, experimental)"
 
     def _evaluate_policy(self, tolerance: float) -> np.ndarray:
         """Minimize the policy residual quadratic to a certified inner tolerance."""

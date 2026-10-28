@@ -16,7 +16,8 @@ def _ordered_solver_labels(solver_names, experiment):
         for name, record in (experiment or {}).get("solvers", {}).items()
     }
     solver_labels = {
-        name: fields.get("display_name") or name for name, fields in metadata.items()
+        name: record.get("verbose_name") or metadata[name].get("display_name") or name
+        for name, record in (experiment or {}).get("solvers", {}).items()
     }
 
     def solver_order(name):

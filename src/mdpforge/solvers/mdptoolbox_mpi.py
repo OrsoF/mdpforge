@@ -8,6 +8,7 @@ from mdptoolbox.mdp import PolicyIterationModified
 from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
+from mdpforge.utils.solver_names import solver_names
 
 METADATA = {
     "display_name": "MPI · MDPToolbox",
@@ -38,7 +39,7 @@ class Solver(GenericSolver):
         super().__init__(model, discount, float(final_precision))
         self.max_evaluation_iterations = max_evaluation_iterations
 
-        self.name = "MPI MDPToolbox"
+        self.name, self.verbose_name = solver_names(Solver, locals())
 
     def _solve(self) -> SolveResult:
         self.mpi = PolicyIterationModified(

@@ -2,6 +2,7 @@
 
 from mdpforge.core.mdp import MDP
 from mdpforge.solvers.madupite_ipi import Solver as MadupiteIPISolver
+from mdpforge.utils.solver_names import solver_names
 
 METADATA = {
     "display_name": "iPI · madupite (BiCGStab)",
@@ -43,4 +44,4 @@ class Solver(MadupiteIPISolver):
             ksp_type="bcgs",
             pc_type="none",
         )
-        self.name = "madupite iPI BiCGStab"
+        self.name, self.verbose_name = solver_names(Solver, locals())

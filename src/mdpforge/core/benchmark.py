@@ -1,59 +1,26 @@
 """Benchmark finite discounted MDP solvers at a fixed value precision."""
 
 import inspect
-import multiprocessing
-import pickle
 import random
-import warnings
 from collections.abc import Sequence
-from copy import deepcopy
-from importlib import import_module
-from importlib.util import find_spec
-from pathlib import Path
-from tempfile import TemporaryDirectory
 from time import perf_counter
 
 import numpy as np
 
-from mdpforge import models, solvers
+from mdpforge import models
+from mdpforge.core._benchmark_catalogue import (
+    _available_solvers,
+    _load_model,
+    _load_solver,
+    _select_models,
+)
+from mdpforge.core._benchmark_execution import _isolated_solver_trial, _solver_trial
 from mdpforge.core.mdp import MDP
 from mdpforge.core.result import BenchmarkResult
 from mdpforge.core.validation import validate_model
 from mdpforge.solvers import list_solvers
 from mdpforge.utils.experiment import capture_experiment
-
-
-def _load_solver(name, *, backend=None):
-    """Load a catalogue solver, checking an explicitly selected backend first."""
-    dependency = {
-        "gurobi": "gurobipy",
-        "marmote": "marmote",
-        "mdpsolver": "mdpsolver",
-        "madupite": "madupite",
-        "mdpax": "mdpax",
-        "mdptoolbox": "mdptoolbox",
-        "quantecon": "quantecon",
-    }.get(backend)
-    if dependency and find_spec(dependency) is None:
-        raise ModuleNotFoundError(
-            f"Missing solver dependency: {dependency}", name=dependency
-        )
-    return import_module(f"{solvers.__name__}.{name}").Solver
-
-
-def _available_solvers(entries):
-    """Yield selected solvers, warning only for missing dependencies."""
-    for entry in entries:
-        name = entry["name"]
-        try:
-            constructor = _load_solver(name, backend=entry.get("backend"))
-        except ModuleNotFoundError as exc:
-            warnings.warn(
-                f"Skipping solver {name!r}: missing dependency {exc.name!r}",
-                stacklevel=3,
-            )
-            continue
-        yield name, constructor
+from mdpforge.utils.solver_names import is_catalogue_solver, solver_names
 
 
 def _check_solver_options(name, constructor, options):
@@ -96,100 +63,6 @@ def _same_options(left, right):
     return True
 
 
-def _solver_trial(model, constructor, options, discount, precision, seed):
-    """Return values, solver runtime, status and error for one independent trial."""
-    runtime = np.nan
-    start = None
-    try:
-        trial_model = deepcopy(model)
-        np.random.seed(seed)
-        random.seed(seed)
-        precision_options = {}
-        if isinstance(constructor, type):
-            parameters = inspect.signature(constructor).parameters
-            precision_options = (
-                {"final_precision": precision}
-                if "final_precision" in parameters
-                or any(p.kind == p.VAR_KEYWORD for p in parameters.values())
-                else {}
-            )
-        start = perf_counter()
-        if isinstance(constructor, type):
-            solver = constructor(trial_model, discount, **precision_options, **options)
-            value = solver.run().value
-        else:
-            value = constructor(
-                trial_model.transition_matrix,
-                trial_model.reward_matrix,
-                discount,
-                precision,
-                **options,
-            )
-        runtime = perf_counter() - start
-        return np.asarray(value), runtime, "success", ""
-    except Exception as exc:
-        if start is not None and np.isnan(runtime):
-            runtime = perf_counter() - start
-        return None, runtime, "error", f"{type(exc).__name__}: {exc}"
-
-
-def _solver_worker(input_path, result_path):
-    # Files avoid blocking on a full IPC pipe during dispatch or worker exit.
-    with input_path.open("rb") as handle:
-        args = pickle.load(handle)
-    with result_path.open("wb") as handle:
-        pickle.dump(_solver_trial(*args), handle)
-
-
-def _isolated_solver_trial(
-    model, constructor, options, discount, precision, seed, timeout
-):
-    context = multiprocessing.get_context("spawn")
-    with TemporaryDirectory(prefix="mdpforge-trial-") as directory:
-        # Serialize before spawning so unpickleable inputs cannot leave a worker
-        # behind if process startup fails halfway through transmitting its inputs.
-        input_path = Path(directory) / "input.pkl"
-        with input_path.open("wb") as handle:
-            pickle.dump(
-                (model, constructor, options, discount, precision, seed), handle
-            )
-        result_path = Path(directory) / "result.pkl"
-        process = context.Process(
-            target=_solver_worker,
-            args=(input_path, result_path),
-        )
-        try:
-            start = perf_counter()
-            process.start()
-            process.join(max(0, timeout - (perf_counter() - start)))
-            if process.is_alive():
-                return (
-                    None,
-                    np.nan,
-                    "timeout",
-                    f"Trial exceeded timeout of {timeout:g} s",
-                )
-            if process.exitcode != 0:
-                return (
-                    None,
-                    np.nan,
-                    "error",
-                    f"Solver process exited with code {process.exitcode}",
-                )
-            with result_path.open("rb") as handle:
-                return pickle.load(handle)
-        finally:
-            if process.pid is not None:
-                if process.is_alive():
-                    process.terminate()
-                    process.join(1)
-                if process.is_alive():
-                    process.kill()
-                    process.join(1)
-                if not process.is_alive():
-                    process.close()
-
-
 class Benchmark:
     """Compare catalogue, matrix-defined or already-built finite discounted MDPs.
 
@@ -205,7 +78,7 @@ class Benchmark:
 
     def __init__(self):
         self._mdps: list[MDP] = []
-        self._solvers = {}  # label -> (solver class/function, options)
+        self._solvers = {}  # unique key -> (solver class/function, options)
 
     def reset(self, *, models=True, solvers=True):
         """Reset registrations; previously returned BenchmarkResult objects are kept.
@@ -270,34 +143,16 @@ class Benchmark:
                 )
             if isinstance(model, str) and not model.strip():
                 raise ValueError("Each MDP must have a nonempty string 'name'.")
-            entries = models.list_models(size=size, category=category)
+            names = None
             if model is not None:
                 names = list(dict.fromkeys(model)) if named_group else [model]
-                selected = {entry["name"]: entry for entry in entries}
-                for name in names:
-                    if name in selected:
-                        continue
-                    catalogue = {item["name"] for item in models.list_models()}
-                    if name not in catalogue:
-                        raise ValueError(
-                            f"Unknown model {name!r}. Available models: "
-                            + ", ".join(sorted(catalogue))
-                        )
-                    raise ValueError(
-                        f"Model {name!r} does not match size={size!r}, "
-                        f"category={category!r}; "
-                        "the requested preset may be unavailable."
-                    )
-                for name in names:
-                    preset = selected[name]["sizes"][size] if size is not None else None
-                    self._add_catalogue_model(
-                        name, preset=preset, grouped=named_group, verbose=verbose
-                    )
-                return self
-            for entry in entries:
+            for entry in _select_models(names, size=size, category=category):
                 preset = entry["sizes"][size] if size is not None else None
                 self._add_catalogue_model(
-                    entry["name"], preset=preset, grouped=True, verbose=verbose
+                    entry["name"],
+                    preset=preset,
+                    grouped=named_group or model is None,
+                    verbose=verbose,
                 )
             return self
         if model is None:
@@ -369,31 +224,10 @@ class Benchmark:
         if verbose:
             start = perf_counter()
             print(f"Loading/building model {name!r}...", flush=True)
-        try:
-            options = dict(preset["parameters"]) if preset is not None else {}
-            if preset is not None:
-                options["state_dim"] = preset["requested_state_dim"]
-            model = import_module(f"{models.__name__}.{name}").Model(**options)
-            if any(existing.name == model.name for existing in self._mdps):
-                if grouped:
-                    if verbose:
-                        print(
-                            f"Skipping MDP {model.name!r}: already registered",
-                            flush=True,
-                        )
-                    return self
-                raise ValueError(f"An MDP named {model.name!r} is already registered.")
-            expected_states, expected_actions = model.state_dim, model.action_dim
-            model.create_model()
-            if (model.state_dim, model.action_dim) != (
-                expected_states,
-                expected_actions,
-            ):
-                raise ValueError(
-                    f"{name}: expected {expected_states} states, got {model.state_dim}; "
-                    f"expected {expected_actions} actions, got {model.action_dim}; "
-                    "check the cached matrices"
-                )
+        model = _load_model(
+            name, preset=preset, registered=self._mdps, grouped=grouped, verbose=verbose
+        )
+        if model is not None:
             self.add_mdp(model)
             if verbose:
                 print(
@@ -402,15 +236,7 @@ class Benchmark:
                     f"in {perf_counter() - start:.3f} s",
                     flush=True,
                 )
-            return self
-        except ModuleNotFoundError as exc:
-            if not grouped:
-                raise
-            warnings.warn(
-                f"Skipping model {name!r}: missing dependency {exc.name!r}",
-                stacklevel=3,
-            )
-            return self
+        return self
 
     def add_all_mdps(self, *, size: str | None = None, verbose=False):
         """Add all catalogue MDPs for an optional size preset; return self.
@@ -473,8 +299,6 @@ class Benchmark:
             raise ValueError(
                 "Metadata filters cannot accompany a custom solve_function"
             )
-        if not grouped and solver_name in self._solvers:
-            raise ValueError(f"A solver named {solver_name!r} is already registered.")
         reserved = {
             "model",
             "transitions",
@@ -504,10 +328,38 @@ class Benchmark:
                     "metadata filters"
                 )
             solve_function = _load_solver(solver_name)
-        if not callable(solve_function):
-            raise TypeError("solve_function must be a callable function or class.")
-        self._solvers[solver_name] = (solve_function, options)
+        self._register_solver(solver_name, solve_function, options)
         return self
+
+    def _register_solver(
+        self, name, constructor, options, *, registry=None, skip_existing=False
+    ):
+        """Assign a unique key and register one solver configuration."""
+        if not callable(constructor):
+            raise TypeError("solve_function must be a callable function or class.")
+        if registry is None:
+            registry = self._solvers
+        auto_name = (
+            is_catalogue_solver(constructor)
+            and name == constructor.__module__.rsplit(".", 1)[-1]
+        )
+        if not auto_name and name in registry:
+            existing, previous_options = registry[name]
+            if (
+                skip_existing
+                and existing is constructor
+                and _same_options(previous_options, options)
+            ):
+                return
+            raise ValueError(f"A solver named {name!r} is already registered.")
+        if skip_existing and any(
+            existing is constructor and _same_options(previous_options, options)
+            for existing, previous_options in registry.values()
+        ):
+            return
+        if auto_name:
+            name, _ = solver_names(constructor, options, registry)
+        registry[name] = (constructor, options.copy())
 
     def remove_solver(self, solver_name: str):
         """Remove a registered solver by label and return self.
@@ -523,41 +375,26 @@ class Benchmark:
 
     def _add_solver_group(self, entries, options):
         """Check the entire selection before committing new registrations."""
-        pending = {}
+        registry = self._solvers.copy()
         for name, constructor in _available_solvers(entries):
             _check_solver_options(name, constructor, options)
-            if name in self._solvers:
-                existing, previous_options = self._solvers[name]
-                if existing is constructor and _same_options(previous_options, options):
-                    continue
-                raise ValueError(
-                    f"Solver {name!r} is already registered with a different "
-                    "implementation or configuration"
-                )
-            if any(
-                existing is constructor and _same_options(previous_options, options)
-                for existing, previous_options in (
-                    *self._solvers.values(),
-                    *pending.values(),
-                )
-            ):
-                continue
-            pending[name] = (constructor, options.copy())
-        if pending:
-            self._solvers.update(pending)
+            self._register_solver(
+                name, constructor, options, registry=registry, skip_existing=True
+            )
+        self._solvers.update(registry)
         return self
 
     def add_default_solvers(self):
         """Add catalogue mdpforge VI and MPI solvers; return self."""
-        pending = {}
+        registry = self._solvers.copy()
         for name in ("mdpforge_vi", "mdpforge_mpi"):
             constructor = _load_solver(name)
-            if name in self._solvers:
-                if self._solvers[name][0] is not constructor:
-                    raise ValueError(f"Solver {name!r} has a different implementation")
-            else:
-                pending[name] = (constructor, {})
-        self._solvers.update(pending)
+            if any(existing is constructor for existing, _ in registry.values()):
+                continue
+            if name in registry:
+                raise ValueError(f"Solver {name!r} has a different implementation")
+            self._register_solver(name, constructor, {}, registry=registry)
+        self._solvers.update(registry)
         return self
 
     def add_all_solvers(self):
@@ -568,14 +405,7 @@ class Benchmark:
             for entry in list_solvers()
             if entry["name"] not in self._solvers
         )
-        for name, constructor in _available_solvers(entries):
-            if any(
-                existing is constructor and not options
-                for existing, options in self._solvers.values()
-            ):
-                continue
-            self.add_solver(name, solve_function=constructor)
-        return self
+        return self._add_solver_group(entries, {})
 
     def run(
         self,
@@ -671,6 +501,7 @@ class Benchmark:
                                 discount,
                                 precision,
                                 seed + repeat,
+                                solver_name,
                             )
                             if timeout is None:
                                 value, runtime, status, error = _solver_trial(*args)

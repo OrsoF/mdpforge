@@ -159,12 +159,16 @@ class MDP:
         self, discount: float, *, cache="readwrite"
     ) -> np.ndarray:
         """Get a VI reference at absolute value-error precision 1e-3."""
-        from mdpforge.utils.value_reference import compute_value_function
+
+        def compute_value_function():
+            from mdpforge.solvers.mdpforge_vi import Solver
+
+            return Solver(self, discount, 1e-3).run().value
 
         return get_cached_value_function(
             self,
             discount,
             1e-3,
-            lambda: compute_value_function(self, discount, 1e-3),
+            compute_value_function,
             cache=cache,
         )

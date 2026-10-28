@@ -6,6 +6,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import bellman_operator, compute_transition_reward_policy
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
+from mdpforge.utils.solver_names import solver_names
 from mdpforge.utils.solver_options import initial_vectors
 
 METADATA = {
@@ -39,7 +40,7 @@ class Solver(GenericSolver):
         self.initial_policy = (
             np.zeros(model.state_dim, dtype=int) if policy is None else policy
         )
-        self.name = "mdpforge PI"
+        self.name, self.verbose_name = solver_names(Solver, locals())
 
     def _solve(self) -> SolveResult:
         policy = self.initial_policy.copy()

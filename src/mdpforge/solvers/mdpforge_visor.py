@@ -6,6 +6,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.solvers.mdpforge_vi import Solver as ValueIterationSolver
+from mdpforge.utils.solver_names import solver_names
 
 METADATA = {
     "display_name": "VI · mdpforge · SOR",
@@ -46,7 +47,7 @@ class Solver(ValueIterationSolver):
             max_iterations=max_iterations,
         )
         self.relaxation = float(relaxation)
-        self.name = "mdpforge VISOR"
+        self.name, self.verbose_name = solver_names(Solver, locals())
 
     def _solve(self) -> SolveResult:
         """Apply relaxed sequential Bellman sweeps until the full residual is small."""
