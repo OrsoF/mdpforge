@@ -932,11 +932,12 @@
   ],
   "files": [
     {
-      "path": ".gitattributes",
+      "path": "UPSTREAM.gitattributes",
       "bytes": 154,
       "git_blob_sha1": "90c11330d22994f4eb31a7e1a998da04c545a49a",
       "sha256": "85e9b1007b7dae53a73193c11909be17d36de7d0c344bfd5f9ce966361b2d848",
-      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/.gitattributes"
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/.gitattributes",
+      "upstream_path": ".gitattributes"
     },
     {
       "path": "3TandemQueue/3tandem_queue-iosa.jani",
@@ -2142,5 +2143,8 @@
       "sha256": "2ca339757b685dfab1949caa10aecc440baed546e6530b64de2ecf27f279eb46",
       "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/beb-modest/beb-4-3-3.jani"
     }
+  ],
+  "local_adaptations": [
+    "Original Git attributes preserved as UPSTREAM.gitattributes; local attributes keep source bytes unchanged."
   ]
 }

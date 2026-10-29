@@ -49,6 +49,8 @@ def list_models(
             )
         entry = dict(metadata)
         entry["name"] = name
+        entry.setdefault("description", None)
+        entry.setdefault("reference", None)
         entry.setdefault("sizes", {})
         entry.setdefault("available", True)
         entry.setdefault("reason", None)

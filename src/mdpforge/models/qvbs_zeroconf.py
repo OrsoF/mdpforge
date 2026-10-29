@@ -40,7 +40,10 @@ METADATA = {
     },
 }
 
-TEST_PARAMETERS = {"state_dim": 670}
+OBJECTIVES = ('correct_max', 'correct_min')
+VARIANTS = ('zeroconf.jani',)
+
+TEST_PARAMETERS = {'state_dim': 670, 'constants': {'N': 1, 'K': 1, 'reset': True}}
 
 
 class Model(JANIModel):
@@ -49,11 +52,22 @@ class Model(JANIModel):
     collection = "qvbs"
     benchmark = "zeroconf"
 
-    def __init__(self, state_dim: int = 670, *, objective: str | None = None,
-                 variant: str | None = None, constants: dict | None = None,
-                 state_limit: int | None = 1_000_000):
-        """objective: None or a source property; variant: None or a bundled basename.
+    def __init__(
+        self,
+        state_dim: int = 670,
+        *,
+        objective: str | None = None,
+        variant: str | None = None,
+        constants: dict | None = None,
+        state_limit: int | None = 1_000_000,
+    ):
+        """objective: None or OBJECTIVES; variant: None or VARIANTS; selects source rules.
         constants: None or source constant overrides; state_limit: positive int or None.
         state_dim: positive target; selects a published configuration when available."""
-        super().__init__(state_dim, objective=objective, variant=variant,
-                         constants=constants, state_limit=state_limit)
+        super().__init__(
+            state_dim,
+            objective=objective,
+            variant=variant,
+            constants=constants,
+            state_limit=state_limit,
+        )

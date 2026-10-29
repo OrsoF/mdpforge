@@ -39,6 +39,9 @@ METADATA = {
     },
 }
 
+OBJECTIVES = ('goal',)
+VARIANTS = ('rectangle-tireworld.11.jani', 'rectangle-tireworld.30.jani.gz', 'rectangle-tireworld.5.jani')
+
 TEST_PARAMETERS = {"state_dim": 50}
 
 
@@ -48,11 +51,22 @@ class Model(JANIModel):
     collection = "qvbs"
     benchmark = "rectangle-tireworld"
 
-    def __init__(self, state_dim: int = 50, *, objective: str | None = None,
-                 variant: str | None = None, constants: dict | None = None,
-                 state_limit: int | None = 1_000_000):
-        """objective: None or a source property; variant: None or a bundled basename.
+    def __init__(
+        self,
+        state_dim: int = 50,
+        *,
+        objective: str | None = None,
+        variant: str | None = None,
+        constants: dict | None = None,
+        state_limit: int | None = 1_000_000,
+    ):
+        """objective: None or OBJECTIVES; variant: None or VARIANTS; selects source rules.
         constants: None or source constant overrides; state_limit: positive int or None.
         state_dim: positive target; selects a published configuration when available."""
-        super().__init__(state_dim, objective=objective, variant=variant,
-                         constants=constants, state_limit=state_limit)
+        super().__init__(
+            state_dim,
+            objective=objective,
+            variant=variant,
+            constants=constants,
+            state_limit=state_limit,
+        )

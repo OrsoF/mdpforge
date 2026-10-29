@@ -346,7 +346,7 @@ class JaniProgram:
             if name in locations:
                 raise ValueError("Duplicate JANI location")
             assignments = self._assignments(location.get("transient-values", []))
-            if any(ref not in self.transients for ref, _ in assignments):
+            if any(ref not in self.transients for ref, _, _ in assignments):
                 raise ValueError("Location assignments must target transient variables")
             locations[name] = assignments
         edges = defaultdict(lambda: defaultdict(list))
@@ -459,19 +459,18 @@ class JaniProgram:
             raise ValueError(f"Unsupported JANI type for {name!r}")
 
     def _assignments(self, assignments):
-        """Compile index-zero assignments whose right-hand sides share one valuation."""
+        """Compile assignments that execute atomically at each ordered index."""
         result, seen = [], set()
         for assignment in assignments:
             _fields(assignment, {"ref", "value", "index"})
             name = assignment["ref"]
-            if not isinstance(name, str) or name not in self.variables or name in seen:
+            index = assignment.get("index", 0)
+            if not isinstance(name, str) or name not in self.variables:
                 raise ValueError(f"Unsupported or duplicate JANI assignment {name!r}")
-            if assignment.get("index", 0) != 0:
-                raise ValueError(
-                    "Only simultaneous assignments at index 0 are supported"
-                )
-            seen.add(name)
-            result.append((name, self._expression(assignment["value"])))
+            if type(index) is not int or index < 0 or (name, index) in seen:
+                raise ValueError("Invalid or duplicate indexed JANI assignment")
+            seen.add((name, index))
+            result.append((name, index, self._expression(assignment["value"])))
         return result
 
     def _environment(self, state):
@@ -480,14 +479,19 @@ class JaniProgram:
         return values
 
     def _update(self, values, assignments):
-        updates = {}
-        for name, expression in assignments:
-            if name in updates:
-                raise ValueError(f"Conflicting simultaneous JANI updates for {name!r}")
-            value = expression(values)
-            self._check_value(name, self.variables[name]["type"], value)
-            updates[name] = value
-        return values | updates
+        groups = defaultdict(list)
+        for name, index, expression in assignments:
+            groups[index].append((name, expression))
+        for index in sorted(groups):
+            updates = {}
+            for name, expression in groups[index]:
+                value = expression(values)
+                self._check_value(name, self.variables[name]["type"], value)
+                if name in updates and updates[name] != value:
+                    raise ValueError(f"Conflicting JANI updates for {name!r}")
+                updates[name] = value
+            values = values | updates
+        return values
 
     def _enabled_choices(self, locations, values):
         """Keep silent edges independent and combine matching synchronisation edges."""

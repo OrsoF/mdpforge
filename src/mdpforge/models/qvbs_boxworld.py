@@ -37,6 +37,9 @@ METADATA = {
     },
 }
 
+OBJECTIVES = ('goal',)
+VARIANTS = ('boxworld.10-10.jani', 'boxworld.10-5.jani', 'boxworld.15-10.jani', 'boxworld.15-15.jani', 'boxworld.20-20.jani')
+
 TEST_PARAMETERS = {"state_dim": 1}
 
 
@@ -55,7 +58,7 @@ class Model(JANIModel):
         constants: dict | None = None,
         state_limit: int | None = 1_000_000,
     ):
-        """objective: None or a source property; variant: None or a bundled basename.
+        """objective: None or OBJECTIVES; variant: None or VARIANTS; selects source rules.
         constants: None or source constant overrides; state_limit: positive int or None.
         state_dim: positive target; selects a published configuration when available."""
         super().__init__(
