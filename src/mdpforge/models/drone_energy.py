@@ -20,8 +20,8 @@ METADATA = {
     ),
     "sizes": {
         "small": {"requested_state_dim": 20000, "parameters": {"battery_capacity": 5}},
-        "medium": {"requested_state_dim": 80000, "parameters": {"battery_capacity": 5}},
-        "large": {"requested_state_dim": 320000, "parameters": {"battery_capacity": 5}},
+        "medium": {"requested_state_dim": 160000, "parameters": {"battery_capacity": 5}},
+        "large": {"requested_state_dim": 640000, "parameters": {"battery_capacity": 5}},
     },
 }
 TEST_PARAMETERS = {"state_dim": 50, "battery_capacity": 5}

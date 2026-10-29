@@ -13,11 +13,11 @@ METADATA = {
             "parameters": {},
         },
         "medium": {
-            "requested_state_dim": 27436,
+            "requested_state_dim": 405224,
             "parameters": {},
         },
         "large": {
-            "requested_state_dim": 109744,
+            "requested_state_dim": 753571,
             "parameters": {},
         },
     },
@@ -44,7 +44,7 @@ class Model(MDP):
         self.requested_state_dim = int(state_dim)
         target = max(27, state_dim)
         radius = 1
-        while (1 + 3 * radius * (radius + 1)) ** 3 <= target and radius < 4:
+        while (1 + 3 * radius * (radius + 1)) ** 3 <= target:
             radius += 1
         self.radius = max(1, radius - 1)
         self.cells = self._build_cells(self.radius)

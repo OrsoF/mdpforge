@@ -18,8 +18,8 @@ METADATA = {
     ),
     "sizes": {
         "small": {"requested_state_dim": 24000, "parameters": {}},
-        "medium": {"requested_state_dim": 96000, "parameters": {}},
-        "large": {"requested_state_dim": 384000, "parameters": {}},
+        "medium": {"requested_state_dim": 192000, "parameters": {}},
+        "large": {"requested_state_dim": 768000, "parameters": {}},
     },
 }
 TEST_PARAMETERS = {"state_dim": 74}

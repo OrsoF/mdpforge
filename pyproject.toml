@@ -29,7 +29,6 @@ quantecon = ["quantecon>=0.10.1,<0.14"]
 # madupite requires MPI/PETSc; install via its upstream conda/source instructions.
 cma = ["cma>=4.4,<5"]
 maze = ["mazelib"]
-qvbs = ["stormpy>=1.14,<2"]
 progress = ["tqdm"]
 notebooks = ["mdpforge[plot]", "ipython", "pandas", "seaborn", "openpyxl"]
 

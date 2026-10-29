@@ -1,6 +1,6 @@
 """Original QVBS firewire_abst JANI instance with native discounted rewards.
 
-States are Storm's reachable valuations; actions are local choice offsets.
+States are reachable valuations in Python BFS order; actions are local choices.
 Unused action slots repeat the first choice. Reach targets absorb at zero reward.
 Costs (Emin) are negated; rewards (Emax) retain their native scale.
 state_dim selects delay in 1..168, bounded by the native clock.
@@ -9,14 +9,12 @@ Finite property horizons are replaced by discounting, not reproduced.
 Source authors, conversion and CC-BY 4.0 attribution: _qvbs_data/manifest.json.
 """
 
-import stormpy  # noqa: F401
-
 from mdpforge.models._qvbs import QVBSModel
 
 METADATA = {
     "category": "service_operations",
     "description": (
-        "QVBS JANI import via Storm: Abstract IEEE 1394 root "
+        "QVBS JANI import in Python: Abstract IEEE 1394 root "
         "contention; native round cost."
     ),
     "reference": (
@@ -43,11 +41,10 @@ TEST_PARAMETERS = {"state_dim": 611}
 
 
 class Model(QVBSModel):
-    """Import the scalable firewire_abst source instance using Storm."""
+    """Construct the scalable firewire_abst source instance in Python."""
 
     benchmark = "firewire_abst"
 
     def __init__(self, state_dim: int = 611, *, objective: str = "rounds"):
-        """objective: rounds, time_max, time_min; selects the native reward
-        property."""
+        """objective: rounds, time_max, time_min; selects the native reward property."""
         super().__init__(state_dim, objective=objective)

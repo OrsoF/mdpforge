@@ -116,7 +116,11 @@ def plot_heat(
     else:
         fig = ax.figure
     im = ax.imshow(np.ma.masked_invalid(colors), cmap=cmap, norm=norm, aspect="auto")
-    ax.set_xticks(range(len(model_names)), model_names, rotation=35, ha="right")
+    model_metadata = (experiment or {}).get("models", {})
+    model_labels = [
+        model_metadata.get(name, {}).get("display_name", name) for name in model_names
+    ]
+    ax.set_xticks(range(len(model_names)), model_labels, rotation=35, ha="right")
     ax.set_yticks(range(len(solver_names)), labels)
     ax.set_xlabel("MDP")
     ax.set_ylabel("Solver")

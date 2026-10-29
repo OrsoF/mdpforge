@@ -1,6 +1,6 @@
 """Original QVBS csma JANI instance with native discounted rewards.
 
-States are Storm's reachable valuations; actions are local choice offsets.
+States are reachable valuations in Python BFS order; actions are local choices.
 Unused action slots repeat the first choice. Reach targets absorb at zero reward.
 Costs (Emin) are negated; rewards (Emax) retain their native scale.
 state_dim selects the nearest published (N,K) variant by state-count ratio.
@@ -9,14 +9,12 @@ Finite property horizons are replaced by discounting, not reproduced.
 Source authors, conversion and CC-BY 4.0 attribution: _qvbs_data/manifest.json.
 """
 
-import stormpy  # noqa: F401
-
 from mdpforge.models._qvbs import QVBSModel
 
 METADATA = {
     "category": "service_operations",
     "description": (
-        "QVBS JANI import via Storm: CSMA/CD protocol; native transmission time cost."
+        "QVBS JANI import in Python: CSMA/CD protocol; native transmission time cost."
     ),
     "reference": (
         "http://www.cs.bilkent.edu.tr/~tugrul/CS518/Papers/802.3- "
@@ -43,7 +41,7 @@ TEST_PARAMETERS = {"state_dim": 1038}
 
 
 class Model(QVBSModel):
-    """Import the scalable csma source instance using Storm."""
+    """Construct the scalable csma source instance in Python."""
 
     benchmark = "csma"
 

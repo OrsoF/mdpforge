@@ -14,7 +14,7 @@ METADATA = {
             "parameters": {},
         },
         "large": {
-            "requested_state_dim": 96000,
+            "requested_state_dim": 192000,
             "parameters": {},
         },
     },

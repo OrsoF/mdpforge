@@ -6,10 +6,9 @@
 # priority class of the arriving customer). The agent accepts or rejects.
 # This is naturally an average-reward continuing MDP.
 
-import math
-
 import numpy as np
 from scipy.sparse import dok_array
+from scipy.stats import binom
 
 from mdpforge.core.mdp import MDP
 
@@ -20,7 +19,7 @@ METADATA = {
             "parameters": {},
         },
         "medium": {
-            "requested_state_dim": 2000,
+            "requested_state_dim": 4000,
             "parameters": {},
         },
         "large": {
@@ -71,6 +70,11 @@ class Model(MDP):
 
         for free_servers in range(self.num_servers + 1):
             busy_servers = self.num_servers - free_servers
+            release_distributions = {
+                busy: binom.pmf(np.arange(busy + 1), busy, self.free_probability)
+                for busy in (busy_servers, busy_servers + 1)
+                if busy <= self.num_servers
+            }
 
             for priority in range(self.num_priorities):
                 state = self._encode(free_servers, priority)
@@ -86,13 +90,9 @@ class Model(MDP):
 
                     # During the step, each busy server independently becomes
                     # free with probability free_probability.
-                    for released in range(busy_after_decision + 1):
-                        release_probability = (
-                            math.comb(busy_after_decision, released)
-                            * self.free_probability**released
-                            * (1.0 - self.free_probability)
-                            ** (busy_after_decision - released)
-                        )
+                    for released, release_probability in enumerate(
+                        release_distributions[busy_after_decision]
+                    ):
                         next_free = min(
                             self.num_servers,
                             free_after_decision + released,

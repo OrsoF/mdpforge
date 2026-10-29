@@ -14,11 +14,11 @@ METADATA = {
             "parameters": {},
         },
         "medium": {
-            "requested_state_dim": 327200,
+            "requested_state_dim": 225000000,
             "parameters": {},
         },
         "large": {
-            "requested_state_dim": 1308800,
+            "requested_state_dim": 20958084,
             "parameters": {},
         },
     },

@@ -1,6 +1,6 @@
 """Original QVBS wlan JANI instance with native discounted rewards.
 
-States are Storm's reachable valuations; actions are local choice offsets.
+States are reachable valuations in Python BFS order; actions are local choices.
 Unused action slots repeat the first choice. Reach targets absorb at zero reward.
 Costs (Emin) are negated; rewards (Emax) retain their native scale.
 state_dim selects the nearest published backoff variant (0..6) by size ratio.
@@ -9,14 +9,12 @@ Finite property horizons are replaced by discounting, not reproduced.
 Source authors, conversion and CC-BY 4.0 attribution: _qvbs_data/manifest.json.
 """
 
-import stormpy  # noqa: F401
-
 from mdpforge.models._qvbs import QVBSModel
 
 METADATA = {
     "category": "service_operations",
     "description": (
-        "QVBS JANI import via Storm: IEEE 802.11 wireless LAN; native "
+        "QVBS JANI import in Python: IEEE 802.11 wireless LAN; native "
         "transmission cost."
     ),
     "reference": (
@@ -43,7 +41,7 @@ TEST_PARAMETERS = {"state_dim": 2954}
 
 
 class Model(QVBSModel):
-    """Import the scalable wlan source instance using Storm."""
+    """Construct the scalable wlan source instance in Python."""
 
     benchmark = "wlan"
 

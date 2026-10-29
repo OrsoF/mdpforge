@@ -5,10 +5,8 @@ import json
 import math
 from importlib.resources import files
 
-import numpy as np
-from scipy.sparse import coo_matrix
-
 from mdpforge.core.mdp import MDP
+from mdpforge.models._jani import JaniProgram
 
 
 def _select_configuration(source, requested_state_dim):
@@ -69,7 +67,7 @@ def _select_configuration(source, requested_state_dim):
 
 
 class QVBSModel(MDP):
-    """Use reachable Storm state indices and state-local choice offsets."""
+    """Use reachable state indices and state-local choice offsets."""
 
     def __init__(self, state_dim: int, *, objective: str):
         """Select a native configuration, then explore its actual dimensions."""
@@ -92,9 +90,6 @@ class QVBSModel(MDP):
         if document["type"] != "mdp":
             raise ValueError("Only discrete-time, fully observable MDPs are supported")
         self.objective = objective
-        import stormpy
-
-        self.storm_version = stormpy.__version__
         self.source_revision = manifest["revision"]
         self._reward_spec = source["objectives"][objective]
         self.reward_name = self._reward_spec["exp"]
@@ -103,45 +98,20 @@ class QVBSModel(MDP):
             if constant["name"] in self.constants:
                 constant["value"] = self.constants[constant["name"]]
 
-        # Preserve only a Boolean stopping predicate; bounded source properties
-        # are verification queries, not part of the native transition dynamics.
         terminal = self._reward_spec.get("reach")
-        document["properties"] = (
-            [
-                {
-                    "name": "mdpforge_terminal",
-                    "expression": {
-                        "op": "filter",
-                        "fun": "values",
-                        "states": {"op": "initial"},
-                        "values": terminal,
-                    },
-                }
-            ]
-            if terminal is not None
-            else []
-        )
-        program, properties = stormpy.parse_jani_model_from_string(
-            json.dumps(document, ensure_ascii=False)
-        )
-        options = stormpy.BuilderOptions([p.raw_formula for p in properties])
-        options.set_build_all_reward_models()
-        options.set_build_all_labels()
-        compiled = stormpy.build_sparse_model_with_options(program, options)
-        if compiled.model_type != stormpy.ModelType.MDP:
-            raise ValueError("Storm did not construct an MDP")
-        if not compiled.has_reward_model(self.reward_name):
-            raise ValueError(f"Missing native reward model {self.reward_name!r}")
-
-        choices = np.asarray(compiled.nondeterministic_choice_indices, dtype=np.int64)
-        super().__init__(int(compiled.nr_states), max(1, int(np.diff(choices).max())))
+        if self._reward_spec.get("accumulate") not in (["steps"], ["exit"]):
+            raise ValueError("Only native step or state-exit rewards are supported")
+        compiled = JaniProgram(document, reward=self.reward_name, terminal=terminal)
+        super().__init__(compiled.state_dim, compiled.action_dim)
         self.requested_state_dim = state_dim
-        self.initial_states = tuple(int(s) for s in compiled.initial_states)
-        self.terminal_states = np.zeros(self.state_dim, dtype=bool)
-        if properties:
-            truth = stormpy.model_checking(compiled, properties[0]).get_truth_values()
-            self.terminal_states[list(truth)] = True
+        self.initial_states = compiled.initial_states
+        self.terminal_states = compiled.terminal_states
         self._compiled = compiled
+        self._set_name()
+
+    def _set_name(self):
+        """Separate cached matrices and values by construction provenance."""
+        self.display_name = f"qvbs_{self.benchmark.replace('-', '_')}"
         config = self.get_config()
         config.pop("requested_state_dim")
         identity = hashlib.sha256(
@@ -149,11 +119,11 @@ class QVBSModel(MDP):
         ).hexdigest()
         self.name = (
             f"{self.state_dim}_{self.action_dim}_qvbs_{self.benchmark}"
-            f"_v2_{objective}_{identity}"
+            f"_v2_{self.objective}_{identity}"
         )
 
     def get_config(self):
-        """Identify the source, constants, objective and Storm enumeration version."""
+        """Identify the source, constants, objective and construction version."""
         return {
             "benchmark": self.benchmark,
             "requested_state_dim": self.requested_state_dim,
@@ -167,63 +137,19 @@ class QVBSModel(MDP):
             "reward_spec": self._reward_spec,
             "reward_name": self.reward_name,
             "reward_sign": self.reward_sign,
-            "storm_version": self.storm_version,
             "adaptation_version": 2,
+            "construction_backend": "python-jani",
+            "construction_version": 2,
         }
 
     def create_model(self, check_transition=False, *, cache="readwrite"):
-        """Finalize matrices and release Storm objects, including after cache hits."""
+        """Finalize matrices and release source graphs, including after cache hits."""
         super().create_model(check_transition, cache=cache)
         if self._is_model_built():
             self._compiled = None
 
     def _build_model(self):
         """Preserve native expected rewards and duplicate unavailable action slots."""
-        compiled = self._compiled
-        matrix = compiled.transition_matrix
-        native = compiled.get_reward_model(self.reward_name)
-        native.reduce_to_state_based_rewards(matrix, False)
-        if native.has_transition_rewards:
-            raise ValueError("Storm did not reduce transition rewards to expectations")
-        state_rewards = (
-            np.asarray(native.state_rewards, dtype=float)
-            if native.has_state_rewards
-            else np.zeros(self.state_dim)
+        self.transition_matrix, self.reward_matrix = self._compiled.matrices(
+            self.reward_sign
         )
-        choice_rewards = (
-            np.asarray(native.state_action_rewards, dtype=float)
-            if native.has_state_action_rewards
-            else np.zeros(int(compiled.nr_choices))
-        )
-        choices = np.asarray(compiled.nondeterministic_choice_indices, dtype=np.int64)
-        rows = [[] for _ in range(self.action_dim)]
-        columns = [[] for _ in range(self.action_dim)]
-        probabilities = [[] for _ in range(self.action_dim)]
-        rewards = np.zeros((self.state_dim, self.action_dim))
-        for state in range(self.state_dim):
-            start, end = int(choices[state]), int(choices[state + 1])
-            terminal = self.terminal_states[state] or start == end
-            for action in range(self.action_dim):
-                if terminal:
-                    rows[action].append(state)
-                    columns[action].append(state)
-                    probabilities[action].append(1.0)
-                    continue
-                # Repeating an enabled choice adds no policy or value options;
-                # a dummy zero-reward action would let a policy evade real costs.
-                choice = start + action if action < end - start else start
-                for entry in matrix.get_row(choice):
-                    rows[action].append(state)
-                    columns[action].append(int(entry.column))
-                    probabilities[action].append(float(entry.value()))
-                rewards[state, action] = self.reward_sign * (
-                    state_rewards[state] + choice_rewards[choice]
-                )
-        self.transition_matrix = [
-            coo_matrix(
-                (probabilities[a], (rows[a], columns[a])),
-                shape=(self.state_dim, self.state_dim),
-            ).tocsr()
-            for a in range(self.action_dim)
-        ]
-        self.reward_matrix = rewards

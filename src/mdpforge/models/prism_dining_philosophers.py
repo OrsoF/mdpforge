@@ -25,7 +25,7 @@ METADATA = {
     ),
     "sizes": {
         "small": {"requested_state_dim": 956, "parameters": {"philosophers": 3}},
-        "medium": {"requested_state_dim": 9440, "parameters": {"philosophers": 4}},
+        "medium": {"requested_state_dim": 75520, "parameters": {"philosophers": 4}},
         "large": {"requested_state_dim": 93068, "parameters": {"philosophers": 5}},
     },
 }

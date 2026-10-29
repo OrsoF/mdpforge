@@ -27,12 +27,12 @@ METADATA = {
             "parameters": {"stations": 2, "backoff": 2},
         },
         "medium": {
-            "requested_state_dim": 7958,
-            "parameters": {"stations": 2, "backoff": 4},
+            "requested_state_dim": 533744,
+            "parameters": {"stations": 2, "backoff": 6},
         },
         "large": {
-            "requested_state_dim": 66718,
-            "parameters": {"stations": 2, "backoff": 6},
+            "requested_state_dim": 761962,
+            "parameters": {"stations": 4, "backoff": 2},
         },
     },
 }

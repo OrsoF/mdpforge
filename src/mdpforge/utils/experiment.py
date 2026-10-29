@@ -201,6 +201,7 @@ def capture_experiment(
         get_config = getattr(model, "get_config", None)
         model_metadata[model.name] = {
             "class": _qualified_name(model),
+            "display_name": getattr(model, "display_name", model.name),
             "state_dim": int(model.state_dim),
             "requested_state_dim": _json_value(
                 getattr(model, "requested_state_dim", None)

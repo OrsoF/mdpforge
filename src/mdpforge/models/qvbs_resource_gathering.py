@@ -1,6 +1,6 @@
 """Original QVBS resource-gathering JANI instance with native discounted rewards.
 
-States are Storm's reachable valuations; actions are local choice offsets.
+States are reachable valuations in Python BFS order; actions are local choices.
 Unused action slots repeat the first choice. Reach targets absorb at zero reward.
 Costs (Emin) are negated; rewards (Emax) retain their native scale.
 state_dim scales the two native collection quotas together (quota>=0).
@@ -14,7 +14,7 @@ from mdpforge.models._qvbs import QVBSModel
 METADATA = {
     "category": "navigation",
     "description": (
-        "QVBS JANI import via Storm: Resource gathering with attacks; "
+        "QVBS JANI import in Python: Resource gathering with attacks; "
         "native collected-gold reward."
     ),
     "reference": (
@@ -41,7 +41,7 @@ TEST_PARAMETERS = {"state_dim": 24064}
 
 
 class Model(QVBSModel):
-    """Import the scalable resource-gathering source instance using Storm."""
+    """Construct the scalable resource-gathering source instance in Python."""
 
     benchmark = "resource-gathering"
 

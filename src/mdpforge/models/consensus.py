@@ -27,12 +27,12 @@ METADATA = {
             "parameters": {"processes": 2, "bound": 8},
         },
         "medium": {
-            "requested_state_dim": 1040,
-            "parameters": {"processes": 2, "bound": 8},
+            "requested_state_dim": 345088,
+            "parameters": {"processes": 4, "bound": 4},
         },
         "large": {
-            "requested_state_dim": 22656,
-            "parameters": {"processes": 4, "bound": 2},
+            "requested_state_dim": 43136,
+            "parameters": {"processes": 4, "bound": 4},
         },
     },
 }

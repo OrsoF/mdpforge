@@ -230,8 +230,9 @@ class Benchmark:
         if model is not None:
             self.add_mdp(model)
             if verbose:
+                model_label = getattr(model, "display_name", model.name)
                 print(
-                    f"Added MDP {model.name!r} "
+                    f"Added MDP {model_label!r} "
                     f"({model.state_dim} states, {model.action_dim} actions) "
                     f"in {perf_counter() - start:.3f} s",
                     flush=True,
@@ -343,12 +344,14 @@ class Benchmark:
             is_catalogue_solver(constructor)
             and name == constructor.__module__.rsplit(".", 1)[-1]
         )
-        if not auto_name and name in registry:
+        if auto_name:
+            name, _ = solver_names(constructor, options)
+        if name in registry:
             existing, previous_options = registry[name]
             if (
                 skip_existing
                 and existing is constructor
-                and _same_options(previous_options, options)
+                and (auto_name or _same_options(previous_options, options))
             ):
                 return
             raise ValueError(f"A solver named {name!r} is already registered.")
@@ -357,8 +360,6 @@ class Benchmark:
             for existing, previous_options in registry.values()
         ):
             return
-        if auto_name:
-            name, _ = solver_names(constructor, options, registry)
         registry[name] = (constructor, options.copy())
 
     def remove_solver(self, solver_name: str):
@@ -482,11 +483,12 @@ class Benchmark:
                 timeout=timeout,
             )
             for model in self._mdps:
+                model_label = getattr(model, "display_name", model.name)
                 for solver_name, (constructor, kwargs) in self._solvers.items():
                     for repeat in range(repeats):
                         if verbose:
                             print(
-                                f"{model.name} / {solver_name} "
+                                f"{model_label} / {solver_name} "
                                 f"[{repeat + 1}/{repeats}]: ",
                                 end="",
                                 flush=True,
