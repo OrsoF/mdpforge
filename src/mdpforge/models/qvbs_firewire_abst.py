@@ -6,10 +6,10 @@ Costs (Emin) are negated; rewards (Emax) retain their native scale.
 state_dim selects delay in 1..168, bounded by the native clock.
 The reachable size saturates at 1436 states; larger targets select that limit.
 Finite property horizons are replaced by discounting, not reproduced.
-Source authors, conversion and CC-BY 4.0 attribution: _qvbs_data/manifest.json.
+Source authors, conversion and CC-BY 4.0 attribution: _data/jani/qvbs/model_manifest.json.
 """
 
-from mdpforge.models._qvbs import QVBSModel
+from mdpforge.models._jani_model import JANIModel
 
 METADATA = {
     "category": "service_operations",
@@ -40,7 +40,7 @@ METADATA = {
 TEST_PARAMETERS = {"state_dim": 611}
 
 
-class Model(QVBSModel):
+class Model(JANIModel):
     """Construct the scalable firewire_abst source instance in Python."""
 
     benchmark = "firewire_abst"

@@ -66,7 +66,11 @@ def _select_models(names=None, *, size=None, category=None):
 def _load_model(name, *, preset=None, registered=(), grouped=False, verbose=False):
     """Build a catalogue model, optionally skipping duplicates or missing dependencies."""
     unavailable = next(
-        (entry for entry in models.list_models(available=False) if entry["name"] == name),
+        (
+            entry
+            for entry in models.list_models(available=False)
+            if entry["name"] == name
+        ),
         None,
     )
     if unavailable is not None:

@@ -1,5 +1,6 @@
 """Construct individually catalogued models from pinned JANI source data."""
 
+import gzip
 import hashlib
 import json
 import math
@@ -72,8 +73,12 @@ class JANIModel(MDP):
     collection = "qvbs"
 
     def __init__(
-        self, state_dim: int, *, objective: str | None = None,
-        variant: str | None = None, constants: dict | None = None,
+        self,
+        state_dim: int,
+        *,
+        objective: str | None = None,
+        variant: str | None = None,
+        constants: dict | None = None,
         state_limit: int | None = None,
     ):
         """Select a native configuration, then explore its actual dimensions."""
@@ -90,7 +95,8 @@ class JANIModel(MDP):
                 if not isinstance(variant, str):
                     raise ValueError("variant must be a bundled filename or None")
                 candidates = [
-                    c for c in candidates
+                    c
+                    for c in candidates
                     if variant in {c["file"], c["file"].rsplit("/", 1)[-1]}
                 ]
                 if not candidates:
@@ -110,7 +116,9 @@ class JANIModel(MDP):
             specs = selected["objectives"]
         else:
             if variant is not None:
-                raise ValueError("This model selects its native variant using state_dim")
+                raise ValueError(
+                    "This model selects its native variant using state_dim"
+                )
             selected, self.constants = _select_configuration(source, state_dim)
             specs = source["objectives"]
         objective = source["default_objective"] if objective is None else objective
@@ -125,7 +133,8 @@ class JANIModel(MDP):
         self.source_sha256 = hashlib.sha256(raw).hexdigest()
         if self.source_sha256 != selected["sha256"]:
             raise ValueError(f"JANI source checksum mismatch: {self.source_file}")
-        document = json.loads(raw.decode("utf-8-sig"))
+        decoded = gzip.decompress(raw) if self.source_file.endswith(".gz") else raw
+        document = json.loads(decoded.decode("utf-8-sig"))
         if document["type"] not in {"mdp", "dtmc"}:
             raise ValueError("Only finite MDPs and one-action DTMCs are supported")
         self.objective = objective
@@ -143,11 +152,15 @@ class JANIModel(MDP):
         terminal = self._reward_spec.get("reach")
         mode = self._reward_spec.get("mode", "native")
         if mode == "native" and self._reward_spec.get("accumulate", ["steps"]) not in (
-            ["steps"], ["exit"]
+            ["steps"],
+            ["exit"],
         ):
             raise ValueError("Only native step or state-exit rewards are supported")
         compiled = JaniProgram(
-            document, reward=self.reward_name, terminal=terminal, reward_mode=mode,
+            document,
+            reward=self.reward_name,
+            terminal=terminal,
+            reward_mode=mode,
             continuation=self._reward_spec.get("continuation", True),
             state_limit=state_limit,
         )

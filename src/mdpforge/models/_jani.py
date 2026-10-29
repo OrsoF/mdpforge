@@ -53,7 +53,9 @@ def _globalise(document):
                 return [expression(item) for item in value]
             if isinstance(value, dict):
                 return {
-                    key: child if key in {"op", "function", "comment"} else expression(child)
+                    key: child
+                    if key in {"op", "function", "comment"}
+                    else expression(child)
                     for key, child in value.items()
                 }
             return value
@@ -88,8 +90,14 @@ class JaniProgram:
     """Build reachable choices with synchronised updates and native rewards."""
 
     def __init__(
-        self, document, *, reward=None, terminal=None, reward_mode="native",
-        continuation=True, state_limit=None,
+        self,
+        document,
+        *,
+        reward=None,
+        terminal=None,
+        reward_mode="native",
+        continuation=True,
+        state_limit=None,
     ):
         document = _globalise(document)
         _fields(
@@ -114,7 +122,9 @@ class JaniProgram:
             raise ValueError("Only finite JANI version 1 MDPs and DTMCs are supported")
         if reward_mode not in {"native", "reachability", "step_cost", "state"}:
             raise ValueError("Unknown JANI reward adaptation")
-        if state_limit is not None and (type(state_limit) is not int or state_limit < 1):
+        if state_limit is not None and (
+            type(state_limit) is not int or state_limit < 1
+        ):
             raise ValueError("state_limit must be a positive integer or None")
         self.reward_mode = reward_mode
         self.state_limit = state_limit
@@ -239,16 +249,17 @@ class JaniProgram:
             participants = tuple((i, a) for i, a in enumerate(vector) if a is not None)
             if not participants or any(a not in self.actions for _, a in participants):
                 raise ValueError("Empty or undeclared JANI synchronisation action")
-            if (
-                participants in self.syncs
-                or sync.get("result") not in self.actions | {None}
-            ):
+            if participants in self.syncs or sync.get("result") not in self.actions | {
+                None
+            }:
                 raise ValueError("Duplicate or undeclared JANI synchronisation action")
             self.syncs.append(participants)
         predicates = [self._expression(exp) for exp in restrictions]
         self.states = []
         for locations in product(*initial_locations):
-            for valuation in product(*(initial_domains[n] for n in self.state_variables)):
+            for valuation in product(
+                *(initial_domains[n] for n in self.state_variables)
+            ):
                 state = (locations, *valuation)
                 values = self._environment(state)
                 if all(predicate(values) for predicate in predicates):
@@ -456,7 +467,9 @@ class JaniProgram:
             if not isinstance(name, str) or name not in self.variables or name in seen:
                 raise ValueError(f"Unsupported or duplicate JANI assignment {name!r}")
             if assignment.get("index", 0) != 0:
-                raise ValueError("Only simultaneous assignments at index 0 are supported")
+                raise ValueError(
+                    "Only simultaneous assignments at index 0 are supported"
+                )
             seen.add(name)
             result.append((name, self._expression(assignment["value"])))
         return result
@@ -571,7 +584,10 @@ class JaniProgram:
             self.terminal_states |= np.asarray(failures, dtype=bool)
             for state, choices in enumerate(self.choices):
                 self.choices[state] = [
-                    (outcomes, sum(p for target, p in outcomes.items() if goals[target]))
+                    (
+                        outcomes,
+                        sum(p for target, p in outcomes.items() if goals[target]),
+                    )
                     for outcomes, _ in choices
                 ]
 

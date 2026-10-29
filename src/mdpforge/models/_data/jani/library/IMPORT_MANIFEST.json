@@ -1,0 +1,2146 @@
+{
+  "repository": "https://github.com/ahartmanns/jani-models",
+  "revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+  "scope": "Complete upstream repository snapshot",
+  "integration_status": "Source collection; not automatically registered as models",
+  "license": null,
+  "license_url": null,
+  "license_note": "No repository-wide license file is provided upstream; original notices are retained",
+  "license_files": [],
+  "supplemental_files": [],
+  "families": [
+    "3TandemQueue",
+    "ApproxPi",
+    "BRP",
+    "CouponCollector",
+    "Database",
+    "DiningCryptographers",
+    "DiningPhilosophers",
+    "MutualExclusion",
+    "QueueWithBreakdowns",
+    "QueuesAndWorkflows",
+    "Rabin",
+    "RandomWalk",
+    "TandemQueue",
+    "beb-modest"
+  ],
+  "model_types": {
+    "sta": 7,
+    "mdp": 78,
+    "dtmc": 2,
+    "ma": 1
+  },
+  "jani_files": [
+    {
+      "path": "3TandemQueue/3tandem_queue-iosa.jani",
+      "name": "3tandem_queue.sa",
+      "type": "sta",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Rate_0"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_010_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_010_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_050_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_050_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_100_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_100_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_500_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_500_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_010_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_010_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_050_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_050_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_100_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_100_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_500_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_500_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_010_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_010_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_050_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_050_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_100_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_100_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_500_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_500_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_010_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_010_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_050_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_050_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_100_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_100_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_500_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_500_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_010_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_010_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_050_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_050_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_100_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_100_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_500_full.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_500_quadrant.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "BRP/brp.jani",
+      "name": "brp",
+      "type": "dtmc",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Property_brp_0",
+        "Property_brp_1",
+        "Property_brp_2",
+        "Property_brp_3",
+        "Property_brp_4",
+        "Property_brp_5",
+        "Property_brp_6",
+        "Property_brp_7",
+        "Property_brp_8",
+        "Property_brp_9",
+        "Property_brp_10",
+        "Property_brp_11"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_03_02.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_03_03.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_03_04.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_05_02.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_05_03.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_05_04.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_07_02.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_07_03.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_07_04.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_09_02.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_09_03.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_09_04.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_11_02.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_11_03.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_11_04.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_13_02.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_13_03.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_13_04.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_15_02.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_15_03.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_15_04.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_17_02.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_17_03.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_17_04.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_19_02.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_19_03.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_19_04.jani",
+      "name": "program_graph",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "Database/database_R2.jani",
+      "name": "database_R2.sa",
+      "type": "sta",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Rate_0"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "Database/database_R3.jani",
+      "name": "database_R3.sa",
+      "type": "sta",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Rate_0"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "Database/database_R4.jani",
+      "name": "database_R4.sa",
+      "type": "sta",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Rate_0"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "Database/database_R5.jani",
+      "name": "database_R5.sa",
+      "type": "sta",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Rate_0"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "DiningCryptographers/dining_crypt3.jani",
+      "name": "dining_crypt3",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Property_dining_crypt3_0",
+        "Property_dining_crypt3_1"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "DiningCryptographers/dining_crypt4.jani",
+      "name": "dining_crypt4",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Property_dining_crypt4_0",
+        "Property_dining_crypt4_1"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "DiningCryptographers/dining_crypt5.jani",
+      "name": "dining_crypt5",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Property_dining_crypt5_0",
+        "Property_dining_crypt5_1"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "DiningPhilosophers/phil3.jani",
+      "name": "phil3",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Property_phil3_0"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "DiningPhilosophers/phil4.jani",
+      "name": "phil4",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Property_phil4_0"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "DiningPhilosophers/phil5.jani",
+      "name": "phil5",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Property_phil5_0"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "MutualExclusion/mutual3.jani",
+      "name": "mutual3",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Property_mutual3_0",
+        "Property_mutual3_1",
+        "Property_mutual3_2",
+        "Property_mutual3_3"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "MutualExclusion/mutual4.jani",
+      "name": "mutual4",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Property_mutual4_0",
+        "Property_mutual4_1",
+        "Property_mutual4_2",
+        "Property_mutual4_3"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "MutualExclusion/mutual5.jani",
+      "name": "mutual5",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Property_mutual5_0",
+        "Property_mutual5_1",
+        "Property_mutual5_2",
+        "Property_mutual5_3"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "QueueWithBreakdowns/queue_with_breakdowns-iosa.jani",
+      "name": "queues_with_breakdowns.sa",
+      "type": "sta",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Transient_0"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "QueuesAndWorkflows/SimpleWorkflow/SimpleWorkflow.jani",
+      "name": "GSPN",
+      "type": "ma",
+      "jani_version": 1,
+      "features": [],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "Rabin/rabin3.jani",
+      "name": "rabin3",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Property_rabin3_0",
+        "Property_rabin3_1",
+        "Property_rabin3_2",
+        "Property_rabin3_3"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "RandomWalk/randomWalk.jani",
+      "name": "randomWalk",
+      "type": "dtmc",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [],
+      "status": "source_only"
+    },
+    {
+      "path": "TandemQueue/tandem_queue-iosa.jani",
+      "name": "tandem_queue.sa",
+      "type": "sta",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "Transient_0",
+        "Rate_0"
+      ],
+      "status": "source_only"
+    },
+    {
+      "path": "beb-modest/beb-4-3-3.jani",
+      "name": "beb.modest",
+      "type": "mdp",
+      "jani_version": 1,
+      "features": [
+        "derived-operators"
+      ],
+      "properties": [
+        "LineSeized",
+        "GaveUp"
+      ],
+      "status": "source_only"
+    }
+  ],
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 154,
+      "git_blob_sha1": "90c11330d22994f4eb31a7e1a998da04c545a49a",
+      "sha256": "85e9b1007b7dae53a73193c11909be17d36de7d0c344bfd5f9ce966361b2d848",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/.gitattributes"
+    },
+    {
+      "path": "3TandemQueue/3tandem_queue-iosa.jani",
+      "bytes": 16344,
+      "git_blob_sha1": "5c52e11a213d41bf3ff00dc0e4c289837d726bcf",
+      "sha256": "a53188dd3da8c39183514c95fb8830a3b01d8d377165108705bcce18b87e4746",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/3TandemQueue/3tandem_queue-iosa.jani"
+    },
+    {
+      "path": "3TandemQueue/README.md",
+      "bytes": 1896,
+      "git_blob_sha1": "e8978680adeaba2ecfff67137c85b99e99503751",
+      "sha256": "d137b7ff5a0e42d18c389147ca69a1c1cec84f21b8b0e1f4f9ed1462c60c78c0",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/3TandemQueue/README.md"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_010_full.jani",
+      "bytes": 38023,
+      "git_blob_sha1": "520f41ff67ac7a209a902db07bdb42822d376f06",
+      "sha256": "73439e092673965f5c74bf1a5981cd185129fc9fb649d2af151ef6fb75404a84",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00100_010_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_010_full.pgcl",
+      "bytes": 436,
+      "git_blob_sha1": "3ddf1c3cc546ac375f107bf7ef316047636618f1",
+      "sha256": "6548a224f0ef6917bfdce69c31fb55cdfff058a2591620a12e9ed346521db24b",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00100_010_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_010_quadrant.jani",
+      "bytes": 25397,
+      "git_blob_sha1": "1867e161a1b655edf24b82483397289f2ed2c863",
+      "sha256": "26bc310ccdcd92601bbe517babc1bd0510b7d5677a9c6b94837985b97dd7db7f",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00100_010_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_010_quadrant.pgcl",
+      "bytes": 432,
+      "git_blob_sha1": "5de2f155900404169a159bfed4f959d95100a1b3",
+      "sha256": "4f3bbdf5087f4d374d2d3af98363a42eed62614db88e0de3e28134191bf19fc5",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00100_010_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_050_full.jani",
+      "bytes": 139267,
+      "git_blob_sha1": "78fe53515c2688473131fe8018e5f763703307f6",
+      "sha256": "a2eb600337f08a528e16f3e5f137cb058945dd42706d1bc8d0094d2090e1dc4d",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00100_050_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_050_full.pgcl",
+      "bytes": 436,
+      "git_blob_sha1": "30987bfae5b443e58eb2f64f1ca722910bd07899",
+      "sha256": "1f9e3907bbcbe6cfcc1fad414ddce27c9b361eec21c5dfe183025fc01943cf0e",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00100_050_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_050_quadrant.jani",
+      "bytes": 75879,
+      "git_blob_sha1": "8a94c54be87364f29a732dbbf98d27bffe26cd3d",
+      "sha256": "240343f0dd26dacf4542da8d1f35b3cfe840ee9a21d66a03de61869dcc553b59",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00100_050_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_050_quadrant.pgcl",
+      "bytes": 432,
+      "git_blob_sha1": "a0dbf5c1b21ded028ffb0ecde56da4f072dad227",
+      "sha256": "85920753dcb48fbc96f097e283192bea200dd9b422a0252d133ed360d6ef1607",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00100_050_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_100_full.jani",
+      "bytes": 265777,
+      "git_blob_sha1": "ec28f57d3ac0dfec2e9616540af07b8a071d29f7",
+      "sha256": "f88ca313ede91439c04a1b4ed9f5cdcfb905bb02af21bd84597129a6e2b270e3",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00100_100_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_100_full.pgcl",
+      "bytes": 442,
+      "git_blob_sha1": "034b1210f7e122bfeb41c87e952369c6920ff1b5",
+      "sha256": "a5bc0b328f0a9a68842060b1e0fbad8807f5068ebc5e32fae28c2d326dd412c6",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00100_100_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_100_quadrant.jani",
+      "bytes": 139187,
+      "git_blob_sha1": "af42ca9152cc47cc36d42fdf0eb55e22bb0c8cd3",
+      "sha256": "28b9664af09a2ea88613f4e8c86e3e478a69a95da47f9dc991d3d1f06cd8b904",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00100_100_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_100_quadrant.pgcl",
+      "bytes": 436,
+      "git_blob_sha1": "bd490bd3e5f051944af19d78c9ea69985813b949",
+      "sha256": "9575d6087f03526d8b905078dc5167c3702264df84e12c9668ab3c0223b79ba9",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00100_100_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_500_full.jani",
+      "bytes": 1281381,
+      "git_blob_sha1": "9035c1b0c2d7f4b5fa1d0ceeaad9ea3cfe753c61",
+      "sha256": "1530e20076fd42ad6c9476f194559d382f15a68147b7ee3debfb82df94ea4814",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00100_500_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_500_full.pgcl",
+      "bytes": 442,
+      "git_blob_sha1": "8d3700f6dd91ba718c3e29f304bf35fef6132d8c",
+      "sha256": "8dd0a5c2ee9732b43e5eb7213b05b295a797bc8bc42b416569be9c33076f077a",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00100_500_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_500_quadrant.jani",
+      "bytes": 645589,
+      "git_blob_sha1": "42efb62ae9d0bce403fa53a36af4ec1cef989baf",
+      "sha256": "64bce02b57d72f071a52c10d3322e9df5b6ef45867691f252a0d89300d43dc3d",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00100_500_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_500_quadrant.pgcl",
+      "bytes": 436,
+      "git_blob_sha1": "36d5f692c3d626858111e358c2bf319e69d4e0d3",
+      "sha256": "5087b4ff5407bd6d5b194d36dc593257a1c81e490acd57d44ed07deb987439a8",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00100_500_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_010_full.jani",
+      "bytes": 38023,
+      "git_blob_sha1": "f11dde2cc583798a2f605b4b8a5ecee677a4e684",
+      "sha256": "82fb9ed3ae604399a83d2e4e4f89ecf300a54b5dfad880876e2013c51fa05c4c",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00500_010_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_010_full.pgcl",
+      "bytes": 436,
+      "git_blob_sha1": "45d2bba34294a7b6f374a33563d3eec2c9b55cb5",
+      "sha256": "eb0c99fff53e5dd8785cf0e3209d4033d2acb2a833090f5e8a2559f6ed865136",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00500_010_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_010_quadrant.jani",
+      "bytes": 25397,
+      "git_blob_sha1": "78c28b9716c8388b3bc423ade7299e5d274134c2",
+      "sha256": "866daccfc75bedb4d1f3409936bd43af50b38bb026273fe388261dc024642b8c",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00500_010_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_010_quadrant.pgcl",
+      "bytes": 432,
+      "git_blob_sha1": "1b53e0d57bd4f1cfa9192297d4055709b2dcb8dd",
+      "sha256": "f24758deaae948dd7ab3b2bcf5b213f40a5651cbf8bea4a6cf838c6a4a91e0c5",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00500_010_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_050_full.jani",
+      "bytes": 139267,
+      "git_blob_sha1": "0d2fd5d423152d3ffc3cf442cd9542cf23ee5a6e",
+      "sha256": "9bcdc35ebec1cd1efa2792ddb64c2316423783da589989e1c7910d9f962a0e0b",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00500_050_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_050_full.pgcl",
+      "bytes": 436,
+      "git_blob_sha1": "71189719198b95171b52c6a4ed45a1bcd8215171",
+      "sha256": "1c1c23677051fea5bfc16cf72b4a33ddc9f48496931deb869b82a165257d64e1",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00500_050_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_050_quadrant.jani",
+      "bytes": 75879,
+      "git_blob_sha1": "0c114d829b83e0f191b2d6b3bf64ec8b21c87d1b",
+      "sha256": "77ddeaa461a3db2e8ffe3610404841bbe42737eca9170cd66b2d321a40f3bfef",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00500_050_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_050_quadrant.pgcl",
+      "bytes": 432,
+      "git_blob_sha1": "dc61b6df6ed939bded25185c81c0f7bc6138827f",
+      "sha256": "903f8f69f14105d3da86ae5b47e877e8b4dd1921542b96ef00b327b4b687335a",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00500_050_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_100_full.jani",
+      "bytes": 265777,
+      "git_blob_sha1": "7c7d231017a826a091ffd02d56374e4a6b19e42a",
+      "sha256": "8fed195c089b2d3ca0f9b1952d915c12bccf3f4de981badfc0f4db348326f69d",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00500_100_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_100_full.pgcl",
+      "bytes": 442,
+      "git_blob_sha1": "db951442bc0ed144505f9882d003bd8327d93fc3",
+      "sha256": "5a61bbee68debfbbdcb5b67033a176f0927e50f1c650b6352deed2f933045bb0",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00500_100_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_100_quadrant.jani",
+      "bytes": 139187,
+      "git_blob_sha1": "52ef1b5e2a53a21947352699e4454d0ec2f1732f",
+      "sha256": "f537b3226842cf4c7a808253c1bf271a95d8fd0325ffc09fcccde4e750c36405",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00500_100_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_100_quadrant.pgcl",
+      "bytes": 436,
+      "git_blob_sha1": "f39fc487b2cfcca57c5dfdd03a1c7cf702ecbb42",
+      "sha256": "94af42508a2c35db44c5ffd979403a6f79153e067f05fae616736aa249a556d8",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00500_100_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_500_full.jani",
+      "bytes": 1281381,
+      "git_blob_sha1": "d701deacefd169812cf02cddfd5b3117bc8a9fd9",
+      "sha256": "485e5ec535a6972b1c4ac6059f817b2eb80d5a78519bb2abb3cfd6d7dc3f22f5",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00500_500_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_500_full.pgcl",
+      "bytes": 442,
+      "git_blob_sha1": "4901890e74ab51852a352898a13952ef33601b80",
+      "sha256": "42ee53bf1ec9a8aa1181949b38bf74471d3c9b656e35501230d28da5a01e53b2",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00500_500_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_500_quadrant.jani",
+      "bytes": 645589,
+      "git_blob_sha1": "fe8f214e84aa6f98d77437608cf4cb8dbf76064f",
+      "sha256": "d97fd0ab897df88402f0ae874453a8cae75362e0f367138c83bc196409b4b38c",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00500_500_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_00500_500_quadrant.pgcl",
+      "bytes": 436,
+      "git_blob_sha1": "c7f74ea3b6a64d1e7d45f5a0bcca218884689ac3",
+      "sha256": "1f44055d7025b0fdddf60b205202503e145ee6e2c152846ff5b1a079e40f81d3",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_00500_500_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_010_full.jani",
+      "bytes": 38028,
+      "git_blob_sha1": "22b9bb548bc02596040cd75f2f5deefcde07336e",
+      "sha256": "2cf4ff64e0a0c932a90a8ab02665cf568e6345e3e1dfd22fc19277ca52761af6",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_01000_010_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_010_full.pgcl",
+      "bytes": 437,
+      "git_blob_sha1": "efa5ba80eb43299eb5b423ae702dfb63e0f45b15",
+      "sha256": "5a210e3f74e4fa76bf9176288e8e990bd52211b7721833434950b2c6b8c7b39d",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_01000_010_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_010_quadrant.jani",
+      "bytes": 25402,
+      "git_blob_sha1": "4b182318310e70d1201c26d384fcb389d5630968",
+      "sha256": "2c9feb69488c191ab77bbf8c60122f57353321f5f5dd6e80405460b0b30e7171",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_01000_010_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_010_quadrant.pgcl",
+      "bytes": 433,
+      "git_blob_sha1": "fcfedb5c5c0f0e1639fdb74098d084ebbb14127b",
+      "sha256": "e21d27911793b35065eabfde6f2b014770af91aa38de4f57fb4a4a9dc2f9afdb",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_01000_010_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_050_full.jani",
+      "bytes": 139272,
+      "git_blob_sha1": "b7dc83cbacc7c0aa94b6960b2e0cac5aad4ce92a",
+      "sha256": "194d25fcf548842e9a6c5e515ee462eb951443db32a516b4f68e3a956d6c6837",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_01000_050_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_050_full.pgcl",
+      "bytes": 437,
+      "git_blob_sha1": "3dc99eaec15cd9a43a593f955cc90af8fe713b63",
+      "sha256": "46a48076e3751b59407208335a856992241f5bfaeb443934f00c2b0dac06a5ec",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_01000_050_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_050_quadrant.jani",
+      "bytes": 75884,
+      "git_blob_sha1": "a9ddfd0ac405a7fa2970b2c9494b77e6c3ecc46b",
+      "sha256": "29ee2e8294a5415d4547cc2ffa6f862e14a86583dbac960c7a26053322693ae4",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_01000_050_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_050_quadrant.pgcl",
+      "bytes": 433,
+      "git_blob_sha1": "bfbc3045d8af27f8ecec5b0ec443c508c9db6210",
+      "sha256": "63e85d90aaabfdb6ea87948b28e9a626250517e581abc5c7e70ef7a1f1a32e50",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_01000_050_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_100_full.jani",
+      "bytes": 265782,
+      "git_blob_sha1": "f9c3b223f9a2e36cb11f049d2ddb677751bbe3c7",
+      "sha256": "4f037ee07598fbba0c5cf830ec0c1f925ea5ea2f2d9d419cfadd2d866e8c4274",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_01000_100_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_100_full.pgcl",
+      "bytes": 443,
+      "git_blob_sha1": "c96abad7d7b98a9918104faa549df51e15280949",
+      "sha256": "759f291bcb270a0c51e1c12b64022c99e45f30061eb0e7388bfe18708ec914dd",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_01000_100_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_100_quadrant.jani",
+      "bytes": 139192,
+      "git_blob_sha1": "6b2d60b0237a9f8512b19c654dcc29ad1bfcfa34",
+      "sha256": "24f0d17ff18f24a27c0997748554bcf824aa7b36bd7c194c38462eb473a53f23",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_01000_100_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_100_quadrant.pgcl",
+      "bytes": 437,
+      "git_blob_sha1": "a4ae4807d0b36ac2d9f4eafefd0717e9f02a32ae",
+      "sha256": "16801c37a65f7699f39cdb2168f81f890ee5862ab0c2c317411e54194613f420",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_01000_100_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_500_full.jani",
+      "bytes": 1281386,
+      "git_blob_sha1": "240709e617d6b04f4ad72ddc4440c923f906705b",
+      "sha256": "11ccd2b6098ad212ac8175317fe36feb2ffc57dfae7e6fe0621dda75afe3cd89",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_01000_500_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_500_full.pgcl",
+      "bytes": 443,
+      "git_blob_sha1": "9d45701cc5d4ff9cf31c96ec9aa70d060275315e",
+      "sha256": "de95002ad53d96150bf775f2b351e2040dc15d79bbba6b332ceefc6439d5d8c7",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_01000_500_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_500_quadrant.jani",
+      "bytes": 645594,
+      "git_blob_sha1": "27c91107dd21ff3941f5968bb532e93904a0e84c",
+      "sha256": "dd2ccd757234ddd70f41aca9ef5747c921d9daa343426df94359dbd8c8497460",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_01000_500_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_01000_500_quadrant.pgcl",
+      "bytes": 437,
+      "git_blob_sha1": "10bbf0e69190e89b9cc682618206cbd8171d3a1f",
+      "sha256": "7de6ff2d21e651363cdc082aa7ecfbe59a7c7f95732fc994f8c258e322553f4a",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_01000_500_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_010_full.jani",
+      "bytes": 38028,
+      "git_blob_sha1": "48b599a8f7fde59bcadd8c30e1ea44105c480f06",
+      "sha256": "39f36e30e9089727f9549b007bd8d6da6e13e1dfe5bac781ba10ac8f982e80a3",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_05000_010_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_010_full.pgcl",
+      "bytes": 437,
+      "git_blob_sha1": "5f4937b39ac1c0aaec56efdd33bf9e290067fb1b",
+      "sha256": "2d254d741abb2d9ca01346e6247fbb0be61d4ad27247c1195f43f81f18b79d4d",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_05000_010_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_010_quadrant.jani",
+      "bytes": 25402,
+      "git_blob_sha1": "4e46b6539e7ea3d075f34b7d590cb94846e7eef0",
+      "sha256": "83cd65805b4920a8167122c42cae3aaf2cf603ec14127429d7deac62e25320b2",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_05000_010_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_010_quadrant.pgcl",
+      "bytes": 433,
+      "git_blob_sha1": "b7e10a8059ceacfad73df15d4f556eedb7a1a86c",
+      "sha256": "bf2e867133879996d4a15ddd27f9bd68692fb44fa0259f9059aea1fe0e172ed9",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_05000_010_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_050_full.jani",
+      "bytes": 139272,
+      "git_blob_sha1": "dc79b9f5c9736376a6178a631ec886fa87f0f14f",
+      "sha256": "94c63b32aa7b4b36d560a150247456597153c4c0588356b277533f37bd56adb3",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_05000_050_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_050_full.pgcl",
+      "bytes": 437,
+      "git_blob_sha1": "62b9858c1ca2a019052558dee6d31b15164f9d8c",
+      "sha256": "aed45effdf22fbb76827f4f677aa83acfca09bab838b697cef06654e7f2a32c6",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_05000_050_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_050_quadrant.jani",
+      "bytes": 75884,
+      "git_blob_sha1": "1924696ddc4349923b483cb04b5e3970a256a578",
+      "sha256": "a9ac76856da68896dd2c1e28fc0541f89fc983c73c5f34d1685325850447b117",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_05000_050_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_050_quadrant.pgcl",
+      "bytes": 433,
+      "git_blob_sha1": "ab0a13319cae346f1b1b5f981875214018c1340c",
+      "sha256": "081a3760a4555121a3dfecdbdebaddf21b948f11724a58f205b4cfbfc83e9d79",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_05000_050_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_100_full.jani",
+      "bytes": 265782,
+      "git_blob_sha1": "bf9fb54b48a5dee08f38b3c77567f3a8d5d432b6",
+      "sha256": "60787184c084d85652647d98f134e04c6a66fe269db4cc32d05db5a5cd729ed1",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_05000_100_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_100_full.pgcl",
+      "bytes": 443,
+      "git_blob_sha1": "aa8028104a6a3281a7ab4c98dcd423738d374964",
+      "sha256": "91658cb3e6e8f54efc5d46e4b5c1597c0fea29d7ff8c3f6874bdf555a87b7c47",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_05000_100_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_100_quadrant.jani",
+      "bytes": 139192,
+      "git_blob_sha1": "69e4a4597177b5bf2f692e8ab64b4d81a20eea25",
+      "sha256": "dfa7a22fd970898f81897d0bcd16cac897f039041bb91f3eadf9de8e5c77089a",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_05000_100_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_100_quadrant.pgcl",
+      "bytes": 437,
+      "git_blob_sha1": "5a73908c9b942af22104b156de27df6a959baf74",
+      "sha256": "c3b974a19a6e5b0ea16fd59fa0440eaab3c8b79f6d6d9e9f43377f7eca2be506",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_05000_100_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_500_full.jani",
+      "bytes": 1281386,
+      "git_blob_sha1": "e01f5603a08def7aa7e54c138848af21ba218458",
+      "sha256": "052cb1f24712e478258f356c0c8be2cd5b1c4d894a52fe654b0b1a43368e6970",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_05000_500_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_500_full.pgcl",
+      "bytes": 443,
+      "git_blob_sha1": "3dea51f58576fb8247f3755d1e3e4e4debe4cb03",
+      "sha256": "893a5f06907e3e6fcda68aa3c9a8e51492660f021e7ee5cd6023be010718e100",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_05000_500_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_500_quadrant.jani",
+      "bytes": 645594,
+      "git_blob_sha1": "4dac0e6d21b7e9f7d92e6a2f2161463d65d15712",
+      "sha256": "67985a85ed15efc1282618b1b44e8f3f80889f7aa9d989654c2b492e267b8b17",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_05000_500_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_05000_500_quadrant.pgcl",
+      "bytes": 437,
+      "git_blob_sha1": "d3c5059e9d961f97fc598e01b157cd1e1c0e1082",
+      "sha256": "030321c4ef78708e4e82a9fde78b4c28562670a36875a29aff6805de52bd6191",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_05000_500_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_010_full.jani",
+      "bytes": 38033,
+      "git_blob_sha1": "6f2810fe7bf572c2181b59903c15ce0f0999ca08",
+      "sha256": "bbd0ce7e475fe049039bda9aca0c466aa17ccca02cba949d001d9d7993d3fb46",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_10000_010_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_010_full.pgcl",
+      "bytes": 438,
+      "git_blob_sha1": "417f8b8f895f295437534e3dc47bdaa0f08c3b4a",
+      "sha256": "d9accf2605d33e662b508bd6b170fae479d7f05343d4f3e62fa9a90b54279bc1",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_10000_010_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_010_quadrant.jani",
+      "bytes": 25407,
+      "git_blob_sha1": "0bef6fb729592a91fcb32a6a96a785c6d2d824e8",
+      "sha256": "941e03947eb238003585062d2ffda48a22054e16c3ddad1ec357ec33d3ca3a5e",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_10000_010_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_010_quadrant.pgcl",
+      "bytes": 434,
+      "git_blob_sha1": "1853b2473b4f91c74036f1a9d5d0c5c71fb1c896",
+      "sha256": "e2d238eba7d71a6874477d67e9df46c565b23369cf618afd4711ff3d909c2aab",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_10000_010_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_050_full.jani",
+      "bytes": 139277,
+      "git_blob_sha1": "2c1a9b60aca4fb8adbc4b6890f571ce378657236",
+      "sha256": "5eb0bfeee8e342300a5c83ab42c7696d66ee5c95a29c0b0e80e4c5b9120442e4",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_10000_050_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_050_full.pgcl",
+      "bytes": 438,
+      "git_blob_sha1": "4ef4c3c0298ce35b59174f9e5936f19f939e0401",
+      "sha256": "b06864212f873a187db33150af1f13b927bc240c0ee5314a9c57641b4602f24f",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_10000_050_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_050_quadrant.jani",
+      "bytes": 75889,
+      "git_blob_sha1": "cb2ad5b636494992c1d86cc1683cc161c526ec1c",
+      "sha256": "07faaa6c1936477badd5084062222a4b8ff3f18f35b3416cbfec1fc555244a1a",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_10000_050_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_050_quadrant.pgcl",
+      "bytes": 434,
+      "git_blob_sha1": "b77d86ae7ab75e07f3bfdcaefcdcda54f7f36cb0",
+      "sha256": "45c45268cb381eb4e04143ad3f5fa20abf0f533491baaabfa8901165fa765337",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_10000_050_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_100_full.jani",
+      "bytes": 265787,
+      "git_blob_sha1": "920e14a85d062b5309cca020aefc91bf5e2d9cd6",
+      "sha256": "99cd77812b6bf11b86acc08779e284bb78c1ea1bd9c7d6756406e047e157fe24",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_10000_100_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_100_full.pgcl",
+      "bytes": 444,
+      "git_blob_sha1": "114655aa123aa8025b10ad2b2d7b9d1edc32b519",
+      "sha256": "4fb65b4adf7819bd8b03658c54a332cedde0aa8ff48cf18ef8f6ccb13e8eadb6",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_10000_100_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_100_quadrant.jani",
+      "bytes": 139197,
+      "git_blob_sha1": "b903aa691a09f6bc66a614ce462a39ce8f5a86b1",
+      "sha256": "381f97bccf94e509c4b14129cc848713c4156b7f3287701ab91362304ef22869",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_10000_100_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_100_quadrant.pgcl",
+      "bytes": 438,
+      "git_blob_sha1": "1f4625000abac9e4b7ce14ed0e87d8541f37f5c7",
+      "sha256": "215342471995ea7916b5097ea4ad72bc6cc7eb50cab69cd215bc706a9bcfbea4",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_10000_100_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_500_full.jani",
+      "bytes": 1281391,
+      "git_blob_sha1": "278e520bbc55010151cf0911813fa15d516f9d9c",
+      "sha256": "dd5ba8ba40b78980ff9cbd3002cdc1c50388ab350bfe9b3d1e014697f1fe5a90",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_10000_500_full.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_500_full.pgcl",
+      "bytes": 444,
+      "git_blob_sha1": "ea848f012e1f79aa59a18bfaed808326661d6448",
+      "sha256": "0a56a64b45e228bdf806a448a8af33d241d3d18d5a95e6f302daa4a77e0da6ca",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_10000_500_full.pgcl"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_500_quadrant.jani",
+      "bytes": 645599,
+      "git_blob_sha1": "c6eff609af48bbe5857168149abdda4aca2212fa",
+      "sha256": "76e98d82f5409ad2adbd5cbf0d0f5749c5b27c5e90eaffb90698a0d8b8a540f9",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_10000_500_quadrant.jani"
+    },
+    {
+      "path": "ApproxPi/NaiveRejectionSampling/approx_pi_10000_500_quadrant.pgcl",
+      "bytes": 438,
+      "git_blob_sha1": "20c57a7e7fb54aa36957223b28ed2320d73ca916",
+      "sha256": "a7ea027afae09a8cd831d2999a7831b99903c7ae3a62a394541130c113b21e2f",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/NaiveRejectionSampling/approx_pi_10000_500_quadrant.pgcl"
+    },
+    {
+      "path": "ApproxPi/README.md",
+      "bytes": 264,
+      "git_blob_sha1": "95dae784a48d83c8b69f0c2d76e714ff58e44f6d",
+      "sha256": "8fad58ee0209c4e0f90eb17df9ea5cddd6c4fefc13f61661b649f82985ae8605",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi/README.md"
+    },
+    {
+      "path": "BRP/README.md",
+      "bytes": 598,
+      "git_blob_sha1": "cf553310c4018fd21b5f9bf60a17231e00c0a74b",
+      "sha256": "e1b0c070d57d54869bf7f02ada7a46d98c00afdc2a8276159a9617bc7c783d30",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/BRP/README.md"
+    },
+    {
+      "path": "BRP/brp.jani",
+      "bytes": 70309,
+      "git_blob_sha1": "8420dc2aacd095c837eccc246b70b86bc7ef108a",
+      "sha256": "c8f489ace29a0492c074840bf6bc51f2181b470286bc602a5bb461b17b605441",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/BRP/brp.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_03_02.jani",
+      "bytes": 19308,
+      "git_blob_sha1": "fac80ce3990f21a7789187d51e06e92799d7ecb5",
+      "sha256": "bc26816d14e8b45c7c673c69e9629a5e8280dcbb4791dd7f8723ce1131b77e30",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_03_02.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_03_02.pgcl",
+      "bytes": 671,
+      "git_blob_sha1": "1b77a580f9ebdd46d0a8829c5ab49beae7d36c91",
+      "sha256": "ac8b612ea6610dd95003abb807e62266c95324a9251923c6cd489b8873562b8f",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_03_02.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_03_03.jani",
+      "bytes": 24163,
+      "git_blob_sha1": "a9ca2ff25db25294dcba3d44b556459a1a0678b7",
+      "sha256": "66d97a73f48f5695cf1804fcc2d96dea6d0103ee1bcd946e11fd86300102ffeb",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_03_03.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_03_03.pgcl",
+      "bytes": 748,
+      "git_blob_sha1": "586dbdcd12242bc8afefc252d56072b7b7a8b414",
+      "sha256": "26ee00e79b5323df436137d60c7a5958c12c7b2bf362af903ac522120161c737",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_03_03.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_03_04.jani",
+      "bytes": 29212,
+      "git_blob_sha1": "1461f21d301622343038d21c2b8ee0f1cbaf550c",
+      "sha256": "51736cafe92177092309732815d8eec25e563e8f34185aa96fa2876b6fd61fdb",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_03_04.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_03_04.pgcl",
+      "bytes": 825,
+      "git_blob_sha1": "f74fe011aa7a9089132ea31d0cea268d5e751b84",
+      "sha256": "3a05e9f6f2af7eb5aefa0168ed5e7ca46d6a3b02bad4571143a84b33149f18dc",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_03_04.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_05_02.jani",
+      "bytes": 29062,
+      "git_blob_sha1": "6edd01e4aa920dba36082739309033580bbf1e07",
+      "sha256": "27f8bb2adbd667088bb04270d7e12768adf76b16cffa78ab8e298eb09920b13f",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_05_02.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_05_02.pgcl",
+      "bytes": 839,
+      "git_blob_sha1": "b763d0628509e8ef94ab6a333cb98184c2851d3b",
+      "sha256": "56d8de789ad24225669923c5ef53cb1d04d0b74f0a949092d08956cda3726a63",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_05_02.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_05_03.jani",
+      "bytes": 36679,
+      "git_blob_sha1": "281e17b1acb139df0dd0fcb5bbb5306f5d5a726c",
+      "sha256": "db46d69d8885844dfe667e148f69db8a7e06fb1f9d344854ea47657596c0965b",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_05_03.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_05_03.pgcl",
+      "bytes": 940,
+      "git_blob_sha1": "d3bd593806812377b89e61454488133c584d2224",
+      "sha256": "43202dad929880147c74555e97a3860013ce33fb19cd149499eff412d5d8ea09",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_05_03.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_05_04.jani",
+      "bytes": 44618,
+      "git_blob_sha1": "117665d7983ac94ef923434a8c48b83ec4301765",
+      "sha256": "dcd36b9fcbadd5911f2a8564334959ae1a1d4989a1d6f9a347c1866b6fcb5e12",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_05_04.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_05_04.pgcl",
+      "bytes": 1041,
+      "git_blob_sha1": "b78cefeeed5a9f3fa0ce16ed5a1d9aa11c10e5f1",
+      "sha256": "f0a88e3abf96b9241a1131f11120942c156c3f76df754a16ceadefc58ed87c81",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_05_04.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_07_02.jani",
+      "bytes": 38944,
+      "git_blob_sha1": "35eaaa4e98eac90bc335fef20cc92fbf882f0e73",
+      "sha256": "83aa04861338ee15f85f8d66474ff9085f0692ba610b5b5b916217de8aa35ca9",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_07_02.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_07_02.pgcl",
+      "bytes": 1007,
+      "git_blob_sha1": "a3ff6732e71877ea542c7bdf948211b469c33e0f",
+      "sha256": "9810bc33a7b2ff4da3f8b24f575224f84adaf4c9760cbbbaeed475e592afedcd",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_07_02.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_07_03.jani",
+      "bytes": 49323,
+      "git_blob_sha1": "89a1680defed71a77d727407074d38d1dbd89fcf",
+      "sha256": "d56579b28910abb116a533bfcb1e302fc6c9a942289dbde151a6f52efbef030d",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_07_03.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_07_03.pgcl",
+      "bytes": 1132,
+      "git_blob_sha1": "1f0f576af3e8a5e51255d59340e089e77a492cd1",
+      "sha256": "974167947c2786cbb8a7c3d89e4b3b2d831fb3be32a1c038765bdee04349796e",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_07_03.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_07_04.jani",
+      "bytes": 60152,
+      "git_blob_sha1": "37e417e01472d3d7f888697b92269f777bd720ff",
+      "sha256": "b58c26ebdd5b2873832d191f7e8de4c9e0f57b6a926361b81e174f0dd07b515d",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_07_04.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_07_04.pgcl",
+      "bytes": 1257,
+      "git_blob_sha1": "064b226042cf7db36800bf281864a794140c0c0b",
+      "sha256": "b0462adc504e7d6b66dd156e617bffa7e49be5e3a4c35b43ba42b0ea0e01d62f",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_07_04.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_09_02.jani",
+      "bytes": 48954,
+      "git_blob_sha1": "a190499f53dd959a15632a68775d3ffa3ceaa95a",
+      "sha256": "4e5ab763839b7d05cf1a86f3af3c24b09bd9816640790e43e358ac13bc0a8add",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_09_02.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_09_02.pgcl",
+      "bytes": 1175,
+      "git_blob_sha1": "57acf1772421e0654629ef44865eaac98aaef44c",
+      "sha256": "d6a9465524c25d3b7abe39aa5f9a9e6c1f7ecf1e98ffadae5af4e9fd68ab16f7",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_09_02.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_09_03.jani",
+      "bytes": 62095,
+      "git_blob_sha1": "e674e8a286c064ee21630a6e9d538e6bb3708adf",
+      "sha256": "278fc30707371ab54f0adc2f609fe5a800f716709cf6e3e4928d4b107cf06712",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_09_03.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_09_03.pgcl",
+      "bytes": 1324,
+      "git_blob_sha1": "a2cbe9391728181153be5310ff39c31a14545e9f",
+      "sha256": "5025e39255e2862e1c3c1a7bd6ce8efdfa93bc96722997268b8d814dae1baaf6",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_09_03.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_09_04.jani",
+      "bytes": 75814,
+      "git_blob_sha1": "31fd944b184bad59235e955e3cde4d7ce2d963dc",
+      "sha256": "d6a3fad07e8efcfd0c98e0b74caa30ce46ca37e652160e41a68400adfb12a66a",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_09_04.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_09_04.pgcl",
+      "bytes": 1473,
+      "git_blob_sha1": "383c72ada2be324572df39f3cd20a51afaaf40f8",
+      "sha256": "0dea7c692118e58636749f181b84cd73816f3e78751284693a8df5ad29106e9d",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_09_04.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_11_02.jani",
+      "bytes": 59126,
+      "git_blob_sha1": "cb1b3ff361703597713d79a6d8df56cef7996967",
+      "sha256": "7337bf1fde882a4cb481e6f16e7d51048cc90781738c352a3914c6ccd61bfd7b",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_11_02.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_11_02.pgcl",
+      "bytes": 1350,
+      "git_blob_sha1": "1cd0618c5c29733b0871e0a0e2568f68479305da",
+      "sha256": "11ec8ab4ca0b5f1a8163c4bcdfa6645600c3a510437c211e934674a956b95f3d",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_11_02.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_11_03.jani",
+      "bytes": 75044,
+      "git_blob_sha1": "095ae2f4e944667687fb751d443ebe8a823a0e9f",
+      "sha256": "db979754aeca54ce9b05a7be64eaeab5929a63d780cd614412dd4524417f2781",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_11_03.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_11_03.pgcl",
+      "bytes": 1525,
+      "git_blob_sha1": "4f3b6c8cc850e87145d179b2dcf41365d3e2a35d",
+      "sha256": "6c849ee41e48c0ff194f66acf7ccc08da77e385798db0bcd4169c2da7654b5e6",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_11_03.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_11_04.jani",
+      "bytes": 91668,
+      "git_blob_sha1": "d23d6625d843b9fa93bbf82fefb1850d7ed7026b",
+      "sha256": "dfd54048bd99d264fd9c989c76b544ea01225902a18ad1fbac70713d4a42d747",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_11_04.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_11_04.pgcl",
+      "bytes": 1700,
+      "git_blob_sha1": "ac4118712e48bc5574ad3964ae7f44ede0867264",
+      "sha256": "a884bb5bee11865d03eea8308c7ae2c3394920b5fbbc4955a87df00bdd6ffdc9",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_11_04.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_13_02.jani",
+      "bytes": 69416,
+      "git_blob_sha1": "cdc8909177e777ec7f05569f5a6b9ea8d8947323",
+      "sha256": "4315fbd45d2ae41db6712bb06e6550c4e5d74c1e7e85011cc66582df565afe77",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_13_02.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_13_02.pgcl",
+      "bytes": 1528,
+      "git_blob_sha1": "bacd26439f3602ffdc3e54da008eab6b41a3be4d",
+      "sha256": "dde37ad24871a4d5a29d9a503a8202696a3c2809f2a3689c72b663f88b653e36",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_13_02.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_13_03.jani",
+      "bytes": 88104,
+      "git_blob_sha1": "84beff346fe96385f28537020e23c6bd061b628c",
+      "sha256": "24f0b761c7130a00259632044b2feacf6ecb738a16a87fcca8265b3f2703c947",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_13_03.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_13_03.pgcl",
+      "bytes": 1729,
+      "git_blob_sha1": "a14cd243627d972cd12be28f4f64230060c18c8d",
+      "sha256": "7837988181e38f32ff8ff1531327096bde4946438b3cbc99b15835b0d446aa09",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_13_03.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_13_04.jani",
+      "bytes": 107626,
+      "git_blob_sha1": "1a191e350db57c8f9651251c02a4b1af0efed2c0",
+      "sha256": "6a91046e7fa68e550061715577aa114cd109044391a62798abf1c393fbbff686",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_13_04.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_13_04.pgcl",
+      "bytes": 1930,
+      "git_blob_sha1": "1f6aa36ae94ba622f158ad31c5de7caa93d0f801",
+      "sha256": "0cc80231d694d36d1c6a5ee1bef520743127c1e31f9dbdce21b9681da1d8963f",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_13_04.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_15_02.jani",
+      "bytes": 79834,
+      "git_blob_sha1": "9065bbf988df5ebc081ace1dbb2b31d5abe4eaf3",
+      "sha256": "cd75e9a6ad6d01e43351a6c2bb765d6faecb0ff1f77a9216bc1867007101cb5f",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_15_02.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_15_02.pgcl",
+      "bytes": 1706,
+      "git_blob_sha1": "18d474d28235bb6820ce0019ea8f76d3f6c1af1a",
+      "sha256": "bf243b5d1904919ed81c4ae48fcc30f412fbdc1e11ee676aff88f0bb4e26a345",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_15_02.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_15_03.jani",
+      "bytes": 101292,
+      "git_blob_sha1": "5dc7dc6e38db1b4eb72ad21a1157b82430f40075",
+      "sha256": "58ea08317098fdbca20bab90623490a643c08d3a887603536e7f4bad57664231",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_15_03.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_15_03.pgcl",
+      "bytes": 1933,
+      "git_blob_sha1": "d09ba815351a2062235e62e8a8c9668b3685dae3",
+      "sha256": "4c74f9f6ecf96bf334314042293767d38fa3e07d330415eb91f5354727404841",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_15_03.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_15_04.jani",
+      "bytes": 123712,
+      "git_blob_sha1": "22f04e057975346ddc787731fe220d36df6d01a1",
+      "sha256": "6d33cd0a4898b77e79314d344f7e5ab16bc24a0d668eb1bbb762b7a02c961489",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_15_04.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_15_04.pgcl",
+      "bytes": 2160,
+      "git_blob_sha1": "28bc26bd2b94ecd66f88b8a593eaafe14627ae15",
+      "sha256": "f3eb7dd83f47b0edd3c3a79b484228ab4deefdab67e454056745f1bfef529108",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_15_04.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_17_02.jani",
+      "bytes": 90380,
+      "git_blob_sha1": "e5c3a3b3e8658d2231d84b88c9c9e8bfe1e9caf2",
+      "sha256": "2e101f8aadb692288d7be7e828651ad633191dc631dfc0732f719fcdac2e4d6f",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_17_02.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_17_02.pgcl",
+      "bytes": 1884,
+      "git_blob_sha1": "14c687eacbddfe084ccfc508ec5f49883e58fd01",
+      "sha256": "ba3186500ab0862a9339bce214f41f0df847084044d4d173fa316a74608d58e3",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_17_02.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_17_03.jani",
+      "bytes": 114608,
+      "git_blob_sha1": "d646ecb2dc20170fe9852240ca4a44bd62c6e6f5",
+      "sha256": "f2f1486b5a67d6a52e7dc14d47c39adfc64fde25d05ca9873d4d51170e9368c5",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_17_03.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_17_03.pgcl",
+      "bytes": 2137,
+      "git_blob_sha1": "3bbe1f16da837b097701f20c78b765276235bee8",
+      "sha256": "bdb13c2b698dc83deb018a5462b81d61bb3d96ad1424fe864b7ccc7d74df3217",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_17_03.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_17_04.jani",
+      "bytes": 139926,
+      "git_blob_sha1": "54c965607ea09644b3fb74bb4d608aa5c5b88410",
+      "sha256": "27a162e2f3e1adb3aeea63eb3c36fe8d90eecc0cf89aef3518df1ab9d0dc2704",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_17_04.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_17_04.pgcl",
+      "bytes": 2390,
+      "git_blob_sha1": "a003584b826a11a7c2df94e549a37591ae8ca8df",
+      "sha256": "faea5bd98679ab48ad700562d9c4b19d774c34deb2b6148ab1a175fbdab1cc3a",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_17_04.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_19_02.jani",
+      "bytes": 101054,
+      "git_blob_sha1": "c72cdf806efcc9be513cca41548677e609d13f49",
+      "sha256": "76ccab91e89d8454ece532b38757ca041337803c86a49520a12a2d07559cf6bc",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_19_02.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_19_02.pgcl",
+      "bytes": 2062,
+      "git_blob_sha1": "1e783e9052693577751b4bee06e7fdbf1c1af5c8",
+      "sha256": "a7568c397085d2583e4ac0b0a53f7f2a0b29838f00edc9263e01999c98995005",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_19_02.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_19_03.jani",
+      "bytes": 128052,
+      "git_blob_sha1": "ebea3076c3859a462dd23ed51f7dbb0ae0e3b0c9",
+      "sha256": "94ba316ef37dd11a3cce297594b9d39a414b00b5131bbc70e43ace984f2e3130",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_19_03.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_19_03.pgcl",
+      "bytes": 2341,
+      "git_blob_sha1": "e3d6704d3a52d17e332e84134b522abb1c2b1de4",
+      "sha256": "f2e093a2ba3f8f4100a01f957751204a95de0cabb153538bbf63d0d960d547b4",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_19_03.pgcl"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_19_04.jani",
+      "bytes": 156268,
+      "git_blob_sha1": "90cf311ce9896076ebcd289950b9fa204262fe64",
+      "sha256": "af7e1a833d4bd20c9b6ea50746bdd0cbc99fb5989c2f474dbf315a4555b631c2",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_19_04.jani"
+    },
+    {
+      "path": "CouponCollector/MultiAllowed/coupon_m_19_04.pgcl",
+      "bytes": 2620,
+      "git_blob_sha1": "3327213eab110758c78dd477c29afaf919e1e872",
+      "sha256": "6392c608c792d1fbfd2b990ed10a4da68b4c3c2f52ccde157faf9b38052150cc",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/MultiAllowed/coupon_m_19_04.pgcl"
+    },
+    {
+      "path": "CouponCollector/README.md",
+      "bytes": 0,
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector/README.md"
+    },
+    {
+      "path": "Database/README.md",
+      "bytes": 2388,
+      "git_blob_sha1": "9813518286a6fa647a7ce164d59c706c68cbe174",
+      "sha256": "5583c6b32df57fdacd89fe84498847d10eac48793976d5b27ce43b2301444736",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/Database/README.md"
+    },
+    {
+      "path": "Database/database_R2.jani",
+      "bytes": 235491,
+      "git_blob_sha1": "fb54355d2ba1af892e5b61cf3f29a14a11ec4172",
+      "sha256": "336b43e90ad0ecf24d65f4ede0bf5de6d43fbc58091f5b36ba22a898f04b4f10",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/Database/database_R2.jani"
+    },
+    {
+      "path": "Database/database_R3.jani",
+      "bytes": 335948,
+      "git_blob_sha1": "2a26e2322e272bf98da7b79359d8ad5596e1d115",
+      "sha256": "e5e1bd16f0d981066fd8e1c4c8e3c1a59ec003247911f08d49e906f105f6a457",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/Database/database_R3.jani"
+    },
+    {
+      "path": "Database/database_R4.jani",
+      "bytes": 477479,
+      "git_blob_sha1": "02c2bd2206d1ed5fe288fee147e7a91b550d23a0",
+      "sha256": "c0d336da63e9e4ef3d2527ae5c1784b223dfc4bb284f7b56f94f345ce3def640",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/Database/database_R4.jani"
+    },
+    {
+      "path": "Database/database_R5.jani",
+      "bytes": 692613,
+      "git_blob_sha1": "b2fef01995c45498b2918d5e07923dae138f7718",
+      "sha256": "9273b9c5ea1a5ee080c8a1c5f2f045bb26f691d647a4fb80b4552f7a19154463",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/Database/database_R5.jani"
+    },
+    {
+      "path": "DiningCryptographers/README.md",
+      "bytes": 1642,
+      "git_blob_sha1": "f984d2ee21bb4ce9b4a865bb46e24ec874a639e2",
+      "sha256": "a88a5ffc3f1d07a4957823d677aea37af2438216bb12698f1c5e8576235fb812",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/DiningCryptographers/README.md"
+    },
+    {
+      "path": "DiningCryptographers/dining_crypt3.jani",
+      "bytes": 49754,
+      "git_blob_sha1": "af7fb1514a16887d483688cc25a5fb45790fc42a",
+      "sha256": "d2a927bc4e752dd6332637f480487a36c5bb4d57aff8d8dd1ca2d135fdc88e03",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/DiningCryptographers/dining_crypt3.jani"
+    },
+    {
+      "path": "DiningCryptographers/dining_crypt4.jani",
+      "bytes": 66036,
+      "git_blob_sha1": "b1eaf9ae9358e5d870a2322ed8822225b6b79af2",
+      "sha256": "42983103a01ad963b2a64add5c92b97c8c5f73261860316bcb5c24babe5d5975",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/DiningCryptographers/dining_crypt4.jani"
+    },
+    {
+      "path": "DiningCryptographers/dining_crypt5.jani",
+      "bytes": 82754,
+      "git_blob_sha1": "c8014720b34e99d3b736d29db92f5e685da39550",
+      "sha256": "2445e6ca4ba568070cc82de9d1b907d3150d235bd55cbe2c704705e50aa9242d",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/DiningCryptographers/dining_crypt5.jani"
+    },
+    {
+      "path": "DiningPhilosophers/README.md",
+      "bytes": 376,
+      "git_blob_sha1": "1aad15ebf5290f8fa2a162d8e73060414998844a",
+      "sha256": "3b6d4edebb42ab3e7be0f2e8fbce2f4004882a60b677f30045bc5ab7197ae3c9",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/DiningPhilosophers/README.md"
+    },
+    {
+      "path": "DiningPhilosophers/phil3.jani",
+      "bytes": 98971,
+      "git_blob_sha1": "eb6491fc635824dae9b8140c31e5ba389ade34bc",
+      "sha256": "a9be5c485b2496ab93c840c714df861cb244dcec3ebddd20303c6c35134ac995",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/DiningPhilosophers/phil3.jani"
+    },
+    {
+      "path": "DiningPhilosophers/phil4.jani",
+      "bytes": 132133,
+      "git_blob_sha1": "388665adbf03216edb7b3918d7f56f44e15250e7",
+      "sha256": "1a354cc951d468aff3682431613c32a457f587471d255c9f50f73b794b32cf90",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/DiningPhilosophers/phil4.jani"
+    },
+    {
+      "path": "DiningPhilosophers/phil5.jani",
+      "bytes": 165507,
+      "git_blob_sha1": "17f8d83999c018ced23ec7fa832a762a661a1fea",
+      "sha256": "7e2bb1a5bb71fa5de7c0d617ca772e2c994b7a7e9e3ec043b644291f42713ec8",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/DiningPhilosophers/phil5.jani"
+    },
+    {
+      "path": "MutualExclusion/README.md",
+      "bytes": 336,
+      "git_blob_sha1": "8a6a127ef5451131c810a2379977100985ea4f8f",
+      "sha256": "0397bfbca4e1211f659c6feb7696830db691cc4f87bfa541e3607ca3060ccb71",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/MutualExclusion/README.md"
+    },
+    {
+      "path": "MutualExclusion/mutual3.jani",
+      "bytes": 180860,
+      "git_blob_sha1": "9ac460e6ea910f6747cd170e26ae25119c73efaa",
+      "sha256": "4bd26ef2eaf32eafd6fb3bc843606598206c07108d145ab2c11b225fcda6fc1b",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/MutualExclusion/mutual3.jani"
+    },
+    {
+      "path": "MutualExclusion/mutual4.jani",
+      "bytes": 318954,
+      "git_blob_sha1": "5197f6bcf9adbd0835a3ac524161dec4d076c26c",
+      "sha256": "d5f56dcbf338ee1b85b88244214d2462f9dae2a5e2a698cf881addec85734a77",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/MutualExclusion/mutual4.jani"
+    },
+    {
+      "path": "MutualExclusion/mutual5.jani",
+      "bytes": 503188,
+      "git_blob_sha1": "d100534729415dc730ab10c33aecd12f96999f23",
+      "sha256": "c5e7823c768ea34d468bab86a544790a8e3fca433c9e2c2097f205ab977575f0",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/MutualExclusion/mutual5.jani"
+    },
+    {
+      "path": "QueueWithBreakdowns/README.md",
+      "bytes": 1762,
+      "git_blob_sha1": "c4585bb854f20da3a504f7536fea4bee3ab1575f",
+      "sha256": "83010fc24a6878ec9c30dcbfc9db9d7e34423e0ab340144093ece813f75ca524",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/QueueWithBreakdowns/README.md"
+    },
+    {
+      "path": "QueueWithBreakdowns/queue_with_breakdowns-iosa.jani",
+      "bytes": 67903,
+      "git_blob_sha1": "fb80bc58c7d25d1bf8702f947dbf8694dc27e2fb",
+      "sha256": "d48aec5b75cb7342bbf14fffa4f353e3f7663ded8821ccac15efedaff3091600",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/QueueWithBreakdowns/queue_with_breakdowns-iosa.jani"
+    },
+    {
+      "path": "QueuesAndWorkflows/SimpleWorkflow/SimpleWorkflow.PNPRO",
+      "bytes": 2895,
+      "git_blob_sha1": "8b800a50c6f3caba4b0e455273ebb190a7b3e517",
+      "sha256": "756f7612b3f370e3bca02c817b53ec1e2725216e3651b116cca008475ac44e40",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/QueuesAndWorkflows/SimpleWorkflow/SimpleWorkflow.PNPRO"
+    },
+    {
+      "path": "QueuesAndWorkflows/SimpleWorkflow/SimpleWorkflow.jani",
+      "bytes": 18052,
+      "git_blob_sha1": "3bf53deb6f5f5e818adce4f41f7f2989738c599d",
+      "sha256": "3754e4c90f479885ef76eec0cdc181bc9ef3a3e035e11aa8c75f5897929e502d",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/QueuesAndWorkflows/SimpleWorkflow/SimpleWorkflow.jani"
+    },
+    {
+      "path": "QueuesAndWorkflows/SimpleWorkflow/capacities.txt",
+      "bytes": 136,
+      "git_blob_sha1": "f99ffeaaa1ebc73fd3e7e5d96c0f75814ca336cc",
+      "sha256": "95b70a9a3b0d3c07afe522499fa45d11975f4dea4ce469f52654b9a26a093037",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/QueuesAndWorkflows/SimpleWorkflow/capacities.txt"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3276,
+      "git_blob_sha1": "a0de5296f6daa39aae63e979a377a69f7bbf7a88",
+      "sha256": "b442b1dff9182752616e6598d024677355a2ccc4b652d76fc544b1d2a11cdc80",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/README.md"
+    },
+    {
+      "path": "Rabin/README.md",
+      "bytes": 481,
+      "git_blob_sha1": "f77ad4d182a8fc21bc0a76c01e27c3c919af6f0d",
+      "sha256": "1ac864fb8fe694d62708b657b46d35a73405a49cf315cf95f28467ed17d9d781",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/Rabin/README.md"
+    },
+    {
+      "path": "Rabin/rabin3.jani",
+      "bytes": 75737,
+      "git_blob_sha1": "4dc0675037623dd237d37c502b90dec1cad7da81",
+      "sha256": "66459bccc45b318cad3ba845bdc19cfde2eb473bf97d630654b352a0eedbae4e",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/Rabin/rabin3.jani"
+    },
+    {
+      "path": "RandomWalk/README.md",
+      "bytes": 42,
+      "git_blob_sha1": "7af4f1a887ee8b0345f78b8cb43c69c1d95ab6f9",
+      "sha256": "81255a37f7aa611391defbb7ea613411356815f37df15d28580b01f705455f4b",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/RandomWalk/README.md"
+    },
+    {
+      "path": "RandomWalk/randomWalk.jani",
+      "bytes": 7202,
+      "git_blob_sha1": "f8c6b0ea5b74afc1003fc202086faecbabcd8ad2",
+      "sha256": "4953632740a4b22e55d88f9ef51da79047347a2d29708f7cd38bf6ab6f6456e8",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/RandomWalk/randomWalk.jani"
+    },
+    {
+      "path": "RandomWalk/randomWalk.pm",
+      "bytes": 330,
+      "git_blob_sha1": "5428e0e8e78862a7f82dd12d600c1838c06ae85a",
+      "sha256": "6ada09a67f99c45d08ef1216633d602ca4c4ecd958c6aa32af0b5722fb8ef3b8",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/RandomWalk/randomWalk.pm"
+    },
+    {
+      "path": "TandemQueue/README.md",
+      "bytes": 1807,
+      "git_blob_sha1": "d4ebe81f2ada21c8e120d845b0c16169eb81fdae",
+      "sha256": "e77666588812faf37b94d55ff08a58a18abfda7eecdf14415ec17be017e732fd",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/TandemQueue/README.md"
+    },
+    {
+      "path": "TandemQueue/tandem_queue-iosa.jani",
+      "bytes": 11920,
+      "git_blob_sha1": "db89b37852f6b69b77c25dfb4d710b35c886bd66",
+      "sha256": "7fcb34936b0580abcf3f8e00e284400e99f26319c258df48e56bf284bde3cc6d",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/TandemQueue/tandem_queue-iosa.jani"
+    },
+    {
+      "path": "beb-modest/README.md",
+      "bytes": 765,
+      "git_blob_sha1": "540b367157cda5227a84888dedd4362c375c794c",
+      "sha256": "8c798e8b1080462adc836539169fe475ea6c6da2aafee42425057c4d224fa3d1",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/beb-modest/README.md"
+    },
+    {
+      "path": "beb-modest/beb-4-3-3.jani",
+      "bytes": 38989,
+      "git_blob_sha1": "14d13896f6d06d08d347f3d9a88bba4fe17b82c4",
+      "sha256": "2ca339757b685dfab1949caa10aecc440baed546e6530b64de2ecf27f279eb46",
+      "source_url": "https://raw.githubusercontent.com/ahartmanns/jani-models/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/beb-modest/beb-4-3-3.jani"
+    }
+  ]
+}

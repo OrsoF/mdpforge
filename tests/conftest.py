@@ -56,6 +56,21 @@ def module_names(package, solver_type=None):
             continue
         source = Path(package.__file__).with_name(f"{module.name}.py")
         tree = ast.parse(source.read_text(encoding="utf-8"))
+        if package is models:
+            metadata = next(
+                (
+                    ast.literal_eval(node.value)
+                    for node in tree.body
+                    if isinstance(node, ast.Assign)
+                    and any(
+                        isinstance(target, ast.Name) and target.id == "METADATA"
+                        for target in node.targets
+                    )
+                ),
+                {},
+            )
+            if not metadata.get("available", True):
+                continue
         if solver_type is not None and not any(
             isinstance(node, ast.Assign)
             and any(

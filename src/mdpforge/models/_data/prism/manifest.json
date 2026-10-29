@@ -1,0 +1,650 @@
+{
+  "repository": "https://github.com/prismmodelchecker/prism-benchmarks",
+  "revision": "59ee49c031dbdfdb1e606edcdd643410de32192b",
+  "license": "CC-BY-4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "attribution": "Marta Kwiatkowska, Gethin Norman and David Parker. The PRISM Benchmark Suite. QEST 2012. Source headers retain the original model authors and dates.",
+  "adaptation": "Native integer states, interleavings, synchronisation and distributions; costs negated and zeroed at the native completion predicate for discounted maximisation; Zeroconf adds unit time cost; missing action slots repeat the first enabled choice. No time compression or transition reduction.",
+  "state_counts_source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/models.csv",
+  "models": {
+    "consensus": {
+      "target": "finished",
+      "rewards": [
+        "steps"
+      ],
+      "configurations": [
+        {
+          "file": "coin2.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/consensus/coin2.nm",
+          "states": 272,
+          "actions": 2,
+          "parameters": {
+            "processes": 2,
+            "bound": 2
+          },
+          "constants": {
+            "K": 2
+          }
+        },
+        {
+          "file": "coin2.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/consensus/coin2.nm",
+          "states": 528,
+          "actions": 2,
+          "parameters": {
+            "processes": 2,
+            "bound": 4
+          },
+          "constants": {
+            "K": 4
+          }
+        },
+        {
+          "file": "coin2.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/consensus/coin2.nm",
+          "states": 1040,
+          "actions": 2,
+          "parameters": {
+            "processes": 2,
+            "bound": 8
+          },
+          "constants": {
+            "K": 8
+          }
+        },
+        {
+          "file": "coin2.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/consensus/coin2.nm",
+          "states": 2064,
+          "actions": 2,
+          "parameters": {
+            "processes": 2,
+            "bound": 16
+          },
+          "constants": {
+            "K": 16
+          }
+        },
+        {
+          "file": "coin4.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/consensus/coin4.nm",
+          "states": 22656,
+          "actions": 4,
+          "parameters": {
+            "processes": 4,
+            "bound": 2
+          },
+          "constants": {
+            "K": 2
+          }
+        },
+        {
+          "file": "coin4.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/consensus/coin4.nm",
+          "states": 43136,
+          "actions": 4,
+          "parameters": {
+            "processes": 4,
+            "bound": 4
+          },
+          "constants": {
+            "K": 4
+          }
+        }
+      ]
+    },
+    "csma": {
+      "target": "all_delivered",
+      "rewards": [
+        "time"
+      ],
+      "configurations": [
+        {
+          "file": "csma2_2.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/csma/csma2_2.nm",
+          "states": 1038,
+          "actions": 2,
+          "parameters": {
+            "stations": 2,
+            "backoff": 2
+          },
+          "constants": {}
+        },
+        {
+          "file": "csma2_4.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/csma/csma2_4.nm",
+          "states": 7958,
+          "actions": 2,
+          "parameters": {
+            "stations": 2,
+            "backoff": 4
+          },
+          "constants": {}
+        },
+        {
+          "file": "csma2_6.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/csma/csma2_6.nm",
+          "states": 66718,
+          "actions": 2,
+          "parameters": {
+            "stations": 2,
+            "backoff": 6
+          },
+          "constants": {}
+        },
+        {
+          "file": "csma3_2.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/csma/csma3_2.nm",
+          "states": 36850,
+          "actions": 3,
+          "parameters": {
+            "stations": 3,
+            "backoff": 2
+          },
+          "constants": {}
+        },
+        {
+          "file": "csma4_2.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/csma/csma4_2.nm",
+          "states": 761962,
+          "actions": 4,
+          "parameters": {
+            "stations": 4,
+            "backoff": 2
+          },
+          "constants": {}
+        }
+      ]
+    },
+    "firewire": {
+      "target": "done",
+      "rewards": [
+        "time",
+        "time_sending"
+      ],
+      "configurations": [
+        {
+          "file": "firewire.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/firewire/firewire.nm",
+          "states": 4093,
+          "actions": 3,
+          "parameters": {
+            "delay": 3
+          },
+          "constants": {
+            "delay": 3
+          }
+        },
+        {
+          "file": "firewire.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/firewire/firewire.nm",
+          "states": 212268,
+          "actions": 3,
+          "parameters": {
+            "delay": 36
+          },
+          "constants": {
+            "delay": 36
+          }
+        }
+      ]
+    },
+    "wlan": {
+      "target": "s1=12 & s2=12",
+      "rewards": [
+        "time",
+        "cost",
+        "collisions"
+      ],
+      "configurations": [
+        {
+          "file": "wlan0.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/wlan/wlan0.nm",
+          "states": 2954,
+          "actions": 3,
+          "parameters": {
+            "backoff": 0
+          },
+          "constants": {
+            "COL": 0
+          }
+        },
+        {
+          "file": "wlan1.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/wlan/wlan1.nm",
+          "states": 8625,
+          "actions": 3,
+          "parameters": {
+            "backoff": 1
+          },
+          "constants": {
+            "COL": 0
+          }
+        },
+        {
+          "file": "wlan2.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/wlan/wlan2.nm",
+          "states": 28480,
+          "actions": 3,
+          "parameters": {
+            "backoff": 2
+          },
+          "constants": {
+            "COL": 0
+          }
+        },
+        {
+          "file": "wlan3.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/wlan/wlan3.nm",
+          "states": 96302,
+          "actions": 3,
+          "parameters": {
+            "backoff": 3
+          },
+          "constants": {
+            "COL": 0
+          }
+        },
+        {
+          "file": "wlan4.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/wlan/wlan4.nm",
+          "states": 345000,
+          "actions": 3,
+          "parameters": {
+            "backoff": 4
+          },
+          "constants": {
+            "COL": 0
+          }
+        },
+        {
+          "file": "wlan5.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/wlan/wlan5.nm",
+          "states": 1295218,
+          "actions": 3,
+          "parameters": {
+            "backoff": 5
+          },
+          "constants": {
+            "COL": 0
+          }
+        },
+        {
+          "file": "wlan6.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/wlan/wlan6.nm",
+          "states": 5007548,
+          "actions": 3,
+          "parameters": {
+            "backoff": 6
+          },
+          "constants": {
+            "COL": 0
+          }
+        }
+      ]
+    },
+    "zeroconf": {
+      "target": "l=4",
+      "rewards": [
+        "time"
+      ],
+      "configurations": [
+        {
+          "file": "zeroconf.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/zeroconf/zeroconf.nm",
+          "states": 670,
+          "actions": 3,
+          "parameters": {
+            "probes": 2,
+            "existing_hosts": 1000,
+            "reset": true
+          },
+          "constants": {
+            "N": 1000,
+            "K": 2,
+            "reset": true
+          }
+        },
+        {
+          "file": "zeroconf.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/zeroconf/zeroconf.nm",
+          "states": 670,
+          "actions": 3,
+          "parameters": {
+            "probes": 2,
+            "existing_hosts": 20,
+            "reset": true
+          },
+          "constants": {
+            "N": 20,
+            "K": 2,
+            "reset": true
+          }
+        },
+        {
+          "file": "zeroconf.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/zeroconf/zeroconf.nm",
+          "states": 1088,
+          "actions": 3,
+          "parameters": {
+            "probes": 4,
+            "existing_hosts": 1000,
+            "reset": true
+          },
+          "constants": {
+            "N": 1000,
+            "K": 4,
+            "reset": true
+          }
+        },
+        {
+          "file": "zeroconf.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/zeroconf/zeroconf.nm",
+          "states": 1088,
+          "actions": 3,
+          "parameters": {
+            "probes": 4,
+            "existing_hosts": 20,
+            "reset": true
+          },
+          "constants": {
+            "N": 20,
+            "K": 4,
+            "reset": true
+          }
+        },
+        {
+          "file": "zeroconf.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/zeroconf/zeroconf.nm",
+          "states": 1506,
+          "actions": 3,
+          "parameters": {
+            "probes": 6,
+            "existing_hosts": 1000,
+            "reset": true
+          },
+          "constants": {
+            "N": 1000,
+            "K": 6,
+            "reset": true
+          }
+        },
+        {
+          "file": "zeroconf.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/zeroconf/zeroconf.nm",
+          "states": 1506,
+          "actions": 3,
+          "parameters": {
+            "probes": 6,
+            "existing_hosts": 20,
+            "reset": true
+          },
+          "constants": {
+            "N": 20,
+            "K": 6,
+            "reset": true
+          }
+        },
+        {
+          "file": "zeroconf.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/zeroconf/zeroconf.nm",
+          "states": 1924,
+          "actions": 3,
+          "parameters": {
+            "probes": 8,
+            "existing_hosts": 1000,
+            "reset": true
+          },
+          "constants": {
+            "N": 1000,
+            "K": 8,
+            "reset": true
+          }
+        },
+        {
+          "file": "zeroconf.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/zeroconf/zeroconf.nm",
+          "states": 1924,
+          "actions": 3,
+          "parameters": {
+            "probes": 8,
+            "existing_hosts": 20,
+            "reset": true
+          },
+          "constants": {
+            "N": 20,
+            "K": 8,
+            "reset": true
+          }
+        },
+        {
+          "file": "zeroconf.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/zeroconf/zeroconf.nm",
+          "states": 89586,
+          "actions": 4,
+          "parameters": {
+            "probes": 2,
+            "existing_hosts": 1000,
+            "reset": false
+          },
+          "constants": {
+            "N": 1000,
+            "K": 2,
+            "reset": false
+          }
+        },
+        {
+          "file": "zeroconf.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/zeroconf/zeroconf.nm",
+          "states": 89586,
+          "actions": 4,
+          "parameters": {
+            "probes": 2,
+            "existing_hosts": 20,
+            "reset": false
+          },
+          "constants": {
+            "N": 20,
+            "K": 2,
+            "reset": false
+          }
+        },
+        {
+          "file": "zeroconf.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/zeroconf/zeroconf.nm",
+          "states": 307768,
+          "actions": 4,
+          "parameters": {
+            "probes": 4,
+            "existing_hosts": 1000,
+            "reset": false
+          },
+          "constants": {
+            "N": 1000,
+            "K": 4,
+            "reset": false
+          }
+        },
+        {
+          "file": "zeroconf.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/zeroconf/zeroconf.nm",
+          "states": 307768,
+          "actions": 4,
+          "parameters": {
+            "probes": 4,
+            "existing_hosts": 20,
+            "reset": false
+          },
+          "constants": {
+            "N": 20,
+            "K": 4,
+            "reset": false
+          }
+        },
+        {
+          "file": "zeroconf.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/zeroconf/zeroconf.nm",
+          "states": 798471,
+          "actions": 4,
+          "parameters": {
+            "probes": 6,
+            "existing_hosts": 1000,
+            "reset": false
+          },
+          "constants": {
+            "N": 1000,
+            "K": 6,
+            "reset": false
+          }
+        },
+        {
+          "file": "zeroconf.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/zeroconf/zeroconf.nm",
+          "states": 798471,
+          "actions": 4,
+          "parameters": {
+            "probes": 6,
+            "existing_hosts": 20,
+            "reset": false
+          },
+          "constants": {
+            "N": 20,
+            "K": 6,
+            "reset": false
+          }
+        },
+        {
+          "file": "zeroconf.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/zeroconf/zeroconf.nm",
+          "states": 1870338,
+          "actions": 4,
+          "parameters": {
+            "probes": 8,
+            "existing_hosts": 1000,
+            "reset": false
+          },
+          "constants": {
+            "N": 1000,
+            "K": 8,
+            "reset": false
+          }
+        },
+        {
+          "file": "zeroconf.nm",
+          "source": "https://github.com/prismmodelchecker/prism-benchmarks/blob/59ee49c031dbdfdb1e606edcdd643410de32192b/models/mdps/zeroconf/zeroconf.nm",
+          "states": 1870338,
+          "actions": 4,
+          "parameters": {
+            "probes": 8,
+            "existing_hosts": 20,
+            "reset": false
+          },
+          "constants": {
+            "N": 20,
+            "K": 8,
+            "reset": false
+          }
+        }
+      ]
+    },
+    "prism_rabin": {
+      "repository": "https://github.com/prismmodelchecker/prism",
+      "revision": "caf5bfe700d7dff29b5b13e79144753f3ce8a834",
+      "license": "GPL-2.0-only",
+      "license_file": "PRISM_COPYING.txt",
+      "attribution": "Gethin Norman and David Parker; original author/date headers retained in each unmodified PRISM source.",
+      "variant": "Source variant with scheduling self-loops commented out; atomic draw phases retained.",
+      "target": "p1=2",
+      "rewards": [
+        "steps_to_target"
+      ],
+      "adaptation": "Added -1 cost per source transition until the designated participant reaches its target, then zero cost and absorption. The full native reachable graph is enumerated before target rows are absorbed. Unused action slots repeat the first enabled choice. Discounted maximization imposes no fairness and does not reproduce source liveness queries. Original transition probabilities and step granularity are retained before the target.",
+      "construction": {
+        "expand_formulas": true,
+        "step_cost": true,
+        "absorb_target": true,
+        "legacy_mdp": false
+      },
+      "state_counts_source": "https://www.prismmodelchecker.org/casestudies/rabin.php",
+      "configurations": [
+        {
+          "file": "prism_rabin3.nm",
+          "source": "https://github.com/prismmodelchecker/prism/blob/caf5bfe700d7dff29b5b13e79144753f3ce8a834/prism-examples/mdps/rabin/rabin3.nm",
+          "sha256": "b2c7db66788c98c1c21a507c83ca06e4bc3cbe7bf9fce2f48e6070e5901530d8",
+          "states": 27766,
+          "actions": 3,
+          "parameters": {
+            "processes": 3
+          },
+          "constants": {}
+        },
+        {
+          "file": "prism_rabin4.nm",
+          "source": "https://github.com/prismmodelchecker/prism/blob/caf5bfe700d7dff29b5b13e79144753f3ce8a834/prism-examples/mdps/rabin/rabin4.nm",
+          "sha256": "0d3142de301f3ac62f69e9b429002df2bf688551361daa3143d3e07026c31aad",
+          "states": 668836,
+          "actions": 4,
+          "parameters": {
+            "processes": 4
+          },
+          "constants": {}
+        }
+      ]
+    },
+    "prism_dining_philosophers": {
+      "repository": "https://github.com/prismmodelchecker/prism",
+      "revision": "caf5bfe700d7dff29b5b13e79144753f3ce8a834",
+      "license": "GPL-2.0-only",
+      "license_file": "PRISM_COPYING.txt",
+      "attribution": "Gethin Norman and David Parker; original author/date headers retained in each unmodified PRISM source.",
+      "variant": "Original twelve-phase variant, including scheduling self-loops; no fairness restriction.",
+      "target": "p1>=8 & p1<=9",
+      "rewards": [
+        "steps_to_target"
+      ],
+      "adaptation": "Added -1 cost per source transition until the designated participant reaches its target, then zero cost and absorption. The full native reachable graph is enumerated before target rows are absorbed. Unused action slots repeat the first enabled choice. Discounted maximization imposes no fairness and does not reproduce source liveness queries. Original transition probabilities and step granularity are retained before the target.",
+      "construction": {
+        "expand_formulas": true,
+        "step_cost": true,
+        "absorb_target": true,
+        "legacy_mdp": true
+      },
+      "state_counts_source": "https://www.prismmodelchecker.org/casestudies/phil.php",
+      "configurations": [
+        {
+          "file": "prism_phil3.nm",
+          "source": "https://github.com/prismmodelchecker/prism/blob/caf5bfe700d7dff29b5b13e79144753f3ce8a834/prism-examples/mdps/phil/original/phil3.nm",
+          "sha256": "f2112a309a5d6ce2a0a9fc3d0a0e54a1765b440d03d43c34fd7d0a418349710f",
+          "states": 956,
+          "actions": 6,
+          "parameters": {
+            "philosophers": 3
+          },
+          "constants": {}
+        },
+        {
+          "file": "prism_phil4.nm",
+          "source": "https://github.com/prismmodelchecker/prism/blob/caf5bfe700d7dff29b5b13e79144753f3ce8a834/prism-examples/mdps/phil/original/phil4.nm",
+          "sha256": "6e738ea11698652ef361307e5e6e4ce25417a7b1ed7227e91cd9d6faeecdca50",
+          "states": 9440,
+          "actions": 8,
+          "parameters": {
+            "philosophers": 4
+          },
+          "constants": {}
+        },
+        {
+          "file": "prism_phil5.nm",
+          "source": "https://github.com/prismmodelchecker/prism/blob/caf5bfe700d7dff29b5b13e79144753f3ce8a834/prism-examples/mdps/phil/original/phil5.nm",
+          "sha256": "35a9b6139e7330ee992838b55f67ce2737e2592d74a08dad59e31b273431fde6",
+          "states": 93068,
+          "actions": 10,
+          "parameters": {
+            "philosophers": 5
+          },
+          "constants": {}
+        }
+      ]
+    }
+  }
+}
