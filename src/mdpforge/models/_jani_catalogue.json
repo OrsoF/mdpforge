@@ -1,0 +1,1581 @@
+{
+  "models": [
+    {
+      "name": "jani_3_tandem_queue",
+      "category": "service_operations",
+      "description": "Three sequential queues",
+      "reference": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/3TandemQueue",
+      "available": false,
+      "reason": "Source type sta requires a finite discrete-time MDP adaptation before benchmarking.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "Source type sta requires a finite discrete-time MDP adaptation before benchmarking."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "Source type sta requires a finite discrete-time MDP adaptation before benchmarking."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "Source type sta requires a finite discrete-time MDP adaptation before benchmarking."
+        }
+      },
+      "model_type": "sta",
+      "source_collection": "jani-models",
+      "source_repository": "https://github.com/ahartmanns/jani-models",
+      "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+      "source_url": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/3TandemQueue",
+      "source_files": [
+        "3TandemQueue/3tandem_queue-iosa.jani"
+      ],
+      "variants": 1
+    },
+    {
+      "name": "jani_approx_pi",
+      "category": "abstract",
+      "description": "Monte Carlo approximation of pi",
+      "reference": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "jani-models",
+      "source_repository": "https://github.com/ahartmanns/jani-models",
+      "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+      "source_url": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/ApproxPi",
+      "source_files": [
+        "ApproxPi/NaiveRejectionSampling/approx_pi_00100_010_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_00100_010_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_00100_050_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_00100_050_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_00100_100_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_00100_100_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_00100_500_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_00100_500_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_00500_010_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_00500_010_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_00500_050_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_00500_050_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_00500_100_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_00500_100_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_00500_500_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_00500_500_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_01000_010_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_01000_010_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_01000_050_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_01000_050_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_01000_100_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_01000_100_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_01000_500_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_01000_500_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_05000_010_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_05000_010_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_05000_050_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_05000_050_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_05000_100_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_05000_100_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_05000_500_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_05000_500_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_10000_010_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_10000_010_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_10000_050_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_10000_050_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_10000_100_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_10000_100_quadrant.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_10000_500_full.jani",
+        "ApproxPi/NaiveRejectionSampling/approx_pi_10000_500_quadrant.jani"
+      ],
+      "variants": 40
+    },
+    {
+      "name": "jani_beb_modest",
+      "category": "service_operations",
+      "description": "Bounded exponential backoff",
+      "reference": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/beb-modest",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "jani-models",
+      "source_repository": "https://github.com/ahartmanns/jani-models",
+      "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+      "source_url": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/beb-modest",
+      "source_files": [
+        "beb-modest/beb-4-3-3.jani"
+      ],
+      "variants": 1
+    },
+    {
+      "name": "jani_brp",
+      "category": "service_operations",
+      "description": "Bounded retransmission protocol",
+      "reference": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/BRP",
+      "available": false,
+      "reason": "DTMC source; a one-action discounted MDP adaptation is not integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "DTMC source; a one-action discounted MDP adaptation is not integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "DTMC source; a one-action discounted MDP adaptation is not integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "DTMC source; a one-action discounted MDP adaptation is not integrated."
+        }
+      },
+      "model_type": "dtmc",
+      "source_collection": "jani-models",
+      "source_repository": "https://github.com/ahartmanns/jani-models",
+      "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+      "source_url": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/BRP",
+      "source_files": [
+        "BRP/brp.jani"
+      ],
+      "variants": 1
+    },
+    {
+      "name": "jani_coupon_collector",
+      "category": "abstract",
+      "description": "Coupon collection from an urn",
+      "reference": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "jani-models",
+      "source_repository": "https://github.com/ahartmanns/jani-models",
+      "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+      "source_url": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/CouponCollector",
+      "source_files": [
+        "CouponCollector/MultiAllowed/coupon_m_03_02.jani",
+        "CouponCollector/MultiAllowed/coupon_m_03_03.jani",
+        "CouponCollector/MultiAllowed/coupon_m_03_04.jani",
+        "CouponCollector/MultiAllowed/coupon_m_05_02.jani",
+        "CouponCollector/MultiAllowed/coupon_m_05_03.jani",
+        "CouponCollector/MultiAllowed/coupon_m_05_04.jani",
+        "CouponCollector/MultiAllowed/coupon_m_07_02.jani",
+        "CouponCollector/MultiAllowed/coupon_m_07_03.jani",
+        "CouponCollector/MultiAllowed/coupon_m_07_04.jani",
+        "CouponCollector/MultiAllowed/coupon_m_09_02.jani",
+        "CouponCollector/MultiAllowed/coupon_m_09_03.jani",
+        "CouponCollector/MultiAllowed/coupon_m_09_04.jani",
+        "CouponCollector/MultiAllowed/coupon_m_11_02.jani",
+        "CouponCollector/MultiAllowed/coupon_m_11_03.jani",
+        "CouponCollector/MultiAllowed/coupon_m_11_04.jani",
+        "CouponCollector/MultiAllowed/coupon_m_13_02.jani",
+        "CouponCollector/MultiAllowed/coupon_m_13_03.jani",
+        "CouponCollector/MultiAllowed/coupon_m_13_04.jani",
+        "CouponCollector/MultiAllowed/coupon_m_15_02.jani",
+        "CouponCollector/MultiAllowed/coupon_m_15_03.jani",
+        "CouponCollector/MultiAllowed/coupon_m_15_04.jani",
+        "CouponCollector/MultiAllowed/coupon_m_17_02.jani",
+        "CouponCollector/MultiAllowed/coupon_m_17_03.jani",
+        "CouponCollector/MultiAllowed/coupon_m_17_04.jani",
+        "CouponCollector/MultiAllowed/coupon_m_19_02.jani",
+        "CouponCollector/MultiAllowed/coupon_m_19_03.jani",
+        "CouponCollector/MultiAllowed/coupon_m_19_04.jani"
+      ],
+      "variants": 27
+    },
+    {
+      "name": "jani_database",
+      "category": "service_operations",
+      "description": "Database repairman model",
+      "reference": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/Database",
+      "available": false,
+      "reason": "Source type sta requires a finite discrete-time MDP adaptation before benchmarking.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "Source type sta requires a finite discrete-time MDP adaptation before benchmarking."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "Source type sta requires a finite discrete-time MDP adaptation before benchmarking."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "Source type sta requires a finite discrete-time MDP adaptation before benchmarking."
+        }
+      },
+      "model_type": "sta",
+      "source_collection": "jani-models",
+      "source_repository": "https://github.com/ahartmanns/jani-models",
+      "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+      "source_url": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/Database",
+      "source_files": [
+        "Database/database_R2.jani",
+        "Database/database_R3.jani",
+        "Database/database_R4.jani",
+        "Database/database_R5.jani"
+      ],
+      "variants": 4
+    },
+    {
+      "name": "jani_dining_cryptographers",
+      "category": "abstract",
+      "description": "Dining cryptographers protocol",
+      "reference": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/DiningCryptographers",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "jani-models",
+      "source_repository": "https://github.com/ahartmanns/jani-models",
+      "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+      "source_url": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/DiningCryptographers",
+      "source_files": [
+        "DiningCryptographers/dining_crypt3.jani",
+        "DiningCryptographers/dining_crypt4.jani",
+        "DiningCryptographers/dining_crypt5.jani"
+      ],
+      "variants": 3
+    },
+    {
+      "name": "jani_dining_philosophers",
+      "category": "abstract",
+      "description": "Randomised dining philosophers",
+      "reference": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/DiningPhilosophers",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "jani-models",
+      "source_repository": "https://github.com/ahartmanns/jani-models",
+      "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+      "source_url": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/DiningPhilosophers",
+      "source_files": [
+        "DiningPhilosophers/phil3.jani",
+        "DiningPhilosophers/phil4.jani",
+        "DiningPhilosophers/phil5.jani"
+      ],
+      "variants": 3
+    },
+    {
+      "name": "jani_mutual_exclusion",
+      "category": "abstract",
+      "description": "Pnueli-Zuck mutual exclusion",
+      "reference": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/MutualExclusion",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "jani-models",
+      "source_repository": "https://github.com/ahartmanns/jani-models",
+      "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+      "source_url": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/MutualExclusion",
+      "source_files": [
+        "MutualExclusion/mutual3.jani",
+        "MutualExclusion/mutual4.jani",
+        "MutualExclusion/mutual5.jani"
+      ],
+      "variants": 3
+    },
+    {
+      "name": "jani_queue_with_breakdowns",
+      "category": "service_operations",
+      "description": "Queue with failures and repairs",
+      "reference": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/QueueWithBreakdowns",
+      "available": false,
+      "reason": "Source type sta requires a finite discrete-time MDP adaptation before benchmarking.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "Source type sta requires a finite discrete-time MDP adaptation before benchmarking."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "Source type sta requires a finite discrete-time MDP adaptation before benchmarking."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "Source type sta requires a finite discrete-time MDP adaptation before benchmarking."
+        }
+      },
+      "model_type": "sta",
+      "source_collection": "jani-models",
+      "source_repository": "https://github.com/ahartmanns/jani-models",
+      "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+      "source_url": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/QueueWithBreakdowns",
+      "source_files": [
+        "QueueWithBreakdowns/queue_with_breakdowns-iosa.jani"
+      ],
+      "variants": 1
+    },
+    {
+      "name": "jani_queues_and_workflows",
+      "category": "service_operations",
+      "description": "Two parallel servers",
+      "reference": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/QueuesAndWorkflows",
+      "available": false,
+      "reason": "Source type ma requires a finite discrete-time MDP adaptation before benchmarking.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "Source type ma requires a finite discrete-time MDP adaptation before benchmarking."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "Source type ma requires a finite discrete-time MDP adaptation before benchmarking."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "Source type ma requires a finite discrete-time MDP adaptation before benchmarking."
+        }
+      },
+      "model_type": "ma",
+      "source_collection": "jani-models",
+      "source_repository": "https://github.com/ahartmanns/jani-models",
+      "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+      "source_url": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/QueuesAndWorkflows",
+      "source_files": [
+        "QueuesAndWorkflows/SimpleWorkflow/SimpleWorkflow.jani"
+      ],
+      "variants": 1
+    },
+    {
+      "name": "jani_rabin",
+      "category": "abstract",
+      "description": "Rabin mutual exclusion",
+      "reference": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/Rabin",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "jani-models",
+      "source_repository": "https://github.com/ahartmanns/jani-models",
+      "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+      "source_url": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/Rabin",
+      "source_files": [
+        "Rabin/rabin3.jani"
+      ],
+      "variants": 1
+    },
+    {
+      "name": "jani_random_walk",
+      "category": "abstract",
+      "description": "Unidimensional random walk",
+      "reference": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/RandomWalk",
+      "available": false,
+      "reason": "DTMC source; a one-action discounted MDP adaptation is not integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "DTMC source; a one-action discounted MDP adaptation is not integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "DTMC source; a one-action discounted MDP adaptation is not integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "DTMC source; a one-action discounted MDP adaptation is not integrated."
+        }
+      },
+      "model_type": "dtmc",
+      "source_collection": "jani-models",
+      "source_repository": "https://github.com/ahartmanns/jani-models",
+      "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+      "source_url": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/RandomWalk",
+      "source_files": [
+        "RandomWalk/randomWalk.jani"
+      ],
+      "variants": 1
+    },
+    {
+      "name": "jani_tandem_queue",
+      "category": "service_operations",
+      "description": "Two sequential queues",
+      "reference": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/TandemQueue",
+      "available": false,
+      "reason": "Source type sta requires a finite discrete-time MDP adaptation before benchmarking.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "Source type sta requires a finite discrete-time MDP adaptation before benchmarking."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "Source type sta requires a finite discrete-time MDP adaptation before benchmarking."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "Source type sta requires a finite discrete-time MDP adaptation before benchmarking."
+        }
+      },
+      "model_type": "sta",
+      "source_collection": "jani-models",
+      "source_repository": "https://github.com/ahartmanns/jani-models",
+      "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+      "source_url": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/TandemQueue",
+      "source_files": [
+        "TandemQueue/tandem_queue-iosa.jani"
+      ],
+      "variants": 1
+    },
+    {
+      "name": "qvbs_beb",
+      "category": "service_operations",
+      "description": "Bounded Exponential Backoff",
+      "reference": "https://doi.org/10.1007/978-3-642-21461-5_4",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/beb",
+      "source_files": [
+        "benchmarks/mdp/beb/beb.3-4.jani",
+        "benchmarks/mdp/beb/beb.4-8.jani",
+        "benchmarks/mdp/beb/beb.5-16.jani",
+        "benchmarks/mdp/beb/beb.6-16.jani"
+      ],
+      "variants": 4
+    },
+    {
+      "name": "qvbs_blocksworld",
+      "category": "games_and_puzzles",
+      "description": "Blocksworld",
+      "reference": "https://doi.org/10.1016/0004-3702(92)90028-V",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/blocksworld",
+      "source_files": [
+        "benchmarks/mdp/blocksworld/blocksworld.10.jani",
+        "benchmarks/mdp/blocksworld/blocksworld.14.jani",
+        "benchmarks/mdp/blocksworld/blocksworld.18.jani",
+        "benchmarks/mdp/blocksworld/blocksworld.5.jani"
+      ],
+      "variants": 4
+    },
+    {
+      "name": "qvbs_boxworld",
+      "category": "service_operations",
+      "description": "Boxworld",
+      "reference": "https://doi.org/10.1609/aimag.v21i2.1506",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/boxworld",
+      "source_files": [
+        "benchmarks/mdp/boxworld/boxworld.10-10.jani",
+        "benchmarks/mdp/boxworld/boxworld.10-5.jani",
+        "benchmarks/mdp/boxworld/boxworld.15-10.jani",
+        "benchmarks/mdp/boxworld/boxworld.15-15.jani",
+        "benchmarks/mdp/boxworld/boxworld.20-20.jani"
+      ],
+      "variants": 5
+    },
+    {
+      "name": "qvbs_cdrive",
+      "category": "navigation",
+      "description": "City Driving",
+      "reference": "http://idm-lab.org/wiki/icaps/ipc2006/probabilistic/",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/cdrive",
+      "source_files": [
+        "benchmarks/mdp/cdrive/cdrive.10.jani",
+        "benchmarks/mdp/cdrive/cdrive.2.jani",
+        "benchmarks/mdp/cdrive/cdrive.3.jani",
+        "benchmarks/mdp/cdrive/cdrive.6.jani"
+      ],
+      "variants": 4
+    },
+    {
+      "name": "qvbs_consensus",
+      "category": "abstract",
+      "description": "Randomized Consensus Protocol",
+      "reference": "https://doi.org/10.1016/0196-6774(90)90021-6",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/consensus",
+      "source_files": [
+        "benchmarks/mdp/consensus/consensus.10.jani",
+        "benchmarks/mdp/consensus/consensus.2.jani",
+        "benchmarks/mdp/consensus/consensus.4.jani",
+        "benchmarks/mdp/consensus/consensus.6.jani",
+        "benchmarks/mdp/consensus/consensus.8.jani"
+      ],
+      "variants": 5
+    },
+    {
+      "name": "qvbs_csma",
+      "category": "service_operations",
+      "description": "IEEE 802.3 CSMA/CD Protocol",
+      "reference": "http://www.cs.bilkent.edu.tr/~tugrul/CS518/Papers/802.3-2000.pdf",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/csma",
+      "source_files": [
+        "benchmarks/mdp/csma/csma.2-2.jani",
+        "benchmarks/mdp/csma/csma.2-4.jani",
+        "benchmarks/mdp/csma/csma.2-6.jani",
+        "benchmarks/mdp/csma/csma.3-2.jani",
+        "benchmarks/mdp/csma/csma.3-4.jani",
+        "benchmarks/mdp/csma/csma.3-6.jani",
+        "benchmarks/mdp/csma/csma.4-2.jani",
+        "benchmarks/mdp/csma/csma.4-4.jani",
+        "benchmarks/mdp/csma/csma.4-6.jani"
+      ],
+      "variants": 9
+    },
+    {
+      "name": "qvbs_eajs",
+      "category": "service_operations",
+      "description": "Energy-aware job scheduling",
+      "reference": "https://doi.org/10.1007/978-3-319-06200-6_24",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/eajs",
+      "source_files": [
+        "benchmarks/mdp/eajs/eajs.2.jani",
+        "benchmarks/mdp/eajs/eajs.3.jani",
+        "benchmarks/mdp/eajs/eajs.4.jani",
+        "benchmarks/mdp/eajs/eajs.5.jani",
+        "benchmarks/mdp/eajs/eajs.6.jani"
+      ],
+      "variants": 5
+    },
+    {
+      "name": "qvbs_echoring",
+      "category": "service_operations",
+      "description": "EchoRing",
+      "reference": "https://doi.org/10.1109/SRDS.2016.048",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/echoring",
+      "source_files": [
+        "benchmarks/mdp/echoring/echoring.jani"
+      ],
+      "variants": 1
+    },
+    {
+      "name": "qvbs_elevators",
+      "category": "service_operations",
+      "description": "Elevators",
+      "reference": "http://www.aaai.org/Library/AIPS/2000/aips00-036.php",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/elevators",
+      "source_files": [
+        "benchmarks/mdp/elevators/elevators.a-11-9.jani",
+        "benchmarks/mdp/elevators/elevators.a-3-3.jani",
+        "benchmarks/mdp/elevators/elevators.b-11-9.jani",
+        "benchmarks/mdp/elevators/elevators.b-3-3.jani"
+      ],
+      "variants": 4
+    },
+    {
+      "name": "qvbs_exploding_blocksworld",
+      "category": "games_and_puzzles",
+      "description": "Exploding Blocksworld",
+      "reference": "https://ldc.usb.ve/~bonet/ipc5/",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/exploding-blocksworld",
+      "source_files": [
+        "benchmarks/mdp/exploding-blocksworld/exploding-blocksworld.10.jani",
+        "benchmarks/mdp/exploding-blocksworld/exploding-blocksworld.15.jani",
+        "benchmarks/mdp/exploding-blocksworld/exploding-blocksworld.17.jani",
+        "benchmarks/mdp/exploding-blocksworld/exploding-blocksworld.5.jani"
+      ],
+      "variants": 4
+    },
+    {
+      "name": "qvbs_firewire",
+      "category": "service_operations",
+      "description": "IEEE 1394 FireWire Root Contention Protocol",
+      "reference": "https://doi.org/10.1007/3-540-48778-6_4",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/firewire",
+      "source_files": [
+        "benchmarks/mdp/firewire/firewire.false.jani",
+        "benchmarks/mdp/firewire/firewire.true.jani"
+      ],
+      "variants": 2
+    },
+    {
+      "name": "qvbs_firewire_abst",
+      "category": "service_operations",
+      "description": "IEEE 1394 FireWire Root Contention Protocol (abstract model)",
+      "reference": "https://doi.org/10.1007/3-540-48778-6_4",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/firewire_abst",
+      "source_files": [
+        "benchmarks/mdp/firewire_abst/firewire_abst.jani"
+      ],
+      "variants": 1
+    },
+    {
+      "name": "qvbs_firewire_dl",
+      "category": "service_operations",
+      "description": "IEEE 1394 FireWire Root Contention Protocol (abstract model, with timer)",
+      "reference": "https://doi.org/10.1007/3-540-48778-6_4",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/firewire_dl",
+      "source_files": [
+        "benchmarks/mdp/firewire_dl/firewire_dl.jani"
+      ],
+      "variants": 1
+    },
+    {
+      "name": "qvbs_ij",
+      "category": "abstract",
+      "description": "Israeli Jalfon Randomized Self-Stabilizing",
+      "reference": "https://doi.org/10.1145/93385.93409",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/ij",
+      "source_files": [
+        "benchmarks/mdp/ij/ij.10.jani",
+        "benchmarks/mdp/ij/ij.20.jani",
+        "benchmarks/mdp/ij/ij.3.jani",
+        "benchmarks/mdp/ij/ij.30.jani",
+        "benchmarks/mdp/ij/ij.40.jani",
+        "benchmarks/mdp/ij/ij.50.jani"
+      ],
+      "variants": 6
+    },
+    {
+      "name": "qvbs_pacman",
+      "category": "games_and_puzzles",
+      "description": "Pacman",
+      "reference": "https://arxiv.org/abs/1807.06096",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/pacman",
+      "source_files": [
+        "benchmarks/mdp/pacman/pacman.jani"
+      ],
+      "variants": 1
+    },
+    {
+      "name": "qvbs_philosophers_mdp",
+      "category": "abstract",
+      "description": "Dining Philosophers",
+      "reference": "https://doi.org/10.1145/567532.567547",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/philosophers-mdp",
+      "source_files": [
+        "benchmarks/mdp/philosophers-mdp/philosophers-mdp.10.jani",
+        "benchmarks/mdp/philosophers-mdp/philosophers-mdp.20.jani",
+        "benchmarks/mdp/philosophers-mdp/philosophers-mdp.3.jani",
+        "benchmarks/mdp/philosophers-mdp/philosophers-mdp.30.jani"
+      ],
+      "variants": 4
+    },
+    {
+      "name": "qvbs_pnueli_zuck",
+      "category": "abstract",
+      "description": "Pnueli Zuck Mutual Exclusion Protocol",
+      "reference": "https://doi.org/10.1007/BF01843570",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/pnueli-zuck",
+      "source_files": [
+        "benchmarks/mdp/pnueli-zuck/pnueli-zuck.10.jani",
+        "benchmarks/mdp/pnueli-zuck/pnueli-zuck.15.jani",
+        "benchmarks/mdp/pnueli-zuck/pnueli-zuck.3.jani",
+        "benchmarks/mdp/pnueli-zuck/pnueli-zuck.5.jani"
+      ],
+      "variants": 4
+    },
+    {
+      "name": "qvbs_rabin",
+      "category": "abstract",
+      "description": "Rabin Mutual Exclusion Protocol",
+      "reference": "https://doi.org/10.1016/0022-0000(82)90010-1",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/rabin",
+      "source_files": [
+        "benchmarks/mdp/rabin/rabin.10.jani",
+        "benchmarks/mdp/rabin/rabin.3.jani",
+        "benchmarks/mdp/rabin/rabin.5.jani"
+      ],
+      "variants": 3
+    },
+    {
+      "name": "qvbs_random_predicates",
+      "category": "abstract",
+      "description": "Random Predicates",
+      "reference": "http://idm-lab.org/wiki/icaps/ipc2006/probabilistic/",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/random-predicates",
+      "source_files": [
+        "benchmarks/mdp/random-predicates/random-predicates.a.jani",
+        "benchmarks/mdp/random-predicates/random-predicates.b.jani",
+        "benchmarks/mdp/random-predicates/random-predicates.c.jani",
+        "benchmarks/mdp/random-predicates/random-predicates.d.jani"
+      ],
+      "variants": 4
+    },
+    {
+      "name": "qvbs_rectangle_tireworld",
+      "category": "navigation",
+      "description": "Rectangle Tireworld",
+      "reference": "http://ippc-2008.loria.fr/wiki/images/0/03/Results.pdf",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/rectangle-tireworld",
+      "source_files": [
+        "benchmarks/mdp/rectangle-tireworld/rectangle-tireworld.11.jani",
+        "benchmarks/mdp/rectangle-tireworld/rectangle-tireworld.5.jani"
+      ],
+      "variants": 2
+    },
+    {
+      "name": "qvbs_resource_gathering",
+      "category": "navigation",
+      "description": "Resource Gathering",
+      "reference": "https://doi.org/10.1145/1390156.1390162",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/resource-gathering",
+      "source_files": [
+        "benchmarks/mdp/resource-gathering/resource-gathering.jani"
+      ],
+      "variants": 1
+    },
+    {
+      "name": "qvbs_tireworld",
+      "category": "navigation",
+      "description": "Tireworld",
+      "reference": "http://users.cecs.anu.edu.au/~iain/icaps07.pdf",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/tireworld",
+      "source_files": [
+        "benchmarks/mdp/tireworld/tireworld.17.jani",
+        "benchmarks/mdp/tireworld/tireworld.25.jani",
+        "benchmarks/mdp/tireworld/tireworld.35.jani",
+        "benchmarks/mdp/tireworld/tireworld.45.jani"
+      ],
+      "variants": 4
+    },
+    {
+      "name": "qvbs_triangle_tireworld",
+      "category": "navigation",
+      "description": "Triangle Tireworld",
+      "reference": "http://users.cecs.anu.edu.au/~iain/icaps07.pdf",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/triangle-tireworld",
+      "source_files": [
+        "benchmarks/mdp/triangle-tireworld/triangle-tireworld.1681.jani",
+        "benchmarks/mdp/triangle-tireworld/triangle-tireworld.3721.jani",
+        "benchmarks/mdp/triangle-tireworld/triangle-tireworld.441.jani",
+        "benchmarks/mdp/triangle-tireworld/triangle-tireworld.6561.jani",
+        "benchmarks/mdp/triangle-tireworld/triangle-tireworld.9.jani"
+      ],
+      "variants": 5
+    },
+    {
+      "name": "qvbs_wlan",
+      "category": "service_operations",
+      "description": "IEEE 802.11 Wireless LAN",
+      "reference": "https://doi.org/10.1007/3-540-45605-8_11",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/wlan",
+      "source_files": [
+        "benchmarks/mdp/wlan/wlan.0.jani",
+        "benchmarks/mdp/wlan/wlan.1.jani",
+        "benchmarks/mdp/wlan/wlan.2.jani",
+        "benchmarks/mdp/wlan/wlan.3.jani",
+        "benchmarks/mdp/wlan/wlan.4.jani",
+        "benchmarks/mdp/wlan/wlan.5.jani",
+        "benchmarks/mdp/wlan/wlan.6.jani"
+      ],
+      "variants": 7
+    },
+    {
+      "name": "qvbs_wlan_dl",
+      "category": "service_operations",
+      "description": "IEEE 802.11 Wireless LAN (with timer)",
+      "reference": "https://doi.org/10.1007/3-540-45605-8_11",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/wlan_dl",
+      "source_files": [
+        "benchmarks/mdp/wlan_dl/wlan_dl.0.jani",
+        "benchmarks/mdp/wlan_dl/wlan_dl.1.jani",
+        "benchmarks/mdp/wlan_dl/wlan_dl.2.jani",
+        "benchmarks/mdp/wlan_dl/wlan_dl.3.jani",
+        "benchmarks/mdp/wlan_dl/wlan_dl.4.jani",
+        "benchmarks/mdp/wlan_dl/wlan_dl.5.jani",
+        "benchmarks/mdp/wlan_dl/wlan_dl.6.jani"
+      ],
+      "variants": 7
+    },
+    {
+      "name": "qvbs_zenotravel",
+      "category": "service_operations",
+      "description": "Zeno-Travel",
+      "reference": "http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.6.8853&rep=rep1&type=pdf",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/zenotravel",
+      "source_files": [
+        "benchmarks/mdp/zenotravel/zenotravel.10-5-3.jani",
+        "benchmarks/mdp/zenotravel/zenotravel.20-10-6.jani",
+        "benchmarks/mdp/zenotravel/zenotravel.4-2-2.jani",
+        "benchmarks/mdp/zenotravel/zenotravel.6-5-3.jani"
+      ],
+      "variants": 4
+    },
+    {
+      "name": "qvbs_zeroconf",
+      "category": "service_operations",
+      "description": "IPv4 Zeroconf Protocol",
+      "reference": "https://www.rfc-editor.org/info/rfc3927",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/zeroconf",
+      "source_files": [
+        "benchmarks/mdp/zeroconf/zeroconf.jani"
+      ],
+      "variants": 1
+    },
+    {
+      "name": "qvbs_zeroconf_dl",
+      "category": "service_operations",
+      "description": "IPv4 Zeroconf Protocol (with timer)",
+      "reference": "https://www.rfc-editor.org/info/rfc3927",
+      "available": false,
+      "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated.",
+      "sizes": {
+        "small": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "medium": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        },
+        "large": {
+          "requested_state_dim": null,
+          "parameters": null,
+          "reason": "JANI sources imported; a Python recipe and discounted reward adaptation are not yet integrated."
+        }
+      },
+      "model_type": "mdp",
+      "source_collection": "qvbs",
+      "source_repository": "https://github.com/ahartmanns/qcomp",
+      "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+      "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/zeroconf_dl",
+      "source_files": [
+        "benchmarks/mdp/zeroconf_dl/zeroconf_dl.jani"
+      ],
+      "variants": 1
+    }
+  ]
+}

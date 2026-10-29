@@ -3,6 +3,7 @@
 import math
 import operator
 from collections import defaultdict
+from copy import deepcopy
 from itertools import product
 
 import numpy as np
@@ -31,10 +32,66 @@ def _fields(document, allowed):
         raise ValueError(f"Unsupported JANI fields: {sorted(unknown)}")
 
 
+def _globalise(document):
+    """Give local variables distinct global names while preserving their scope."""
+    document = deepcopy(document)
+    variables = document.setdefault("variables", [])
+    occupied = {variable["name"] for variable in variables}
+    for index, automaton in enumerate(document["automata"]):
+        mapping = {
+            variable["name"]: f"__local_{index}_{variable['name']}"
+            for variable in automaton.get("variables", [])
+        }
+        if occupied.intersection(mapping.values()):
+            raise ValueError("Local JANI variable name collision")
+        occupied.update(mapping.values())
+
+        def expression(value):
+            if isinstance(value, str):
+                return mapping.get(value, value)
+            if isinstance(value, list):
+                return [expression(item) for item in value]
+            if isinstance(value, dict):
+                return {
+                    key: child if key in {"op", "function", "comment"} else expression(child)
+                    for key, child in value.items()
+                }
+            return value
+
+        def assignments(items):
+            for item in items:
+                item["ref"] = mapping.get(item["ref"], item["ref"])
+                item["value"] = expression(item["value"])
+
+        for variable in automaton.get("variables", []):
+            variable["name"] = mapping[variable["name"]]
+            variable["type"] = expression(variable["type"])
+            if "initial-value" in variable:
+                variable["initial-value"] = expression(variable["initial-value"])
+            variables.append(variable)
+        automaton["variables"] = []
+        if "restrict-initial" in automaton:
+            automaton["restrict-initial"] = expression(automaton["restrict-initial"])
+        for location in automaton["locations"]:
+            assignments(location.get("transient-values", []))
+        for edge in automaton["edges"]:
+            if "guard" in edge:
+                edge["guard"] = expression(edge["guard"])
+            for destination in edge["destinations"]:
+                if "probability" in destination:
+                    destination["probability"] = expression(destination["probability"])
+                assignments(destination.get("assignments", []))
+    return document
+
+
 class JaniProgram:
     """Build reachable choices with synchronised updates and native rewards."""
 
-    def __init__(self, document, *, reward, terminal):
+    def __init__(
+        self, document, *, reward=None, terminal=None, reward_mode="native",
+        continuation=True, state_limit=None,
+    ):
+        document = _globalise(document)
         _fields(
             document,
             {
@@ -53,19 +110,25 @@ class JaniProgram:
                 "restrict-initial",
             },
         )
-        if document["jani-version"] != 1 or document["type"] != "mdp":
-            raise ValueError("Only JANI version 1 discrete-time MDPs are supported")
+        if document["jani-version"] != 1 or document["type"] not in {"mdp", "dtmc"}:
+            raise ValueError("Only finite JANI version 1 MDPs and DTMCs are supported")
+        if reward_mode not in {"native", "reachability", "step_cost", "state"}:
+            raise ValueError("Unknown JANI reward adaptation")
+        if state_limit is not None and (type(state_limit) is not int or state_limit < 1):
+            raise ValueError("state_limit must be a positive integer or None")
+        self.reward_mode = reward_mode
+        self.state_limit = state_limit
         if set(document.get("features", [])) - {
             "derived-operators",
             "functions",
             "state-exit-rewards",
         }:
             raise ValueError("Unsupported JANI features")
+        restrictions = []
         for scope in (document, *document["automata"]):
             restriction = scope.get("restrict-initial", {"exp": True})
             _fields(restriction, {"exp"})
-            if restriction["exp"] is not True:
-                raise ValueError("Initial restrictions are not supported")
+            restrictions.append(restriction["exp"])
 
         self.constants = {}
         self.variables = {}
@@ -85,8 +148,6 @@ class JaniProgram:
             name = variable["name"]
             if name in self.variables or name in self.constants:
                 raise ValueError(f"Duplicate JANI identifier {name!r}")
-            if "initial-value" not in variable:
-                raise ValueError(f"An initial value is required for {name!r}")
             kind = variable["type"]
             if not variable.get("transient", False) and not (
                 kind == "bool"
@@ -118,22 +179,22 @@ class JaniProgram:
             if function["type"] not in {"bool", "int", "real"}:
                 raise ValueError("Unsupported JANI function return type")
             self.functions[name] = (parameters, function["body"])
-        self.defaults = {
-            name: self._expression(variable["initial-value"])(self.constants)
-            for name, variable in self.variables.items()
-        }
+        self.defaults, initial_domains = self._initial_values(restrictions)
         for name, value in self.defaults.items():
             self._check_value(name, self.variables[name]["type"], value)
         self.state_variables = tuple(
             name for name, v in self.variables.items() if not v.get("transient", False)
         )
         self.transients = self.variables.keys() - set(self.state_variables)
-        if reward not in self.transients or type(self.defaults[reward]) is bool:
-            raise ValueError("The reward must be a numeric transient JANI variable")
-        if self.defaults[reward] != 0:
-            raise ValueError("Only zero-default transient step rewards are supported")
+        if reward_mode == "native":
+            if reward not in self.transients or type(self.defaults[reward]) is bool:
+                raise ValueError("The reward must be a numeric transient JANI variable")
+            if self.defaults[reward] != 0:
+                raise ValueError("Only zero-default transient rewards are supported")
         self.reward = reward
+        self.state_reward = self._expression(reward) if reward_mode == "state" else None
         self.terminal = self._expression(terminal if terminal is not None else False)
+        self.continuation = self._expression(continuation)
 
         self.actions = set()
         for action in document.get("actions", []):
@@ -184,12 +245,73 @@ class JaniProgram:
             ):
                 raise ValueError("Duplicate or undeclared JANI synchronisation action")
             self.syncs.append(participants)
-        self.states = [
-            (locations, *(self.defaults[name] for name in self.state_variables))
-            for locations in product(*initial_locations)
-        ]
+        predicates = [self._expression(exp) for exp in restrictions]
+        self.states = []
+        for locations in product(*initial_locations):
+            for valuation in product(*(initial_domains[n] for n in self.state_variables)):
+                state = (locations, *valuation)
+                values = self._environment(state)
+                if all(predicate(values) for predicate in predicates):
+                    self.states.append(state)
+                    if state_limit is not None and len(self.states) > state_limit:
+                        raise ValueError("JANI initial states exceed state_limit")
+        if not self.states:
+            raise ValueError("The JANI initial restrictions admit no initial state")
         self.initial_states = tuple(range(len(self.states)))
         self._explore()
+        if document["type"] == "dtmc" and self.action_dim != 1:
+            raise ValueError("DTMC source produced nondeterministic choices")
+
+    def _initial_values(self, restrictions):
+        """Resolve initial equalities and enumerate remaining finite initial domains."""
+        known, pending = {}, []
+        for name, variable in self.variables.items():
+            if "initial-value" in variable:
+                pending.append((name, variable["initial-value"]))
+
+        def equalities(exp):
+            if not isinstance(exp, dict):
+                return
+            if exp.get("op") == "∧":
+                equalities(exp["left"])
+                equalities(exp["right"])
+            elif exp.get("op") == "=":
+                for key, other in (("left", "right"), ("right", "left")):
+                    name = exp[key]
+                    if isinstance(name, str) and name in self.variables:
+                        pending.append((name, exp[other]))
+                        break
+
+        for exp in restrictions:
+            equalities(exp)
+        while pending:
+            deferred = []
+            for name, exp in pending:
+                if name in known:
+                    continue
+                try:
+                    known[name] = self._expression(exp)(self.constants | known)
+                except KeyError:
+                    deferred.append((name, exp))
+            if len(deferred) == len(pending):
+                break
+            pending = deferred
+        domains = {}
+        for name, variable in self.variables.items():
+            if name in known:
+                domains[name] = (known[name],)
+            elif variable.get("transient", False):
+                raise ValueError(f"Missing initial transient value for {name!r}")
+            elif variable["type"] == "bool":
+                domains[name] = (False, True)
+                known[name] = False
+            else:
+                kind = variable["type"]
+                lower = self._expression(kind["lower-bound"])(self.constants)
+                upper = self._expression(kind["upper-bound"])(self.constants)
+                domains[name] = range(lower, upper + 1)
+                known[name] = lower
+        return known, domains
 
     def _automaton(self, automaton):
         """Compile a bundled automaton with global variables and named actions."""
@@ -386,7 +508,7 @@ class JaniProgram:
     def _explore(self):
         """Enumerate the native graph before applying mdpforge terminal absorption."""
         indices = {state: index for index, state in enumerate(self.states)}
-        self.choices, terminals = [], []
+        self.choices, terminals, failures = [], [], []
         index = 0
         while index < len(self.states):
             state = self.states[index]
@@ -398,11 +520,18 @@ class JaniProgram:
             ]
             values = self._update(base, assignments)
             terminals.append(bool(self.terminal(values)))
+            failures.append(not self.continuation(values))
             choices = []
             for selected in self._enabled_choices(state[0], values):
                 distributions = [self._distribution(d, values) for _, d in selected]
                 # Add the source-state reward once and average destination rewards.
-                outcomes, expected_reward = {}, float(values[self.reward])
+                outcomes = {}
+                if self.reward_mode == "native":
+                    expected_reward = float(values[self.reward])
+                elif self.reward_mode == "state":
+                    expected_reward = float(self.state_reward(values))
+                else:
+                    expected_reward = float(self.reward_mode == "step_cost")
                 for branch in product(*distributions):
                     p = math.prod(destination[1] for destination in branch)
                     locations = list(state[0])
@@ -419,10 +548,16 @@ class JaniProgram:
                     target = indices.get(successor)
                     if target is None:
                         target = len(self.states)
+                        if self.state_limit is not None and target >= self.state_limit:
+                            raise ValueError(
+                                "JANI exploration exceeds state_limit; select a smaller "
+                                "variant or raise the explicit construction limit"
+                            )
                         indices[successor] = target
                         self.states.append(successor)
                     outcomes[target] = outcomes.get(target, 0.0) + p
-                    expected_reward += p * updated[self.reward]
+                    if self.reward_mode == "native":
+                        expected_reward += p * updated[self.reward]
                 if not math.isfinite(expected_reward):
                     raise ValueError("Nonfinite JANI expected reward")
                 choices.append((outcomes, expected_reward))
@@ -431,6 +566,14 @@ class JaniProgram:
         self.state_dim = len(self.states)
         self.action_dim = max(1, max(map(len, self.choices)))
         self.terminal_states = np.asarray(terminals, dtype=bool)
+        if self.reward_mode == "reachability":
+            goals = self.terminal_states.copy()
+            self.terminal_states |= np.asarray(failures, dtype=bool)
+            for state, choices in enumerate(self.choices):
+                self.choices[state] = [
+                    (outcomes, sum(p for target, p in outcomes.items() if goals[target]))
+                    for outcomes, _ in choices
+                ]
 
     def matrices(self, reward_sign):
         """Construct padded choices with zero-reward absorbing terminal states."""

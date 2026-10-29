@@ -246,7 +246,7 @@ class Benchmark:
         verbose: True prints model-loading progress; False keeps additions quiet.
         Unavailable sizes, duplicates and missing dependencies are skipped.
         """
-        for entry in models.list_models(size=size):
+        for entry in models.list_models(size=size, available=True):
             preset = entry["sizes"][size] if size is not None else None
             self._add_catalogue_model(
                 entry["name"], preset=preset, grouped=True, verbose=verbose

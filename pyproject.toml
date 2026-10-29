@@ -45,6 +45,7 @@ include = ["mdpforge", "mdpforge.*"]
 
 [tool.setuptools.package-data]
 "mdpforge.models" = [
+    "_jani_catalogue.json",
     "_qvbs_data/*.jani", "_qvbs_data/*.json", "_qvbs_data/LICENSE",
     "_prism_data/*.nm", "_prism_data/*.json", "_prism_data/LICENSE",
     "_prism_data/PRISM_COPYING.txt",

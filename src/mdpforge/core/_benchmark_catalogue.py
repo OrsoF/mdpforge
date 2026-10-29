@@ -44,7 +44,7 @@ def _select_models(names=None, *, size=None, category=None):
     """Resolve optional names and filters to ordered model catalogue entries."""
     entries = models.list_models(size=size, category=category)
     if names is None:
-        return entries
+        return [entry for entry in entries if entry["available"]]
     selected = {entry["name"]: entry for entry in entries}
     for name in names:
         if name in selected:
@@ -65,6 +65,16 @@ def _select_models(names=None, *, size=None, category=None):
 
 def _load_model(name, *, preset=None, registered=(), grouped=False, verbose=False):
     """Build a catalogue model, optionally skipping duplicates or missing dependencies."""
+    unavailable = next(
+        (entry for entry in models.list_models(available=False) if entry["name"] == name),
+        None,
+    )
+    if unavailable is not None:
+        message = f"Model {name!r} is unavailable: {unavailable['reason']}"
+        if grouped:
+            warnings.warn(message, stacklevel=4)
+            return None
+        raise ValueError(message)
     try:
         options = dict(preset["parameters"]) if preset is not None else {}
         if preset is not None:

@@ -71,7 +71,7 @@ class Model(MDP):
             transition_matrix.copy() for _ in range(self.action_dim)
         ]
 
-        for ss1 in trange(self.state_dim):
+        for ss1 in range(self.state_dim):
             for aa in range(self.action_dim):
                 self.reward_matrix[ss1, aa] = self._reward_function(ss1, aa)
 
