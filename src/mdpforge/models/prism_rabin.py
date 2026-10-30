@@ -6,11 +6,11 @@ The source variant omits the commented scheduling self-loops; no fairness is add
 The added reward is -1 per step until p[target_process]=2, then zero with absorption.
 Native states are enumerated before absorption, preserving published dimensions.
 state_dim selects the closest bundled three- or four-process configuration.
-Original authors, GPL-2.0 source license and adaptation: _data/prism/manifest.json.
+Original authors, GPL-2.0 source license and adaptation: _prism/_data/manifest.json.
 """
 
 from mdpforge.core.mdp import MDP
-from mdpforge.models._prism import build_prism, configure_prism
+from mdpforge.models._prism.reader import build_prism, configure_prism
 
 METADATA = {
     "category": "abstract",

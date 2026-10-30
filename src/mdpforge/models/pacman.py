@@ -1,7 +1,7 @@
 """Reduced single-ghost Pac-Man MDP, not a conversion of the QVBS JANI file."""
 
 from mdpforge.core.mdp import MDP
-from mdpforge.models._benchmark_sparse import TransitionBuilder
+from mdpforge.utils._benchmark_sparse import TransitionBuilder
 
 METADATA = {
     "category": "games_and_puzzles",

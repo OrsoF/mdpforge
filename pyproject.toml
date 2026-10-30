@@ -11,9 +11,9 @@ requires-python = ">=3.11"
 license = "MIT AND CC-BY-4.0 AND GPL-2.0-only"
 license-files = [
     "LICENSE",
-    "src/mdpforge/models/_data/jani/qvbs/LICENSE",
-    "src/mdpforge/models/_data/prism/LICENSE",
-    "src/mdpforge/models/_data/prism/PRISM_COPYING.txt",
+    "src/mdpforge/models/_qvbs/_data/LICENSE",
+    "src/mdpforge/models/_prism/_data/LICENSE",
+    "src/mdpforge/models/_prism/_data/PRISM_COPYING.txt",
 ]
 dependencies = ["numpy>=1.26", "scipy>=1.12", "threadpoolctl>=3.1"]
 
@@ -42,11 +42,16 @@ include-package-data = false
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["mdpforge", "mdpforge.*"]
+exclude = [
+    "mdpforge.models._jani._data*",
+    "mdpforge.models._qvbs._data*",
+    "mdpforge.models._prism._data*",
+]
 
 [tool.setuptools.package-data]
-"mdpforge.models" = [
-    "_data/**/*",
-]
+"mdpforge.models._jani" = ["_data/**/*"]
+"mdpforge.models._qvbs" = ["_data/**/*"]
+"mdpforge.models._prism" = ["_data/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -25,7 +25,7 @@ def list_models(
     category: abstract, navigation, physical_control, service_operations,
         asset_management, games_and_puzzles or None; selects a task family.
     size: small, medium, large or None; selects an available preset.
-    available: True for recipes, False for continuous-time sources, None for both.
+    available: True for recipes, False for unavailable sources, None for both.
     """
     if available is not None and type(available) is not bool:
         raise ValueError("available must be True, False or None")

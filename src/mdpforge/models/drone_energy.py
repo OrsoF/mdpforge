@@ -8,7 +8,7 @@ published PRISM benchmark or a conversion of its properties.
 """
 
 from mdpforge.core.mdp import MDP
-from mdpforge.models._benchmark_sparse import TransitionBuilder
+from mdpforge.utils._benchmark_sparse import TransitionBuilder
 
 METADATA = {
     "category": "navigation",

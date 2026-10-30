@@ -7,7 +7,7 @@ or multiobjective properties; there is no claim of numerical equivalence.
 """
 
 from mdpforge.core.mdp import MDP
-from mdpforge.models._benchmark_sparse import TransitionBuilder
+from mdpforge.utils._benchmark_sparse import TransitionBuilder
 
 METADATA = {
     "category": "navigation",

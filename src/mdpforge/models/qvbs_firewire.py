@@ -6,10 +6,10 @@ Costs (Emin) are negated; rewards (Emax) retain their native scale.
 state_dim scales delay>=1 using a power fit to published state counts.
 Interpolation and extrapolation estimate sizes; exploration measures dimensions.
 Finite property horizons are replaced by discounting, not reproduced.
-Source authors, conversion and CC-BY 4.0 attribution: _data/jani/qvbs/model_manifest.json.
+Source authors, conversion and CC-BY 4.0 attribution: _qvbs/_data/model_manifest.json.
 """
 
-from mdpforge.models._jani_model import JANIModel
+from mdpforge.models._jani.model import JANIModel
 
 METADATA = {
     "category": "service_operations",

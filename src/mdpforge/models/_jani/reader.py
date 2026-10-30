@@ -14,6 +14,7 @@ _BINARY = {
     "-": operator.sub,
     "*": operator.mul,
     "/": operator.truediv,
+    "%": operator.mod,
     "=": operator.eq,
     "≠": operator.ne,
     "<": operator.lt,
@@ -23,6 +24,10 @@ _BINARY = {
     "min": min,
     "max": max,
 }
+
+
+class JANIStateLimitError(ValueError):
+    """A source graph exceeds the explicitly configured construction limit."""
 
 
 def _fields(document, allowed):
@@ -265,7 +270,9 @@ class JaniProgram:
                 if all(predicate(values) for predicate in predicates):
                     self.states.append(state)
                     if state_limit is not None and len(self.states) > state_limit:
-                        raise ValueError("JANI initial states exceed state_limit")
+                        raise JANIStateLimitError(
+                            f"JANI initial states exceed state_limit={state_limit}"
+                        )
         if not self.states:
             raise ValueError("The JANI initial restrictions admit no initial state")
         self.initial_states = tuple(range(len(self.states)))
@@ -509,7 +516,7 @@ class JaniProgram:
                 yield tuple((i, d) for (i, _), d in zip(participants, selection))
 
     def _distribution(self, destinations, values):
-        """Evaluate and validate one enabled edge's probability distribution."""
+        """Validate a choice and normalize source rounding within absolute 1e-6."""
         result, total = [], 0.0
         for location, probability, assignments in destinations:
             p = float(probability(values))
@@ -519,7 +526,15 @@ class JaniProgram:
             if p:
                 result.append((location, p, assignments))
         if not math.isclose(total, 1.0, rel_tol=1e-12, abs_tol=1e-12):
-            raise ValueError("JANI choice probabilities do not sum to one")
+            if not math.isclose(total, 1.0, rel_tol=0.0, abs_tol=1e-6):
+                raise ValueError(
+                    f"JANI choice probabilities sum to {total:.17g}; "
+                    "expected 1 within absolute tolerance 1e-6"
+                )
+            result = [
+                (location, probability / total, assignments)
+                for location, probability, assignments in result
+            ]
         return result
 
     def _explore(self):
@@ -566,8 +581,9 @@ class JaniProgram:
                     if target is None:
                         target = len(self.states)
                         if self.state_limit is not None and target >= self.state_limit:
-                            raise ValueError(
-                                "JANI exploration exceeds state_limit; select a smaller "
+                            raise JANIStateLimitError(
+                                "JANI exploration exceeds "
+                                f"state_limit={self.state_limit}; select a smaller "
                                 "variant or raise the explicit construction limit"
                             )
                         indices[successor] = target

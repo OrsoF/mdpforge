@@ -7,7 +7,7 @@ import math
 from importlib.resources import files
 
 from mdpforge.core.mdp import MDP
-from mdpforge.models._jani import JaniProgram
+from mdpforge.models._jani.reader import JaniProgram
 
 
 def _select_configuration(source, requested_state_dim):
@@ -84,7 +84,8 @@ class JANIModel(MDP):
         """Select a native configuration, then explore its actual dimensions."""
         if type(state_dim) is not int or state_dim < 1:
             raise ValueError("state_dim must be a positive integer")
-        data = files("mdpforge.models").joinpath("_data", "jani", self.collection)
+        package = {"qvbs": "_qvbs", "library": "_jani"}[self.collection]
+        data = files(f"mdpforge.models.{package}").joinpath("_data")
         manifest = json.loads(
             data.joinpath("model_manifest.json").read_text(encoding="utf-8")
         )
@@ -140,6 +141,7 @@ class JANIModel(MDP):
         self.objective = objective
         self.source_revision = manifest["revision"]
         self._reward_spec = specs[objective]
+        document, self._reward_spec = self._prepare_source(document, self._reward_spec)
         self.reward_name = self._reward_spec.get("exp")
         self.reward_sign = -1 if self._reward_spec["op"] in {"Emin", "Pmin"} else 1
         declared = {constant["name"] for constant in document.get("constants", [])}
@@ -170,6 +172,10 @@ class JANIModel(MDP):
         self.terminal_states = compiled.terminal_states
         self._compiled = compiled
         self._set_name()
+
+    def _prepare_source(self, document, reward_spec):
+        """Keep pinned sources unless a recipe defines a scaled source instance."""
+        return document, reward_spec
 
     def _set_name(self):
         """Separate cached matrices and values by construction provenance."""
@@ -202,7 +208,7 @@ class JANIModel(MDP):
             "reward_sign": self.reward_sign,
             "adaptation_version": 2,
             "construction_backend": "python-jani",
-            "construction_version": 3,
+            "construction_version": 4,
         }
 
     def create_model(self, check_transition=False, *, cache="readwrite"):

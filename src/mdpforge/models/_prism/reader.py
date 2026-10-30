@@ -6,7 +6,7 @@ Actions are state-local choice offsets; unused slots duplicate the first choice.
 Native costs are negated and stopped at the source target predicate.
 Optional first-passage adaptations absorb targets and add a unit step cost.
 Discounting replaces source verification queries; no scheduler fairness is imposed.
-Source attribution, licenses and counts are in _data/prism/manifest.json.
+Source attribution, licenses and counts are in _data/manifest.json.
 """
 
 import ast
@@ -331,7 +331,7 @@ def configure_prism(model, family, requested, parameters, reward):
     """Select a published configuration without constructing its state graph."""
     if type(requested) is not int or requested < 1:
         raise ValueError("state_dim must be a positive integer")
-    data = files("mdpforge.models").joinpath("_data", "prism")
+    data = files(__package__).joinpath("_data")
     manifest = json.loads(data.joinpath("manifest.json").read_text(encoding="utf-8"))
     definition = manifest["models"][family]
     if reward not in definition["rewards"]:
@@ -370,7 +370,7 @@ def configure_prism(model, family, requested, parameters, reward):
 def build_prism(model):
     """Explore the source commands and construct padded CSR choice matrices."""
     config = model._prism_configuration
-    source = files("mdpforge.models").joinpath("_data", "prism", config["file"])
+    source = files(__package__).joinpath("_data", config["file"])
     raw = source.read_bytes()
     if "sha256" in config and hashlib.sha256(raw).hexdigest() != config["sha256"]:
         raise ValueError(f"PRISM source checksum mismatch: {config['file']}")

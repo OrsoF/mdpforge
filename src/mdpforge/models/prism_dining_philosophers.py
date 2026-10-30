@@ -6,11 +6,11 @@ The original variant retains scheduling self-loops; no fairness is imposed.
 The added reward is -1 per step until the designated p is 8 or 9 (native eat),
 then zero with absorption; native states are enumerated before this adaptation.
 state_dim selects a bundled three-, four- or five-philosopher configuration.
-Original authors, GPL-2.0 source license and adaptation: _data/prism/manifest.json.
+Original authors, GPL-2.0 source license and adaptation: _prism/_data/manifest.json.
 """
 
 from mdpforge.core.mdp import MDP
-from mdpforge.models._prism import build_prism, configure_prism
+from mdpforge.models._prism.reader import build_prism, configure_prism
 
 METADATA = {
     "category": "abstract",

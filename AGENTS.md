@@ -10,6 +10,7 @@ mdpforge benchmarks new finite MDPs and new MDP solvers. Prefer small, useful ch
 - Do not create or modify documentation unless the user explicitly asks for it. When requested, write concisely and compactly, and verify paths and interfaces before documenting them.
 - In all Markdown (`.md`) files, keep each prose paragraph on a single source line, including paragraphs within list items; do not insert manual line wrapping. Preserve structural line breaks in lists, tables, code blocks, and other Markdown constructs.
 - Keep function and method docstrings very short: one sentence by default. For public options, list each keyword, its accepted values and a brief meaning. Include only essential constraints; put longer explanations in dedicated docs.
+- Keep individual catalogue model modules directly in `src/mdpforge/models/`, preserving their public names. Put JANI readers and shared constructors in `_jani/`, PRISM utilities in `_prism/`, and each collection's sources, manifests and licenses in its own `_data/` (`_jani/_data/`, `_qvbs/_data/`, `_prism/_data/`). QVBS models reuse the JANI utilities; general helpers belong in `src/mdpforge/utils/`. Keep utility code and source data out of the `models/` root, and update imports, resource paths and packaging when moving them.
 
 ## Preserve the scientific contract
 

@@ -4,11 +4,11 @@ States are reachable integer valuations; actions are local choice offsets.
 Disabled slots repeat a valid choice; terminal transitions are not removed.
 Costs are negated and zeroed on completion, with no terminal bonus or scaling.
 state_dim selects the closest bundled configuration unless parameters fix it.
-Original authors and CC-BY 4.0 source attribution: _data/prism/manifest.json.
+Original authors and CC-BY 4.0 source attribution: _prism/_data/manifest.json.
 """
 
 from mdpforge.core.mdp import MDP
-from mdpforge.models._prism import build_prism, configure_prism
+from mdpforge.models._prism.reader import build_prism, configure_prism
 
 METADATA = {
     "category": "abstract",

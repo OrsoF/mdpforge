@@ -7,7 +7,7 @@ A deliberately small, infinite-horizon discounted surrogate, not IPPC RDDL.
 """
 
 from mdpforge.core.mdp import MDP
-from mdpforge.models._benchmark_sparse import TransitionBuilder
+from mdpforge.utils._benchmark_sparse import TransitionBuilder
 
 METADATA = {
     "category": "service_operations",

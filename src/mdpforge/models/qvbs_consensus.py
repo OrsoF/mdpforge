@@ -5,10 +5,10 @@ Unused action slots repeat the first choice. Reach targets absorb at zero reward
 Costs (Emin) are negated; rewards (Emax) retain their native scale.
 state_dim selects K>=1 for the two-process shared counter.
 Finite property horizons are replaced by discounting, not reproduced.
-Source authors, conversion and CC-BY 4.0 attribution: _data/jani/qvbs/model_manifest.json.
+Source authors, conversion and CC-BY 4.0 attribution: _qvbs/_data/model_manifest.json.
 """
 
-from mdpforge.models._jani_model import JANIModel
+from mdpforge.models._jani.model import JANIModel
 
 METADATA = {
     "category": "abstract",

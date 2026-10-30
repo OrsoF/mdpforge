@@ -239,7 +239,7 @@ class Benchmark:
                 )
         return self
 
-    def add_all_mdps(self, *, size: str | None = None, verbose=False):
+    def add_all_mdps(self, *, size: str | None = 'small', verbose=False):
         """Add all catalogue MDPs for an optional size preset; return self.
 
         size: "small", "medium" or "large"; None uses recipe defaults.

@@ -5,10 +5,10 @@ Missing action slots repeat the first choice; stopped states absorb at zero.
 Probability objectives pay a signed unit bonus on first reaching the target;
 discounting replaces unbounded probabilities and outer verification assertions.
 Native rewards retain their scale; minimisation objectives are negated.
-Sources and parameters: _data/jani/library/model_manifest.json.
+Sources and parameters: _jani/_data/model_manifest.json.
 """
 
-from mdpforge.models._jani_model import JANIModel
+from mdpforge.models._jani.model import JANIModel
 
 METADATA = {
     "category": "abstract",
