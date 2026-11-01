@@ -1,5 +1,8 @@
 """Plot benchmark results with the optional Matplotlib dependency."""
 
+import json
+from hashlib import sha256
+
 import numpy as np
 
 from mdpforge.core.result import (
@@ -11,14 +14,52 @@ from mdpforge.core.result import (
 
 def _ordered_solver_labels(solver_names, experiment):
     """Order registered solver IDs and resolve their captured display names."""
+    records = (experiment or {}).get("solvers", {})
     metadata = {
         name: record.get("metadata") or {}
-        for name, record in (experiment or {}).get("solvers", {}).items()
+        for name, record in records.items()
     }
     solver_labels = {
-        name: record.get("verbose_name") or metadata[name].get("display_name") or name
-        for name, record in (experiment or {}).get("solvers", {}).items()
+        name: metadata[name].get("display_name") or record.get("verbose_name") or name
+        for name, record in records.items()
     }
+    groups = {}
+    for name in solver_names:
+        groups.setdefault(solver_labels.get(name, name), []).append(name)
+    missing = object()
+    for label, names in groups.items():
+        if len(names) < 2:
+            continue
+        parameters = {
+            name: records.get(name, {}).get("parameters")
+            or records.get(name, {}).get("options")
+            or {}
+            for name in names
+        }
+        keys = dict.fromkeys(key for name in names for key in parameters[name])
+        differing = [
+            key
+            for key in keys
+            if any(
+                parameters[name].get(key, missing)
+                != parameters[names[0]].get(key, missing)
+                for name in names[1:]
+            )
+        ]
+        for name in names:
+            options = []
+            for key in differing:
+                value = parameters[name].get(key, missing)
+                if value is missing:
+                    text = "unspecified"
+                elif isinstance(value, (dict, list)) or len(str(value)) > 32:
+                    encoded = json.dumps(value, sort_keys=True).encode()
+                    text = "#" + sha256(encoded).hexdigest()[:10]
+                else:
+                    text = repr(value)
+                options.append(f"{key}={text}")
+            if options:
+                solver_labels[name] = f"{label} ({', '.join(options)})"
 
     def solver_order(name):
         fields = metadata.get(name, {})
@@ -57,6 +98,7 @@ def plot_heat(
 
     Model/solver names are derived from the measurements.
     Display labels and family/method/backend/variant sorting use the manifest.
+    Only parameters differing between configurations of one label are shown.
     Without a manifest, technical IDs and their original order are preserved.
     Duplicate display labels are disambiguated with their registered IDs.
     Abbreviations in catalogue labels are explained beneath the plot.
