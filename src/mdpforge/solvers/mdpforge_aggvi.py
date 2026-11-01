@@ -13,7 +13,6 @@ from mdpforge.utils.projected_bellman import (
     apply_pobo_until_var_small,
     projected_optimal_bellman_operator_residual,
 )
-from mdpforge.utils.solver_names import solver_names
 from mdpforge.utils.solver_options import bounded_iterations
 
 METADATA = {
@@ -86,7 +85,7 @@ class Solver:
             self.model.reward_matrix == self.model.reward_matrix[:, [0]]
         )
 
-        self.name, self.verbose_name = solver_names(Solver, locals())
+        self.name = __name__.rsplit(".", 1)[-1]
         self.policy = None
 
         self.partition = Partition(self.model)

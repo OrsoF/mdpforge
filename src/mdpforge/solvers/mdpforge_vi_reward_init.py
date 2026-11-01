@@ -4,7 +4,6 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
-from mdpforge.utils.solver_names import solver_names
 
 METADATA = {
     "display_name": "VI · mdpforge · reward init",
@@ -37,7 +36,7 @@ class Solver(GenericSolver):
             model, discount, final_precision, max_iterations=max_iterations
         )
         self.initial_value = model.reward_matrix.max(axis=1) / (1 - discount)
-        self.name, self.verbose_name = solver_names(Solver, locals())
+        self.name = __name__.rsplit(".", 1)[-1]
 
     def _solve(self) -> SolveResult:
         value = self.initial_value.copy()

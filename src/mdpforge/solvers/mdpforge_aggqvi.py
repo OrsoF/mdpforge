@@ -23,7 +23,6 @@ from mdpforge.utils.projected_bellman import (
     apply_poqbo_until_var_small,
     projected_optimal_q_bellman_operator,
 )
-from mdpforge.utils.solver_names import solver_names
 from mdpforge.utils.solver_options import bounded_iterations
 
 METADATA = {
@@ -74,7 +73,7 @@ class Solver(GenericSolver):
         self.shared_reward = np.all(
             self.model.reward_matrix == self.model.reward_matrix[:, [0]]
         )
-        self.name, self.verbose_name = solver_names(Solver, locals())
+        self.name = __name__.rsplit(".", 1)[-1]
         self.policy = None
 
         self.partition = Partition(self.model)

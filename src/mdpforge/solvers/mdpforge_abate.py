@@ -31,7 +31,6 @@ from mdpforge.core.partition import Partition
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.bellman import iterative_policy_evaluation
-from mdpforge.utils.solver_names import solver_names
 
 METADATA = {
     "display_name": "Abate · mdpforge",
@@ -75,7 +74,7 @@ class Solver(GenericSolver):
         self.max_value_iterations = max_value_iterations
         self.max_error_matrix_entries = max_error_matrix_entries
         self.direct_threshold = direct_threshold
-        self.name, self.verbose_name = solver_names(Solver, locals())
+        self.name = __name__.rsplit(".", 1)[-1]
         self.policy = None
 
         self.n_states = self.model.state_dim

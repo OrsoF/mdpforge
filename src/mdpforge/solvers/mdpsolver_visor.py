@@ -9,7 +9,6 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.solver_backends import create_mdpsolver, solve_mdpsolver
-from mdpforge.utils.solver_names import solver_names
 from mdpforge.utils.solver_options import initial_vectors
 
 METADATA = {
@@ -52,7 +51,7 @@ class Solver(GenericSolver):
             initial_value, initial_policy
         )
         self.relaxation = float(relaxation)
-        self.name, self.verbose_name = solver_names(Solver, locals())
+        self.name = __name__.rsplit(".", 1)[-1]
         self.mdl = create_mdpsolver(model, discount, mdpsolver)
 
     def _solve(self) -> SolveResult:

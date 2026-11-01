@@ -1,5 +1,6 @@
 """Solver catalogue metadata, readable without importing optional backends."""
 
+import sys
 from collections.abc import Sequence
 from importlib.resources import files
 
@@ -11,6 +12,16 @@ _METADATA_FIELDS = (
     "backend",
     "description",
 )
+
+
+def is_catalogue_solver(constructor):
+    """Identify solver classes supplied by the catalogue."""
+    module = sys.modules.get(getattr(constructor, "__module__", ""))
+    return (
+        module is not None
+        and module.__name__.startswith("mdpforge.solvers.")
+        and getattr(module, "Solver", None) is constructor
+    )
 
 
 def list_solvers(

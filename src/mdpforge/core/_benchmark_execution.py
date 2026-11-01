@@ -11,7 +11,7 @@ from time import perf_counter
 
 import numpy as np
 
-from mdpforge.utils.solver_names import is_catalogue_solver
+from mdpforge.solvers import is_catalogue_solver
 
 
 def _solver_trial(model, constructor, options, discount, precision, seed, solver_name):

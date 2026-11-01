@@ -4,7 +4,6 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
-from mdpforge.utils.solver_names import solver_names
 from mdpforge.utils.solver_options import initial_vectors
 
 METADATA = {
@@ -40,7 +39,7 @@ class Solver(GenericSolver):
         )
         value, _ = initial_vectors(initial_value)
         self.initial_value = np.zeros(model.state_dim) if value is None else value
-        self.name, self.verbose_name = solver_names(Solver, locals())
+        self.name = __name__.rsplit(".", 1)[-1]
 
     def _solve(self) -> SolveResult:
         value = self.initial_value.copy()

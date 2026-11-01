@@ -18,9 +18,8 @@ from mdpforge.core._benchmark_execution import _isolated_solver_trial, _solver_t
 from mdpforge.core.mdp import MDP
 from mdpforge.core.result import BenchmarkResult
 from mdpforge.core.validation import validate_model
-from mdpforge.solvers import list_solvers
+from mdpforge.solvers import is_catalogue_solver, list_solvers
 from mdpforge.utils.experiment import capture_experiment
-from mdpforge.utils.solver_names import is_catalogue_solver, solver_names
 
 
 def _check_solver_options(name, constructor, options):
@@ -344,28 +343,30 @@ class Benchmark:
             is_catalogue_solver(constructor)
             and name == constructor.__module__.rsplit(".", 1)[-1]
         )
+        if auto_name or skip_existing:
+            for registered_name, (existing, previous_options) in registry.items():
+                if existing is constructor and _same_options(
+                    previous_options, options
+                ):
+                    if skip_existing:
+                        return
+                    raise ValueError(
+                        f"A solver named {registered_name!r} is already registered."
+                    )
         if auto_name:
-            name, _ = solver_names(constructor, options)
-        if name in registry:
-            existing, previous_options = registry[name]
-            if (
-                skip_existing
-                and existing is constructor
-                and (auto_name or _same_options(previous_options, options))
-            ):
-                return
+            base_name = name
+            index = 2
+            while name in registry:
+                name = f"{base_name}_{index}"
+                index += 1
+        elif name in registry:
             raise ValueError(f"A solver named {name!r} is already registered.")
-        if skip_existing and any(
-            existing is constructor and _same_options(previous_options, options)
-            for existing, previous_options in registry.values()
-        ):
-            return
         registry[name] = (constructor, options.copy())
 
     def remove_solver(self, solver_name: str):
         """Remove a registered solver by label and return self.
 
-        solver_name: nonempty label previously passed to add_solver().
+        solver_name: registered ID, including the numeric suffix for a configuration.
         """
         if not isinstance(solver_name, str) or not solver_name.strip():
             raise ValueError("A solver must have a nonempty string name.")

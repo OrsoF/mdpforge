@@ -17,7 +17,6 @@ from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.solvers.mdpforge_tvi import strongly_connected_components
-from mdpforge.utils.solver_names import solver_names
 from mdpforge.utils.solver_options import initial_vectors
 
 METADATA = {
@@ -93,7 +92,7 @@ class Solver(GenericSolver):
         self.boundary_tolerance = boundary_tolerance
         self.min_block_size = min_block_size
         self.max_local_iterations = max_local_iterations
-        self.name, self.verbose_name = solver_names(Solver, locals())
+        self.name = __name__.rsplit(".", 1)[-1]
 
     def _make_leaf(self, states: np.ndarray, depth: int) -> _Leaf:
         """Cache concrete transitions inside a block and to its outside boundary."""

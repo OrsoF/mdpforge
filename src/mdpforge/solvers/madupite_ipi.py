@@ -10,7 +10,6 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.solver_backends import madupite_matrices
-from mdpforge.utils.solver_names import solver_names
 
 METADATA = {
     "display_name": "iPI · madupite",
@@ -54,7 +53,7 @@ class Solver(GenericSolver):
         self.max_evaluation_iterations = max_evaluation_iterations
         self.ksp_type = ksp_type
         self.pc_type = pc_type
-        self.name, self.verbose_name = solver_names(Solver, locals())
+        self.name = __name__.rsplit(".", 1)[-1]
 
     def _solve(self) -> SolveResult:
         # mdpforge independently manages processes and checks one complete

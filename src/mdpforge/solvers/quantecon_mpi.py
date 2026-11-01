@@ -6,7 +6,6 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.solver_backends import create_quantecon
-from mdpforge.utils.solver_names import solver_names
 
 METADATA = {
     "display_name": "MPI · QuantEcon",
@@ -43,7 +42,7 @@ class Solver(GenericSolver):
             model, discount, final_precision, max_iterations=max_iterations
         )
         self.max_evaluation_iterations = max_evaluation_iterations
-        self.name, self.verbose_name = solver_names(Solver, locals())
+        self.name = __name__.rsplit(".", 1)[-1]
 
     def _solve(self) -> SolveResult:
         """Call QuantEcon's public solver with its native stopping rule."""

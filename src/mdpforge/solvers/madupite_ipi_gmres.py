@@ -2,7 +2,6 @@
 
 from mdpforge.core.mdp import MDP
 from mdpforge.solvers.madupite_ipi import Solver as MadupiteIPISolver
-from mdpforge.utils.solver_names import solver_names
 
 METADATA = {
     "display_name": "iPI · madupite (GMRES)",
@@ -45,4 +44,4 @@ class Solver(MadupiteIPISolver):
             ksp_type="gmres",
             pc_type="none",
         )
-        self.name, self.verbose_name = solver_names(Solver, locals())
+        self.name = __name__.rsplit(".", 1)[-1]

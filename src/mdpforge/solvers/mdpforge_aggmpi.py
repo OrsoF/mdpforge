@@ -25,7 +25,6 @@ from mdpforge.utils.bellman import (
 from mdpforge.utils.projected_bellman import (
     apply_ppbo_until_var_small,
 )
-from mdpforge.utils.solver_names import solver_names
 from mdpforge.utils.solver_options import bounded_iterations
 
 METADATA = {
@@ -90,7 +89,7 @@ class Solver:
 
         self.max_projected_iterations = max_projected_iterations
 
-        self.name, self.verbose_name = solver_names(Solver, locals())
+        self.name = __name__.rsplit(".", 1)[-1]
 
         self.partition = Partition(self.model)
 
