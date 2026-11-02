@@ -170,10 +170,9 @@ class Solver(GenericSolver):
 
                 error_y = y_error + self.discount * error_y
                 error_x = self.discount * p_bar.dot(error_x)
-                error_z = (
-                    self.discount * p_bar.dot(error_z)
-                    + self.discount * z_error.dot(old_value_bar)
-                )
+                error_z = self.discount * p_bar.dot(
+                    error_z
+                ) + self.discount * z_error.dot(old_value_bar)
                 aggregation_error = error_y + error_x + error_z
 
                 b_y = y_global + self.discount * b_y
@@ -321,9 +320,7 @@ class Solver(GenericSolver):
 
     def _region_max(self, values: np.ndarray) -> np.ndarray:
         out = np.full(self.partition.n_regions, -np.inf)
-        np.maximum.at(
-            out, self.partition.state_to_region, np.asarray(values).ravel()
-        )
+        np.maximum.at(out, self.partition.state_to_region, np.asarray(values).ravel())
         return out
 
     def _finish(

@@ -36,8 +36,13 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('goal',)
-VARIANTS = ('blocksworld.10.jani', 'blocksworld.14.jani', 'blocksworld.18.jani', 'blocksworld.5.jani')
+OBJECTIVES = ("goal",)
+VARIANTS = (
+    "blocksworld.10.jani",
+    "blocksworld.14.jani",
+    "blocksworld.18.jani",
+    "blocksworld.5.jani",
+)
 
 TEST_PARAMETERS = {"state_dim": 1125}
 

@@ -76,7 +76,9 @@ class Solver(GenericSolver):
             raise ValueError("boundary_tolerance must be finite and nonnegative")
         if min_block_size < 1 or max_local_iterations < 1 or max_iterations < 1:
             raise ValueError("iteration budgets and min_block_size must be positive")
-        super().__init__(model, discount, final_precision, max_iterations=max_iterations)
+        super().__init__(
+            model, discount, final_precision, max_iterations=max_iterations
+        )
         initial, _ = initial_vectors(initial_value)
         if initial is not None and (
             initial.shape != (model.state_dim,) or not np.isfinite(initial).all()
@@ -99,8 +101,9 @@ class Solver(GenericSolver):
         n = self.model.state_dim
         outside_mask = np.ones(n, dtype=bool)
         outside_mask[states] = False
-        row_matrices = [transition[states, :].tocsr()
-                        for transition in self.model.transition_matrix]
+        row_matrices = [
+            transition[states, :].tocsr() for transition in self.model.transition_matrix
+        ]
         boundary = np.unique(np.concatenate([p.indices for p in row_matrices]))
         boundary = boundary[outside_mask[boundary]]
         internal = [p[:, states].tocsr() for p in row_matrices]
@@ -113,7 +116,7 @@ class Solver(GenericSolver):
         if not len(leaf.boundary):
             return False
         change = np.max(np.abs(value[leaf.boundary] - leaf.boundary_snapshot))
-        scale = max(1., np.max(np.abs(leaf.boundary_snapshot)))
+        scale = max(1.0, np.max(np.abs(leaf.boundary_snapshot)))
         return change > self.boundary_tolerance * scale
 
     def _solve_leaf(self, leaf: _Leaf, value: np.ndarray, tolerance: float) -> None:
@@ -121,15 +124,14 @@ class Solver(GenericSolver):
         states = leaf.states
         boundary_values = value[leaf.boundary].copy()
         rewards = self.model.reward_matrix[states]
-        boundary_terms = np.column_stack(
-            [p @ boundary_values for p in leaf.external]
-        )
+        boundary_terms = np.column_stack([p @ boundary_values for p in leaf.external])
         current = value[states].copy()
         for _ in range(self.max_local_iterations):
             q = np.column_stack(
-                [rewards[:, a] + self.discount *
-                 (p @ current + boundary_terms[:, a])
-                 for a, p in enumerate(leaf.internal)]
+                [
+                    rewards[:, a] + self.discount * (p @ current + boundary_terms[:, a])
+                    for a, p in enumerate(leaf.internal)
+                ]
             )
             updated = q.max(axis=1)
             if not np.isfinite(updated).all():
@@ -209,8 +211,10 @@ class Solver(GenericSolver):
             if residual <= tolerance and not any_refined:
                 self.n_final_blocks = len(leaves)
                 q = np.column_stack(
-                    [self.model.reward_matrix[:, a] + self.discount * (p @ value)
-                     for a, p in enumerate(self.model.transition_matrix)]
+                    [
+                        self.model.reward_matrix[:, a] + self.discount * (p @ value)
+                        for a, p in enumerate(self.model.transition_matrix)
+                    ]
                 )
                 return SolveResult(value, q.argmax(axis=1).astype(int))
             if not any_solved and not any_refined:

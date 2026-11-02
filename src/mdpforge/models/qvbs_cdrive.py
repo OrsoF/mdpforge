@@ -34,8 +34,8 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('goal',)
-VARIANTS = ('cdrive.10.jani', 'cdrive.2.jani', 'cdrive.3.jani', 'cdrive.6.jani')
+OBJECTIVES = ("goal",)
+VARIANTS = ("cdrive.10.jani", "cdrive.2.jani", "cdrive.3.jani", "cdrive.6.jani")
 
 TEST_PARAMETERS = {"state_dim": 38}
 

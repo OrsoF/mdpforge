@@ -21,9 +21,7 @@ METADATA = {
     "sizes": {
         "small": {
             "requested_state_dim": 80,
-            "parameters": {
-
-            },
+            "parameters": {},
         },
         "medium": {
             "requested_state_dim": None,
@@ -38,8 +36,14 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('goal',)
-VARIANTS = ('triangle-tireworld.1681.jani', 'triangle-tireworld.3721.jani', 'triangle-tireworld.441.jani', 'triangle-tireworld.6561.jani', 'triangle-tireworld.9.jani')
+OBJECTIVES = ("goal",)
+VARIANTS = (
+    "triangle-tireworld.1681.jani",
+    "triangle-tireworld.3721.jani",
+    "triangle-tireworld.441.jani",
+    "triangle-tireworld.6561.jani",
+    "triangle-tireworld.9.jani",
+)
 
 TEST_PARAMETERS = {"state_dim": 80}
 

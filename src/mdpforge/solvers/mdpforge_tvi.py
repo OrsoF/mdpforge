@@ -51,7 +51,9 @@ def strongly_connected_components(transitions):
     while queue:
         node = queue.popleft()
         order.append(node)
-        for predecessor in reverse.indices[reverse.indptr[node] : reverse.indptr[node + 1]]:
+        for predecessor in reverse.indices[
+            reverse.indptr[node] : reverse.indptr[node + 1]
+        ]:
             remaining[predecessor] -= 1
             if remaining[predecessor] == 0:
                 queue.append(int(predecessor))
@@ -81,7 +83,9 @@ class Solver(GenericSolver):
             raise ValueError("final_precision must be finite and positive")
         if max_iterations < 1:
             raise ValueError("max_iterations must be positive")
-        super().__init__(model, discount, final_precision, max_iterations=max_iterations)
+        super().__init__(
+            model, discount, final_precision, max_iterations=max_iterations
+        )
         initial, _ = initial_vectors(initial_value)
         if initial is not None and (
             initial.shape != (model.state_dim,) or not np.isfinite(initial).all()
@@ -108,8 +112,10 @@ class Solver(GenericSolver):
             local_rewards = rewards[states, :]
             for _ in range(self.max_iterations):
                 q_values = np.column_stack(
-                    [local_rewards[:, a] + self.discount * (p @ value)
-                     for a, p in enumerate(rows)]
+                    [
+                        local_rewards[:, a] + self.discount * (p @ value)
+                        for a, p in enumerate(rows)
+                    ]
                 )
                 updated = q_values.max(axis=1)
                 if not np.isfinite(updated).all():
@@ -123,7 +129,9 @@ class Solver(GenericSolver):
             else:
                 raise RuntimeError("TVI stopped: max_iterations reached in an SCC")
 
-        full_residual = optimal_bellman_operator(self.model, value, self.discount) - value
+        full_residual = (
+            optimal_bellman_operator(self.model, value, self.discount) - value
+        )
         if np.max(np.abs(full_residual)) > tolerance * (1 + 1e-9) + 1e-12:
             raise RuntimeError("TVI stopped: global Bellman certificate failed")
         return SolveResult(value, None)

@@ -88,7 +88,7 @@ class Model(JANIModel):
                 boxes = min(
                     range(1, 11),
                     key=lambda n: abs(
-                        math.log(5**trucks * 2**planes * (5 + trucks + planes)**n)
+                        math.log(5**trucks * 2**planes * (5 + trucks + planes) ** n)
                         - math.log(state_dim)
                     ),
                 )

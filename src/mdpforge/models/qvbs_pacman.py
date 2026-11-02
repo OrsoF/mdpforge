@@ -36,10 +36,10 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('crash',)
-VARIANTS = ('pacman.jani',)
+OBJECTIVES = ("crash",)
+VARIANTS = ("pacman.jani",)
 
-TEST_PARAMETERS = {'state_dim': 498, 'constants': {'MAXSTEPS': 1}}
+TEST_PARAMETERS = {"state_dim": 498, "constants": {"MAXSTEPS": 1}}
 
 
 class Model(JANIModel):

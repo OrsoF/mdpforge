@@ -35,8 +35,8 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('live',)
-VARIANTS = ('rabin.10.jani', 'rabin.3.jani', 'rabin.5.jani')
+OBJECTIVES = ("live",)
+VARIANTS = ("rabin.10.jani", "rabin.3.jani", "rabin.5.jani")
 
 TEST_PARAMETERS = {"state_dim": 1088}
 

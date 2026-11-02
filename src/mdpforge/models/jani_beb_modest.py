@@ -37,8 +37,8 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('GaveUp', 'LineSeized')
-VARIANTS = ('beb-4-3-3.jani',)
+OBJECTIVES = ("GaveUp", "LineSeized")
+VARIANTS = ("beb-4-3-3.jani",)
 
 TEST_PARAMETERS = {"state_dim": 1}
 

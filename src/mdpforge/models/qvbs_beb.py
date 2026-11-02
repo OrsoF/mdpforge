@@ -36,10 +36,10 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('GaveUp', 'LineSeized')
-VARIANTS = ('beb.3-4.jani', 'beb.4-8.jani', 'beb.5-16.jani', 'beb.6-16.jani')
+OBJECTIVES = ("GaveUp", "LineSeized")
+VARIANTS = ("beb.3-4.jani", "beb.4-8.jani", "beb.5-16.jani", "beb.6-16.jani")
 
-TEST_PARAMETERS = {'state_dim': 4528, 'constants': {'N': 1}}
+TEST_PARAMETERS = {"state_dim": 4528, "constants": {"N": 1}}
 
 
 class Model(JANIModel):

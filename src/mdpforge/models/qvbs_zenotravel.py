@@ -21,9 +21,7 @@ METADATA = {
     "sizes": {
         "small": {
             "requested_state_dim": 462400,
-            "parameters": {
-
-            },
+            "parameters": {},
         },
         "medium": {
             "requested_state_dim": None,
@@ -38,8 +36,13 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('goal',)
-VARIANTS = ('zenotravel.10-5-3.jani', 'zenotravel.20-10-6.jani', 'zenotravel.4-2-2.jani', 'zenotravel.6-5-3.jani')
+OBJECTIVES = ("goal",)
+VARIANTS = (
+    "zenotravel.10-5-3.jani",
+    "zenotravel.20-10-6.jani",
+    "zenotravel.4-2-2.jani",
+    "zenotravel.6-5-3.jani",
+)
 
 TEST_PARAMETERS = {"state_dim": 462400}
 

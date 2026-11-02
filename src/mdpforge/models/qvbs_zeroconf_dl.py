@@ -21,29 +21,26 @@ METADATA = {
     "sizes": {
         "small": {
             "requested_state_dim": 3835,
-            "parameters": {
-
-            },
+            "parameters": {},
         },
         "medium": {
             "requested_state_dim": 19775,
-            "parameters": {
-
-            },
+            "parameters": {},
         },
         "large": {
             "requested_state_dim": 411031,
-            "parameters": {
-
-            },
+            "parameters": {},
         },
     },
 }
 
-OBJECTIVES = ('deadline_max', 'deadline_min')
-VARIANTS = ('zeroconf_dl.jani',)
+OBJECTIVES = ("deadline_max", "deadline_min")
+VARIANTS = ("zeroconf_dl.jani",)
 
-TEST_PARAMETERS = {'state_dim': 3835, 'constants': {'N': 1, 'K': 1, 'reset': True, 'deadline': 5}}
+TEST_PARAMETERS = {
+    "state_dim": 3835,
+    "constants": {"N": 1, "K": 1, "reset": True, "deadline": 5},
+}
 
 
 class Model(JANIModel):

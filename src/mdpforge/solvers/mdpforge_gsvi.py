@@ -35,7 +35,9 @@ class Solver(GenericSolver):
             raise ValueError("final_precision must be finite and positive")
         if max_iterations < 1:
             raise ValueError("max_iterations must be positive")
-        super().__init__(model, discount, final_precision, max_iterations=max_iterations)
+        super().__init__(
+            model, discount, final_precision, max_iterations=max_iterations
+        )
         initial, _ = initial_vectors(initial_value)
         if initial is not None and (
             initial.shape != (model.state_dim,) or not np.isfinite(initial).all()
@@ -72,7 +74,9 @@ class Solver(GenericSolver):
 
             if not np.isfinite(value).all():
                 raise RuntimeError("GSVI stopped: non_finite values")
-            residual = optimal_bellman_operator(self.model, value, self.discount) - value
+            residual = (
+                optimal_bellman_operator(self.model, value, self.discount) - value
+            )
             if np.max(np.abs(residual)) <= tolerance:
                 return SolveResult(value, None)
         raise RuntimeError("GSVI stopped: max_iterations reached")

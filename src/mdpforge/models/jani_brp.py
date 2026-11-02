@@ -37,10 +37,23 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('Property_brp_0', 'Property_brp_1', 'Property_brp_10', 'Property_brp_11', 'Property_brp_2', 'Property_brp_3', 'Property_brp_4', 'Property_brp_5', 'Property_brp_6', 'Property_brp_7', 'Property_brp_8', 'Property_brp_9')
-VARIANTS = ('brp.jani',)
+OBJECTIVES = (
+    "Property_brp_0",
+    "Property_brp_1",
+    "Property_brp_10",
+    "Property_brp_11",
+    "Property_brp_2",
+    "Property_brp_3",
+    "Property_brp_4",
+    "Property_brp_5",
+    "Property_brp_6",
+    "Property_brp_7",
+    "Property_brp_8",
+    "Property_brp_9",
+)
+VARIANTS = ("brp.jani",)
 
-TEST_PARAMETERS = {'state_dim': 1, 'constants': {'N': 2, 'MAX': 1}}
+TEST_PARAMETERS = {"state_dim": 1, "constants": {"N": 2, "MAX": 1}}
 
 
 class Model(JANIModel):

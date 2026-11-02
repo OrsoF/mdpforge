@@ -21,15 +21,11 @@ METADATA = {
     "sizes": {
         "small": {
             "requested_state_dim": 189703,
-            "parameters": {
-
-            },
+            "parameters": {},
         },
         "medium": {
             "requested_state_dim": 450627,
-            "parameters": {
-
-            },
+            "parameters": {},
         },
         "large": {
             "requested_state_dim": None,
@@ -39,10 +35,18 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('deadline',)
-VARIANTS = ('wlan_dl.0.jani', 'wlan_dl.1.jani', 'wlan_dl.2.jani', 'wlan_dl.3.jani', 'wlan_dl.4.jani', 'wlan_dl.5.jani', 'wlan_dl.6.jani')
+OBJECTIVES = ("deadline",)
+VARIANTS = (
+    "wlan_dl.0.jani",
+    "wlan_dl.1.jani",
+    "wlan_dl.2.jani",
+    "wlan_dl.3.jani",
+    "wlan_dl.4.jani",
+    "wlan_dl.5.jani",
+    "wlan_dl.6.jani",
+)
 
-TEST_PARAMETERS = {'state_dim': 189703, 'constants': {'deadline': 1}}
+TEST_PARAMETERS = {"state_dim": 189703, "constants": {"deadline": 1}}
 
 
 class Model(JANIModel):

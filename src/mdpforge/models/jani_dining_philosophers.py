@@ -37,8 +37,8 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('property_0',)
-VARIANTS = ('phil3.jani', 'phil4.jani', 'phil5.jani')
+OBJECTIVES = ("property_0",)
+VARIANTS = ("phil3.jani", "phil4.jani", "phil5.jani")
 
 TEST_PARAMETERS = {"state_dim": 1}
 

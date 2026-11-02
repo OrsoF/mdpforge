@@ -38,8 +38,36 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('draws',)
-VARIANTS = ('coupon_m_03_02.jani', 'coupon_m_03_03.jani', 'coupon_m_03_04.jani', 'coupon_m_05_02.jani', 'coupon_m_05_03.jani', 'coupon_m_05_04.jani', 'coupon_m_07_02.jani', 'coupon_m_07_03.jani', 'coupon_m_07_04.jani', 'coupon_m_09_02.jani', 'coupon_m_09_03.jani', 'coupon_m_09_04.jani', 'coupon_m_11_02.jani', 'coupon_m_11_03.jani', 'coupon_m_11_04.jani', 'coupon_m_13_02.jani', 'coupon_m_13_03.jani', 'coupon_m_13_04.jani', 'coupon_m_15_02.jani', 'coupon_m_15_03.jani', 'coupon_m_15_04.jani', 'coupon_m_17_02.jani', 'coupon_m_17_03.jani', 'coupon_m_17_04.jani', 'coupon_m_19_02.jani', 'coupon_m_19_03.jani', 'coupon_m_19_04.jani')
+OBJECTIVES = ("draws",)
+VARIANTS = (
+    "coupon_m_03_02.jani",
+    "coupon_m_03_03.jani",
+    "coupon_m_03_04.jani",
+    "coupon_m_05_02.jani",
+    "coupon_m_05_03.jani",
+    "coupon_m_05_04.jani",
+    "coupon_m_07_02.jani",
+    "coupon_m_07_03.jani",
+    "coupon_m_07_04.jani",
+    "coupon_m_09_02.jani",
+    "coupon_m_09_03.jani",
+    "coupon_m_09_04.jani",
+    "coupon_m_11_02.jani",
+    "coupon_m_11_03.jani",
+    "coupon_m_11_04.jani",
+    "coupon_m_13_02.jani",
+    "coupon_m_13_03.jani",
+    "coupon_m_13_04.jani",
+    "coupon_m_15_02.jani",
+    "coupon_m_15_03.jani",
+    "coupon_m_15_04.jani",
+    "coupon_m_17_02.jani",
+    "coupon_m_17_03.jani",
+    "coupon_m_17_04.jani",
+    "coupon_m_19_02.jani",
+    "coupon_m_19_03.jani",
+    "coupon_m_19_04.jani",
+)
 
 TEST_PARAMETERS = {"state_dim": 1}
 

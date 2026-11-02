@@ -21,29 +21,23 @@ METADATA = {
     "sizes": {
         "small": {
             "requested_state_dim": 670,
-            "parameters": {
-
-            },
+            "parameters": {},
         },
         "medium": {
             "requested_state_dim": 1924,
-            "parameters": {
-
-            },
+            "parameters": {},
         },
         "large": {
             "requested_state_dim": 796941,
-            "parameters": {
-
-            },
+            "parameters": {},
         },
     },
 }
 
-OBJECTIVES = ('correct_max', 'correct_min')
-VARIANTS = ('zeroconf.jani',)
+OBJECTIVES = ("correct_max", "correct_min")
+VARIANTS = ("zeroconf.jani",)
 
-TEST_PARAMETERS = {'state_dim': 670, 'constants': {'N': 1, 'K': 1, 'reset': True}}
+TEST_PARAMETERS = {"state_dim": 670, "constants": {"N": 1, "K": 1, "reset": True}}
 
 
 class Model(JANIModel):

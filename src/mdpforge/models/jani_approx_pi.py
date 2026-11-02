@@ -38,8 +38,49 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('hits',)
-VARIANTS = ('approx_pi_00100_010_full.jani', 'approx_pi_00100_010_quadrant.jani', 'approx_pi_00100_050_full.jani', 'approx_pi_00100_050_quadrant.jani', 'approx_pi_00100_100_full.jani', 'approx_pi_00100_100_quadrant.jani', 'approx_pi_00100_500_full.jani', 'approx_pi_00100_500_quadrant.jani', 'approx_pi_00500_010_full.jani', 'approx_pi_00500_010_quadrant.jani', 'approx_pi_00500_050_full.jani', 'approx_pi_00500_050_quadrant.jani', 'approx_pi_00500_100_full.jani', 'approx_pi_00500_100_quadrant.jani', 'approx_pi_00500_500_full.jani', 'approx_pi_00500_500_quadrant.jani', 'approx_pi_01000_010_full.jani', 'approx_pi_01000_010_quadrant.jani', 'approx_pi_01000_050_full.jani', 'approx_pi_01000_050_quadrant.jani', 'approx_pi_01000_100_full.jani', 'approx_pi_01000_100_quadrant.jani', 'approx_pi_01000_500_full.jani', 'approx_pi_01000_500_quadrant.jani', 'approx_pi_05000_010_full.jani', 'approx_pi_05000_010_quadrant.jani', 'approx_pi_05000_050_full.jani', 'approx_pi_05000_050_quadrant.jani', 'approx_pi_05000_100_full.jani', 'approx_pi_05000_100_quadrant.jani', 'approx_pi_05000_500_full.jani', 'approx_pi_05000_500_quadrant.jani', 'approx_pi_10000_010_full.jani', 'approx_pi_10000_010_quadrant.jani', 'approx_pi_10000_050_full.jani', 'approx_pi_10000_050_quadrant.jani', 'approx_pi_10000_100_full.jani', 'approx_pi_10000_100_quadrant.jani', 'approx_pi_10000_500_full.jani', 'approx_pi_10000_500_quadrant.jani')
+OBJECTIVES = ("hits",)
+VARIANTS = (
+    "approx_pi_00100_010_full.jani",
+    "approx_pi_00100_010_quadrant.jani",
+    "approx_pi_00100_050_full.jani",
+    "approx_pi_00100_050_quadrant.jani",
+    "approx_pi_00100_100_full.jani",
+    "approx_pi_00100_100_quadrant.jani",
+    "approx_pi_00100_500_full.jani",
+    "approx_pi_00100_500_quadrant.jani",
+    "approx_pi_00500_010_full.jani",
+    "approx_pi_00500_010_quadrant.jani",
+    "approx_pi_00500_050_full.jani",
+    "approx_pi_00500_050_quadrant.jani",
+    "approx_pi_00500_100_full.jani",
+    "approx_pi_00500_100_quadrant.jani",
+    "approx_pi_00500_500_full.jani",
+    "approx_pi_00500_500_quadrant.jani",
+    "approx_pi_01000_010_full.jani",
+    "approx_pi_01000_010_quadrant.jani",
+    "approx_pi_01000_050_full.jani",
+    "approx_pi_01000_050_quadrant.jani",
+    "approx_pi_01000_100_full.jani",
+    "approx_pi_01000_100_quadrant.jani",
+    "approx_pi_01000_500_full.jani",
+    "approx_pi_01000_500_quadrant.jani",
+    "approx_pi_05000_010_full.jani",
+    "approx_pi_05000_010_quadrant.jani",
+    "approx_pi_05000_050_full.jani",
+    "approx_pi_05000_050_quadrant.jani",
+    "approx_pi_05000_100_full.jani",
+    "approx_pi_05000_100_quadrant.jani",
+    "approx_pi_05000_500_full.jani",
+    "approx_pi_05000_500_quadrant.jani",
+    "approx_pi_10000_010_full.jani",
+    "approx_pi_10000_010_quadrant.jani",
+    "approx_pi_10000_050_full.jani",
+    "approx_pi_10000_050_quadrant.jani",
+    "approx_pi_10000_100_full.jani",
+    "approx_pi_10000_100_quadrant.jani",
+    "approx_pi_10000_500_full.jani",
+    "approx_pi_10000_500_quadrant.jani",
+)
 
 TEST_PARAMETERS = {"state_dim": 1}
 

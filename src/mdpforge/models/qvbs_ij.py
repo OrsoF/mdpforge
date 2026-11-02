@@ -35,8 +35,15 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('stable',)
-VARIANTS = ('ij.10.jani', 'ij.20.jani', 'ij.3.jani', 'ij.30.jani', 'ij.40.jani', 'ij.50.jani')
+OBJECTIVES = ("stable",)
+VARIANTS = (
+    "ij.10.jani",
+    "ij.20.jani",
+    "ij.3.jani",
+    "ij.30.jani",
+    "ij.40.jani",
+    "ij.50.jani",
+)
 
 TEST_PARAMETERS = {"state_dim": 7}
 

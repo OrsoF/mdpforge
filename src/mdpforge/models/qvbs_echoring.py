@@ -36,10 +36,18 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('MaxOffline1', 'MaxOffline2', 'MaxOffline3', 'MinFailed', 'MinOffline1', 'MinOffline2', 'MinOffline3')
-VARIANTS = ('echoring.jani',)
+OBJECTIVES = (
+    "MaxOffline1",
+    "MaxOffline2",
+    "MaxOffline3",
+    "MinFailed",
+    "MinOffline1",
+    "MinOffline2",
+    "MinOffline3",
+)
+VARIANTS = ("echoring.jani",)
 
-TEST_PARAMETERS = {'state_dim': 109515, 'constants': {'ITERATIONS': 1}}
+TEST_PARAMETERS = {"state_dim": 109515, "constants": {"ITERATIONS": 1}}
 
 
 class Model(JANIModel):

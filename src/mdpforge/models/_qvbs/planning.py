@@ -33,9 +33,7 @@ def _parse(text):
 
 def _section(source, name):
     return next(
-        item[1:]
-        for item in source
-        if isinstance(item, list) and item[0] == name
+        item[1:] for item in source if isinstance(item, list) and item[0] == name
     )
 
 
@@ -72,9 +70,7 @@ class _Grounder:
         self.objects = objects
         self.universe = set(objects["object"])
         self.actions = [
-            item
-            for item in domain
-            if isinstance(item, list) and item[0] == ":action"
+            item for item in domain if isinstance(item, list) and item[0] == ":action"
         ]
         self.initial = {
             tuple(atom)
@@ -202,7 +198,10 @@ class _Grounder:
                                 }
                             },
                             "assignments": [
-                                {"ref": self.variables[atom], "value": atom in additions}
+                                {
+                                    "ref": self.variables[atom],
+                                    "value": atom in additions,
+                                }
                                 for atom in sorted(additions | deletions)
                             ],
                         }

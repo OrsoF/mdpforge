@@ -36,8 +36,13 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('eat',)
-VARIANTS = ('philosophers-mdp.10.jani', 'philosophers-mdp.20.jani', 'philosophers-mdp.3.jani', 'philosophers-mdp.30.jani')
+OBJECTIVES = ("eat",)
+VARIANTS = (
+    "philosophers-mdp.10.jani",
+    "philosophers-mdp.20.jani",
+    "philosophers-mdp.3.jani",
+    "philosophers-mdp.30.jani",
+)
 
 TEST_PARAMETERS = {"state_dim": 440}
 

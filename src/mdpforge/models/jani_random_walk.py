@@ -38,8 +38,8 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('position',)
-VARIANTS = ('randomWalk.jani',)
+OBJECTIVES = ("position",)
+VARIANTS = ("randomWalk.jani",)
 
 TEST_PARAMETERS = {"state_dim": 1}
 

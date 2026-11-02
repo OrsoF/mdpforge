@@ -34,8 +34,13 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('goal',)
-VARIANTS = ('elevators.a-11-9.jani', 'elevators.a-3-3.jani', 'elevators.b-11-9.jani', 'elevators.b-3-3.jani')
+OBJECTIVES = ("goal",)
+VARIANTS = (
+    "elevators.a-11-9.jani",
+    "elevators.a-3-3.jani",
+    "elevators.b-11-9.jani",
+    "elevators.b-3-3.jani",
+)
 
 TEST_PARAMETERS = {"state_dim": 909}
 

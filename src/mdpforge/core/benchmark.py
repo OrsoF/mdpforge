@@ -238,7 +238,7 @@ class Benchmark:
                 )
         return self
 
-    def add_all_mdps(self, *, size: str | None = 'small', verbose=False):
+    def add_all_mdps(self, *, size: str | None = "small", verbose=False):
         """Add all catalogue MDPs for an optional size preset; return self.
 
         size: "small", "medium" or "large"; None uses recipe defaults.
@@ -345,9 +345,7 @@ class Benchmark:
         )
         if auto_name or skip_existing:
             for registered_name, (existing, previous_options) in registry.items():
-                if existing is constructor and _same_options(
-                    previous_options, options
-                ):
+                if existing is constructor and _same_options(previous_options, options):
                     if skip_existing:
                         return
                     raise ValueError(

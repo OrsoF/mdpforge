@@ -21,15 +21,11 @@ METADATA = {
     "sizes": {
         "small": {
             "requested_state_dim": 8670,
-            "parameters": {
-
-            },
+            "parameters": {},
         },
         "medium": {
             "requested_state_dim": 196560,
-            "parameters": {
-
-            },
+            "parameters": {},
         },
         "large": {
             "requested_state_dim": None,
@@ -39,8 +35,13 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('goal',)
-VARIANTS = ('tireworld.17.jani', 'tireworld.25.jani', 'tireworld.35.jani', 'tireworld.45.jani')
+OBJECTIVES = ("goal",)
+VARIANTS = (
+    "tireworld.17.jani",
+    "tireworld.25.jani",
+    "tireworld.35.jani",
+    "tireworld.45.jani",
+)
 
 TEST_PARAMETERS = {"state_dim": 8670}
 

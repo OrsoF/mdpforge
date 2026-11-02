@@ -35,8 +35,13 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('live',)
-VARIANTS = ('pnueli-zuck.10.jani', 'pnueli-zuck.15.jani', 'pnueli-zuck.3.jani', 'pnueli-zuck.5.jani')
+OBJECTIVES = ("live",)
+VARIANTS = (
+    "pnueli-zuck.10.jani",
+    "pnueli-zuck.15.jani",
+    "pnueli-zuck.3.jani",
+    "pnueli-zuck.5.jani",
+)
 
 TEST_PARAMETERS = {"state_dim": 1949}
 

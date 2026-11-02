@@ -34,10 +34,10 @@ METADATA = {
     },
 }
 
-OBJECTIVES = ('deadline',)
-VARIANTS = ('firewire_dl.jani',)
+OBJECTIVES = ("deadline",)
+VARIANTS = ("firewire_dl.jani",)
 
-TEST_PARAMETERS = {'state_dim': 14824, 'constants': {'deadline': 2, 'delay': 1}}
+TEST_PARAMETERS = {"state_dim": 14824, "constants": {"deadline": 2, "delay": 1}}
 
 
 class Model(JANIModel):
