@@ -1,46 +1,47 @@
-"""Discounted block-refinement adaptation inspired by SHARP (FSE 2026).
+"""SHARP-style hierarchical adaptive block value iteration for discounted MDPs.
 
-Not a reproduction of the original PRISM SHARP solver: the original solves
-reachability/SSP objectives and uses domain-specific graph/spatial partitions.
-This implementation solves discounted max-reward MDPs with state-index blocks,
-local concrete-state Bellman updates, boundary propagation and value-spread
-refinement. All returned values have a full-MDP Bellman residual certificate.
+Adapted from Evangelidis, Vázquez and Gerasimou (FSE 2026). Unlike the
+original Pmax/Rmin solver, this implementation optimizes discounted reward.
+States are never aggregated: each leaf solves concrete-state Bellman equations
+with frozen values at its outgoing boundary.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from time import perf_counter
 
 import numpy as np
 from scipy.sparse import csr_matrix
+from scipy.sparse.csgraph import connected_components
 
 from mdpforge.core.mdp import MDP
-from mdpforge.core.operators import optimal_bellman_operator
+from mdpforge.core.operators import compact_optimal_bellman_operator
 from mdpforge.core.solve_result import SolveResult
-from mdpforge.core.solver import GenericSolver
-from mdpforge.solvers.mdpforge_tvi import strongly_connected_components
-from mdpforge.utils.solver_options import initial_vectors
 
 METADATA = {
-    "display_name": "SHARP-inspired block refinement · mdpforge",
+    "display_name": "SHARP · mdpforge",
     "family": "experimental",
     "backend": "mdpforge",
     "description": (
-        "Discounted adaptation of SHARP-style local block VI, boundary updates "
-        "and hierarchical value-spread refinement; not upstream PRISM SHARP."
+        "Hierarchical adaptive refinement with concrete-state local VI, "
+        "frozen boundary values and boundary-change-triggered re-solving."
     ),
+    "update_scheme": "asynchronous",
 }
 
 
-@dataclass
-class _Leaf:
+@dataclass(slots=True)
+class _Block:
     states: np.ndarray
     depth: int
-    internal: list[csr_matrix]
-    external: list[csr_matrix]
-    boundary: np.ndarray
-    boundary_snapshot: np.ndarray | None = None
+    children: list["_Block"] = field(default_factory=list)
+    boundary: np.ndarray | None = None
+    inside: list[csr_matrix] | None = None
+    outside: list[csr_matrix] | None = None
+    previous_boundary: np.ndarray | None = None
+    local_residual: float = np.inf
 
 
-class Solver(GenericSolver):
+class Solver:
     solver_type = "vi"
 
     def __init__(
@@ -48,177 +49,254 @@ class Solver(GenericSolver):
         model: MDP,
         discount: float,
         final_precision: float = 1e-3,
-        initial_value: np.ndarray | None = None,
-        initial_blocks: int = 8,
-        partition_strategy: str = "scc",
-        max_depth: int = 2,
-        refinement_threshold: float = 0.5,
-        boundary_tolerance: float = 0.0,
-        min_block_size: int = 2,
-        max_local_iterations: int = 100_000,
         *,
-        max_iterations: int = 1000,
+        initial_blocks: int = 8,
+        max_depth: int = 3,
+        refinement_threshold: float = 0.05,
+        boundary_threshold: float | None = None,
+        partition_strategy: str = "index",
+        spread_mode: str = "relative",
+        max_iterations: int = 10_000,
+        max_local_iterations: int = 100_000,
     ):
-        """Configure hierarchical state-index block refinement and local VI."""
-        if not 0 < discount < 1:
-            raise ValueError("discount must lie strictly between 0 and 1")
-        if not np.isfinite(final_precision) or final_precision <= 0:
+        """Configure the discounted SHARP adaptation (index/scc, absolute/relative)."""
+        if not (np.isfinite(discount) and 0 < discount < 1):
+            raise ValueError("discount must be in (0, 1)")
+        if not (np.isfinite(final_precision) and final_precision > 0):
             raise ValueError("final_precision must be finite and positive")
-        if not isinstance(initial_blocks, int) or initial_blocks < 1:
-            raise ValueError("initial_blocks must be a positive integer")
-        if partition_strategy not in {"scc", "index"}:
-            raise ValueError("partition_strategy must be 'scc' or 'index'")
-        if not isinstance(max_depth, int) or max_depth < 0:
-            raise ValueError("max_depth must be a nonnegative integer")
-        if not np.isfinite(refinement_threshold) or refinement_threshold < 0:
+        if initial_blocks < 1 or max_depth < 1:
+            raise ValueError("initial_blocks and max_depth must be positive")
+        if max_iterations < 1 or max_local_iterations < 1:
+            raise ValueError("iteration limits must be positive")
+        if not (np.isfinite(refinement_threshold) and refinement_threshold >= 0):
             raise ValueError("refinement_threshold must be finite and nonnegative")
-        if not np.isfinite(boundary_tolerance) or boundary_tolerance < 0:
-            raise ValueError("boundary_tolerance must be finite and nonnegative")
-        if min_block_size < 1 or max_local_iterations < 1 or max_iterations < 1:
-            raise ValueError("iteration budgets and min_block_size must be positive")
-        super().__init__(
-            model, discount, final_precision, max_iterations=max_iterations
-        )
-        initial, _ = initial_vectors(initial_value)
-        if initial is not None and (
-            initial.shape != (model.state_dim,) or not np.isfinite(initial).all()
+        if boundary_threshold is not None and not (
+            np.isfinite(boundary_threshold) and boundary_threshold >= 0
         ):
-            raise ValueError("initial_value must be a finite vector of shape (S,)")
-        self.initial_value = (
-            np.zeros(model.state_dim, dtype=float) if initial is None else initial
-        )
-        self.initial_blocks = initial_blocks
+            raise ValueError("boundary_threshold must be finite and nonnegative")
+        if partition_strategy not in {"index", "scc"}:
+            raise ValueError("partition_strategy must be 'index' or 'scc'")
+        if spread_mode not in {"absolute", "relative"}:
+            raise ValueError("spread_mode must be 'absolute' or 'relative'")
+
+        self.model = model
+        self.discount = float(discount)
+        self.final_precision = float(final_precision)
+        self.initial_blocks = int(initial_blocks)
+        self.max_depth = int(max_depth)
+        self.refinement_threshold = float(refinement_threshold)
         self.partition_strategy = partition_strategy
-        self.max_depth = max_depth
-        self.refinement_threshold = refinement_threshold
-        self.boundary_tolerance = boundary_tolerance
-        self.min_block_size = min_block_size
-        self.max_local_iterations = max_local_iterations
-        self.name = __name__.rsplit(".", 1)[-1]
+        self.spread_mode = spread_mode
+        self.max_iterations = int(max_iterations)
+        self.max_local_iterations = int(max_local_iterations)
+        self.name = "mdpforge SHARP"
+        self.runtime = 0.0
+        self.policy: np.ndarray | None = None
+        self.value: np.ndarray | None = None
+        self.root: _Block | None = None
+        self.leaves: list[_Block] = []
+        self.n_local_solves = 0
+        self.n_refinements = 0
+        self.n_outer_iterations = 0
+        self.final_residual = np.inf
 
-    def _make_leaf(self, states: np.ndarray, depth: int) -> _Leaf:
-        """Cache concrete transitions inside a block and to its outside boundary."""
+        # A full Bellman residual <= (1-gamma)*precision certifies the
+        # absolute error. Local and boundary errors consume part of this budget.
+        self._target = self.final_precision * (1 - self.discount)
+        self._local_tolerance = self._target / 2
+        if boundary_threshold is None:
+            reward_bound = np.max(np.abs(model.reward_matrix)) / (1 - self.discount)
+            value_bound = max(1.0, float(reward_bound))
+            self.boundary_threshold = self._target / (4 * value_bound)
+        else:
+            self.boundary_threshold = float(boundary_threshold)
+
+    def _initial_partition(self) -> list[np.ndarray]:
         n = self.model.state_dim
-        outside_mask = np.ones(n, dtype=bool)
-        outside_mask[states] = False
-        row_matrices = [
-            transition[states, :].tocsr() for transition in self.model.transition_matrix
-        ]
-        boundary = np.unique(np.concatenate([p.indices for p in row_matrices]))
-        boundary = boundary[outside_mask[boundary]]
-        internal = [p[:, states].tocsr() for p in row_matrices]
-        external = [p[:, boundary].tocsr() for p in row_matrices]
-        return _Leaf(states, depth, internal, external, boundary)
+        target_blocks = min(n, self.initial_blocks)
+        if self.partition_strategy == "index":
+            return list(np.array_split(np.arange(n, dtype=np.intp), target_blocks))
 
-    def _boundary_changed(self, leaf: _Leaf, value: np.ndarray) -> bool:
-        if leaf.boundary_snapshot is None:
-            return True
-        if not len(leaf.boundary):
-            return False
-        change = np.max(np.abs(value[leaf.boundary] - leaf.boundary_snapshot))
-        scale = max(1.0, np.max(np.abs(leaf.boundary_snapshot)))
-        return change > self.boundary_tolerance * scale
+        # SCCs are kept together where possible; large SCCs are split into
+        # consecutive chunks so local blocks remain computationally bounded.
+        adjacency = self.model.transition_matrix[0].copy()
+        for matrix in self.model.transition_matrix[1:]:
+            adjacency = adjacency + matrix
+        _, labels = connected_components(adjacency, directed=True, connection="strong")
+        order = np.argsort(labels, kind="stable")
+        offsets = np.flatnonzero(np.diff(labels[order])) + 1
+        target_size = int(np.ceil(n / target_blocks))
+        groups: list[np.ndarray] = []
+        pending: list[np.ndarray] = []
+        pending_size = 0
+        for component in np.split(order, offsets):
+            if pending and pending_size + len(component) > target_size:
+                groups.append(np.concatenate(pending))
+                pending = []
+                pending_size = 0
+            if len(component) > target_size:
+                groups.extend(np.array_split(component, int(np.ceil(len(component) / target_size))))
+            else:
+                pending.append(component)
+                pending_size += len(component)
+        if pending:
+            groups.append(np.concatenate(pending))
+        return groups
 
-    def _solve_leaf(self, leaf: _Leaf, value: np.ndarray, tolerance: float) -> None:
-        """Run concrete-state VI with outside-of-block values frozen."""
-        states = leaf.states
-        boundary_values = value[leaf.boundary].copy()
-        rewards = self.model.reward_matrix[states]
-        boundary_terms = np.column_stack([p @ boundary_values for p in leaf.external])
-        current = value[states].copy()
+    def _make_leaf(self, states: np.ndarray, depth: int) -> _Block:
+        states = np.sort(np.asarray(states, dtype=np.intp))
+        rows = [matrix[states, :].tocsr() for matrix in self.model.transition_matrix]
+        successors = np.unique(np.concatenate([matrix.indices for matrix in rows]))
+        boundary = np.setdiff1d(successors, states, assume_unique=True)
+        return _Block(
+            states=states,
+            depth=depth,
+            boundary=boundary,
+            inside=[matrix[:, states].tocsr() for matrix in rows],
+            outside=[matrix[:, boundary].tocsr() for matrix in rows],
+        )
+
+    def _solve_leaf(self, block: _Block) -> None:
+        states = block.states
+        boundary = block.boundary
+        snapshot = self.value[boundary].copy()
+        local = self.value[states].copy()
+        rewards = self.model.reward_matrix[states, :]
+        # Boundary contributions remain fixed during the entire local solve.
+        offset = np.array(rewards, copy=True)
+        for action, matrix in enumerate(block.outside):
+            offset[:, action] += self.discount * matrix.dot(snapshot)
+
         for _ in range(self.max_local_iterations):
-            q = np.column_stack(
-                [
-                    rewards[:, a] + self.discount * (p @ current + boundary_terms[:, a])
-                    for a, p in enumerate(leaf.internal)
-                ]
-            )
-            updated = q.max(axis=1)
-            if not np.isfinite(updated).all():
-                raise RuntimeError("SHARP adaptation stopped: non_finite values")
-            change = np.max(np.abs(updated - current))
-            current = updated
-            if change <= tolerance:
+            updated = offset[:, 0] + self.discount * block.inside[0].dot(local)
+            for action in range(1, self.model.action_dim):
+                candidate = offset[:, action] + self.discount * block.inside[action].dot(local)
+                np.maximum(updated, candidate, out=updated)
+            variation = float(np.max(np.abs(updated - local)))
+            local = updated
+            if variation <= self._local_tolerance:
+                # Since T_B is a gamma-contraction, its residual at the new
+                # iterate is <= gamma * variation <= local_tolerance.
+                block.local_residual = self.discount * variation
                 break
         else:
-            raise RuntimeError("SHARP adaptation: max_local_iterations reached")
-        value[states] = current
-        leaf.boundary_snapshot = boundary_values
-        self.local_solves += 1
+            raise RuntimeError("SHARP: max_local_iterations exhausted")
 
-    def _split(self, leaf: _Leaf) -> list[_Leaf]:
-        # On each partition, bisect the chosen SCC or state-index ordering.
-        # There is no spatial information in the generic mdpforge model.
-        midpoint = len(leaf.states) // 2
-        return [
-            self._make_leaf(leaf.states[:midpoint], leaf.depth + 1),
-            self._make_leaf(leaf.states[midpoint:], leaf.depth + 1),
+        best_value = offset[:, 0] + self.discount * block.inside[0].dot(local)
+        best_action = np.zeros(len(states), dtype=np.intp)
+        for action in range(1, self.model.action_dim):
+            candidate = offset[:, action] + self.discount * block.inside[action].dot(local)
+            better = candidate > best_value
+            best_value[better] = candidate[better]
+            best_action[better] = action
+        self.value[states] = local
+        self.policy[states] = best_action
+        block.previous_boundary = snapshot
+        self.n_local_solves += 1
+
+    def _boundary_changed(self, block: _Block) -> bool:
+        if block.previous_boundary is None:
+            return True
+        if block.boundary.size == 0:
+            return False
+        change = np.max(np.abs(self.value[block.boundary] - block.previous_boundary))
+        scale = max(1.0, float(np.max(np.abs(block.previous_boundary))))
+        return bool(change > self.boundary_threshold * scale)
+
+    def _should_refine(self, block: _Block) -> bool:
+        if block.depth >= self.max_depth or len(block.states) < 2:
+            return False
+        values = self.value[block.states]
+        spread = float(np.max(values) - np.min(values))
+        if self.spread_mode == "relative":
+            spread /= abs(float(np.mean(values))) + 1e-6
+        return spread > self.refinement_threshold
+
+    def _refine(self, block: _Block) -> list[_Block]:
+        halfway = len(block.states) // 2
+        block.children = [
+            self._make_leaf(block.states[:halfway], block.depth + 1),
+            self._make_leaf(block.states[halfway:], block.depth + 1),
         ]
+        # Only leaves own transition submatrices.
+        block.boundary = None
+        block.inside = None
+        block.outside = None
+        block.previous_boundary = None
+        for child in block.children:
+            self._solve_leaf(child)
+        self.n_refinements += 1
+        return block.children
 
-    def _solve(self) -> SolveResult:
-        value = self.initial_value.copy()
-        tolerance = self.final_precision * (1 - self.discount)
-        if self.partition_strategy == "scc":
-            ordered_states = np.concatenate(
-                strongly_connected_components(self.model.transition_matrix)
+    def _extract_policy(self) -> None:
+        # Greedify once using the final global values: this removes action
+        # inconsistencies caused by stale local boundary snapshots.
+        best = self.model.reward_matrix[:, 0] + self.discount * (
+            self.model.transition_matrix[0].dot(self.value)
+        )
+        self.policy = np.zeros(self.model.state_dim, dtype=np.intp)
+        for action in range(1, self.model.action_dim):
+            candidate = self.model.reward_matrix[:, action] + self.discount * (
+                self.model.transition_matrix[action].dot(self.value)
             )
-        else:
-            ordered_states = np.arange(self.model.state_dim, dtype=np.int64)
-        leaves = [
-            self._make_leaf(states, 0)
-            for states in np.array_split(
-                ordered_states, min(self.initial_blocks, self.model.state_dim)
-            )
+            better = candidate > best
+            best[better] = candidate[better]
+            self.policy[better] = action
+
+    def run(self) -> SolveResult:
+        start = perf_counter()
+        n = self.model.state_dim
+        self.value = np.zeros(n, dtype=float)
+        self.policy = np.zeros(n, dtype=np.intp)
+        self.n_local_solves = self.n_refinements = self.n_outer_iterations = 0
+        self.final_residual = np.inf
+        self.root = _Block(np.arange(n, dtype=np.intp), depth=0)
+        self.root.children = [
+            self._make_leaf(states, 1) for states in self._initial_partition()
         ]
-        self.refinements = 0
-        self.local_solves = 0
-        # Ensures local updates are more accurate than the final global residual.
-        local_tolerance = tolerance / 4
-        force = True
-        for _ in range(self.max_iterations):
-            any_solved = False
-            for leaf in leaves:
-                if force or self._boundary_changed(leaf, value):
-                    self._solve_leaf(leaf, value, local_tolerance)
-                    any_solved = True
-            force = False
+        self.leaves = list(self.root.children)
+        for leaf in self.leaves:
+            self._solve_leaf(leaf)
 
-            # SHARP-style refinement uses spread of *concrete-state* values.
-            refined = []
-            any_refined = False
-            for leaf in leaves:
-                if (
-                    leaf.depth < self.max_depth
-                    and len(leaf.states) >= 2 * self.min_block_size
-                    and np.ptp(value[leaf.states]) > self.refinement_threshold
-                ):
-                    children = self._split(leaf)
-                    for child in children:
-                        self._solve_leaf(child, value, local_tolerance)
-                    refined.extend(children)
-                    self.refinements += 1
-                    any_refined = True
+        for iteration in range(1, self.max_iterations + 1):
+            self.n_outer_iterations = iteration
+            previous = self.value.copy()
+            solved = False
+            for leaf in self.leaves:
+                if self._boundary_changed(leaf):
+                    self._solve_leaf(leaf)
+                    solved = True
+
+            refined = False
+            new_leaves = []
+            for leaf in self.leaves:
+                if self._should_refine(leaf):
+                    new_leaves.extend(self._refine(leaf))
+                    refined = True
                 else:
-                    refined.append(leaf)
-            leaves = refined
-            if not np.isfinite(value).all():
-                raise RuntimeError("SHARP adaptation stopped: non_finite values")
+                    new_leaves.append(leaf)
+            self.leaves = new_leaves
 
-            # Unlike SHARP's SSP objective, mdpforge requires a *global*
-            # discounted value-error certificate at the target accuracy.
-            bellman = optimal_bellman_operator(self.model, value, self.discount)
-            residual = np.max(np.abs(bellman - value))
-            if residual <= tolerance and not any_refined:
-                self.n_final_blocks = len(leaves)
-                q = np.column_stack(
-                    [
-                        self.model.reward_matrix[:, a] + self.discount * (p @ value)
-                        for a, p in enumerate(self.model.transition_matrix)
-                    ]
+            change = float(np.max(np.abs(self.value - previous)))
+            pending = any(self._boundary_changed(leaf) for leaf in self.leaves)
+            if not refined and change <= self._target:
+                backup = compact_optimal_bellman_operator(
+                    self.model, self.value, self.discount
                 )
-                return SolveResult(value, q.argmax(axis=1).astype(int))
-            if not any_solved and not any_refined:
-                # A nonzero boundary threshold must not silently accept an
-                # uncertified result: revisit all blocks instead.
-                force = True
-        raise RuntimeError("SHARP adaptation stopped: max_iterations reached")
+                self.final_residual = float(np.max(np.abs(backup - self.value)))
+                if self.final_residual <= self._target:
+                    # The discounted global certificate makes it safe to stop
+                    # even if a small number of boundaries remain out of date.
+                    self._extract_policy()
+                    self.runtime = perf_counter() - start
+                    return SolveResult.from_solver(self)
+                if not pending:
+                    # A large user-supplied boundary threshold can hide drift.
+                    # Force a sweep rather than accept a low-accuracy result.
+                    for leaf in self.leaves:
+                        self._solve_leaf(leaf)
+            elif not solved and not refined and not pending:
+                for leaf in self.leaves:
+                    self._solve_leaf(leaf)
+
+        raise RuntimeError("SHARP: max_iterations exhausted before certified convergence")
