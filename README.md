@@ -15,7 +15,7 @@
 
 ![Paired speedups against value iteration on Garnet, Chain Walk and Rooms; the fastest solver varies by model.](artifacts/figures/readme_speedups.png)
 
-*Saved speedups at discount 0.99 and target value error 0.001; timings depend on hardware. See the [plotting notebook](notebooks/visualize_results.ipynb) for the method.*
+*Saved speedups at discount 0.99 and target value error 0.001; timings depend on hardware.*
 
 ## Quick start
 
@@ -27,10 +27,10 @@ Requires **Python 3.11+** and supports finite discounted problems with `0 < disc
 python -m pip install "mdpforge @ git+https://github.com/OrsoF/mdpforge.git"
 ```
 
-For tables and plots, install the `notebooks` extra:
+For plots, install the `plot` extra:
 
 ```sh
-python -m pip install "mdpforge[notebooks] @ git+https://github.com/OrsoF/mdpforge.git"
+python -m pip install "mdpforge[plot] @ git+https://github.com/OrsoF/mdpforge.git"
 ```
 
 ### Run a benchmark
@@ -49,10 +49,9 @@ result.export_csv("results.csv")
 
 Each trial records runtime and an independently checked value-error bound. `result.export_csv(path)` saves the results and their experiment settings; use `BenchmarkResult.from_csv(path)` to reopen them.
 
-With the `notebooks` extra installed:
+With the `plot` extra installed:
 
 ```python
-result.solver_summary(reference="mdpforge_vi")
 result.plot_performance_profile()
 result.plot_heat(reference="mdpforge_vi")
 ```
@@ -65,13 +64,13 @@ Paired speedups use models solved by both solvers on every repeat. Set the refer
 
 ![Performance profiles showing the share of models solved within a runtime factor of the fastest eligible solver, grouped by backend.](artifacts/figures/gallery_performance_profiles.png)
 
-At 2×, a curve shows the share of models solved within twice the fastest eligible median runtime; failed or missing pairs remain in the denominator. See the [visualization notebook](notebooks/visualize_results.ipynb) and [historical export notes](docs/visualization-roadmap.md).
+At 2×, a curve shows the share of models solved within twice the fastest eligible median runtime; failed or missing pairs remain in the denominator. See the [historical export notes](docs/visualization-roadmap.md).
 
 ### How do discount and precision affect runtime?
 
 ![Runtime sensitivity on a fixed Garnet instance, varying discount at fixed precision and target value error at fixed discount.](artifacts/figures/readme_sensitivity.png)
 
-The curves use one Garnet instance; bands show the range over three repeats. See the [sensitivity notebook](notebooks/solver_sensitivity.ipynb) for the study design.
+The curves use one Garnet instance; bands show the range over three repeats.
 
 ## Models and solvers
 
@@ -103,9 +102,6 @@ Optional solver integrations and their dependencies are listed in [installation 
 
 | Start here | What you will find |
 | :--- | :--- |
-| [Backend comparison](notebooks/benchmark_marmote.ipynb) | Set up and compare solver backends. |
-| [Results and plots](notebooks/visualize_results.ipynb) | Explore speedups, performance profiles, outcomes and accuracy. |
-| [Discount and precision sensitivity](notebooks/solver_sensitivity.ipynb) | Compare runtimes while varying discount and target accuracy. |
 | [Benchmark API](src/mdpforge/core/benchmark.py) · [Results API](src/mdpforge/core/result.py) · [Scaling API](src/mdpforge/core/scaling_benchmark.py) | Inspect public interfaces and options. |
 | [Cache and reproducibility](docs/cache.md) | Understand cache identities, validation and migration. |
 

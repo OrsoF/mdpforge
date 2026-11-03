@@ -23,14 +23,15 @@ plot = ["matplotlib>=3.8"]
 mdptoolbox = ["pymdptoolbox==4.0b3"]
 gurobi = ["gurobipy"]
 mdpsolver = ["mdpsolver>=0.10.2"]
-marmote = ["marmote"]
+# Marmote requires Conda: conda install -c marmote -c conda-forge marmote.
+marmote = []
 mdpax = ["mdpax>=0.2.2,<0.3"]
 quantecon = ["quantecon>=0.10.1,<0.14"]
 # madupite requires MPI/PETSc; install via its upstream conda/source instructions.
 cma = ["cma>=4.4,<5"]
+solvers = ["mdpforge[cma,gurobi,marmote,mdpax,mdpsolver,mdptoolbox,quantecon]"]
 maze = ["mazelib"]
 progress = ["tqdm"]
-notebooks = ["mdpforge[plot]", "ipython", "pandas", "seaborn", "openpyxl"]
 
 [project.urls]
 Repository = "https://github.com/OrsoF/mdpforge"

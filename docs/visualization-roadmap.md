@@ -2,9 +2,9 @@
 
 The README should help a visitor answer two questions quickly: "Can I test my MDP here?" and "Can I compare my solver here?" Its opening now offers both paths, a compact comparison with repeat spread, and a link to an executed visual gallery.
 
-## Views available in the exploratory notebook
+## Views available from benchmark results
 
-[`notebooks/visualize_results.ipynb`](../notebooks/visualize_results.ipynb) reads saved benchmark exports without executing solvers. The notebook retains its exploratory plotting functions, while the library now provides `BenchmarkResult.plot_heat()`, `plot_performance_profile()`, `summary()` and `solver_summary()` for comparisons of a single benchmark run.
+The library provides `BenchmarkResult.plot_heat()`, `plot_performance_profile()`, `summary()` and `solver_summary()` for comparisons of a single benchmark run. Load saved exports with `BenchmarkResult.from_csv()` without executing solvers.
 
 | View                                   | Best use                                                | Interpretation                                                                     |
 | -------------------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------- |
@@ -19,12 +19,12 @@ Use the small README export to illustrate model-dependent rankings. The larger b
 
 1. **Two short contribution walkthroughs.** Show one external model entering the benchmark and one external solver producing a comparison. The current quickstart already demonstrates both registrations. Add a dedicated solver contribution guide before implying that such a guide exists.
 2. **An MDP catalogue preview.** A small table of navigation, physical-control, service-operations and abstract examples, with actual size presets and recipe links, would make the collection easier to discover. Read catalogue metadata rather than maintaining a manually counted headline.
-3. **A current broad comparison.** Once refreshed, pair the performance profile with the coverage figure. Put full solver legends and settings in the notebook; keep only a readable subset in the README, documenting the selection.
+3. **A current broad comparison.** Once refreshed, pair the performance profile with the coverage figure. Keep full solver settings in the experiment manifest and only a readable subset of legends in the README, documenting the selection.
 4. **One worked scientific contribution.** Explain an MDP structure, why one solver exploits it, and which accuracy checks support the result. This gives potential contributors a concrete standard beyond a runtime leaderboard.
 
 ## Next plots that need new measurements
 
-The [solver sensitivity notebook](../notebooks/solver_sensitivity.ipynb) now provides a measured small-instance example for method comparisons, discount sweeps and precision sweeps. It reuses each model's matrices, records per-setting experiment manifests, and supports a separate full-grid experiment. The saved demo varies one factor at a time and does not estimate interactions or scaling.
+The saved sensitivity demo varies one factor at a time and does not estimate interactions or scaling. Sensitivity comparisons should reuse each model's matrices and record per-setting experiment manifests.
 
 | Plot                                     | Experiment needed                                                                                        | Why it helps                                                             |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
@@ -33,4 +33,4 @@ The [solver sensitivity notebook](../notebooks/solver_sensitivity.ipynb) now pro
 | Runtime vs requested precision           | Reuse matrices and discount; sweep target precision                                                      | Compares the cost of tighter accuracy                                    |
 | Bellman-residual convergence             | Record iteration or elapsed-time traces, with documented measurement overhead                            | Explains how algorithms make progress, rather than just their final time |
 
-The final-result CSVs do not contain convergence traces. The size-calibration export contains different model families at largely one selected size each, so it cannot justify a single scalability curve. Avoid drawing either curve from those records. The visual gallery reads historical measurements; the separate sensitivity notebook has its own freshly collected small-instance study.
+The final-result CSVs do not contain convergence traces. The size-calibration export contains different model families at largely one selected size each, so it cannot justify a single scalability curve. Avoid drawing either curve from those records. The visual gallery uses historical measurements; the sensitivity figures use a separate small-instance study.

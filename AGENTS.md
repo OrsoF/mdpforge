@@ -4,6 +4,7 @@ mdpforge benchmarks new finite MDPs and new MDP solvers. Prefer small, useful ch
 
 ## Keep work focused
 
+- Treat requests for advice or proposals (for example, "How would you modify the README?") as discussion only: describe the suggested changes in chat without editing files or executing the proposed actions. Apply them only when the user asks you to do so.
 - Inspect the working-tree status, affected files, and relevant callers. Read the whole repository or run a baseline only when needed to understand the change.
 - Make the smallest robust change. Avoid unrelated refactors, wrappers, compatibility layers, new hierarchies, and repository-wide formatting.
 - Preserve user changes and deliberate deletions. Do not restore removed models or solvers, or modify baseline algorithms, unless the task calls for it.

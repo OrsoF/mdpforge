@@ -439,9 +439,8 @@ class Benchmark:
 
         With a timeout, models, solvers and options must be pickleable; custom
         functions/classes must be importable from a module. In scripts, protect
-        the benchmark call with ``if __name__ == "__main__":``. Notebook-local
-        callables are unsupported in this mode. Only the dedicated worker is
-        terminated, not any descendant processes started by a custom solver.
+        the benchmark call with ``if __name__ == "__main__":``. Only the dedicated
+        worker is terminated, not any descendant processes started by a custom solver.
 
         The result's ``experiment`` captures settings, versions and
         machine information before solver timing. Each row includes its ID.

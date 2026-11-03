@@ -1,5 +1,6 @@
 """Discounted Policy Iteration using the optional MDPax/JAX backend."""
 
+import jax
 import numpy as np
 from mdpax.solvers import PolicyIteration
 
@@ -41,6 +42,8 @@ class Solver(GenericSolver):
         max_event_entries: int > 0; padded transition-event capacity; default 2_000_000.
         max_batch_size: int > 0; backend batch-size limit; default 1024.
         """
+        jax.config.update("jax_enable_compilation_cache", False)
+        jax.clear_caches()
         super().__init__(
             model, discount, final_precision, max_iterations=max_iterations
         )
