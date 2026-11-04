@@ -195,7 +195,7 @@ def _machine_metadata():
 
 
 def capture_experiment(
-    models, solvers, discount, precision, repeats, seed, *, timeout=None
+    models, solvers, discount, precision, repeats, seed, *, timeout=None, validate=False
 ):
     """Freeze metadata once per run, before any solver is constructed."""
     model_metadata = {}
@@ -231,6 +231,7 @@ def capture_experiment(
             "seed_scope": "solver trials; model generation is not reseeded",
             "timeout": None if timeout is None else float(timeout),
             "execution_mode": "in_process" if timeout is None else "spawn",
+            "validate": validate,
         },
         "models": model_metadata,
         "solvers": solver_metadata,

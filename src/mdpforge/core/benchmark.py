@@ -9,6 +9,7 @@ import numpy as np
 from mdpforge import models
 from mdpforge.core.benchmark_result import BenchmarkResult
 from mdpforge.core.mdp import MDP
+from mdpforge.core.validation import validate_result
 from mdpforge.solvers import is_catalogue_solver, list_solvers
 from mdpforge.utils.catalogue import (
     _available_solvers,
@@ -402,13 +403,19 @@ class Benchmark:
         seed=0,
         verbose=False,
         timeout=None,
+        validate=False,
     ) -> BenchmarkResult:
         """Run each MDP/solver pair and return an independent BenchmarkResult.
 
         ``precision`` is passed to each solver. All failures are recorded rather
         than interrupting the remaining comparisons.
 
-        No numerical validation is performed; ``success`` means execution completed.
+        ``validate``: False skips certification (default); True validates each
+        result outside solver timing and releases it before the next trial.
+        Validation status, errors and runtime are recorded separately;
+        ``success`` always means execution completed, not certified accuracy.
+        ``validation_status`` is ``not_run``, ``passed`` or ``failed``;
+        ``error_bound`` is available only when certification passes.
 
         ``verbose=True`` prints trial progress, runtime and failure details
         outside solver timing.
@@ -424,6 +431,7 @@ class Benchmark:
         dispatch from the parent. Parent input serialization is outside this
         limit. Process cleanup can take up to two
         extra seconds. Timed-out or crashed trials have no solver runtime (NaN).
+        Validation runs in the parent and is outside the timeout.
 
         With a timeout, models, solvers and options must be pickleable; custom
         functions/classes must be importable from a module. In scripts, protect
@@ -441,6 +449,8 @@ class Benchmark:
             raise ValueError("repeats must be a positive integer")
         if type(seed) is not int or not 0 <= seed < 2**32 - repeats:
             raise ValueError("seed must allow valid NumPy seeds for every repeat")
+        if type(validate) is not bool:
+            raise ValueError("validate must be a bool")
         if timeout is not None and (
             isinstance(timeout, (bool, np.bool_))
             or not isinstance(timeout, (int, float, np.integer, np.floating))
@@ -464,6 +474,7 @@ class Benchmark:
                 repeats,
                 seed,
                 timeout=timeout,
+                validate=validate,
             )
             for model in self._mdps:
                 model_label = getattr(model, "display_name", model.name)
@@ -477,7 +488,10 @@ class Benchmark:
                                 flush=True,
                             )
                         runtime = np.nan
+                        result = None
                         validation_method = "unknown"
+                        validation_status, validation_error = "not_run", ""
+                        validation_runtime, error_bound = np.nan, np.nan
                         status, error = "error", ""
                         try:
                             args = (
@@ -502,6 +516,19 @@ class Benchmark:
                         except Exception as exc:
                             status = "error"
                             error = f"{type(exc).__name__}: {exc}"
+                        if validate and status == "success":
+                            validation_start = perf_counter()
+                            try:
+                                error_bound = validate_result(
+                                    model, result, discount=discount, precision=precision
+                                )
+                                validation_status = "passed"
+                            except Exception as exc:
+                                validation_status = "failed"
+                                validation_error = f"{type(exc).__name__}: {exc}"
+                            finally:
+                                validation_runtime = perf_counter() - validation_start
+                        del result
                         rows.append(
                             {
                                 "experiment_id": experiment["experiment_id"],
@@ -518,18 +545,24 @@ class Benchmark:
                                 "epsilon": precision,  # Keep the original CSV schema.
                                 "runtime": runtime,
                                 "validation_method": validation_method,
+                                "validation_status": validation_status,
+                                "validation_error": validation_error,
+                                "validation_runtime": validation_runtime,
                                 "residual": np.nan,
-                                "error_bound": np.nan,
+                                "error_bound": error_bound,
                                 "status": status,
                                 "error": error,
                             }
                         )
                         if verbose:
-                            print(
-                                f"{status} ({runtime:.3f} s)"
-                                + (f" — {error}" if error else ""),
-                                flush=True,
-                            )
+                            message = f"{status} ({runtime:.3f} s)"
+                            if error:
+                                message += f" — {error}"
+                            if validate:
+                                message += f"; validation {validation_status}"
+                            if validation_error:
+                                message += f" — {validation_error}"
+                            print(message, flush=True)
         finally:
             np.random.set_state(numpy_state)
             random.setstate(random_state)

@@ -24,6 +24,7 @@ _FIELD_TYPES = {
     "discount": float,
     "epsilon": float,
     "runtime": float,
+    "validation_runtime": float,
     "residual": float,
     "error_bound": float,
 }
