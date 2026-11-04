@@ -13,7 +13,11 @@ from zipfile import BadZipFile
 import numpy as np
 from scipy.sparse import csr_matrix
 
-from mdpforge.utils.paths import SAVED_MODELS_PATH, SAVED_VALUE_FUNCTIONS_PATH
+# Keep generated research data in the working directory, including wheel installs.
+ARTIFACTS_PATH = Path.cwd() / "artifacts"
+BENCHMARKS_PATH = ARTIFACTS_PATH / "benchmark"
+SAVED_MODELS_PATH = ARTIFACTS_PATH / "saved_models"
+SAVED_VALUE_FUNCTIONS_PATH = ARTIFACTS_PATH / "saved_value_functions"
 
 CACHE_MODES = frozenset({"readwrite", "readonly", "refresh", "off"})
 

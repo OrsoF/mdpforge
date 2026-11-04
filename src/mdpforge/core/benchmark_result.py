@@ -8,12 +8,12 @@ from pathlib import Path
 
 import numpy as np
 
-from mdpforge.utils.benchmark_statistics import (
+from mdpforge.utils.analysis import (
     _aggregate_rows,
     _performance_ratios,
     _scaling_statistics,
 )
-from mdpforge.utils.paths import BENCHMARKS_PATH
+from mdpforge.utils.persistence import BENCHMARKS_PATH
 
 _FIELD_TYPES = {
     "state_dim": int,
@@ -136,7 +136,7 @@ class BenchmarkResult:
         ax: Matplotlib axes, or None to create a figure.
         show: True displays the figure; False only returns (figure, axes).
         """
-        from mdpforge.utils.plotting import plot_scaling
+        from mdpforge.utils.analysis import plot_scaling
 
         return plot_scaling(
             self.rows,
@@ -155,7 +155,7 @@ class BenchmarkResult:
         ax: Matplotlib axes, or None to create a figure.
         show: True displays the figure; False only returns (figure, axes).
         """
-        from mdpforge.utils.plotting import plot_performance_profile
+        from mdpforge.utils.analysis import plot_performance_profile
 
         return plot_performance_profile(
             self.rows,
@@ -177,7 +177,7 @@ class BenchmarkResult:
         Labels come from the recorded manifest; missing labels fall back to IDs.
         Matplotlib is optional. Plotting never imports models or solver backends.
         """
-        from mdpforge.utils.plotting import plot_heat
+        from mdpforge.utils.analysis import plot_heat
 
         return plot_heat(
             self.rows,

@@ -31,7 +31,9 @@ def test_create_model_finalizes_and_saves_csr(chain, matrix_type, monkeypatch):
     for current in (model, restored):
         assert isinstance(current.transition_matrix, list)
         assert len(current.transition_matrix) == len(matrices)
-        assert all(isinstance(matrix, csr_matrix) for matrix in current.transition_matrix)
+        assert all(
+            isinstance(matrix, csr_matrix) for matrix in current.transition_matrix
+        )
         for matrix, expected in zip(current.transition_matrix, matrices):
             assert_allclose(matrix.toarray(), expected, rtol=0, atol=0)
         assert_allclose(current.reward_matrix, chain.reward_matrix, rtol=0, atol=0)

@@ -4,7 +4,7 @@ import sys
 from collections.abc import Sequence
 from importlib.resources import files
 
-from mdpforge.utils._catalogue import _read_metadata
+from mdpforge.utils.catalogue import _read_metadata
 
 _METADATA_FIELDS = (
     "display_name",

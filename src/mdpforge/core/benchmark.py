@@ -10,18 +10,18 @@ from mdpforge import models
 from mdpforge.core.benchmark_result import BenchmarkResult
 from mdpforge.core.mdp import MDP
 from mdpforge.solvers import is_catalogue_solver, list_solvers
-from mdpforge.utils.benchmark_catalogue import (
+from mdpforge.utils.catalogue import (
     _available_solvers,
     _load_model,
     _load_solver,
     _select_models,
 )
-from mdpforge.utils.benchmark_execution import (
+from mdpforge.utils.experiment import (
     _check_solver_options,
     _isolated_solver_trial,
     _solver_trial,
+    capture_experiment,
 )
-from mdpforge.utils.experiment import capture_experiment
 
 
 def _same_options(left, right):
@@ -207,7 +207,11 @@ class Benchmark:
             start = perf_counter()
             print(f"Loading/building model {name!r}...", flush=True)
         model = _load_model(
-            entry, preset=preset, registered=self._mdps, grouped=grouped, verbose=verbose
+            entry,
+            preset=preset,
+            registered=self._mdps,
+            grouped=grouped,
+            verbose=verbose,
         )
         if model is not None:
             self.add_mdp(model)
@@ -385,9 +389,7 @@ class Benchmark:
     def add_all_solvers(self):
         """Add all catalogue solvers, preserving existing entries."""
         entries = (
-            entry
-            for entry in list_solvers()
-            if entry["name"] not in self._solvers
+            entry for entry in list_solvers() if entry["name"] not in self._solvers
         )
         return self._add_solver_group(entries, {})
 

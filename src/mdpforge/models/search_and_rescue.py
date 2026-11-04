@@ -7,7 +7,7 @@ Actions: fly next, fly previous, survey site, pickup, evacuate/return.
 """
 
 from mdpforge.core.mdp import MDP
-from mdpforge.utils._benchmark_sparse import TransitionBuilder
+from mdpforge.utils.transitions import TransitionBuilder
 
 METADATA = {
     "category": "navigation",

@@ -1,14 +1,42 @@
-"""Resolve and load catalogue entries for benchmarks."""
+"""Discover, select and load catalogue models and solvers."""
 
+import ast
 import warnings
 from importlib import import_module
 from importlib.util import find_spec
 
-from mdpforge import models, solvers
+
+def _read_metadata(directory):
+    """Yield public module names and independently parsed metadata dictionaries."""
+    for source in sorted(directory.iterdir(), key=lambda item: item.name):
+        if (
+            not source.is_file()
+            or not source.name.endswith(".py")
+            or source.name.startswith("_")
+        ):
+            continue
+        metadata = {}
+        for node in ast.parse(source.read_text(encoding="utf-8")).body:
+            if isinstance(node, ast.Assign) and any(
+                isinstance(target, ast.Name) and target.id == "METADATA"
+                for target in node.targets
+            ):
+                try:
+                    metadata = ast.literal_eval(node.value)
+                except (ValueError, TypeError) as exc:
+                    raise TypeError(
+                        f"{source.name}: METADATA must be a literal dict"
+                    ) from exc
+                if not isinstance(metadata, dict):
+                    raise TypeError(f"{source.name}: METADATA must be a literal dict")
+                break
+        yield source.name[:-3], metadata
 
 
 def _load_solver(name, *, backend=None):
     """Load a catalogue solver, checking an explicitly selected backend first."""
+    from mdpforge import solvers
+
     dependencies = {
         "gurobi": ("gurobipy",),
         "marmote": ("marmote",),
@@ -44,6 +72,8 @@ def _available_solvers(entries):
 
 def _select_models(names=None, *, size=None, category=None):
     """Resolve optional names and filters to ordered model catalogue entries."""
+    from mdpforge import models
+
     entries = models.list_models(size=size, category=category)
     if names is None:
         return [entry for entry in entries if entry["available"]]
@@ -67,6 +97,8 @@ def _select_models(names=None, *, size=None, category=None):
 
 def _load_model(entry, *, preset=None, registered=(), grouped=False, verbose=False):
     """Build a catalogue model, optionally skipping duplicates or missing dependencies."""
+    from mdpforge import models
+
     name = entry["name"]
     if not entry["available"]:
         message = f"Model {name!r} is unavailable: {entry['reason']}"
