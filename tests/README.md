@@ -1,16 +1,24 @@
 # mdpforge tests
 
-Keep **shared contracts**, **scientific properties** and **specific regressions** distinct. Tests must not duplicate the algorithms they check.
+Keep model behavior, persistence, solver contracts and scientific validation distinct. Tests must not duplicate the algorithms they check.
+
+| File | Responsibility |
+| --- | --- |
+| [`test_mdp.py`](test_mdp.py) | Construction, input conversion, CSR formats, densities and state relabeling. |
+| [`test_persistence.py`](test_persistence.py) | Model cache round trips and optimal-value cache reuse by name and discount. |
+| [`test_model_validation.py`](test_model_validation.py) | Rejection of structurally invalid or nonfinite models. |
+| [`test_solver_contracts.py`](test_solver_contracts.py) | Solver input preservation and compatibility with plain model objects. |
+| [`test_solvers_rooms.py`](test_solvers_rooms.py) | Scientific validation of installed catalogue solvers on the 10,000-state Rooms small preset. |
 
 ## Adding a solver
 
-[`conftest.py`](conftest.py) discovers solver modules and configures the cases used by [`test_workflows.py`](test_workflows.py). The current workflow checks input preservation and compatibility with a plain object exposing model data. Some backends and model/discount combinations are currently excluded; the fixture definitions show the exact coverage.
+[`conftest.py`](conftest.py) provides fixtures and configures solver contract cases. Some backends and model/discount combinations are excluded from those cases; the fixture definitions show the exact selection. The Rooms test independently includes every discovered solver.
 
 Tests use constructor options and argument-free `run()` calls. They exercise public behavior without calling solver internals or fixing backend computation steps and counters. Adapter tests may check arguments passed to public backend APIs.
 
-The previous comparisons with `V*`, Bellman-residual bounds, policy-quality checks and output-reproducibility checks have been removed. A new shared value-function check is planned in the [roadmap](../docs/roadmap.md). The sparse-model tests still check that policy solvers preserve CSR transitions without densifying them.
+The Rooms test calls `validate_result()` with discount 0.8 and precision 1e-3 to certify each result using its declared validation method. Contract tests separately check input preservation on small synthetic instances.
 
-Optional native backends run in isolated processes when their dependencies are installed; missing dependencies are skipped. [`_contracts.py`](_contracts.py) provides shared fixtures and input checks, while [`_fake_backends.py`](_fake_backends.py) provides controlled backend doubles. These are helpers, not standalone tests.
+[`_contracts.py`](_contracts.py) provides synthetic models and input-preservation checks. [`_solver_support.py`](_solver_support.py) discovers solvers without importing optional backends and runs external cases in isolated processes when their dependencies are installed; missing dependencies are skipped.
 
 When tests are explicitly requested, add a specific regression only for behavior beyond the common interface: a pathological case, external conversion, requested numerical precision, partitioning, caching, timeout or export. Keep concrete counterexamples that prevent real regressions from returning.
 

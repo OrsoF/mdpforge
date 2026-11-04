@@ -6,7 +6,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import optimal_bellman_operator
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
-from mdpforge.utils.solver_options import initial_vectors
+from mdpforge.utils.solver_options import initial_vectors, validate_discount
 
 METADATA = {
     "display_name": "Gauss-Seidel VI · mdpforge",
@@ -29,8 +29,7 @@ class Solver(GenericSolver):
         max_iterations: int = 100_000,
     ):
         """Configure state-ordered Gauss-Seidel value iteration."""
-        if not 0 < discount < 1:
-            raise ValueError("discount must lie strictly between 0 and 1")
+        validate_discount(discount)
         if not np.isfinite(final_precision) or final_precision <= 0:
             raise ValueError("final_precision must be finite and positive")
         if max_iterations < 1:

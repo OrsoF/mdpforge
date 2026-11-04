@@ -11,11 +11,36 @@ from time import perf_counter
 
 import numpy as np
 
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.solvers import is_catalogue_solver
 
 
+def _solver_signature(constructor, precision):
+    """Resolve the constructor signature and benchmark-controlled precision option."""
+    signature = inspect.signature(constructor)
+    precision_options = {}
+    if isinstance(constructor, type) and (
+        "final_precision" in signature.parameters
+        or any(p.kind == p.VAR_KEYWORD for p in signature.parameters.values())
+    ):
+        precision_options["final_precision"] = precision
+    return signature, precision_options
+
+
+def _check_solver_options(name, constructor, options):
+    """Check options against the benchmark's class or function calling convention."""
+    try:
+        signature, precision_options = _solver_signature(constructor, None)
+        if isinstance(constructor, type):
+            signature.bind(None, None, **precision_options, **options)
+        else:
+            signature.bind(None, None, None, None, **options)
+    except (TypeError, ValueError) as exc:
+        raise TypeError(f"Invalid options for solver {name!r}: {exc}") from exc
+
+
 def _solver_trial(model, constructor, options, discount, precision, seed, solver_name):
-    """Return values, solver runtime, status and error for one independent trial."""
+    """Return the full result, solver runtime, status and error for one trial."""
     runtime = np.nan
     start = None
     try:
@@ -24,19 +49,13 @@ def _solver_trial(model, constructor, options, discount, precision, seed, solver
         random.seed(seed)
         precision_options = {}
         if isinstance(constructor, type):
-            parameters = inspect.signature(constructor).parameters
-            precision_options = (
-                {"final_precision": precision}
-                if "final_precision" in parameters
-                or any(p.kind == p.VAR_KEYWORD for p in parameters.values())
-                else {}
-            )
+            _, precision_options = _solver_signature(constructor, precision)
         start = perf_counter()
         if isinstance(constructor, type):
             solver = constructor(trial_model, discount, **precision_options, **options)
             if is_catalogue_solver(constructor):
                 solver.name = solver_name
-            value = solver.run().value
+            result = solver.run()
         else:
             value = constructor(
                 trial_model.transition_matrix,
@@ -46,7 +65,9 @@ def _solver_trial(model, constructor, options, discount, precision, seed, solver
                 **options,
             )
         runtime = perf_counter() - start
-        return np.asarray(value), runtime, "success", ""
+        if not isinstance(constructor, type):
+            result = SolveResult(np.asarray(value), None, validation_method="residual")
+        return result, runtime, "success", ""
     except Exception as exc:
         if start is not None and np.isnan(runtime):
             runtime = perf_counter() - start

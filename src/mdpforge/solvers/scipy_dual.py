@@ -9,6 +9,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import compute_transition_reward_policy
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
+from mdpforge.utils.solver_options import validate_discount
 
 METADATA = {
     "display_name": "LP · SciPy · dual",
@@ -24,7 +25,7 @@ METADATA = {
 class Solver(GenericSolver):
     def __init__(self, model: MDP, discount: float, *, method: str = "highs"):
         """method: 'highs' (automatic), 'highs-ds' (simplex), 'highs-ipm' (interior point)."""
-        assert 0 < discount < 1
+        validate_discount(discount)
         if method not in ("highs", "highs-ds", "highs-ipm"):
             raise ValueError("method must be 'highs', 'highs-ds' or 'highs-ipm'")
         super().__init__(model, discount, None)

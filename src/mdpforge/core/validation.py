@@ -1,9 +1,9 @@
 from numbers import Real
+from typing import TYPE_CHECKING
 
 import numpy as np
 from scipy.sparse import csr_matrix
 
-from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import (
     bellman_policy_operator,
     compact_optimal_bellman_operator,
@@ -11,9 +11,12 @@ from mdpforge.core.operators import (
 )
 from mdpforge.core.solve_result import SolveResult
 
+if TYPE_CHECKING:
+    from mdpforge.core.mdp import MDP
+
 
 def validate_result(
-    model: MDP,
+    model: "MDP",
     result: SolveResult,
     *,
     discount: float,
@@ -73,7 +76,9 @@ def validate_result(
         or np.any(policy < 0)
         or np.any(policy >= model.action_dim)
     ):
-        raise ValueError("result.policy must contain one valid integer action per state")
+        raise ValueError(
+            "result.policy must contain one valid integer action per state"
+        )
 
     value = np.asarray(result.value, dtype=float)
     # Account for row-sum roundoff admitted by validate_model().
@@ -121,7 +126,9 @@ def validate_result(
                     value, discount, transition, reward
                 )
                 # Also bound the optimality gap of the supplied policy.
-                error_bound += float(np.max(np.abs(policy_backup - value))) / denominator
+                error_bound += (
+                    float(np.max(np.abs(policy_backup - value))) / denominator
+                )
 
     if not np.isfinite(error_bound) or error_bound > precision:
         raise ValueError(
@@ -132,7 +139,7 @@ def validate_result(
 
 
 def validate_model(
-    model: MDP,
+    model: "MDP",
     tol: float = 1e-6,
     check_stochastic: bool = True,
     check_finite: bool = True,
@@ -147,7 +154,7 @@ def validate_model(
         validate_transition_stochasticity(model, tol)
 
 
-def validate_model_attributes(model: MDP) -> None:
+def validate_model_attributes(model: "MDP") -> None:
     required_attributes = [
         "state_dim",
         "action_dim",
@@ -178,7 +185,7 @@ def validate_model_attributes(model: MDP) -> None:
         raise ValueError("reward_matrix must be a NumPy array.")
 
 
-def validate_model_shapes(model: MDP) -> None:
+def validate_model_shapes(model: "MDP") -> None:
     expected_reward_shape = (model.state_dim, model.action_dim)
     if model.reward_matrix.shape != expected_reward_shape:
         raise ValueError(
@@ -212,7 +219,7 @@ def validate_model_shapes(model: MDP) -> None:
             )
 
 
-def validate_model_finite_values(model: MDP) -> None:
+def validate_model_finite_values(model: "MDP") -> None:
     if not np.all(np.isfinite(model.reward_matrix)):
         raise ValueError("Reward matrix contains NaN or infinite values.")
 
@@ -226,7 +233,7 @@ def validate_model_finite_values(model: MDP) -> None:
             )
 
 
-def validate_transition_stochasticity(model: MDP, tol: float = 1e-6) -> None:
+def validate_transition_stochasticity(model: "MDP", tol: float = 1e-6) -> None:
     for action, transition in enumerate(model.transition_matrix):
         values = transition.data
         if np.any(values < 0):

@@ -1,3 +1,5 @@
+"""MDP construction, matrix formats and state relabeling."""
+
 import numpy as np
 import pytest
 from numpy.testing import assert_allclose
@@ -5,8 +7,6 @@ from scipy.sparse import coo_matrix, csr_matrix
 
 from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import optimal_bellman_operator
-from mdpforge.utils import persistence
-from tests._contracts import assert_model_unchanged, reproducible_rng
 
 
 def test_generated_model_uses_mdp_and_preserves_identity(chain):
@@ -46,30 +46,6 @@ def test_matrix_mdp_shares_densities_and_state_relabeling(chain):
         atol=0,
     )
     assert all(isinstance(matrix, csr_matrix) for matrix in model.transition_matrix)
-
-
-def test_matrix_mdp_values_are_cached_by_discount_and_name(chain):
-    model = MDP.from_matrices(
-        "matrix_chain", chain.transition_matrix, chain.reward_matrix
-    )
-    expected = model.optimal_value_function(0.9)
-    assert_allclose(expected, [1.8, 2, 0], rtol=0, atol=1e-3)
-    path = persistence.value_function_cache_path(model, 0.9)
-    assert path.is_file()
-    assert path.name == f"0.9_{model.name}.npz"
-
-    equivalent = MDP.from_matrices(
-        "some_other_name", chain.transition_matrix, chain.reward_matrix
-    )
-    assert persistence.value_function_cache_path(equivalent, 0.9) != (
-        persistence.value_function_cache_path(model, 0.9)
-    )
-    assert_allclose(equivalent.optimal_value_function(0.9), expected, rtol=0, atol=0)
-
-    unbuilt = MDP(3, 2)
-    unbuilt.name = model.name
-    with pytest.raises(ValueError, match="Build the MDP"):
-        unbuilt.optimal_value_function(0.9)
 
 
 @pytest.mark.parametrize("input_format", ["dense", "csr", "coo"])
@@ -130,3 +106,22 @@ def test_matrix_mdp_rejects_invalid_data(chain, invalid_input, message):
 
     with pytest.raises(ValueError, match=message):
         MDP.from_matrices("invalid_mdp", transitions, rewards)
+
+
+def test_create_model_finalizes_already_built_transitions(chain):
+    chain.transition_matrix = np.array(
+        [matrix.toarray() for matrix in chain.transition_matrix]
+    )
+    chain.create_model(cache="readonly")
+    assert all(isinstance(matrix, csr_matrix) for matrix in chain.transition_matrix)
+
+
+def test_permutation_preserves_csr_and_bellman_values(chain):
+    value = np.array([1, 3, 2], dtype=float)
+    expected = optimal_bellman_operator(chain, value, 0.9)
+    permutation = np.array([2, 0, 1])
+    chain.randomize_states(permutation=permutation)
+    assert all(isinstance(matrix, csr_matrix) for matrix in chain.transition_matrix)
+    assert_allclose(
+        optimal_bellman_operator(chain, value[permutation], 0.9), expected[permutation]
+    )

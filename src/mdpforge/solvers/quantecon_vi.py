@@ -6,6 +6,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.solver_backends import create_quantecon
+from mdpforge.utils.solver_options import validate_discount
 
 METADATA = {
     "display_name": "VI · QuantEcon",
@@ -33,7 +34,7 @@ class Solver(GenericSolver):
         final_precision: finite float > 0; absolute value error target; default 1e-3.
         max_iterations: int > 0; outer iteration budget; default 100_000.
         """
-        assert 0 < discount < 1
+        validate_discount(discount)
         assert np.isfinite(final_precision) and final_precision > 0
         assert isinstance(max_iterations, int) and max_iterations > 0
         super().__init__(

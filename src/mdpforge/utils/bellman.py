@@ -1,17 +1,19 @@
 """Bellman iteration and residuals."""
 
-from typing import Tuple
+from typing import TYPE_CHECKING, Tuple
 
 import numpy as np
 from scipy.sparse import csr_matrix
 
-from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import (
     bellman_policy_operator,
     norminf,
     optimal_bellman_operator,
 )
 from mdpforge.utils.solver_options import bounded_iterations
+
+if TYPE_CHECKING:
+    from mdpforge.core.mdp import MDP
 
 
 def iterative_policy_evaluation(
@@ -49,7 +51,7 @@ def iterative_policy_evaluation(
 
 
 def apply_obo_until_var_small(
-    model: MDP,
+    model: "MDP",
     discount: float,
     variation_tol: float,
     initial_value: np.ndarray,
@@ -74,6 +76,6 @@ def apply_obo_until_var_small(
     return value, variation
 
 
-def optimal_bellman_residual(model: MDP, value: np.ndarray, discount: float):
+def optimal_bellman_residual(model: "MDP", value: np.ndarray, discount: float):
     """Returns ||V - T^* V||_inf."""
     return norminf(optimal_bellman_operator(model, value, discount) - value)

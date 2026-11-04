@@ -6,6 +6,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.solver_backends import create_quantecon
+from mdpforge.utils.solver_options import validate_discount
 
 METADATA = {
     "display_name": "PI · QuantEcon",
@@ -27,7 +28,7 @@ class Solver(GenericSolver):
 
         max_iterations: int > 0; outer iteration budget; default 100_000.
         """
-        assert 0 < discount < 1
+        validate_discount(discount)
         assert isinstance(max_iterations, int) and max_iterations > 0
         super().__init__(model, discount, None, max_iterations=max_iterations)
         self.name = __name__.rsplit(".", 1)[-1]

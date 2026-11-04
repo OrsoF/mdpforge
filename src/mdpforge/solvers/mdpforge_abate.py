@@ -31,6 +31,7 @@ from mdpforge.core.partition import Partition
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
 from mdpforge.utils.bellman import iterative_policy_evaluation
+from mdpforge.utils.solver_options import validate_discount
 
 METADATA = {
     "display_name": "Abate · mdpforge",
@@ -64,7 +65,7 @@ class Solver(GenericSolver):
         max_error_matrix_entries: int > 0; aggregate error matrix limit; default 1_000.
         direct_threshold: int >= 0; state count for direct fallback; default 1_000.
         """
-        assert 0 < discount < 1, "discount must be strictly between 0 and 1"
+        validate_discount(discount)
         super().__init__(
             model, discount, final_precision, max_iterations=max_policy_iterations
         )

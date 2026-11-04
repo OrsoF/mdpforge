@@ -4,7 +4,7 @@ from collections import Counter
 
 import numpy as np
 
-from mdpforge.core.result import (
+from mdpforge.utils.benchmark_statistics import (
     _aggregate_rows,
     _performance_ratios,
     _scaling_statistics,

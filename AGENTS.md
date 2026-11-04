@@ -7,11 +7,13 @@ mdpforge benchmarks new finite MDPs and new MDP solvers. Prefer small, useful ch
 - Treat requests for advice or proposals (for example, "How would you modify the README?") as discussion only: describe the suggested changes in chat without editing files or executing the proposed actions. Apply them only when the user asks you to do so.
 - Inspect the working-tree status, affected files, and relevant callers. Read the whole repository or run a baseline only when needed to understand the change.
 - Make the smallest robust change. Avoid unrelated refactors, wrappers, compatibility layers, new hierarchies, and repository-wide formatting.
+- Organizational refactors move or rename code and update references without changing runtime behavior. Do not introduce new computations, validation, or benchmark protocol changes unless explicitly requested.
 - Preserve user changes and deliberate deletions. Do not restore removed models or solvers, or modify baseline algorithms, unless the task calls for it.
 - Do not create or modify documentation unless the user explicitly asks for it. When requested, write concisely and compactly, and verify paths and interfaces before documenting them.
 - In all Markdown (`.md`) files, keep each prose paragraph on a single source line, including paragraphs within list items; do not insert manual line wrapping. Preserve structural line breaks in lists, tables, code blocks, and other Markdown constructs.
 - Keep function and method docstrings very short: one sentence by default. For public options, list each keyword, its accepted values and a brief meaning. Include only essential constraints; put longer explanations in dedicated docs.
 - Keep individual catalogue model modules directly in `src/mdpforge/models/`, preserving their public names. Put JANI readers and shared constructors in `_jani/`, PRISM utilities in `_prism/`, and each collection's sources, manifests and licenses in its own `_data/` (`_jani/_data/`, `_qvbs/_data/`, `_prism/_data/`). QVBS models reuse the JANI utilities; general helpers belong in `src/mdpforge/utils/`. Keep utility code and source data out of the `models/` root, and update imports, resource paths and packaging when moving them.
+- Keep domain objects and benchmark orchestration in `core/`; put catalogue loading, trial execution, statistics and plotting helpers in `utils/`. Use descriptive module names without a leading underscore in `core/`, except `__init__.py`, and preserve the package's public imports when reorganizing files.
 
 ## Preserve the scientific contract
 
@@ -19,8 +21,15 @@ mdpforge benchmarks new finite MDPs and new MDP solvers. Prefer small, useful ch
 - When adding a catalogue model, follow [docs/adding-a-model.md](docs/adding-a-model.md). Declare size presets and one task category, justify unavailable sizes, and add a small test instance with scientific validation only when tests are explicitly requested. Preserve the validation execution rules below.
 - Keep numerical conventions, stopping criteria, reward scales, and RNG behavior unless the requested change requires otherwise.
 - Models expose `state_dim`, `action_dim`, `transition_matrix[action]`, and `reward_matrix[state, action]`; construct them with `create_model()`. Solvers take explicit constructor options followed by an option-free `run()`. Transitions are a list of SciPy `csr_matrix` objects; rewards and values are NumPy arrays. Finalize CSR in `create_model()`; keep backend conversions local.
-- Support only discounted criteria (`0 < discount < 1`, asserted by solvers). VI precision bounds absolute value error using the full Bellman residual. Check solution quality, not just runtime.
+- Support only discounted criteria (`0 < discount < 1`, asserted by solvers). VI precision bounds absolute value error using the full Bellman residual. Check solution quality in dedicated tests or explicit validation calls, separately from benchmark execution.
 - Preserve the VI-based optimal-value cache, its precision and representation, and the `<discount>_<model.name>` key. Account for stale caches when changing model parameters.
+
+## Benchmark execution
+
+- Benchmark runs only orchestrate, time and record solver execution. Never perform automatic numerical validation in `Benchmark.run()`, `ScalingBenchmark.run()` or their trial execution helpers: no calls to `validate_model()` or `validate_result()`, Bellman residuals, policy or bound certification, or reference solves, even outside the timer, because they increase total experiment time. Validate models during construction/loading and certify solutions in dedicated tests or explicit user calls; retain basic argument and registration checks.
+- Runtime includes solver construction, backend conversions and `run()`. Keep model copying, seed setup, catalogue loading, experiment metadata, logging and exports outside solver timing. Preserve paired seeds and restore global RNG state.
+- A benchmark status of `success` means execution completed without an exception; it does not certify accuracy. Record `validation_method` as metadata only. Keep uncomputed residuals and error bounds as `NaN`, including legacy CSV fields, rather than implying they were checked.
+- Do not add implicit warm-up runs, extra repetitions, or cache clearing/disabling. Changes to JIT compilation, cache reuse, process isolation or timing boundaries require an explicit request; distinguish cold and warm measurements when interpreting results.
 
 ## Validation
 

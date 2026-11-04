@@ -21,6 +21,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import compact_optimal_bellman_operator
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
+from mdpforge.utils.solver_options import validate_discount
 
 METADATA = {
     "display_name": "TVI · mdpforge",
@@ -30,7 +31,9 @@ METADATA = {
 }
 
 
-def _scc_dependency_order(model: MDP, enabled: np.ndarray | None = None) -> list[np.ndarray]:
+def _scc_dependency_order(
+    model: MDP, enabled: np.ndarray | None = None
+) -> list[np.ndarray]:
     """Return SCCs in *reverse* topological order (successors before sources).
 
     An edge s -> t denotes dependence of V(s) on V(t). With ``enabled``,
@@ -58,8 +61,10 @@ def _scc_dependency_order(model: MDP, enabled: np.ndarray | None = None) -> list
     source, target = labels[coo.row], labels[coo.col]
     different = source != target
     condensed = csr_matrix(
-        (np.ones(np.count_nonzero(different), dtype=np.int8),
-         (source[different], target[different])),
+        (
+            np.ones(np.count_nonzero(different), dtype=np.int8),
+            (source[different], target[different]),
+        ),
         shape=(n_scc, n_scc),
     )
     condensed.sum_duplicates()
@@ -76,7 +81,9 @@ def _scc_dependency_order(model: MDP, enabled: np.ndarray | None = None) -> list
     while ready:
         component = heappop(ready)
         ordered.append(groups[component])
-        for pred in incoming.indices[incoming.indptr[component]:incoming.indptr[component + 1]]:
+        for pred in incoming.indices[
+            incoming.indptr[component] : incoming.indptr[component + 1]
+        ]:
             out_degree[pred] -= 1
             if out_degree[pred] == 0:
                 heappush(ready, int(pred))
@@ -112,12 +119,14 @@ def _solve_sccs(
                 row = model.transition_matrix[action].getrow(state)
                 self_prob = float(row[0, state])
                 external = float(row.dot(value)[0] - self_prob * value[state])
-                candidate = (model.reward_matrix[state, action] + discount * external) / (
-                    1.0 - discount * self_prob
-                )
+                candidate = (
+                    model.reward_matrix[state, action] + discount * external
+                ) / (1.0 - discount * self_prob)
                 best = max(best, candidate)
             if not np.isfinite(best):
-                raise RuntimeError("TVI: nonfinite singleton value / no remaining action")
+                raise RuntimeError(
+                    "TVI: nonfinite singleton value / no remaining action"
+                )
             value[state] = best
             sweeps += 1
             continue
@@ -152,7 +161,9 @@ def _greedy_policy(model: MDP, value: np.ndarray, discount: float) -> np.ndarray
     best = model.reward_matrix[:, 0] + discount * model.transition_matrix[0].dot(value)
     policy = np.zeros(model.state_dim, dtype=np.intp)
     for action in range(1, model.action_dim):
-        candidate = model.reward_matrix[:, action] + discount * model.transition_matrix[action].dot(value)
+        candidate = model.reward_matrix[:, action] + discount * model.transition_matrix[
+            action
+        ].dot(value)
         improvement = candidate > best
         best[improvement] = candidate[improvement]
         policy[improvement] = action
@@ -172,18 +183,22 @@ class Solver(GenericSolver):
         max_iterations: int = 100_000,
     ):
         """Initialize TVI; max_iterations is the per-SCC VI iteration budget."""
-        if not np.isfinite(discount) or not (0.0 < discount < 1.0):
-            raise ValueError("discount must lie in (0, 1)")
+        validate_discount(discount)
         if not np.isfinite(final_precision) or final_precision <= 0:
             raise ValueError("final_precision must be finite and positive")
         if not isinstance(max_iterations, int) or max_iterations < 1:
             raise ValueError("max_iterations must be a positive integer")
-        super().__init__(model, discount, final_precision, max_iterations=max_iterations)
+        super().__init__(
+            model, discount, final_precision, max_iterations=max_iterations
+        )
         if initial_value is None:
             self.initial_value = np.zeros(model.state_dim, dtype=np.float64)
         else:
             initial_value = np.asarray(initial_value, dtype=np.float64)
-            if initial_value.shape != (model.state_dim,) or not np.isfinite(initial_value).all():
+            if (
+                initial_value.shape != (model.state_dim,)
+                or not np.isfinite(initial_value).all()
+            ):
                 raise ValueError("initial_value must be a finite vector of shape (S,)")
             self.initial_value = initial_value.copy()
         self.name = "mdpforge_tvi"
@@ -199,12 +214,18 @@ class Solver(GenericSolver):
         self.largest_scc = max(map(len, sccs))
         tolerance = self.final_precision * (1.0 - self.discount)
         self.n_sweeps = _solve_sccs(
-            self.model, self.discount, value, sccs, tolerance,
+            self.model,
+            self.discount,
+            value,
+            sccs,
+            tolerance,
             self.max_iterations,
         )
         backup = compact_optimal_bellman_operator(self.model, value, self.discount)
         self.final_residual = float(np.max(np.abs(backup - value)))
-        if not np.isfinite(self.final_residual) or self.final_residual > tolerance * (1 + 1e-10):
+        if not np.isfinite(self.final_residual) or self.final_residual > tolerance * (
+            1 + 1e-10
+        ):
             raise RuntimeError("TVI: global Bellman-residual certificate failed")
         return SolveResult(
             value=value,

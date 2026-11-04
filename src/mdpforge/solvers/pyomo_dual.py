@@ -11,6 +11,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import compute_transition_reward_policy
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
+from mdpforge.utils.solver_options import validate_discount
 
 METADATA = {
     "display_name": "LP · Pyomo/HiGHS · dual",
@@ -26,7 +27,7 @@ METADATA = {
 class Solver(GenericSolver):
     def __init__(self, model: MDP, discount: float, *, threads: int = 1):
         """threads: int > 0; HiGHS thread count; default 1."""
-        assert 0 < discount < 1
+        validate_discount(discount)
         if type(threads) is not int or threads < 1:
             raise ValueError("threads must be a positive integer")
         super().__init__(model, discount, None)

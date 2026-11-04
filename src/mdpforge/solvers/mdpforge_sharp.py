@@ -16,6 +16,7 @@ from scipy.sparse.csgraph import connected_components
 from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import compact_optimal_bellman_operator
 from mdpforge.core.solve_result import SolveResult
+from mdpforge.utils.solver_options import validate_discount
 
 METADATA = {
     "display_name": "SHARP · mdpforge",
@@ -60,8 +61,7 @@ class Solver:
         max_local_iterations: int = 100_000,
     ):
         """Configure the discounted SHARP adaptation (index/scc, absolute/relative)."""
-        if not (np.isfinite(discount) and 0 < discount < 1):
-            raise ValueError("discount must be in (0, 1)")
+        validate_discount(discount)
         if not (np.isfinite(final_precision) and final_precision > 0):
             raise ValueError("final_precision must be finite and positive")
         if initial_blocks < 1 or max_depth < 1:
@@ -135,7 +135,11 @@ class Solver:
                 pending = []
                 pending_size = 0
             if len(component) > target_size:
-                groups.extend(np.array_split(component, int(np.ceil(len(component) / target_size))))
+                groups.extend(
+                    np.array_split(
+                        component, int(np.ceil(len(component) / target_size))
+                    )
+                )
             else:
                 pending.append(component)
                 pending_size += len(component)
@@ -170,7 +174,9 @@ class Solver:
         for _ in range(self.max_local_iterations):
             updated = offset[:, 0] + self.discount * block.inside[0].dot(local)
             for action in range(1, self.model.action_dim):
-                candidate = offset[:, action] + self.discount * block.inside[action].dot(local)
+                candidate = offset[:, action] + self.discount * block.inside[
+                    action
+                ].dot(local)
                 np.maximum(updated, candidate, out=updated)
             variation = float(np.max(np.abs(updated - local)))
             local = updated
@@ -185,7 +191,9 @@ class Solver:
         best_value = offset[:, 0] + self.discount * block.inside[0].dot(local)
         best_action = np.zeros(len(states), dtype=np.intp)
         for action in range(1, self.model.action_dim):
-            candidate = offset[:, action] + self.discount * block.inside[action].dot(local)
+            candidate = offset[:, action] + self.discount * block.inside[action].dot(
+                local
+            )
             better = candidate > best_value
             best_value[better] = candidate[better]
             best_action[better] = action
@@ -299,4 +307,6 @@ class Solver:
                 for leaf in self.leaves:
                     self._solve_leaf(leaf)
 
-        raise RuntimeError("SHARP: max_iterations exhausted before certified convergence")
+        raise RuntimeError(
+            "SHARP: max_iterations exhausted before certified convergence"
+        )

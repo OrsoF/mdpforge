@@ -333,7 +333,9 @@ class Solver:
                     return SolveResult.from_solver(
                         self,
                         validation_method=(
-                            "residual" if self.stop_criterion == "residual" else "bounds"
+                            "residual"
+                            if self.stop_criterion == "residual"
+                            else "bounds"
                         ),
                     )
 

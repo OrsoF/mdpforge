@@ -37,6 +37,6 @@ For VI, add `solver_type = "vi"` for discovery by VI-specific fixtures. Check `l
 
 ## 4. Validation
 
-[`tests/test_workflows.py`](../tests/test_workflows.py) currently checks solver interfaces and input preservation on the cases configured in [`tests/conftest.py`](../tests/conftest.py). The previous value/policy accuracy checks have been removed; the new shared value-function check is pending. See the [test guide](../tests/README.md).
+[`tests/test_solver_contracts.py`](../tests/test_solver_contracts.py) checks solver interfaces and input preservation on the cases configured in [`tests/conftest.py`](../tests/conftest.py). [`tests/test_solvers_rooms.py`](../tests/test_solvers_rooms.py) validates installed catalogue solvers on the Rooms small preset with `validate_result()`. See the [test guide](../tests/README.md).
 
 Use Python 3.11+ in Conda `benchmark`. **Add tests and run pytest/Ruff only when explicitly requested.** When pytest is requested, run the full suite, including installed backends; skip only missing dependencies. Do not run heavy benchmarks automatically. Report changes, checks actually performed, results and limitations; commands are in [AGENTS.md](../AGENTS.md).

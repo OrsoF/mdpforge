@@ -29,6 +29,7 @@ from mdpforge.solvers.mdpforge_tvi import (
     _scc_dependency_order,
     _solve_sccs,
 )
+from mdpforge.utils.solver_options import validate_discount
 
 METADATA = {
     "display_name": "FTVI · mdpforge",
@@ -64,24 +65,32 @@ class Solver(GenericSolver):
             over a batch is <= this fraction (paper: 0.03).
         max_iterations: maximum VI iterations *per SCC* in the computation stage.
         """
-        if not np.isfinite(discount) or not (0.0 < discount < 1.0):
-            raise ValueError("discount must lie in (0, 1)")
+        validate_discount(discount)
         if not np.isfinite(final_precision) or final_precision <= 0:
             raise ValueError("final_precision must be finite and positive")
         if not isinstance(max_iterations, int) or max_iterations < 1:
             raise ValueError("max_iterations must be a positive integer")
-        if not isinstance(initial_state, (int, np.integer)) or not (0 <= initial_state < model.state_dim):
+        if not isinstance(initial_state, (int, np.integer)) or not (
+            0 <= initial_state < model.state_dim
+        ):
             raise ValueError("initial_state must be a valid integer state index")
         if not isinstance(search_batch_size, int) or search_batch_size < 1:
             raise ValueError("search_batch_size must be a positive integer")
         if not isinstance(max_search_batches, int) or max_search_batches < 1:
             raise ValueError("max_search_batches must be a positive integer")
-        if not np.isfinite(min_relative_improvement) or not (0 <= min_relative_improvement < 1):
+        if not np.isfinite(min_relative_improvement) or not (
+            0 <= min_relative_improvement < 1
+        ):
             raise ValueError("min_relative_improvement must lie in [0, 1)")
-        super().__init__(model, discount, final_precision, max_iterations=max_iterations)
+        super().__init__(
+            model, discount, final_precision, max_iterations=max_iterations
+        )
         if initial_value is not None:
             initial_value = np.asarray(initial_value, dtype=np.float64)
-            if initial_value.shape != (model.state_dim,) or not np.isfinite(initial_value).all():
+            if (
+                initial_value.shape != (model.state_dim,)
+                or not np.isfinite(initial_value).all()
+            ):
                 raise ValueError("initial_value must be a finite vector of shape (S,)")
             initial_value = initial_value.copy()
         self.initial_value = initial_value
@@ -98,7 +107,9 @@ class Solver(GenericSolver):
         self.final_residual = np.inf
         self.enabled: np.ndarray | None = None
 
-    def _optimistic_action(self, state: int, upper: np.ndarray, enabled: np.ndarray) -> int:
+    def _optimistic_action(
+        self, state: int, upper: np.ndarray, enabled: np.ndarray
+    ) -> int:
         """Greedy upper-bound action for a reward-maximizing search."""
         best = -np.inf
         best_action = -1
@@ -137,7 +148,9 @@ class Solver(GenericSolver):
         eliminated = active[upper_q[active] < lower_certificate - slack]
         if eliminated.size >= active.size:
             # Defensive safeguard; with valid bounds this should not happen.
-            eliminated = eliminated[eliminated != active[int(np.argmax(upper_q[active]))]]
+            eliminated = eliminated[
+                eliminated != active[int(np.argmax(upper_q[active]))]
+            ]
         enabled[state, eliminated] = False
         self.n_pruned_actions += int(eliminated.size)
         remaining = np.flatnonzero(enabled[state])
@@ -148,7 +161,9 @@ class Solver(GenericSolver):
         lower[state] = new_lower
         upper[state] = max(new_lower, new_upper)  # numerical roundoff only
 
-    def _search_trial(self, lower: np.ndarray, upper: np.ndarray, enabled: np.ndarray) -> int:
+    def _search_trial(
+        self, lower: np.ndarray, upper: np.ndarray, enabled: np.ndarray
+    ) -> int:
         """Iterative depth-first search, with postorder bound backups (Algorithm 3)."""
         n = self.model.state_dim
         visited = np.zeros(n, dtype=np.bool_)
@@ -197,7 +212,9 @@ class Solver(GenericSolver):
                 self._search_trial(lower, upper, enabled)
                 self.n_search_trials += 1
             root = float(lower[self.initial_state])
-            improvement = abs(root - previous_root) / max(1.0, abs(root), abs(previous_root))
+            improvement = abs(root - previous_root) / max(
+                1.0, abs(root), abs(previous_root)
+            )
             if improvement <= self.min_relative_improvement:
                 break
 
@@ -214,16 +231,27 @@ class Solver(GenericSolver):
         self.n_sweeps = 0
         for _ in range(7):
             self.n_sweeps += _solve_sccs(
-                self.model, self.discount, value, sccs,
-                local_tolerance, self.max_iterations, enabled,
+                self.model,
+                self.discount,
+                value,
+                sccs,
+                local_tolerance,
+                self.max_iterations,
+                enabled,
             )
-            full_backup = compact_optimal_bellman_operator(self.model, value, self.discount)
+            full_backup = compact_optimal_bellman_operator(
+                self.model, value, self.discount
+            )
             self.final_residual = float(np.max(np.abs(full_backup - value)))
-            if np.isfinite(self.final_residual) and self.final_residual <= target * (1 + 1e-10):
+            if np.isfinite(self.final_residual) and self.final_residual <= target * (
+                1 + 1e-10
+            ):
                 return SolveResult(
                     value=value,
                     policy=_greedy_policy(self.model, value, self.discount),
                     validation_method="residual",
                 )
             local_tolerance /= 4
-        raise RuntimeError("FTVI: full Bellman-residual certificate failed after pruning")
+        raise RuntimeError(
+            "FTVI: full Bellman-residual certificate failed after pruning"
+        )

@@ -1,6 +1,5 @@
 """Benchmark finite discounted MDP solvers at a fixed value precision."""
 
-import inspect
 import random
 from collections.abc import Sequence
 from time import perf_counter
@@ -8,36 +7,21 @@ from time import perf_counter
 import numpy as np
 
 from mdpforge import models
-from mdpforge.core._benchmark_catalogue import (
+from mdpforge.core.benchmark_result import BenchmarkResult
+from mdpforge.core.mdp import MDP
+from mdpforge.solvers import is_catalogue_solver, list_solvers
+from mdpforge.utils.benchmark_catalogue import (
     _available_solvers,
     _load_model,
     _load_solver,
     _select_models,
 )
-from mdpforge.core._benchmark_execution import _isolated_solver_trial, _solver_trial
-from mdpforge.core.mdp import MDP
-from mdpforge.core.result import BenchmarkResult
-from mdpforge.core.validation import validate_model
-from mdpforge.solvers import is_catalogue_solver, list_solvers
+from mdpforge.utils.benchmark_execution import (
+    _check_solver_options,
+    _isolated_solver_trial,
+    _solver_trial,
+)
 from mdpforge.utils.experiment import capture_experiment
-
-
-def _check_solver_options(name, constructor, options):
-    """Check options against the class/function calling convention used by run()."""
-    try:
-        signature = inspect.signature(constructor)
-        if inspect.isclass(constructor):
-            precision_options = (
-                {"final_precision": None}
-                if "final_precision" in signature.parameters
-                or any(p.kind == p.VAR_KEYWORD for p in signature.parameters.values())
-                else {}
-            )
-            signature.bind(None, None, **precision_options, **options)
-        else:
-            signature.bind(None, None, None, None, **options)
-    except TypeError as exc:
-        raise TypeError(f"Invalid options for solver {name!r}: {exc}") from exc
 
 
 def _same_options(left, right):
@@ -69,10 +53,10 @@ class Benchmark:
     ``transition_matrix`` and ``reward_matrix``. Solver functions accept
     ``(transitions, rewards, discount, precision)`` and return a value vector.
     Solver classes accept ``(model, discount)`` with optional ``final_precision``
-    and provide ``run()`` and a ``value`` vector.
+    and return a ``SolveResult`` from ``run()``.
 
     Runtime includes function execution or class construction and ``run()``,
-    but excludes model copying and validation.
+    but excludes model copying and experiment bookkeeping.
     """
 
     def __init__(self):
@@ -146,7 +130,7 @@ class Benchmark:
             for entry in _select_models(names, size=size, category=category):
                 preset = entry["sizes"][size] if size is not None else None
                 self._add_catalogue_model(
-                    entry["name"],
+                    entry,
                     preset=preset,
                     grouped=named_group or model is None,
                     verbose=verbose,
@@ -160,14 +144,14 @@ class Benchmark:
         if isinstance(model, str):
             if not model.strip():
                 raise ValueError("Each MDP must have a nonempty string 'name'.")
-            catalogue = {entry["name"] for entry in models.list_models()}
+            catalogue = {entry["name"]: entry for entry in models.list_models()}
             if model in catalogue:
                 if transitions is not None or reward is not None:
                     raise ValueError(
                         f"Catalogue model {model!r} uses its generator; "
                         "choose a custom name when supplying matrices."
                     )
-                return self._add_catalogue_model(model, verbose=verbose)
+                return self._add_catalogue_model(catalogue[model], verbose=verbose)
             else:
                 if transitions is None or reward is None:
                     raise ValueError(
@@ -216,13 +200,14 @@ class Benchmark:
             )
         raise ValueError(f"Model {model_name!r} is not registered.")
 
-    def _add_catalogue_model(self, name, *, preset=None, grouped=False, verbose=False):
+    def _add_catalogue_model(self, entry, *, preset=None, grouped=False, verbose=False):
         """Build a recipe; groups skip duplicates and missing dependencies."""
+        name = entry["name"]
         if verbose:
             start = perf_counter()
             print(f"Loading/building model {name!r}...", flush=True)
         model = _load_model(
-            name, preset=preset, registered=self._mdps, grouped=grouped, verbose=verbose
+            entry, preset=preset, registered=self._mdps, grouped=grouped, verbose=verbose
         )
         if model is not None:
             self.add_mdp(model)
@@ -246,7 +231,7 @@ class Benchmark:
         for entry in models.list_models(size=size, available=True):
             preset = entry["sizes"][size] if size is not None else None
             self._add_catalogue_model(
-                entry["name"], preset=preset, grouped=True, verbose=verbose
+                entry, preset=preset, grouped=True, verbose=verbose
             )
         return self
 
@@ -312,7 +297,7 @@ class Benchmark:
         if grouped:
             return self._add_solver_group(list_solvers(**filters), options)
         if solve_function is None:
-            catalogue = {entry["name"] for entry in list_solvers()}
+            catalogue = {entry["name"]: entry for entry in list_solvers()}
             if solver_name not in catalogue:
                 raise ValueError(
                     f"Unknown solver {solver_name!r}. Available solvers: "
@@ -325,7 +310,9 @@ class Benchmark:
                     f"Solver {solver_name!r} does not match the requested "
                     "metadata filters"
                 )
-            solve_function = _load_solver(solver_name)
+            solve_function = _load_solver(
+                solver_name, backend=catalogue[solver_name]["backend"]
+            )
         self._register_solver(solver_name, solve_function, options)
         return self
 
@@ -335,6 +322,7 @@ class Benchmark:
         """Assign a unique key and register one solver configuration."""
         if not callable(constructor):
             raise TypeError("solve_function must be a callable function or class.")
+        _check_solver_options(name, constructor, options)
         if registry is None:
             registry = self._solvers
         auto_name = (
@@ -375,7 +363,6 @@ class Benchmark:
         """Check the entire selection before committing new registrations."""
         registry = self._solvers.copy()
         for name, constructor in _available_solvers(entries):
-            _check_solver_options(name, constructor, options)
             self._register_solver(
                 name, constructor, options, registry=registry, skip_existing=True
             )
@@ -397,9 +384,8 @@ class Benchmark:
 
     def add_all_solvers(self):
         """Add all catalogue solvers, preserving existing entries."""
-        # Pass names only to preserve the existing backend checks.
         entries = (
-            {"name": entry["name"]}
+            entry
             for entry in list_solvers()
             if entry["name"] not in self._solvers
         )
@@ -419,6 +405,8 @@ class Benchmark:
 
         ``precision`` is passed to each solver. All failures are recorded rather
         than interrupting the remaining comparisons.
+
+        No numerical validation is performed; ``success`` means execution completed.
 
         ``verbose=True`` prints trial progress, runtime and failure details
         outside solver timing.
@@ -463,9 +451,6 @@ class Benchmark:
         if not self._solvers:
             raise ValueError("No solver registered; call add_solver() first")
 
-        for model in self._mdps:
-            validate_model(model)
-
         rows = []
         numpy_state, random_state = np.random.get_state(), random.getstate()
         try:
@@ -489,7 +474,8 @@ class Benchmark:
                                 end="",
                                 flush=True,
                             )
-                        runtime = residual = error_bound = np.nan
+                        runtime = np.nan
+                        validation_method = "unknown"
                         status, error = "error", ""
                         try:
                             args = (
@@ -502,10 +488,14 @@ class Benchmark:
                                 solver_name,
                             )
                             if timeout is None:
-                                value, runtime, status, error = _solver_trial(*args)
+                                result, runtime, status, error = _solver_trial(*args)
                             else:
-                                value, runtime, status, error = _isolated_solver_trial(
+                                result, runtime, status, error = _isolated_solver_trial(
                                     *args, timeout
+                                )
+                            if status == "success":
+                                validation_method = getattr(
+                                    result, "validation_method", "unknown"
                                 )
                         except Exception as exc:
                             status = "error"
@@ -525,8 +515,9 @@ class Benchmark:
                                 "discount": discount,
                                 "epsilon": precision,  # Keep the original CSV schema.
                                 "runtime": runtime,
-                                "residual": residual,
-                                "error_bound": error_bound,
+                                "validation_method": validation_method,
+                                "residual": np.nan,
+                                "error_bound": np.nan,
                                 "status": status,
                                 "error": error,
                             }

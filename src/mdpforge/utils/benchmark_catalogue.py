@@ -65,18 +65,11 @@ def _select_models(names=None, *, size=None, category=None):
     return [selected[name] for name in names]
 
 
-def _load_model(name, *, preset=None, registered=(), grouped=False, verbose=False):
+def _load_model(entry, *, preset=None, registered=(), grouped=False, verbose=False):
     """Build a catalogue model, optionally skipping duplicates or missing dependencies."""
-    unavailable = next(
-        (
-            entry
-            for entry in models.list_models(available=False)
-            if entry["name"] == name
-        ),
-        None,
-    )
-    if unavailable is not None:
-        message = f"Model {name!r} is unavailable: {unavailable['reason']}"
+    name = entry["name"]
+    if not entry["available"]:
+        message = f"Model {name!r} is unavailable: {entry['reason']}"
         if grouped:
             warnings.warn(message, stacklevel=4)
             return None

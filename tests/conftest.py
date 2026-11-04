@@ -1,30 +1,12 @@
-import ast
-import inspect
-import sys
-from pathlib import Path
-from pkgutil import iter_modules
-
 import numpy as np
 import pytest
 from scipy.sparse import csr_matrix
 
-from mdpforge import models, solvers
+from mdpforge import solvers
 from mdpforge.core.mdp import MDP
 from mdpforge.utils import persistence
 from tests._contracts import sample_models
-
-# Marker optional backends even when an adapter only imports another local module.
-OPTIONAL_BACKENDS = {
-    "madupite": ("madupite",),
-    "mdpax": ("mdpax",),
-    "marmote": ("marmote",),
-    "mdpsolver": ("mdpsolver",),
-    "mdptoolbox": ("mdptoolbox",),
-    "quantecon": ("quantecon",),
-    "gurobi": ("gurobipy",),
-    "cmaes": ("cma",),
-    "pyomo": ("pyomo", "highspy"),
-}
+from tests._solver_support import solver_names
 
 
 class FourStateModel(MDP):
@@ -49,62 +31,6 @@ class ChainModel(MDP):
         self.reward_matrix = np.array([[0, 0], [2, 0], [0, 0]], dtype=float)
 
 
-def module_names(package, solver_type=None):
-    # Subpackages contain specialized workflows with their own configurations.
-    parameters = []
-    for module in sorted(iter_modules(package.__path__), key=lambda item: item.name):
-        if module.ispkg or module.name.startswith("_"):
-            continue
-        source = Path(package.__file__).with_name(f"{module.name}.py")
-        tree = ast.parse(source.read_text(encoding="utf-8"))
-        if package is models:
-            metadata = next(
-                (
-                    ast.literal_eval(node.value)
-                    for node in tree.body
-                    if isinstance(node, ast.Assign)
-                    and any(
-                        isinstance(target, ast.Name) and target.id == "METADATA"
-                        for target in node.targets
-                    )
-                ),
-                {},
-            )
-            if not metadata.get("available", True):
-                continue
-        if solver_type is not None and not any(
-            isinstance(node, ast.Assign)
-            and any(
-                isinstance(target, ast.Name) and target.id == "solver_type"
-                for target in node.targets
-            )
-            and isinstance(node.value, ast.Constant)
-            and node.value.value == solver_type
-            for node in ast.walk(tree)
-        ):
-            continue
-        imports = set()
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Import):
-                imports.update(alias.name.split(".")[0] for alias in node.names)
-            elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
-                imports.add(node.module.split(".")[0])
-        dependencies = (
-            imports - sys.stdlib_module_names - {"mdpforge", "numpy", "scipy"}
-        )
-        if package is solvers:
-            backend = module.name.split("_", 1)[0]
-            if backend in OPTIONAL_BACKENDS:
-                dependencies.update(OPTIONAL_BACKENDS[backend])
-        marks = (
-            [pytest.mark.external(dependencies=sorted(dependencies))]
-            if dependencies
-            else []
-        )
-        parameters.append(pytest.param(module.name, marks=marks, id=module.name))
-    return parameters
-
-
 @pytest.fixture
 def isolated_model_cache(monkeypatch, tmp_path):
     monkeypatch.setattr(persistence, "SAVED_MODELS_PATH", tmp_path / "models")
@@ -117,20 +43,10 @@ def small_model(isolated_model_cache):
     return model
 
 
-@pytest.fixture(params=module_names(models))
-def model_module(request):
-    return f"{models.__name__}.{request.param}"
-
-
 @pytest.fixture(
-    params=[entry for entry in module_names(solvers) if entry.id != "mdptoolbox_vigs"]
+    params=[entry for entry in solver_names() if entry.id != "mdptoolbox_vigs"]
 )
 def solver_module(request):
-    return f"{solvers.__name__}.{request.param}"
-
-
-@pytest.fixture(params=module_names(solvers, solver_type="vi"))
-def vi_module(request):
     return f"{solvers.__name__}.{request.param}"
 
 
@@ -142,15 +58,6 @@ def chain(tmp_path, monkeypatch, isolated_model_cache):
     return model
 
 
-@pytest.fixture
-def model_script():
-    # Reuse the synthetic model in isolated interpreters without importing tests.
-    return (
-        "import numpy as np\nfrom scipy.sparse import csr_matrix\n"
-        "from mdpforge.core.mdp import MDP\n" + inspect.getsource(ChainModel)
-    )
-
-
 @pytest.fixture(
     params=[
         pytest.param(
@@ -158,7 +65,7 @@ def model_script():
             marks=entry.marks,
             id=f"{entry.id}-{case}-{discount}",
         )
-        for entry in module_names(solvers)
+        for entry in solver_names()
         for case in ("ties_and_negative_rewards", "stochastic_switches", "generated")
         for discount in (0.5, 0.99)
         if entry.id != "mdptoolbox_vigs"
