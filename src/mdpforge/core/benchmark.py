@@ -520,7 +520,10 @@ class Benchmark:
                             validation_start = perf_counter()
                             try:
                                 error_bound = validate_result(
-                                    model, result, discount=discount, precision=precision
+                                    model,
+                                    result,
+                                    discount=discount,
+                                    precision=precision,
                                 )
                                 validation_status = "passed"
                             except Exception as exc:
