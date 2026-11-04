@@ -332,4 +332,4 @@ class Solver(GenericSolver):
         self.value = value
         self.policy = np.asarray(policy, dtype=int)
         self.runtime = time() - start_time
-        return SolveResult.from_solver(self)
+        return SolveResult.from_solver(self, validation_method="policy")

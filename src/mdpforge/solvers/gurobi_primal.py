@@ -98,4 +98,4 @@ class Solver(GenericSolver):
 
         self.model.optimize()
 
-        return SolveResult(np.array(self.model.x), None)
+        return SolveResult(np.array(self.model.x), None, validation_method="residual")

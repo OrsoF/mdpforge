@@ -54,4 +54,8 @@ class Solver(GenericSolver):
             max_iter=self.max_iterations,
             k=self.max_evaluation_iterations,
         )
-        return SolveResult(np.asarray(result.v), np.asarray(result.sigma, dtype=int))
+        return SolveResult(
+            np.asarray(result.v),
+            np.asarray(result.sigma, dtype=int),
+            validation_method="span",
+        )

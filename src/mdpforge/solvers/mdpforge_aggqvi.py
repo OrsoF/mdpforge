@@ -104,7 +104,7 @@ class Solver(GenericSolver):
                     self.model, self.value[:, None], self.discount
                 )
                 self._finish(self.q_value)
-                return SolveResult.from_solver(self)
+                return SolveResult.from_solver(self, validation_method="residual")
 
             self.partition.compute_agg_trans_reward_q()
 
@@ -145,7 +145,7 @@ class Solver(GenericSolver):
                 ) <= self.epsilon * (1 - self.discount):
                     self.contracted_q_value = contracted_q_value
                     self._finish(q_value)
-                    return SolveResult.from_solver(self)
+                    return SolveResult.from_solver(self, validation_method="residual")
 
     def _bellman_steps(self, q_value: np.ndarray) -> np.ndarray:
         value = q_value.max(axis=1)

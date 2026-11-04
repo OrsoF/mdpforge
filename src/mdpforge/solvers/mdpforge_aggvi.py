@@ -112,7 +112,7 @@ class Solver:
                 )
 
                 self._finish(value)
-                return SolveResult.from_solver(self)
+                return SolveResult.from_solver(self, validation_method="residual")
 
             self.partition.compute_agg_trans_reward_v()
             norm_weights = self._norm_weights()
@@ -160,7 +160,7 @@ class Solver:
                     self.model, value, self.discount
                 ) <= self.epsilon * (1 - self.discount):
                     self._finish(value)
-                    return SolveResult.from_solver(self)
+                    return SolveResult.from_solver(self, validation_method="residual")
 
     def _bellman_steps(self, contracted_value: np.ndarray) -> np.ndarray:
         """Optimal Bellman operator."""

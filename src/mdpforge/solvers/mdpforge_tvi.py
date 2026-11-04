@@ -206,4 +206,8 @@ class Solver(GenericSolver):
         self.final_residual = float(np.max(np.abs(backup - value)))
         if not np.isfinite(self.final_residual) or self.final_residual > tolerance * (1 + 1e-10):
             raise RuntimeError("TVI: global Bellman-residual certificate failed")
-        return SolveResult(value=value, policy=_greedy_policy(self.model, value, self.discount))
+        return SolveResult(
+            value=value,
+            policy=_greedy_policy(self.model, value, self.discount),
+            validation_method="residual",
+        )

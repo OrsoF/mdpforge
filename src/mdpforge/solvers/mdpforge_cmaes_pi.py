@@ -152,7 +152,11 @@ class Solver(GenericSolver):
                 np.isfinite(optimal_residual + policy_residual)
                 and optimal_residual + policy_residual <= tolerance
             ):
-                return SolveResult(np.asarray(self.value), None)
+                return SolveResult(
+                    np.asarray(self.value),
+                    None,
+                    validation_method="residual",
+                )
             self.policy = q_value.argmax(axis=1)
 
         raise RuntimeError(

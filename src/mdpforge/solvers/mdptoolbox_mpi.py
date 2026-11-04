@@ -50,4 +50,8 @@ class Solver(GenericSolver):
         )
         self.mpi.run()
 
-        return SolveResult(np.array(self.mpi.V), np.array(self.mpi.policy))
+        return SolveResult(
+            np.array(self.mpi.V),
+            np.array(self.mpi.policy),
+            validation_method="span",
+        )

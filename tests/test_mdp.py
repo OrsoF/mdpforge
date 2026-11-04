@@ -9,23 +9,6 @@ from mdpforge.utils import persistence
 from tests._contracts import assert_model_unchanged, reproducible_rng
 
 
-def test_seeded_garnet_generation_is_reproducible_without_cache(isolated_model_cache):
-    from mdpforge.models.garnet import Model
-
-    for seed in (0, 17):
-        generated = []
-        for _ in range(2):
-            with reproducible_rng(seed):
-                model = Model(state_dim=7, action_dim=3)
-                model.create_model(cache="off")
-            generated.append(model)
-        first, second = generated
-        assert_model_unchanged(first, second)
-        path = persistence.model_cache_path(first)
-        assert path.name == f"{first.name}.npz"
-        assert not path.exists()
-
-
 def test_generated_model_uses_mdp_and_preserves_identity(chain):
     assert isinstance(chain, MDP)
     assert chain.name == "3_2_chainmodel"

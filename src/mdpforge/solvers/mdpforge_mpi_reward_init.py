@@ -81,7 +81,11 @@ class Solver(GenericSolver):
             ):
                 raise RuntimeError("MPI stopped: non_finite values")
             if bellman_residual < tolerance:
-                return SolveResult(np.asarray(value), new_policy)
+                return SolveResult(
+                    np.asarray(value),
+                    new_policy,
+                    validation_method="residual",
+                )
             if np.array_equal(value, previous_value) and np.array_equal(
                 new_policy, policy
             ):

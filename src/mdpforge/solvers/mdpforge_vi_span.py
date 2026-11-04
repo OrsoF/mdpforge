@@ -62,7 +62,11 @@ class Solver(GenericSolver):
             if not np.isfinite(bellman_span) or not np.isfinite(corrected_value).all():
                 raise RuntimeError("VI Span stopped: non_finite values")
             if bellman_span < tolerance:
-                return SolveResult(np.asarray(corrected_value), None)
+                return SolveResult(
+                    np.asarray(corrected_value),
+                    None,
+                    validation_method="span",
+                )
             if np.array_equal(new_value, value):
                 raise RuntimeError("VI Span stopped: stagnation")
             value = new_value

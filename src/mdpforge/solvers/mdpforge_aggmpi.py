@@ -132,7 +132,7 @@ class Solver:
 
             self.policy = new_policy
 
-        return SolveResult.from_solver(self)
+        return SolveResult.from_solver(self, validation_method="residual")
 
     def _compute_transition_reward_policy(
         self,

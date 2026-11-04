@@ -58,4 +58,4 @@ class Solver(GenericSolver):
             parIterLim=self.max_evaluation_iterations,
         )
 
-        return SolveResult(np.asarray(value), policy)
+        return SolveResult(np.asarray(value), policy, validation_method="residual")

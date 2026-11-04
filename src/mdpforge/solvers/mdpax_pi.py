@@ -1,5 +1,7 @@
 """Discounted Policy Iteration using the optional MDPax/JAX backend."""
 
+import os
+
 import jax
 import numpy as np
 from mdpax.solvers import PolicyIteration
@@ -42,6 +44,7 @@ class Solver(GenericSolver):
         max_event_entries: int > 0; padded transition-event capacity; default 2_000_000.
         max_batch_size: int > 0; backend batch-size limit; default 1024.
         """
+        os.environ["XLA_PYTHON_CLIENT_PREALLOCATE"] = "false"
         jax.config.update("jax_enable_compilation_cache", False)
         jax.clear_caches()
         super().__init__(
@@ -68,4 +71,4 @@ class Solver(GenericSolver):
         result = solver.solve(max_iterations=self.max_iterations)
         values = np.asarray(result.values, dtype=float).reshape(-1)
         policy = np.asarray(result.policy, dtype=int).reshape(-1)
-        return SolveResult(np.asarray(values), policy)
+        return SolveResult(np.asarray(values), policy, validation_method="policy")

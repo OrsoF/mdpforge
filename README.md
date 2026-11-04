@@ -23,15 +23,19 @@
 
 Requires **Python 3.11+** and supports finite discounted problems with `0 < discount < 1`.
 
-```sh
-python -m pip install "mdpforge @ git+https://github.com/OrsoF/mdpforge.git"
-```
-
-For plots, install the `plot` extra:
+Install with optional pip solver backends and plotting:
 
 ```sh
-python -m pip install "mdpforge[plot] @ git+https://github.com/OrsoF/mdpforge.git"
+python -m pip install "mdpforge[solvers,plot] @ git+https://github.com/OrsoF/mdpforge.git"
 ```
+
+From an existing checkout, run this at the repository root instead:
+
+```sh
+python -m pip install -e ".[solvers,plot]"
+```
+
+Omit `[solvers,plot]` for a minimal installation, or use `[plot]` for plots with the built-in solvers. Marmote needs a separate Conda installation; see [Optional backends](#optional-backends).
 
 ### Run a benchmark
 
@@ -96,7 +100,15 @@ Register a callable with `bench.add_solver("my_solver", solve_function=my_solver
 
 ### Optional backends
 
-Optional solver integrations and their dependencies are listed in [installation extras](pyproject.toml); see the [madupite and MDPax guide](docs/madupite-mdpax.md) for those backends.
+The `solvers` extra installs MDPax, MDPSolver, MDPToolbox, QuantEcon and CMA. Individual extras and version requirements are listed in [pyproject.toml](pyproject.toml).
+
+Install Marmote separately in the same active Conda environment using its [official installation instructions](https://marmote.gitlabpages.inria.fr/marmote/instructions/linux/install_linux.html):
+
+```sh
+conda install -c marmote -c conda-forge marmote
+```
+
+The `marmote` extra is empty; installing it through pip does not install the native library.
 
 ## Examples and documentation
 

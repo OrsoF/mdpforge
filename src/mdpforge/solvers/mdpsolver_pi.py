@@ -68,4 +68,4 @@ class Solver(GenericSolver):
             makeFinalCheck=False,
         )
 
-        return SolveResult(np.asarray(value), policy)
+        return SolveResult(np.asarray(value), policy, validation_method="span")

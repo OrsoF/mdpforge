@@ -51,7 +51,11 @@ class Solver(GenericSolver):
             if not np.isfinite(bellman_residual) or not np.isfinite(new_value).all():
                 raise RuntimeError("VI stopped: non_finite values")
             if bellman_residual < tolerance:
-                return SolveResult(np.asarray(new_value), None)
+                return SolveResult(
+                    np.asarray(new_value),
+                    None,
+                    validation_method="residual",
+                )
             if np.array_equal(new_value, value):
                 raise RuntimeError("VI stopped: stagnation")
             value = new_value

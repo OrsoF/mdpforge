@@ -27,9 +27,10 @@ mdpsolver = ["mdpsolver>=0.10.2"]
 marmote = []
 mdpax = ["mdpax>=0.2.2,<0.3"]
 quantecon = ["quantecon>=0.10.1,<0.14"]
+pyomo = ["pyomo>=6.9,<7", "highspy>=1.7,<2"]
 # madupite requires MPI/PETSc; install via its upstream conda/source instructions.
 cma = ["cma>=4.4,<5"]
-solvers = ["mdpforge[cma,gurobi,marmote,mdpax,mdpsolver,mdptoolbox,quantecon]"]
+solvers = ["mdpforge[cma,marmote,mdpax,mdpsolver,mdptoolbox,pyomo,quantecon]"]
 maze = ["mazelib"]
 progress = ["tqdm"]
 

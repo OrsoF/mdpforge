@@ -109,4 +109,4 @@ class Solver(GenericSolver):
             raw_policy = np.atleast_1d(np.loadtxt(policy_path, dtype=float)).ravel()
 
         policy = raw_policy.astype(int)
-        return SolveResult(np.asarray(values), policy)
+        return SolveResult(np.asarray(values), policy, validation_method="residual")

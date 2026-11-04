@@ -79,4 +79,5 @@ class Solver(GenericSolver):
         return SolveResult(
             np.array([self.opt.getValueIndex(s) for s in range(self.model.state_dim)]),
             None,
+            validation_method="residual",
         )

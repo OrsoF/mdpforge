@@ -100,7 +100,7 @@ class Solver:
             else:
                 self.policy = new_policy
 
-        return SolveResult.from_solver(self)
+        return SolveResult.from_solver(self, validation_method="policy")
 
     def _greedy_policy(self, value: np.ndarray, policy: np.ndarray) -> np.ndarray:
         q_value = bellman_operator(self.model, value, self.discount)

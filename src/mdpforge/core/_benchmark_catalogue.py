@@ -9,19 +9,21 @@ from mdpforge import models, solvers
 
 def _load_solver(name, *, backend=None):
     """Load a catalogue solver, checking an explicitly selected backend first."""
-    dependency = {
-        "gurobi": "gurobipy",
-        "marmote": "marmote",
-        "mdpsolver": "mdpsolver",
-        "madupite": "madupite",
-        "mdpax": "mdpax",
-        "mdptoolbox": "mdptoolbox",
-        "quantecon": "quantecon",
-    }.get(backend)
-    if dependency and find_spec(dependency) is None:
-        raise ModuleNotFoundError(
-            f"Missing solver dependency: {dependency}", name=dependency
-        )
+    dependencies = {
+        "gurobi": ("gurobipy",),
+        "marmote": ("marmote",),
+        "mdpsolver": ("mdpsolver",),
+        "madupite": ("madupite",),
+        "mdpax": ("mdpax",),
+        "mdptoolbox": ("mdptoolbox",),
+        "pyomo": ("pyomo", "highspy"),
+        "quantecon": ("quantecon",),
+    }.get(backend, ())
+    for dependency in dependencies:
+        if find_spec(dependency) is None:
+            raise ModuleNotFoundError(
+                f"Missing solver dependency: {dependency}", name=dependency
+            )
     return import_module(f"{solvers.__name__}.{name}").Solver
 
 

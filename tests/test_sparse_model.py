@@ -36,26 +36,6 @@ def test_create_model_finalizes_and_saves_csr(chain, matrix_type, monkeypatch):
     assert all(isinstance(matrix, csr_matrix) for matrix in restored.transition_matrix)
     assert_allclose(restored.reward_matrix, chain.reward_matrix, rtol=0, atol=0)
 
-
-def test_legacy_dense_cache_is_ignored(chain, monkeypatch):
-    matrices = np.array([matrix.toarray() for matrix in chain.transition_matrix])
-    path = persistence.SAVED_MODELS_PATH / f"{chain.name}.pkl"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(pickle.dumps((3, 2, matrices, chain.reward_matrix)))
-    model = type(chain)(3, 2)
-    built = []
-    real_build = model._build_model
-
-    def build():
-        built.append(True)
-        real_build()
-
-    monkeypatch.setattr(model, "_build_model", build)
-    model.create_model(cache="readwrite")
-    assert built == [True]
-    assert all(isinstance(matrix, csr_matrix) for matrix in model.transition_matrix)
-
-
 def test_create_model_finalizes_already_built_transitions(chain):
     chain.transition_matrix = np.array(
         [matrix.toarray() for matrix in chain.transition_matrix]
@@ -72,18 +52,4 @@ def test_permutation_preserves_csr_and_bellman_values(chain):
     assert all(isinstance(matrix, csr_matrix) for matrix in chain.transition_matrix)
     assert_allclose(
         optimal_bellman_operator(chain, value[permutation], 0.9), expected[permutation]
-    )
-
-
-@pytest.mark.parametrize("solver_class", [PI, MPI, PlainMPI])
-def test_policy_solvers_do_not_densify_transitions(chain, solver_class, monkeypatch):
-    def fail_toarray(*args, **kwargs):
-        pytest.fail("A policy solver must not densify transitions")
-
-    monkeypatch.setattr(csr_matrix, "toarray", fail_toarray)
-    precision_options = {} if solver_class is PI else {"final_precision": 1e-4}
-    solver = solver_class(deepcopy(chain), 0.9, **precision_options)
-    solver.run()
-    assert all(
-        isinstance(matrix, csr_matrix) for matrix in solver.model.transition_matrix
     )

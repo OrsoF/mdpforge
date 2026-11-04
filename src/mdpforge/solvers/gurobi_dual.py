@@ -115,4 +115,4 @@ class Solver(GenericSolver):
         value = spsolve(
             eye(self.env.state_dim, format="csr") - self.discount * transition, reward
         )
-        return SolveResult(value, policy)
+        return SolveResult(value, policy, validation_method="residual")

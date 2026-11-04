@@ -78,5 +78,5 @@ class Solver(GenericSolver):
                 optimal_bellman_operator(self.model, value, self.discount) - value
             )
             if np.max(np.abs(residual)) <= tolerance:
-                return SolveResult(value, None)
+                return SolveResult(value, None, validation_method="residual")
         raise RuntimeError("GSVI stopped: max_iterations reached")

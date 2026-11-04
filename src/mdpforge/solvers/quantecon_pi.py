@@ -39,4 +39,8 @@ class Solver(GenericSolver):
             method="policy_iteration",
             max_iter=self.max_iterations,
         )
-        return SolveResult(np.asarray(result.v), np.asarray(result.sigma, dtype=int))
+        return SolveResult(
+            np.asarray(result.v),
+            np.asarray(result.sigma, dtype=int),
+            validation_method="policy",
+        )

@@ -220,6 +220,10 @@ class Solver(GenericSolver):
             full_backup = compact_optimal_bellman_operator(self.model, value, self.discount)
             self.final_residual = float(np.max(np.abs(full_backup - value)))
             if np.isfinite(self.final_residual) and self.final_residual <= target * (1 + 1e-10):
-                return SolveResult(value=value, policy=_greedy_policy(self.model, value, self.discount))
+                return SolveResult(
+                    value=value,
+                    policy=_greedy_policy(self.model, value, self.discount),
+                    validation_method="residual",
+                )
             local_tolerance /= 4
         raise RuntimeError("FTVI: full Bellman-residual certificate failed after pruning")

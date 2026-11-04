@@ -49,4 +49,8 @@ class Solver(GenericSolver):
         )
         self.vi.run()
 
-        return SolveResult(np.array(self.vi.V), np.array(self.vi.policy))
+        return SolveResult(
+            np.array(self.vi.V),
+            np.array(self.vi.policy),
+            validation_method="span",
+        )

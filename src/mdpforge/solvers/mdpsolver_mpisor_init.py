@@ -62,4 +62,4 @@ class Solver(GenericSolver):
             SORrelaxation=self.relaxation,
         )
 
-        return SolveResult(np.asarray(value), policy)
+        return SolveResult(np.asarray(value), policy, validation_method="residual")

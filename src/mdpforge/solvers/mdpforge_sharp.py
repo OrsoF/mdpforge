@@ -289,7 +289,7 @@ class Solver:
                     # even if a small number of boundaries remain out of date.
                     self._extract_policy()
                     self.runtime = perf_counter() - start
-                    return SolveResult.from_solver(self)
+                    return SolveResult.from_solver(self, validation_method="residual")
                 if not pending:
                     # A large user-supplied boundary threshold can hide drift.
                     # Force a sweep rather than accept a low-accuracy result.

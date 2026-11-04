@@ -15,14 +15,15 @@ from tests._contracts import sample_models
 
 # Marker optional backends even when an adapter only imports another local module.
 OPTIONAL_BACKENDS = {
-    "madupite": "madupite",
-    "mdpax": "mdpax",
-    "marmote": "marmote",
-    "mdpsolver": "mdpsolver",
-    "mdptoolbox": "mdptoolbox",
-    "quantecon": "quantecon",
-    "gurobi": "gurobipy",
-    "cmaes": "cma",
+    "madupite": ("madupite",),
+    "mdpax": ("mdpax",),
+    "marmote": ("marmote",),
+    "mdpsolver": ("mdpsolver",),
+    "mdptoolbox": ("mdptoolbox",),
+    "quantecon": ("quantecon",),
+    "gurobi": ("gurobipy",),
+    "cmaes": ("cma",),
+    "pyomo": ("pyomo", "highspy"),
 }
 
 
@@ -94,7 +95,7 @@ def module_names(package, solver_type=None):
         if package is solvers:
             backend = module.name.split("_", 1)[0]
             if backend in OPTIONAL_BACKENDS:
-                dependencies.add(OPTIONAL_BACKENDS[backend])
+                dependencies.update(OPTIONAL_BACKENDS[backend])
         marks = (
             [pytest.mark.external(dependencies=sorted(dependencies))]
             if dependencies

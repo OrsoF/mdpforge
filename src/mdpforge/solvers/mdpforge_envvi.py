@@ -300,11 +300,21 @@ class Solver:
 
         if float(np.max(hi - lo)) <= 2 * self.epsilon:
             self._finish(lo, hi)
-            return SolveResult.from_solver(self)
+            return SolveResult.from_solver(
+                self,
+                validation_method=(
+                    "residual" if self.stop_criterion == "residual" else "bounds"
+                ),
+            )
         if self.partition.n_regions >= self.switch_to_vi_ratio * n:
             lo, hi = self._ground_fallback(lo, hi)
             self._finish(lo, hi)
-            return SolveResult.from_solver(self)
+            return SolveResult.from_solver(
+                self,
+                validation_method=(
+                    "residual" if self.stop_criterion == "residual" else "bounds"
+                ),
+            )
 
         self._precompute()
         xlo = self._reduce(lo, lower=True)
@@ -320,7 +330,12 @@ class Solver:
                 gap = float(np.max(xhi - xlo))
                 if gap <= 2 * self.epsilon:
                     self._finish(xlo[self._labels], xhi[self._labels])
-                    return SolveResult.from_solver(self)
+                    return SolveResult.from_solver(
+                        self,
+                        validation_method=(
+                            "residual" if self.stop_criterion == "residual" else "bounds"
+                        ),
+                    )
 
             K = self._K
             self.region_history.append((K, gap))
@@ -329,7 +344,12 @@ class Solver:
                     xlo[self._labels], xhi[self._labels]
                 )
                 self._finish(ground_lo, ground_hi)
-                return SolveResult.from_solver(self)
+                return SolveResult.from_solver(
+                    self,
+                    validation_method=(
+                        "residual" if self.stop_criterion == "residual" else "bounds"
+                    ),
+                )
 
             # Two cheap compressed ground Bellman images. Using only the gap
             # is invalid because it is constant within each block.
@@ -349,7 +369,12 @@ class Solver:
                     xlo[self._labels], xhi[self._labels]
                 )
                 self._finish(ground_lo, ground_hi)
-                return SolveResult.from_solver(self)
+                return SolveResult.from_solver(
+                    self,
+                    validation_method=(
+                        "residual" if self.stop_criterion == "residual" else "bounds"
+                    ),
+                )
 
             self.n_refinements += 1
             # Refined regions are subsets of the old regions: previous bounds
@@ -361,7 +386,12 @@ class Solver:
             if self.partition.n_regions >= self.switch_to_vi_ratio * n:
                 ground_lo, ground_hi = self._ground_fallback(ground_lo, ground_hi)
                 self._finish(ground_lo, ground_hi)
-                return SolveResult.from_solver(self)
+                return SolveResult.from_solver(
+                    self,
+                    validation_method=(
+                        "residual" if self.stop_criterion == "residual" else "bounds"
+                    ),
+                )
             self._precompute()
             xlo = self._reduce(ground_lo, lower=True)
             xhi = self._reduce(ground_hi, lower=False)

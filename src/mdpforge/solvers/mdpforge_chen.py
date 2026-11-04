@@ -76,7 +76,7 @@ class Solver:
                     self.model, self.value, self.discount, self.shared_reward
                 )
                 if norminf(new_value - self.value) < tolerance:
-                    return SolveResult.from_solver(self)
+                    return SolveResult.from_solver(self, validation_method="residual")
                 self.value = new_value
 
             self.partition = Partition(self.model)

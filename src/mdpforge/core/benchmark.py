@@ -103,26 +103,24 @@ class Benchmark:
         category: str | None = None,
         verbose=False,
     ):
-        """Add named, matrix-defined or built MDPs, or filtered groups; return self.
+        """Add MDPs by name, matrices, objects, or metadata filters.
 
-        model: catalogue ID or nonempty sequence of IDs from list_models(), built
-            MDP object, or custom name with matrices. None selects by filters.
-        transitions: A dense/sparse (S, S) matrices, one per action;
-            None for catalogue models or built objects. S = states, A = actions.
-        reward: dense/sparse (S, A) expected rewards, indexed [state, action];
-            None for catalogue models or built objects.
-        size: "small", "medium" or "large" preset, including for a catalogue ID;
-            None uses recipe defaults and does not filter available sizes.
-        category: "abstract", "navigation", "physical_control",
-            "service_operations", "asset_management" or "games_and_puzzles".
-            None accepts all task families; a named model must match the category.
-        verbose: True prints model-loading progress; False keeps additions quiet.
+        Args:
+            model: Catalogue ID(s), built MDP, or custom name.
+            transitions: Transition matrices (S, S), one per action.
+            reward: Reward matrix (S, A).
+            size: "small", "medium", or "large".
+            category: Model category (e.g., "navigation", "abstract").
+            verbose: Whether to print loading progress.
 
-        size/category combine with AND and can constrain a catalogue ID, but
-        cannot accompany built objects or matrices. Custom names must be unique.
-        Groups skip unavailable presets, duplicates and missing dependencies.
-        Explicit IDs must all match filters; sequences preserve their given order.
-        Provide a model or filter; use add_all_mdps() for the entire catalogue.
+        Returns:
+            self: Current instance for chaining.
+
+        Notes:
+            Filters use AND and apply only to catalogue models.
+            Custom names must be unique. Groups skip unavailable models
+            and duplicates. Explicit IDs must match filters.
+            Use `add_all_mdps()` to select the entire catalogue.
         """
         named_group = isinstance(model, Sequence) and not isinstance(model, str)
         if named_group and (
@@ -267,23 +265,23 @@ class Benchmark:
         backend=None,
         **options,
     ):
-        """Add solvers by name, filters or custom callable; return self.
+        """Add solvers by name, metadata filters, or custom implementation.
 
-        solver_name: catalogue ID from list_solvers(), or a custom label.
-            None selects a group using the filters below.
-        solve_function: custom function/class, or None for catalogue solvers.
-            Requires solver_name; cannot accompany metadata filters.
-        family: "vi" (value iteration), "pi" (policy iteration),
-            "mpi" (modified policy iteration), "lp" (linear programming),
-            or "experimental" (experimental methods and variants).
-        backend: implementation library: "mdpforge", "mdpsolver", "marmote",
-            "mdptoolbox", "madupite", "mdpax", "quantecon", "gurobi" or "cma".
-        **options: selected solver's constructor/function keywords, e.g.
-            parallel=True or initial_value=array. See its signature for options;
-            problem data, discount and precision are supplied by run().
+        Args:
+            solver_name: Solver ID from `list_solvers()` or custom name.
+                If None, select solvers using metadata filters.
+            solve_function: Custom solver function or class.
+                Requires `solver_name` and excludes metadata filters.
+            family: Algorithm family ("vi", "pi", "mpi", "lp", "experimental").
+            backend: Implementation library (e.g., "mdpforge", "gurobi").
+            **options: Solver-specific arguments passed at initialization.
 
-        Filters accept a string, nonempty sequence of strings, or None (ignored).
-        Fields combine with AND; values within each sequence combine with OR.
+        Returns:
+            self: Current instance for method chaining.
+
+        Notes:
+            Filters accept strings, non-empty sequences, or None.
+            Multiple filters use AND; values within a filter use OR.
         """
         filters = {
             "family": family,

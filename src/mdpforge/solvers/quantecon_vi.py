@@ -50,4 +50,8 @@ class Solver(GenericSolver):
             epsilon=2 * self.final_precision,
             max_iter=self.max_iterations,
         )
-        return SolveResult(np.asarray(result.v), np.asarray(result.sigma, dtype=int))
+        return SolveResult(
+            np.asarray(result.v),
+            np.asarray(result.sigma, dtype=int),
+            validation_method="residual",
+        )

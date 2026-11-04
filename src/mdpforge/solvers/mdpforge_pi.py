@@ -53,7 +53,11 @@ class Solver(GenericSolver):
             if not np.all(np.isfinite(value)):
                 raise RuntimeError("PI stopped: non_finite policy values")
             if policy_stable:
-                return SolveResult(np.asarray(value), policy)
+                return SolveResult(
+                    np.asarray(value),
+                    policy,
+                    validation_method="policy",
+                )
             policy = new_policy
         raise RuntimeError("PI stopped: max_iterations reached")
 

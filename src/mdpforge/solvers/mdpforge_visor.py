@@ -75,7 +75,11 @@ class Solver(ValueIterationSolver):
             if not np.isfinite(residual) or not np.isfinite(value).all():
                 raise RuntimeError("VISOR stopped: non_finite values")
             if residual < tolerance:
-                return SolveResult(np.asarray(value), None)
+                return SolveResult(
+                    np.asarray(value),
+                    None,
+                    validation_method="residual",
+                )
             if np.array_equal(value, previous_value):
                 raise RuntimeError("VISOR stopped: stagnation")
         raise RuntimeError("VISOR stopped: max_iterations reached")
