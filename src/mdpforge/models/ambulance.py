@@ -3,7 +3,6 @@
 import numpy as np
 from scipy.sparse import csr_matrix
 from scipy.stats import beta
-from tqdm import trange
 
 from mdpforge.core.mdp import MDP
 

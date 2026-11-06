@@ -6,10 +6,10 @@ import numpy as np
 from marmote.core import MarmoteInterval
 from marmote.mdp import DiscountedMDP, SolutionMDP
 
-from mdpforge.utils.solver_backends import compute_marmote_args
 from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
+from mdpforge.utils.solver_backends import compute_marmote_args
 
 METADATA = {
     "display_name": "VI · Marmote · GS",
