@@ -2,6 +2,7 @@
 
 import random
 from collections.abc import Sequence
+from dataclasses import replace
 from time import perf_counter
 
 import numpy as np
@@ -9,6 +10,7 @@ import numpy as np
 from mdpforge import models
 from mdpforge.core.benchmark_result import BenchmarkResult
 from mdpforge.core.mdp import MDP
+from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.validation import validate_result
 from mdpforge.solvers import is_catalogue_solver, list_solvers
 from mdpforge.utils.catalogue import (
@@ -52,7 +54,8 @@ class Benchmark:
 
     Models must expose ``name``, ``state_dim``, ``action_dim``,
     ``transition_matrix`` and ``reward_matrix``. Solver functions accept
-    ``(transitions, rewards, discount, precision)`` and return a value vector.
+    ``(transitions, rewards, discount, precision)`` and return a value vector
+    or a ``SolveResult``.
     Solver classes accept ``(model, discount)`` with optional ``final_precision``
     and return a ``SolveResult`` from ``run()``.
 
@@ -63,6 +66,7 @@ class Benchmark:
     def __init__(self):
         self._mdps: list[MDP] = []
         self._solvers = {}  # unique key -> (solver class/function, options)
+        self._custom_validation_methods: dict[str, str] = {}
 
     def reset(self, *, models=True, solvers=True):
         """Reset registrations; previously returned BenchmarkResult objects are kept.
@@ -76,6 +80,7 @@ class Benchmark:
             self._mdps.clear()
         if solvers:
             self._solvers.clear()
+            self._custom_validation_methods.clear()
         return self
 
     def add_mdp(
@@ -251,6 +256,7 @@ class Benchmark:
         solver_name: str | None = None,
         *,
         solve_function=None,
+        validation_method="residual",
         family=None,
         backend=None,
         **options,
@@ -262,8 +268,12 @@ class Benchmark:
                 If None, select solvers using metadata filters.
             solve_function: Custom solver function or class.
                 Requires `solver_name` and excludes metadata filters.
+            validation_method: Custom certificate: "residual" (default, Bellman
+                residual), "span" (span and offset), "policy" (value and policy),
+                or "bounds" (value interval). Policy and bounds require a
+                SolveResult carrying the policy or lower/upper values.
             family: Algorithm family ("vi", "pi", "mpi", "lp", "experimental").
-            backend: Implementation library (e.g., "mdpforge", "gurobi").
+            backend: Implementation library (e.g., "mdpforge", "mdptoolbox").
             **options: Solver-specific arguments passed at initialization.
 
         Returns:
@@ -273,6 +283,16 @@ class Benchmark:
             Filters accept strings, non-empty sequences, or None.
             Multiple filters use AND; values within a filter use OR.
         """
+        if not isinstance(validation_method, str) or validation_method not in (
+            "residual",
+            "span",
+            "policy",
+            "bounds",
+        ):
+            raise ValueError(f"Unsupported validation_method: {validation_method!r}")
+        custom = solve_function is not None
+        if not custom and validation_method != "residual":
+            raise ValueError("validation_method is only configurable for custom solvers")
         filters = {
             "family": family,
             "backend": backend,
@@ -318,7 +338,9 @@ class Benchmark:
             solve_function = _load_solver(
                 solver_name, backend=catalogue[solver_name]["backend"]
             )
-        self._register_solver(solver_name, solve_function, options)
+        registered_name = self._register_solver(solver_name, solve_function, options)
+        if custom:
+            self._custom_validation_methods[registered_name] = validation_method
         return self
 
     def _register_solver(
@@ -351,6 +373,7 @@ class Benchmark:
         elif name in registry:
             raise ValueError(f"A solver named {name!r} is already registered.")
         registry[name] = (constructor, options.copy())
+        return name
 
     def remove_solver(self, solver_name: str):
         """Remove a registered solver by label and return self.
@@ -362,6 +385,7 @@ class Benchmark:
         if solver_name not in self._solvers:
             raise ValueError(f"Solver {solver_name!r} is not registered.")
         del self._solvers[solver_name]
+        self._custom_validation_methods.pop(solver_name, None)
         return self
 
     def _add_solver_group(self, entries, options):
@@ -403,15 +427,16 @@ class Benchmark:
         seed=0,
         verbose=False,
         timeout=None,
-        validate=False,
+        validate=True,
     ) -> BenchmarkResult:
         """Run each MDP/solver pair and return an independent BenchmarkResult.
 
         ``precision`` is passed to each solver. All failures are recorded rather
         than interrupting the remaining comparisons.
 
-        ``validate``: False skips certification (default); True validates each
-        result outside solver timing and releases it before the next trial.
+        ``validate``: True validates each result (default); False skips certification.
+        Validation runs outside solver timing and releases the result before the
+        next trial.
         Validation status, errors and runtime are recorded separately;
         ``success`` always means execution completed, not certified accuracy.
         ``validation_status`` is ``not_run``, ``passed`` or ``failed``;
@@ -475,6 +500,7 @@ class Benchmark:
                 seed,
                 timeout=timeout,
                 validate=validate,
+                validation_methods=self._custom_validation_methods,
             )
             for model in self._mdps:
                 model_label = getattr(model, "display_name", model.name)
@@ -489,7 +515,9 @@ class Benchmark:
                             )
                         runtime = np.nan
                         result = None
-                        validation_method = "unknown"
+                        validation_method = self._custom_validation_methods.get(
+                            solver_name, "unknown"
+                        )
                         validation_status, validation_error = "not_run", ""
                         validation_runtime, error_bound = np.nan, np.nan
                         status, error = "error", ""
@@ -510,9 +538,15 @@ class Benchmark:
                                     *args, timeout
                                 )
                             if status == "success":
-                                validation_method = getattr(
-                                    result, "validation_method", "unknown"
-                                )
+                                if solver_name in self._custom_validation_methods:
+                                    if isinstance(result, SolveResult):
+                                        result = replace(
+                                            result, validation_method=validation_method
+                                        )
+                                else:
+                                    validation_method = getattr(
+                                        result, "validation_method", "unknown"
+                                    )
                         except Exception as exc:
                             status = "error"
                             error = f"{type(exc).__name__}: {exc}"

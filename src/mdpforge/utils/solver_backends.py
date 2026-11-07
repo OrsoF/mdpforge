@@ -240,17 +240,3 @@ def create_quantecon(model: MDP, discount: float, *, dense: bool = False):
     return DiscreteDP(
         rewards, transitions, discount, s_indices=states, a_indices=actions
     )
-
-
-#### Gurobi ####
-
-
-def gurobi_model_creation(*, threads: int = 1, memory_limit_gb: float = 16.0):
-    from gurobipy import GRB, Model
-
-    model = Model("MDP")
-    model.setParam("OutputFlag", 0)
-    model.setParam(GRB.Param.Threads, threads)
-    model.setParam("LogToConsole", 0)
-    model.setParam("MemLimit", memory_limit_gb)
-    return model

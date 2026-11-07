@@ -19,7 +19,6 @@ OPTIONAL_BACKENDS = {
     "mdpsolver": ("mdpsolver",),
     "mdptoolbox": ("mdptoolbox",),
     "quantecon": ("quantecon",),
-    "gurobi": ("gurobipy",),
     "cmaes": ("cma",),
     "pyomo": ("pyomo", "highspy"),
 }

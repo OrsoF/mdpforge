@@ -41,7 +41,7 @@ When the user says `checkpush`, run Ruff check and format check, then the full p
 
 ## Environment and reporting
 
-Use Python 3.11+ in Conda: `conda run -n benchmark python ...`. If needed, use `C:\Users\orsof\anaconda3\condabin\conda.bat` instead of `conda`. Install development tools only when needed with `python -m pip install -e ".[dev]"` through Conda. Full checks from the repository root are:
+Use Python 3.11+ in Conda: `conda run -n benchmark python ...`. If needed, use `C:\Users\orsof\anaconda3\condabin\conda.bat` instead of `conda`. Install development tools only when needed with `python -m pip install -e . "pytest>=8" "ruff==0.16.10"` through Conda. Full checks from the repository root are:
 
 ```text
 conda run -n benchmark python -m pytest

@@ -6,7 +6,7 @@ Catalogue integration requirements for mdpforge; see also [AGENTS.md](../AGENTS.
 
 Create `src/mdpforge/solvers/<name>.py` using lowercase letters and underscores, without a leading underscore, and expose `Solver`. Discovery is automatic: `<name>` is the identifier used by `list_solvers()` and `bench.add_solver("<name>")`.
 
-- API: `Solver(model, discount, ...)` with explicit options, `assert 0 < discount < 1`, then argument-free `run()`. Iterative solvers accept a finite, positive `final_precision`; **omit** it when unused (`mdpforge_pi`, `mdptoolbox_pi`, `gurobi_primal`, `gurobi_dual`). The benchmark passes it only when accepted.
+- API: `Solver(model, discount, ...)` with explicit options, `assert 0 < discount < 1`, then argument-free `run()`. Iterative solvers accept a finite, positive `final_precision`; **omit** it when unused (`mdpforge_pi`, `mdptoolbox_pi`). The benchmark passes it only when accepted.
 - Available data: `state_dim=S`, `action_dim=A`, `transition_matrix[a]` as SciPy CSR `(S, S)`, and `reward_matrix` as NumPy `(S, A)`. No additional model methods are required. **Preserve inputs**, including their representation; keep backend conversions local and avoid unnecessary dense matrices.
 - `run()` returns a [`SolveResult`](../src/mdpforge/core/solve_result.py): finite NumPy `value` `(S,)` and `policy` as `None` or integer actions `(S,)` in `[0, A)`. Expose a readable solver `name`; callers consume results through `SolveResult`.
 
@@ -20,7 +20,7 @@ Declare a **literal** `METADATA` dictionary, readable without importing the back
 
 - `display_name` (label) and `description` (one sentence).
 - `family`: `vi`, `pi`, `mpi`, `lp`, `experimental`.
-- `backend`: `mdpforge`, `mdptoolbox`, `mdpsolver`, `marmote`, `madupite`, `mdpax`, `gurobi`, `cma`.
+- `backend`: `mdpforge`, `mdptoolbox`, `mdpsolver`, `marmote`, `madupite`, `mdpax`, `cma`.
 
 For VI, add `solver_type = "vi"` for discovery by VI-specific fixtures. Check `list_solvers()` and `bench.add_solver("<name>")`. Declare dependencies in `pyproject.toml`; optional backends use extras and must not block the NumPy/SciPy core or the catalogue.
 

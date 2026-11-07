@@ -15,24 +15,20 @@ license-files = [
     "src/mdpforge/models/_prism/_data/LICENSE",
     "src/mdpforge/models/_prism/_data/PRISM_COPYING.txt",
 ]
-dependencies = ["numpy>=1.26", "scipy>=1.12", "threadpoolctl>=3.1"]
+dependencies = ["numpy>=1.26", "scipy>=1.12", "threadpoolctl>=3.1", "matplotlib>=3.8"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff==0.16.10"]
-plot = ["matplotlib>=3.8"]
-mdptoolbox = ["pymdptoolbox==4.0b3"]
-gurobi = ["gurobipy"]
-mdpsolver = ["mdpsolver>=0.10.2"]
-# Marmote requires Conda: conda install -c marmote -c conda-forge marmote.
-marmote = []
-mdpax = ["mdpax>=0.2.2,<0.3"]
-quantecon = ["quantecon>=0.10.1,<0.14"]
-pyomo = ["pyomo>=6.9,<7", "highspy>=1.7,<2"]
-# madupite requires MPI/PETSc; install via its upstream conda/source instructions.
-cma = ["cma>=4.4,<5"]
-solvers = ["mdpforge[cma,marmote,mdpax,mdpsolver,mdptoolbox,pyomo,quantecon]"]
-maze = ["mazelib"]
-progress = ["tqdm"]
+# Marmote and madupite require separate native installations.
+solvers = [
+    "cma>=4.4,<5",
+    "mdpax>=0.2.2,<0.3",
+    "mdpsolver>=0.10.2",
+    "pymdptoolbox==4.0b3",
+    "pyomo>=6.9,<7",
+    "highspy>=1.7,<2",
+    "quantecon>=0.10.1,<0.14",
+]
+models = ["mazelib"]
 
 [project.urls]
 Repository = "https://github.com/OrsoF/mdpforge"

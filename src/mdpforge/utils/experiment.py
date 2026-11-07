@@ -144,7 +144,7 @@ def _backend_versions(solvers):
         None,
         "mdpforge",
     }
-    aliases = {"gurobi": "gurobipy", "mdptoolbox": "pymdptoolbox"}
+    aliases = {"mdptoolbox": "pymdptoolbox"}
     backends = {}
     for name in sorted(names):
         distribution = aliases.get(name, name)
@@ -195,7 +195,16 @@ def _machine_metadata():
 
 
 def capture_experiment(
-    models, solvers, discount, precision, repeats, seed, *, timeout=None, validate=False
+    models,
+    solvers,
+    discount,
+    precision,
+    repeats,
+    seed,
+    *,
+    timeout=None,
+    validate=True,
+    validation_methods=None,
 ):
     """Freeze metadata once per run, before any solver is constructed."""
     model_metadata = {}
@@ -218,6 +227,8 @@ def capture_experiment(
         name: _solver_metadata(constructor, options)
         for name, (constructor, options) in solvers.items()
     }
+    for name, method in (validation_methods or {}).items():
+        solver_metadata[name]["validation_method"] = method
     return {
         "schema_version": 2,
         "experiment_id": str(uuid4()),
@@ -290,7 +301,7 @@ def _solver_trial(model, constructor, options, discount, precision, seed, solver
                 solver.name = solver_name
             result = solver.run()
         else:
-            value = constructor(
+            result = constructor(
                 trial_model.transition_matrix,
                 trial_model.reward_matrix,
                 discount,
@@ -298,8 +309,8 @@ def _solver_trial(model, constructor, options, discount, precision, seed, solver
                 **options,
             )
         runtime = perf_counter() - start
-        if not isinstance(constructor, type):
-            result = SolveResult(np.asarray(value), None, validation_method="residual")
+        if not isinstance(constructor, type) and not isinstance(result, SolveResult):
+            result = SolveResult(np.asarray(result), None, validation_method="residual")
         return result, runtime, "success", ""
     except Exception as exc:
         if start is not None and np.isnan(runtime):

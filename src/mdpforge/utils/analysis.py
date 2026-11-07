@@ -345,30 +345,106 @@ def plot_performance_profile(
     import matplotlib.pyplot as plt
     from matplotlib.ticker import FuncFormatter, PercentFormatter
 
-    if ax is None:
-        fig, ax = plt.subplots(figsize=(8, 5))
-    else:
-        fig = ax.figure
-    for solver, label in zip(ordered, labels):
-        values = ratios[:, solvers.index(solver)]
-        finite = values[np.isfinite(values) & (values <= max_factor)]
-        factors = np.unique(np.r_[1.0, finite, max_factor])
-        fractions = (values[:, None] <= factors[None, :]).mean(axis=0)
-        ax.step(factors, fractions, where="post", linewidth=2, label=label)
+    ink, muted, grid = "#142c40", "#526879", "#dae4ec"
+    style = {
+        "font.family": "DejaVu Sans",
+        "font.size": 10,
+        "text.color": ink,
+        "axes.labelcolor": ink,
+        "xtick.color": muted,
+        "ytick.color": muted,
+        "axes.edgecolor": grid,
+        "axes.spines.top": False,
+        "axes.spines.right": False,
+        "figure.facecolor": "#f8fafc",
+        "axes.facecolor": "#ffffff",
+        "savefig.facecolor": "#f8fafc",
+        "svg.fonttype": "none",
+    }
+    palettes = {"mdptoolbox": "Blues", "marmote": "Greens", "mdpsolver": "Oranges"}
+    records = (experiment or {}).get("solvers", {})
+    backends = {}
+    groups = {}
+    for solver in ordered:
+        metadata = records.get(solver, {}).get("metadata") or {}
+        backend = metadata.get("backend") or solver.split("_", 1)[0]
+        backends[solver] = backend
+        groups.setdefault(backend, []).append(solver)
+    fallback_palettes = ("Purples", "Reds", "viridis", "cividis")
+    for backend in groups:
+        if backend not in palettes:
+            palettes[backend] = fallback_palettes[0]
+            fallback_palettes = fallback_palettes[1:] + fallback_palettes[:1]
+    styles = ["-", "--", "-.", ":"]
 
-    ax.set_xscale("log", base=2)
-    ax.set_xlim(1, max_factor)
-    ticks = [factor for factor in (1, 2, 4, 8, 16, 32, 64, 100) if factor <= max_factor]
-    ax.set_xticks(ticks)
-    ax.xaxis.set_major_formatter(FuncFormatter(lambda factor, _: f"{factor:g}×"))
-    ax.set_ylim(0, 1.02)
-    ax.set_xlabel("Runtime / fastest eligible median")
-    ax.set_ylabel("Fraction of all MDPs")
-    ax.set_title(f"Performance profiles — {len(models)} MDPs")
-    ax.yaxis.set_major_formatter(PercentFormatter(1))
-    ax.grid(alpha=0.3)
-    ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1), borderaxespad=0)
-    fig.tight_layout()
+    with plt.rc_context(style):
+        own_axes = ax is None
+        if own_axes:
+            fig, ax = plt.subplots(figsize=(9, 5.2))
+        else:
+            fig = ax.figure
+        for solver, label in zip(ordered, labels):
+            backend = backends[solver]
+            group = groups[backend]
+            index = group.index(solver)
+            palette = plt.get_cmap(palettes[backend])
+            values = ratios[:, solvers.index(solver)]
+            finite = values[np.isfinite(values) & (values <= max_factor)]
+            factors = np.unique(np.r_[1.0, finite, max_factor])
+            fractions = (values[:, None] <= factors[None, :]).mean(axis=0)
+            ax.step(
+                factors,
+                fractions,
+                where="post",
+                linewidth=2,
+                label=label,
+                color=palette(0.45 + 0.5 * index / max(1, len(group) - 1)),
+                linestyle=styles[index % len(styles)],
+            )
+
+        ax.set_facecolor("#ffffff")
+        for side in ("top", "right"):
+            ax.spines[side].set_visible(False)
+        for side in ("bottom", "left"):
+            ax.spines[side].set_color(grid)
+        ax.tick_params(colors=muted, labelsize=10)
+        ax.set_xscale("log", base=2)
+        ax.set_xlim(1, max_factor)
+        ticks = [
+            factor for factor in (1, 2, 4, 8, 16, 32, 64, 100) if factor <= max_factor
+        ]
+        ax.set_xticks(ticks)
+        ax.xaxis.set_major_formatter(FuncFormatter(lambda factor, _: f"{factor:g}×"))
+        ax.set_ylim(0, 1.04)
+        ax.set_xlabel("Runtime / fastest eligible median", color=ink)
+        ax.set_ylabel("Share of all benchmark models", color=ink)
+        ax.set_title(
+            "How often is a solver close to the fastest?",
+            loc="left",
+            fontsize=16,
+            fontweight="bold",
+            color=ink,
+            pad=16,
+        )
+        ax.yaxis.set_major_formatter(PercentFormatter(1))
+        ax.grid(color=grid, alpha=0.65)
+        ax.legend(
+            loc="upper left",
+            bbox_to_anchor=(1.02, 1),
+            borderaxespad=0,
+            frameon=False,
+            fontsize=9,
+        )
+        if own_axes:
+            fig.text(
+                0.02,
+                0.02,
+                f"{len(models)} models · {len(solvers)} solvers · equal model weights\n"
+                "Failed / missing pairs stay in the denominator",
+                fontsize=9,
+                color=muted,
+            )
+            fig.tight_layout(rect=(0, 0.09, 1, 1))
     if show:
         plt.show()
     return fig, ax

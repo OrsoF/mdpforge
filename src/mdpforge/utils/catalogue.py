@@ -38,7 +38,6 @@ def _load_solver(name, *, backend=None):
     from mdpforge import solvers
 
     dependencies = {
-        "gurobi": ("gurobipy",),
         "marmote": ("marmote",),
         "mdpsolver": ("mdpsolver",),
         "madupite": ("madupite",),

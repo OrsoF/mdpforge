@@ -176,7 +176,7 @@ class BenchmarkResult:
 
         Rows are grouped by family (VI, PI, MPI, LP), method, backend and variant.
         Labels come from the recorded manifest; missing labels fall back to IDs.
-        Matplotlib is optional. Plotting never imports models or solver backends.
+        Plotting never imports models or solver backends.
         """
         from mdpforge.utils.analysis import plot_heat
 

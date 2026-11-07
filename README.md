@@ -23,19 +23,19 @@
 
 Requires **Python 3.11+** and supports finite discounted problems with `0 < discount < 1`.
 
-Install with optional pip solver backends and plotting:
+Install mdpforge with its built-in models, solvers and plotting:
 
 ```sh
-python -m pip install "mdpforge[solvers,plot] @ git+https://github.com/OrsoF/mdpforge.git"
+python -m pip install "git+https://github.com/OrsoF/mdpforge.git"
 ```
 
 From an existing checkout, run this at the repository root instead:
 
 ```sh
-python -m pip install -e ".[solvers,plot]"
+python -m pip install -e .
 ```
 
-Omit `[solvers,plot]` for a minimal installation, or use `[plot]` for plots with the built-in solvers. Marmote needs a separate Conda installation; see [Optional backends](#optional-backends).
+The only extras are `[solvers]` for optional pip solver backends and `[models]` for optional model generators. From a checkout, use `python -m pip install ".[solvers]"` or `python -m pip install ".[models]"`. Marmote and madupite require separate native installations; see [Optional backends](#optional-backends).
 
 ### Run a benchmark
 
@@ -53,7 +53,7 @@ result.export_csv("results.csv")
 
 Each trial records runtime and an independently checked value-error bound. `result.export_csv(path)` saves the results and their experiment settings; use `BenchmarkResult.from_csv(path)` to reopen them.
 
-With the `plot` extra installed:
+Plot the results:
 
 ```python
 result.plot_performance_profile()
@@ -100,7 +100,7 @@ Register a callable with `bench.add_solver("my_solver", solve_function=my_solver
 
 ### Optional backends
 
-The `solvers` extra installs MDPax, MDPSolver, MDPToolbox, QuantEcon and CMA. Individual extras and version requirements are listed in [pyproject.toml](pyproject.toml).
+The `solvers` extra installs MDPax, MDPSolver, MDPToolbox, Pyomo with HiGHS, QuantEcon and CMA. The `models` extra installs mazelib. Version requirements are listed in [pyproject.toml](pyproject.toml).
 
 Install Marmote separately in the same active Conda environment using its [official installation instructions](https://marmote.gitlabpages.inria.fr/marmote/instructions/linux/install_linux.html):
 
@@ -108,14 +108,14 @@ Install Marmote separately in the same active Conda environment using its [offic
 conda install -c marmote -c conda-forge marmote
 ```
 
-The `marmote` extra is empty; installing it through pip does not install the native library.
+madupite requires MPI/PETSc and a separate installation following its upstream instructions.
 
 ## Examples and documentation
 
 | Start here | What you will find |
 | :--- | :--- |
-| [Benchmark API](src/mdpforge/core/benchmark.py) · [Results API](src/mdpforge/core/result.py) · [Scaling API](src/mdpforge/core/scaling_benchmark.py) | Inspect public interfaces and options. |
-| [Cache and reproducibility](docs/cache.md) | Understand cache identities, validation and migration. |
+| [Benchmark API](src/mdpforge/core/benchmark.py) · [Results API](src/mdpforge/core/benchmark_result.py) · [Scaling API](src/mdpforge/core/scaling_benchmark.py) | Inspect public interfaces and options. |
+| [Cache and reproducibility](docs/adding-a-model.md#3-reproducibility-and-caching) | Understand model identities, cache modes and reproducibility. |
 
 ## Contributing
 
