@@ -149,7 +149,7 @@ class BenchmarkResult:
             show=show,
         )
 
-    def plot_performance_profile(self, *, max_factor=100, ax=None, show=True):
+    def plot_performance_profile(self, *, max_factor=20, ax=None, show=True):
         """Plot each solver's share of models completed within a runtime factor.
 
         max_factor: finite float greater than one; maximum displayed factor.

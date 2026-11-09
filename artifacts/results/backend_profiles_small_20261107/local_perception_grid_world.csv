@@ -1,0 +1,52 @@
+experiment_id,model,state_dim,requested_state_dim,action_dim,solver,repeat,seed,discount,epsilon,runtime,validation_method,validation_status,validation_error,validation_runtime,residual,error_bound,status,error
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,marmote_mpi,1,0,0.99,0.001,0.13595449999957054,residual,passed,,0.0012800999993487494,nan,0.0004924891172208841,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,marmote_mpi,2,1,0.99,0.001,0.13726540000061505,residual,passed,,0.0011591999991651392,nan,0.0004924891172208841,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,marmote_mpi,3,2,0.99,0.001,0.16052940000008675,residual,passed,,0.0016370000012102537,nan,0.0004924891172208841,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,marmote_mpigs,1,0,0.99,0.001,0.14055389999884937,residual,passed,,0.0010901999994530343,nan,0.0004948150966299632,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,marmote_mpigs,2,1,0.99,0.001,0.14039930000035383,residual,passed,,0.0011526999987836462,nan,0.0004948150966299632,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,marmote_mpigs,3,2,0.99,0.001,0.13878480000130367,residual,passed,,0.0011130000002594898,nan,0.0004948150966299632,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,marmote_vi,1,0,0.99,0.001,0.31095819999973173,residual,passed,,0.001071599999704631,nan,0.0004974637462851201,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,marmote_vi,2,1,0.99,0.001,0.3119810999996844,residual,passed,,0.0011372999997547595,nan,0.0004974637462851201,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,marmote_vi,3,2,0.99,0.001,0.3109058999998524,residual,passed,,0.0011227999984839698,nan,0.0004974637462851201,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,marmote_vigs,1,0,0.99,0.001,0.3060440999997809,residual,passed,,0.0011076000009779818,nan,0.0004974637462851201,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,marmote_vigs,2,1,0.99,0.001,0.3036480999999185,residual,passed,,0.0011016000007657567,nan,0.0004974637462851201,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,marmote_vigs,3,2,0.99,0.001,0.3037127999996301,residual,passed,,0.0011212000008526957,nan,0.0004974637462851201,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_mpi,1,0,0.99,0.001,0.18131089999951655,span,passed,,0.0011628000011114636,nan,0.0009276398017732381,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_mpi,2,1,0.99,0.001,0.1779893999992055,span,passed,,0.0011121000006824033,nan,0.0009276398017732381,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_mpi,3,2,0.99,0.001,0.1846767999995791,span,passed,,0.0011587000008148607,nan,0.0009276398017732381,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_mpigs,1,0,0.99,0.001,0.0912465000001248,residual,passed,,0.0011687999995046994,nan,0.0,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_mpigs,2,1,0.99,0.001,0.09139279999908467,residual,passed,,0.001247000000148546,nan,0.0,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_mpigs,3,2,0.99,0.001,0.09160289999999804,residual,passed,,0.0011408999998820946,nan,0.0,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_mpigs_init,1,0,0.99,0.001,0.09606679999888001,residual,passed,,0.0011331000005156966,nan,0.0,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_mpigs_init,2,1,0.99,0.001,0.09415790000093693,residual,passed,,0.0010914000013144687,nan,0.0,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_mpigs_init,3,2,0.99,0.001,0.0963289999999688,residual,passed,,0.0010984000000462402,nan,0.0,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_mpisor,1,0,0.99,0.001,0.09413040000072215,residual,passed,,0.0011415999997552717,nan,0.0,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_mpisor,2,1,0.99,0.001,0.09657800000059069,residual,passed,,0.001113600001190207,nan,0.0,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_mpisor,3,2,0.99,0.001,0.09567810000044119,residual,passed,,0.0011059999997087289,nan,0.0,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_mpisor_init,1,0,0.99,0.001,0.0934317999999621,residual,passed,,0.0011037000003852881,nan,0.0,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_mpisor_init,2,1,0.99,0.001,0.09838080000008631,residual,passed,,0.0011396000008971896,nan,0.0,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_mpisor_init,3,2,0.99,0.001,0.09266940000088653,residual,passed,,0.0011123000003863126,nan,0.0,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_pi,1,0,0.99,0.001,0.21999229999892123,span,passed,,0.001139399999374291,nan,3.7963938837037824e-05,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_pi,2,1,0.99,0.001,0.2141291000007186,span,passed,,0.001058499999999185,nan,3.7963938837037824e-05,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_pi,3,2,0.99,0.001,0.2129918999999063,span,passed,,0.0011281999995844672,nan,3.7963938837037824e-05,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_vi,1,0,0.99,0.001,0.5172230000007403,span,passed,,0.0010932000004686415,nan,9.87387522854987e-06,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_vi,2,1,0.99,0.001,0.49752019999868935,span,passed,,0.0012421999999787658,nan,9.87387522854987e-06,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_vi,3,2,0.99,0.001,0.491854300000341,span,passed,,0.0010884999992413213,nan,9.87387522854987e-06,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_vigs,1,0,0.99,0.001,0.5144159000010404,residual,passed,,0.0011195999995834427,nan,4.935328234978438e-06,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_vigs,2,1,0.99,0.001,0.5208870000005845,residual,passed,,0.0011408000009396346,nan,4.935328234978438e-06,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_vigs,3,2,0.99,0.001,0.5298228999999992,residual,passed,,0.001148299999840674,nan,4.935328234978438e-06,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_visor,1,0,0.99,0.001,0.08207140000013169,residual,passed,,0.001153600000179722,nan,0.0,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_visor,2,1,0.99,0.001,0.08220559999972465,residual,passed,,0.0011468000011518598,nan,0.0,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdpsolver_visor,3,2,0.99,0.001,0.08078470000145899,residual,passed,,0.0011025000003428431,nan,0.0,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdptoolbox_mpi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdptoolbox_mpi,2,1,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdptoolbox_mpi,3,2,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdptoolbox_pi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdptoolbox_pi,2,1,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdptoolbox_pi,3,2,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdptoolbox_vi,1,0,0.99,0.001,14.97434659999999,span,passed,,0.0017440000010537915,nan,0.0009952518851719097,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdptoolbox_vi,2,1,0.99,0.001,15.222762200000943,span,passed,,0.0013494999984686729,nan,0.0009952518851719097,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdptoolbox_vi,3,2,0.99,0.001,14.59628160000102,span,passed,,0.001211999999213731,nan,0.0009952518851719097,success,
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdptoolbox_vigs,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdptoolbox_vigs,2,1,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+907451a2-a042-45e1-bd0b-8e15f376ea99,11663_4_local_perception_grid_world,11663,11600,4,mdptoolbox_vigs,3,2,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s

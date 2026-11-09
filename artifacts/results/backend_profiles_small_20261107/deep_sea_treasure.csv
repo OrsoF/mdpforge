@@ -1,0 +1,52 @@
+experiment_id,model,state_dim,requested_state_dim,action_dim,solver,repeat,seed,discount,epsilon,runtime,validation_method,validation_status,validation_error,validation_runtime,residual,error_bound,status,error
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,marmote_mpi,1,0,0.99,0.001,0.5557700000008481,residual,passed,,0.0036752000014530495,nan,0.0004879213861386229,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,marmote_mpi,2,1,0.99,0.001,0.5540347999994992,residual,passed,,0.00324449999970966,nan,0.0004879213861386229,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,marmote_mpi,3,2,0.99,0.001,0.561976400000276,residual,passed,,0.003471500000159722,nan,0.0004879213861386229,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,marmote_mpigs,1,0,0.99,0.001,0.5301106000006257,residual,passed,,0.003153300000121817,nan,0.0004928498810841116,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,marmote_mpigs,2,1,0.99,0.001,0.5481614000000263,residual,passed,,0.0033392999994248385,nan,0.0004928498810841116,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,marmote_mpigs,3,2,0.99,0.001,0.5266642999995383,residual,passed,,0.0031654000013077166,nan,0.0004928498810841116,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,marmote_vi,1,0,0.99,0.001,0.3141753999989305,residual,passed,,0.0034981999997398816,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,marmote_vi,2,1,0.99,0.001,0.30827639999915846,residual,passed,,0.0031679999992775265,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,marmote_vi,3,2,0.99,0.001,0.3078371999999945,residual,passed,,0.003376699998625554,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,marmote_vigs,1,0,0.99,0.001,0.30079550000118616,residual,passed,,0.0033653999998932704,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,marmote_vigs,2,1,0.99,0.001,0.3041341000007378,residual,passed,,0.0034369000004517147,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,marmote_vigs,3,2,0.99,0.001,0.30289540000012494,residual,passed,,0.0031863000003795605,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_mpi,1,0,0.99,0.001,0.24716480000097363,span,passed,,0.003382200000487501,nan,1.790567694115451e-10,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_mpi,2,1,0.99,0.001,0.25424130000101286,span,passed,,0.0032410000003437744,nan,1.790567694115451e-10,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_mpi,3,2,0.99,0.001,0.24713540000084322,span,passed,,0.0037302000000636326,nan,1.790567694115451e-10,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_mpigs,1,0,0.99,0.001,0.23845390000133193,residual,passed,,0.0033065999996324535,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_mpigs,2,1,0.99,0.001,0.24347879999913857,residual,passed,,0.0034829000014724443,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_mpigs,3,2,0.99,0.001,0.24068530000113242,residual,passed,,0.003400300000066636,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_mpigs_init,1,0,0.99,0.001,0.2563568000005034,residual,passed,,0.003330799998366274,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_mpigs_init,2,1,0.99,0.001,0.2643614999997226,residual,passed,,0.0032971999989968026,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_mpigs_init,3,2,0.99,0.001,0.2536387999989529,residual,passed,,0.0031829999988985946,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_mpisor,1,0,0.99,0.001,0.2458665000012843,residual,passed,,0.0032632000002195127,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_mpisor,2,1,0.99,0.001,0.2497679000007338,residual,passed,,0.0034577999995235587,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_mpisor,3,2,0.99,0.001,0.26015059999917867,residual,passed,,0.0032572000000072876,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_mpisor_init,1,0,0.99,0.001,0.2691975999987335,residual,passed,,0.0032852000003913417,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_mpisor_init,2,1,0.99,0.001,0.24916699999994307,residual,passed,,0.0034666999999899417,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_mpisor_init,3,2,0.99,0.001,0.24726149999878544,residual,passed,,0.003262700000050245,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_pi,1,0,0.99,0.001,0.39127259999986563,span,passed,,0.0032468999997945502,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_pi,2,1,0.99,0.001,0.38209249999999884,span,passed,,0.0032024000011006137,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_pi,3,2,0.99,0.001,0.38771600000109174,span,passed,,0.0037861999990127515,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_vi,1,0,0.99,0.001,0.26636929999949643,span,passed,,0.003499000000374508,nan,2.4158453015843386e-10,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_vi,2,1,0.99,0.001,0.2642355000007228,span,passed,,0.003411699999560369,nan,2.4158453015843386e-10,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_vi,3,2,0.99,0.001,0.2706300999998348,span,passed,,0.00344770000083372,nan,2.4158453015843386e-10,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_vigs,1,0,0.99,0.001,2.475429299998723,residual,passed,,0.0035426000013103476,nan,4.938982556268452e-06,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_vigs,2,1,0.99,0.001,2.4292351999993116,residual,passed,,0.003290700000434299,nan,4.938982556268452e-06,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_vigs,3,2,0.99,0.001,2.5082844000007753,residual,passed,,0.003438399999140529,nan,4.938982556268452e-06,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_visor,1,0,0.99,0.001,0.27215160000014293,residual,passed,,0.0033143000000563916,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_visor,2,1,0.99,0.001,0.2766435999983514,residual,passed,,0.0032112999997480074,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdpsolver_visor,3,2,0.99,0.001,0.2686969999995199,residual,passed,,0.0033149999999295687,nan,0.0,success,
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdptoolbox_mpi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdptoolbox_mpi,2,1,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdptoolbox_mpi,3,2,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdptoolbox_pi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdptoolbox_pi,2,1,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdptoolbox_pi,3,2,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdptoolbox_vi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdptoolbox_vi,2,1,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdptoolbox_vi,3,2,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdptoolbox_vigs,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdptoolbox_vigs,2,1,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3db38a6b-07ee-4238-b244-2430c649dac8,24194_5_deep_sea_treasure_1_62_0.15,24194,24000,5,mdptoolbox_vigs,3,2,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s

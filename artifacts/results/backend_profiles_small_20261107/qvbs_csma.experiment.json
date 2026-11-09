@@ -1,0 +1,450 @@
+{
+  "schema_version": 2,
+  "experiment_id": "97e462bb-bc36-4eb5-9f06-158950079737",
+  "created_at_utc": "2026-11-07T12:58:03.400991+00:00",
+  "settings": {
+    "discount": 0.99,
+    "precision": 0.001,
+    "repeats": 1,
+    "seed": 0,
+    "trial_seeds": [
+      0
+    ],
+    "seed_scope": "solver trials; model generation is not reseeded",
+    "timeout": 20.0,
+    "execution_mode": "spawn",
+    "validate": true
+  },
+  "models": {
+    "1038_2_qvbs_csma_v2_time_min_643e9a2e409fe362de89fe832602cabaf861a8696712274b5d97803118093ba6": {
+      "class": "mdpforge.models.qvbs_csma.Model",
+      "display_name": "qvbs_csma",
+      "state_dim": 1038,
+      "requested_state_dim": 1038,
+      "action_dim": 2,
+      "nnz": 2512,
+      "config": {
+        "benchmark": "csma",
+        "source_collection": "qvbs",
+        "requested_state_dim": 1038,
+        "state_dim": 1038,
+        "action_dim": 2,
+        "source_file": "benchmarks/mdp/csma/csma.2-2.jani",
+        "source_sha256": "d99205138c2a2f83b4dc8460b7b89a95f5a6ad0e40944384bcdd7a72443acbd3",
+        "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+        "constants": {},
+        "objective": "time_min",
+        "reward_spec": {
+          "accumulate": [
+            "steps"
+          ],
+          "exp": "time",
+          "op": "Emin",
+          "reach": "all_delivered"
+        },
+        "reward_name": "time",
+        "reward_sign": -1,
+        "adaptation_version": 2,
+        "construction_backend": "python-jani",
+        "construction_version": 4
+      }
+    }
+  },
+  "solvers": {
+    "marmote_mpi": {
+      "callable": "mdpforge.solvers.marmote_mpi.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000,
+        "max_evaluation_iterations": 10,
+        "evaluation_precision": null
+      },
+      "metadata": {
+        "display_name": "MPI · Marmote",
+        "family": "mpi",
+        "backend": "marmote",
+        "description": "Marmote C++ modified policy iteration with standard updates and at most ten inner policy-evaluation iterations."
+      }
+    },
+    "marmote_mpigs": {
+      "callable": "mdpforge.solvers.marmote_mpigs.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000,
+        "max_evaluation_iterations": 10,
+        "evaluation_precision": null
+      },
+      "metadata": {
+        "display_name": "MPI · Marmote · GS",
+        "family": "mpi",
+        "backend": "marmote",
+        "description": "Marmote C++ modified policy iteration with Gauss-Seidel updates and at most ten inner policy-evaluation iterations."
+      }
+    },
+    "marmote_vi": {
+      "callable": "mdpforge.solvers.marmote_vi.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000
+      },
+      "metadata": {
+        "display_name": "VI · Marmote",
+        "family": "vi",
+        "backend": "marmote",
+        "description": "Marmote C++ value iteration with standard Bellman sweeps."
+      }
+    },
+    "marmote_vigs": {
+      "callable": "mdpforge.solvers.marmote_vigs.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000
+      },
+      "metadata": {
+        "display_name": "VI · Marmote · GS",
+        "family": "vi",
+        "backend": "marmote",
+        "description": "Marmote C++ value iteration with Gauss-Seidel Bellman sweeps."
+      }
+    },
+    "mdpsolver_mpi": {
+      "callable": "mdpforge.solvers.mdpsolver_mpi.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "max_evaluation_iterations": 10,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "MPI · MDPSolver",
+        "family": "mpi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver modified policy iteration with standard updates and an explicit ten-step partial evaluation limit."
+      }
+    },
+    "mdpsolver_mpigs": {
+      "callable": "mdpforge.solvers.mdpsolver_mpigs.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "max_evaluation_iterations": 10,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "MPI · MDPSolver · GS",
+        "family": "mpi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver modified policy iteration with Gauss-Seidel value updates and backend-default initialization."
+      }
+    },
+    "mdpsolver_mpigs_init": {
+      "callable": "mdpforge.solvers.mdpsolver_mpigs_init.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "max_evaluation_iterations": 10
+      },
+      "metadata": {
+        "display_name": "MPI · MDPSolver · GS · V₀=0",
+        "family": "mpi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver modified policy iteration with Gauss-Seidel updates and explicitly zero-initialized values and policy."
+      }
+    },
+    "mdpsolver_mpisor": {
+      "callable": "mdpforge.solvers.mdpsolver_mpisor.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "max_evaluation_iterations": 10,
+        "relaxation": 1.0,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "MPI · MDPSolver · SOR",
+        "family": "mpi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver modified policy iteration with successive over-relaxation updates and backend-default initialization."
+      }
+    },
+    "mdpsolver_mpisor_init": {
+      "callable": "mdpforge.solvers.mdpsolver_mpisor_init.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "max_evaluation_iterations": 10,
+        "relaxation": 1.0
+      },
+      "metadata": {
+        "display_name": "MPI · MDPSolver · SOR · V₀=0",
+        "family": "mpi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver modified policy iteration with successive over-relaxation updates and explicitly zero-initialized values and policy."
+      }
+    },
+    "mdpsolver_pi": {
+      "callable": "mdpforge.solvers.mdpsolver_pi.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "PI · MDPSolver",
+        "family": "pi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver policy iteration with standard value updates, explicit zero initialization and backend postprocessing."
+      }
+    },
+    "mdpsolver_vi": {
+      "callable": "mdpforge.solvers.mdpsolver_vi.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "VI · MDPSolver",
+        "family": "vi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver value iteration with standard Bellman sweeps."
+      }
+    },
+    "mdpsolver_vigs": {
+      "callable": "mdpforge.solvers.mdpsolver_vigs.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "VI · MDPSolver · GS",
+        "family": "vi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver value iteration with Gauss-Seidel Bellman sweeps."
+      }
+    },
+    "mdpsolver_visor": {
+      "callable": "mdpforge.solvers.mdpsolver_visor.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "relaxation": 1.0,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "VI · MDPSolver · SOR",
+        "family": "vi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver value iteration with successive over-relaxation Bellman updates."
+      }
+    },
+    "mdptoolbox_mpi": {
+      "callable": "mdpforge.solvers.mdptoolbox_mpi.Solver",
+      "options": {},
+      "parameters": {
+        "max_evaluation_iterations": 10
+      },
+      "metadata": {
+        "display_name": "MPI · MDPToolbox",
+        "family": "mpi",
+        "backend": "mdptoolbox",
+        "description": "MDPToolbox modified policy iteration with synchronous, truncated policy evaluation."
+      }
+    },
+    "mdptoolbox_pi": {
+      "callable": "mdpforge.solvers.mdptoolbox_pi.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000
+      },
+      "metadata": {
+        "display_name": "PI · MDPToolbox",
+        "family": "pi",
+        "backend": "mdptoolbox",
+        "description": "MDPToolbox policy iteration using its default matrix-based policy evaluation and greedy policy improvement."
+      }
+    },
+    "mdptoolbox_vi": {
+      "callable": "mdpforge.solvers.mdptoolbox_vi.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000
+      },
+      "metadata": {
+        "display_name": "VI · MDPToolbox",
+        "family": "vi",
+        "backend": "mdptoolbox",
+        "description": "MDPToolbox synchronous value iteration through its public API, with native initialization."
+      }
+    },
+    "mdptoolbox_vigs": {
+      "callable": "mdpforge.solvers.mdptoolbox_vigs.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000
+      },
+      "metadata": {
+        "display_name": "VI · MDPToolbox · GS",
+        "family": "vi",
+        "backend": "mdptoolbox",
+        "description": "MDPToolbox value iteration with Gauss-Seidel sweeps."
+      }
+    }
+  },
+  "environment": {
+    "python": "3.12.12",
+    "mdpforge": "0.1.0",
+    "numpy": "2.4.2",
+    "scipy": "1.17.0",
+    "threadpoolctl": "3.7.0",
+    "backends": {
+      "marmote": {
+        "distribution": "marmote",
+        "version": null
+      },
+      "mdpsolver": {
+        "distribution": "mdpsolver",
+        "version": "0.10.2"
+      },
+      "mdptoolbox": {
+        "distribution": "pymdptoolbox",
+        "version": "4.0b3"
+      }
+    }
+  },
+  "machine": {
+    "os": "Windows",
+    "os_release": "11",
+    "architecture": "AMD64",
+    "logical_cpu_count": 20,
+    "thread_environment": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null,
+      "BLIS_NUM_THREADS": null,
+      "VECLIB_MAXIMUM_THREADS": null,
+      "NUMEXPR_NUM_THREADS": null
+    },
+    "thread_pools": [
+      {
+        "user_api": "blas",
+        "internal_api": "mkl",
+        "num_threads": 14,
+        "prefix": "mkl_rt",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\mkl_rt.2.dll",
+        "version": "2025.3-Product",
+        "threading_layer": "intel"
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 20,
+        "prefix": "libiomp",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\libiomp5md.dll",
+        "version": null
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 20,
+        "prefix": "libomp",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\libomp.dll",
+        "version": null
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 20,
+        "prefix": "libomp",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Lib\\site-packages\\mdpsolver.libs\\libomp140.x86_64-4a20c1e5c115c29771a12324513eb109.dll",
+        "version": null
+      }
+    ],
+    "capture_scope": "benchmark process before solver execution",
+    "numpy_build": {
+      "Compilers": {
+        "c": {
+          "name": "msvc",
+          "linker": "link",
+          "version": "19.44.35222",
+          "commands": "cl.exe"
+        },
+        "cython": {
+          "name": "cython",
+          "linker": "cython",
+          "version": "3.2.4",
+          "commands": "cython"
+        },
+        "c++": {
+          "name": "msvc",
+          "linker": "link",
+          "version": "19.44.35222",
+          "commands": "cl.exe"
+        }
+      },
+      "Machine Information": {
+        "host": {
+          "cpu": "x86_64",
+          "family": "x86_64",
+          "endian": "little",
+          "system": "windows"
+        },
+        "build": {
+          "cpu": "x86_64",
+          "family": "x86_64",
+          "endian": "little",
+          "system": "windows"
+        }
+      },
+      "Build Dependencies": {
+        "blas": {
+          "name": "blas",
+          "found": true,
+          "version": "3.9.0",
+          "detection method": "pkgconfig",
+          "include directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/include",
+          "lib directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib",
+          "openblas configuration": "unknown",
+          "pc file directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib/pkgconfig"
+        },
+        "lapack": {
+          "name": "lapack",
+          "found": true,
+          "version": "3.9.0",
+          "detection method": "pkgconfig",
+          "include directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/include",
+          "lib directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib",
+          "openblas configuration": "unknown",
+          "pc file directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib/pkgconfig"
+        }
+      },
+      "Python Information": {
+        "path": "C:/Users/orsof/anaconda3/envs/benchmark/python.exe",
+        "version": "3.12"
+      },
+      "SIMD Extensions": {
+        "baseline": [
+          "X86_V2"
+        ],
+        "found": [
+          "X86_V3"
+        ]
+      }
+    }
+  },
+  "code": {
+    "git": {
+      "commit": "863cdbc56d20c1cc92e18ec0ebfed9139b29d908",
+      "dirty": true
+    }
+  },
+  "results_file": "qvbs_csma.csv"
+}

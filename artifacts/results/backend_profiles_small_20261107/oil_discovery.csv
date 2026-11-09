@@ -1,0 +1,18 @@
+experiment_id,model,state_dim,requested_state_dim,action_dim,solver,repeat,seed,discount,epsilon,runtime,validation_method,validation_status,validation_error,validation_runtime,residual,error_bound,status,error
+91de135c-8514-4eae-a8b8-f57ff2f281f9,700_10_oil_discovery,700,700,10,marmote_mpi,1,0,0.99,0.001,1.006760199999917,residual,passed,,0.0032684000016161008,nan,0.0004921467848362441,success,
+91de135c-8514-4eae-a8b8-f57ff2f281f9,700_10_oil_discovery,700,700,10,marmote_mpigs,1,0,0.99,0.001,0.9961948999989545,residual,passed,,0.0066609000004973495,nan,0.0003355642206770572,success,
+91de135c-8514-4eae-a8b8-f57ff2f281f9,700_10_oil_discovery,700,700,10,marmote_vi,1,0,0.99,0.001,2.0218263999995543,residual,passed,,0.003435900000113179,nan,0.000499196994496764,success,
+91de135c-8514-4eae-a8b8-f57ff2f281f9,700_10_oil_discovery,700,700,10,marmote_vigs,1,0,0.99,0.001,1.4520346999997855,residual,passed,,0.004393900000650319,nan,0.0004908327923658576,success,
+91de135c-8514-4eae-a8b8-f57ff2f281f9,700_10_oil_discovery,700,700,10,mdpsolver_mpi,1,0,0.99,0.001,0.9653013999995892,span,passed,,0.0029298999997990904,nan,0.0009644344572734973,success,
+91de135c-8514-4eae-a8b8-f57ff2f281f9,700_10_oil_discovery,700,700,10,mdpsolver_mpigs,1,0,0.99,0.001,1.2189919999982521,residual,passed,,0.003892700000506011,nan,0.00045250228595252487,success,
+91de135c-8514-4eae-a8b8-f57ff2f281f9,700_10_oil_discovery,700,700,10,mdpsolver_mpigs_init,1,0,0.99,0.001,1.2503957000008086,residual,passed,,0.004140299999562558,nan,0.0004543966042547452,success,
+91de135c-8514-4eae-a8b8-f57ff2f281f9,700_10_oil_discovery,700,700,10,mdpsolver_mpisor,1,0,0.99,0.001,1.2097014999999374,residual,passed,,0.002577299999757088,nan,0.00045250228595252487,success,
+91de135c-8514-4eae-a8b8-f57ff2f281f9,700_10_oil_discovery,700,700,10,mdpsolver_mpisor_init,1,0,0.99,0.001,1.2813786000006075,residual,passed,,0.003104699999312288,nan,0.0004543966042547452,success,
+91de135c-8514-4eae-a8b8-f57ff2f281f9,700_10_oil_discovery,700,700,10,mdpsolver_pi,1,0,0.99,0.001,1.7402755000002799,span,passed,,0.0031773000009707175,nan,0.0009807703463593925,success,
+91de135c-8514-4eae-a8b8-f57ff2f281f9,700_10_oil_discovery,700,700,10,mdpsolver_vi,1,0,0.99,0.001,3.01848500000051,span,passed,,0.0028084999994462123,nan,9.774589670997073e-06,success,
+91de135c-8514-4eae-a8b8-f57ff2f281f9,700_10_oil_discovery,700,700,10,mdpsolver_vigs,1,0,0.99,0.001,3.438884799999869,residual,passed,,0.003534699999363511,nan,4.819435162062501e-06,success,
+91de135c-8514-4eae-a8b8-f57ff2f281f9,700_10_oil_discovery,700,700,10,mdpsolver_visor,1,0,0.99,0.001,4.462682599998516,residual,passed,,0.0030476000010821735,nan,4.545120191324002e-06,success,
+91de135c-8514-4eae-a8b8-f57ff2f281f9,700_10_oil_discovery,700,700,10,mdptoolbox_mpi,1,0,0.99,0.001,0.23164019999967422,span,failed,ValueError: span validation failed: error bound 9.04747 exceeds precision 0.001 or is nonfinite,0.002674999999726424,nan,nan,success,
+91de135c-8514-4eae-a8b8-f57ff2f281f9,700_10_oil_discovery,700,700,10,mdptoolbox_pi,1,0,0.99,0.001,0.11445710000043618,policy,passed,,0.011213599998882273,nan,2.0463630789891777e-10,success,
+91de135c-8514-4eae-a8b8-f57ff2f281f9,700_10_oil_discovery,700,700,10,mdptoolbox_vi,1,0,0.99,0.001,1.3561707999997452,span,failed,ValueError: span validation failed: error bound 9.846 exceeds precision 0.001 or is nonfinite,0.0048606999989715405,nan,nan,success,
+91de135c-8514-4eae-a8b8-f57ff2f281f9,700_10_oil_discovery,700,700,10,mdptoolbox_vigs,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s

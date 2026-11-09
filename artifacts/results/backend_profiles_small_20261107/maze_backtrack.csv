@@ -1,0 +1,18 @@
+experiment_id,model,state_dim,requested_state_dim,action_dim,solver,repeat,seed,discount,epsilon,runtime,validation_method,validation_status,validation_error,validation_runtime,residual,error_bound,status,error
+1e7b6a1d-3010-4538-aa71-d1745a932b34,3969_4_maze_backtrack,3969,4000,4,marmote_mpi,1,0,0.99,0.001,0.2002427000006719,residual,passed,,0.001036900001054164,nan,2.4293139668630513e-20,success,
+1e7b6a1d-3010-4538-aa71-d1745a932b34,3969_4_maze_backtrack,3969,4000,4,marmote_mpigs,1,0,0.99,0.001,0.1723402999996324,residual,passed,,0.0005821999984618742,nan,2.5464138371368628e-17,success,
+1e7b6a1d-3010-4538-aa71-d1745a932b34,3969_4_maze_backtrack,3969,4000,4,marmote_vi,1,0,0.99,0.001,0.12236099999972794,residual,passed,,0.0012202000016259262,nan,0.0004974637462851201,success,
+1e7b6a1d-3010-4538-aa71-d1745a932b34,3969_4_maze_backtrack,3969,4000,4,marmote_vigs,1,0,0.99,0.001,0.16733380000005127,residual,passed,,0.0014436000001296634,nan,0.0004974637462851201,success,
+1e7b6a1d-3010-4538-aa71-d1745a932b34,3969_4_maze_backtrack,3969,4000,4,mdpsolver_mpi,1,0,0.99,0.001,0.2268538999996963,span,passed,,0.0005633000000671018,nan,0.000997360436372218,success,
+1e7b6a1d-3010-4538-aa71-d1745a932b34,3969_4_maze_backtrack,3969,4000,4,mdpsolver_mpigs,1,0,0.99,0.001,0.1569393999998283,residual,passed,,0.000588400000196998,nan,0.0,success,
+1e7b6a1d-3010-4538-aa71-d1745a932b34,3969_4_maze_backtrack,3969,4000,4,mdpsolver_mpigs_init,1,0,0.99,0.001,0.154907699999967,residual,passed,,0.0012710999999399064,nan,0.0,success,
+1e7b6a1d-3010-4538-aa71-d1745a932b34,3969_4_maze_backtrack,3969,4000,4,mdpsolver_mpisor,1,0,0.99,0.001,0.1528604000013729,residual,passed,,0.0006143999999039806,nan,0.0,success,
+1e7b6a1d-3010-4538-aa71-d1745a932b34,3969_4_maze_backtrack,3969,4000,4,mdpsolver_mpisor_init,1,0,0.99,0.001,0.1638729999995121,residual,passed,,0.001056600000083563,nan,0.0,success,
+1e7b6a1d-3010-4538-aa71-d1745a932b34,3969_4_maze_backtrack,3969,4000,4,mdpsolver_pi,1,0,0.99,0.001,0.241540700000769,span,passed,,0.0011916000003111549,nan,0.0008664526319535063,success,
+1e7b6a1d-3010-4538-aa71-d1745a932b34,3969_4_maze_backtrack,3969,4000,4,mdpsolver_vi,1,0,0.99,0.001,0.18759059999865713,span,passed,,0.0012439000001904787,nan,9.873880912891755e-06,success,
+1e7b6a1d-3010-4538-aa71-d1745a932b34,3969_4_maze_backtrack,3969,4000,4,mdpsolver_vigs,1,0,0.99,0.001,0.21549969999978202,residual,passed,,0.0006553000002895715,nan,4.935324993127206e-06,success,
+1e7b6a1d-3010-4538-aa71-d1745a932b34,3969_4_maze_backtrack,3969,4000,4,mdpsolver_visor,1,0,0.99,0.001,0.14391800000157673,residual,passed,,0.001174300001366646,nan,0.0,success,
+1e7b6a1d-3010-4538-aa71-d1745a932b34,3969_4_maze_backtrack,3969,4000,4,mdptoolbox_mpi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+1e7b6a1d-3010-4538-aa71-d1745a932b34,3969_4_maze_backtrack,3969,4000,4,mdptoolbox_pi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+1e7b6a1d-3010-4538-aa71-d1745a932b34,3969_4_maze_backtrack,3969,4000,4,mdptoolbox_vi,1,0,0.99,0.001,2.19635290000042,span,failed,ValueError: span validation failed: error bound 0.0010053 exceeds precision 0.001 or is nonfinite,0.0006165000013425015,nan,nan,success,
+1e7b6a1d-3010-4538-aa71-d1745a932b34,3969_4_maze_backtrack,3969,4000,4,mdptoolbox_vigs,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s

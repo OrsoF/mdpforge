@@ -1,0 +1,18 @@
+experiment_id,model,state_dim,requested_state_dim,action_dim,solver,repeat,seed,discount,epsilon,runtime,validation_method,validation_status,validation_error,validation_runtime,residual,error_bound,status,error
+97d6a612-521c-46f9-baf3-a5500f5736e9,8000_3_queue_network_19,8000,7000,3,marmote_mpi,1,0,0.99,0.001,0.19514059999892197,residual,passed,,0.0015351000001828652,nan,0.0004895735855825474,success,
+97d6a612-521c-46f9-baf3-a5500f5736e9,8000_3_queue_network_19,8000,7000,3,marmote_mpigs,1,0,0.99,0.001,0.15846439999950235,residual,passed,,0.0018307999998796731,nan,0.0004445229308203121,success,
+97d6a612-521c-46f9-baf3-a5500f5736e9,8000_3_queue_network_19,8000,7000,3,marmote_vi,1,0,0.99,0.001,0.2950053000004118,residual,passed,,0.0010086000002047513,nan,0.0004986612111679274,success,
+97d6a612-521c-46f9-baf3-a5500f5736e9,8000_3_queue_network_19,8000,7000,3,marmote_vigs,1,0,0.99,0.001,0.22585740000067744,residual,passed,,0.0010115999994013691,nan,0.0004898451379631292,success,
+97d6a612-521c-46f9-baf3-a5500f5736e9,8000_3_queue_network_19,8000,7000,3,mdpsolver_mpi,1,0,0.99,0.001,0.24476599999979953,span,passed,,0.0010992999996233266,nan,0.0009735311834901941,success,
+97d6a612-521c-46f9-baf3-a5500f5736e9,8000_3_queue_network_19,8000,7000,3,mdpsolver_mpigs,1,0,0.99,0.001,0.15872479999961797,residual,passed,,0.0018306000001757639,nan,0.00011566285138542287,success,
+97d6a612-521c-46f9-baf3-a5500f5736e9,8000_3_queue_network_19,8000,7000,3,mdpsolver_mpigs_init,1,0,0.99,0.001,0.14417559999856167,residual,passed,,0.0012061000015819445,nan,0.00011645402082649514,success,
+97d6a612-521c-46f9-baf3-a5500f5736e9,8000_3_queue_network_19,8000,7000,3,mdpsolver_mpisor,1,0,0.99,0.001,0.160063799999989,residual,passed,,0.0018397000003460562,nan,0.00011566285138542287,success,
+97d6a612-521c-46f9-baf3-a5500f5736e9,8000_3_queue_network_19,8000,7000,3,mdpsolver_mpisor_init,1,0,0.99,0.001,0.13974700000107987,residual,passed,,0.0009952000000339467,nan,0.00011645402082649514,success,
+97d6a612-521c-46f9-baf3-a5500f5736e9,8000_3_queue_network_19,8000,7000,3,mdpsolver_pi,1,0,0.99,0.001,0.9695020999988628,span,passed,,0.0009840999991865829,nan,0.00014344095689011724,success,
+97d6a612-521c-46f9-baf3-a5500f5736e9,8000_3_queue_network_19,8000,7000,3,mdpsolver_vi,1,0,0.99,0.001,0.5680214999993041,span,passed,,0.0010352000008424511,nan,9.718496585264794e-06,success,
+97d6a612-521c-46f9-baf3-a5500f5736e9,8000_3_queue_network_19,8000,7000,3,mdpsolver_vigs,1,0,0.99,0.001,0.5729133999993792,residual,passed,,0.0010646999999153195,nan,4.8457195589435244e-06,success,
+97d6a612-521c-46f9-baf3-a5500f5736e9,8000_3_queue_network_19,8000,7000,3,mdpsolver_visor,1,0,0.99,0.001,0.311313500000324,residual,passed,,0.0018405999999231426,nan,1.182434061774983e-06,success,
+97d6a612-521c-46f9-baf3-a5500f5736e9,8000_3_queue_network_19,8000,7000,3,mdptoolbox_mpi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+97d6a612-521c-46f9-baf3-a5500f5736e9,8000_3_queue_network_19,8000,7000,3,mdptoolbox_pi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+97d6a612-521c-46f9-baf3-a5500f5736e9,8000_3_queue_network_19,8000,7000,3,mdptoolbox_vi,1,0,0.99,0.001,7.418716000000131,span,failed,ValueError: span validation failed: error bound 0.0239072 exceeds precision 0.001 or is nonfinite,0.0030131000003166264,nan,nan,success,
+97d6a612-521c-46f9-baf3-a5500f5736e9,8000_3_queue_network_19,8000,7000,3,mdptoolbox_vigs,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s

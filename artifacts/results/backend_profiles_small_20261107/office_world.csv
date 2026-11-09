@@ -1,0 +1,18 @@
+experiment_id,model,state_dim,requested_state_dim,action_dim,solver,repeat,seed,discount,epsilon,runtime,validation_method,validation_status,validation_error,validation_runtime,residual,error_bound,status,error
+37f9d12a-4ab3-4e2a-9aec-a50e2ff1988e,8096_4_office_world,8096,8000,4,marmote_mpi,1,0,0.99,0.001,0.1112702000009449,residual,passed,,0.001305399999182555,nan,0.00033314154279651093,success,
+37f9d12a-4ab3-4e2a-9aec-a50e2ff1988e,8096_4_office_world,8096,8000,4,marmote_mpigs,1,0,0.99,0.001,0.11117320000084874,residual,passed,,0.0016328000001522014,nan,0.0004903855883142678,success,
+37f9d12a-4ab3-4e2a-9aec-a50e2ff1988e,8096_4_office_world,8096,8000,4,marmote_vi,1,0,0.99,0.001,0.21967169999879843,residual,passed,,0.0008206000002246583,nan,0.0004974637462851201,success,
+37f9d12a-4ab3-4e2a-9aec-a50e2ff1988e,8096_4_office_world,8096,8000,4,marmote_vigs,1,0,0.99,0.001,0.2278714999993099,residual,passed,,0.0017606999990675831,nan,0.0004974637462851201,success,
+37f9d12a-4ab3-4e2a-9aec-a50e2ff1988e,8096_4_office_world,8096,8000,4,mdpsolver_mpi,1,0,0.99,0.001,0.14770580000003974,span,passed,,0.0009346999995614169,nan,0.00021171566260136368,success,
+37f9d12a-4ab3-4e2a-9aec-a50e2ff1988e,8096_4_office_world,8096,8000,4,mdpsolver_mpigs,1,0,0.99,0.001,0.0676421999996819,residual,passed,,0.0007948000002215849,nan,0.0,success,
+37f9d12a-4ab3-4e2a-9aec-a50e2ff1988e,8096_4_office_world,8096,8000,4,mdpsolver_mpigs_init,1,0,0.99,0.001,0.06559749999905762,residual,passed,,0.0007963000007293886,nan,0.0,success,
+37f9d12a-4ab3-4e2a-9aec-a50e2ff1988e,8096_4_office_world,8096,8000,4,mdpsolver_mpisor,1,0,0.99,0.001,0.06554750000032072,residual,passed,,0.0007989999994606478,nan,0.0,success,
+37f9d12a-4ab3-4e2a-9aec-a50e2ff1988e,8096_4_office_world,8096,8000,4,mdpsolver_mpisor_init,1,0,0.99,0.001,0.07139470000038273,residual,passed,,0.0008210999985749368,nan,0.0,success,
+37f9d12a-4ab3-4e2a-9aec-a50e2ff1988e,8096_4_office_world,8096,8000,4,mdpsolver_pi,1,0,0.99,0.001,0.17118309999932535,span,passed,,0.0007640000003448222,nan,5.457125951124903e-06,success,
+37f9d12a-4ab3-4e2a-9aec-a50e2ff1988e,8096_4_office_world,8096,8000,4,mdpsolver_vi,1,0,0.99,0.001,0.3545514999987063,span,passed,,0.0008103000000119209,nan,9.873872386378926e-06,success,
+37f9d12a-4ab3-4e2a-9aec-a50e2ff1988e,8096_4_office_world,8096,8000,4,mdpsolver_vigs,1,0,0.99,0.001,0.38105689999974857,residual,passed,,0.0017340000013064127,nan,4.935327080346492e-06,success,
+37f9d12a-4ab3-4e2a-9aec-a50e2ff1988e,8096_4_office_world,8096,8000,4,mdpsolver_visor,1,0,0.99,0.001,0.058112299999265815,residual,passed,,0.0008348999999725493,nan,0.0,success,
+37f9d12a-4ab3-4e2a-9aec-a50e2ff1988e,8096_4_office_world,8096,8000,4,mdptoolbox_mpi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+37f9d12a-4ab3-4e2a-9aec-a50e2ff1988e,8096_4_office_world,8096,8000,4,mdptoolbox_pi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+37f9d12a-4ab3-4e2a-9aec-a50e2ff1988e,8096_4_office_world,8096,8000,4,mdptoolbox_vi,1,0,0.99,0.001,8.33959490000052,span,passed,,0.0008540999988326803,nan,0.0009952518851719097,success,
+37f9d12a-4ab3-4e2a-9aec-a50e2ff1988e,8096_4_office_world,8096,8000,4,mdptoolbox_vigs,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s

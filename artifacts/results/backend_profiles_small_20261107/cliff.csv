@@ -1,0 +1,52 @@
+experiment_id,model,state_dim,requested_state_dim,action_dim,solver,repeat,seed,discount,epsilon,runtime,validation_method,validation_status,validation_error,validation_runtime,residual,error_bound,status,error
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,marmote_mpi,1,0,0.99,0.001,0.248351599999296,residual,passed,,0.0014365999995789025,nan,1.221990260091842e-05,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,marmote_mpi,2,1,0.99,0.001,0.2502229999990959,residual,passed,,0.0013896000000386266,nan,1.221990260091842e-05,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,marmote_mpi,3,2,0.99,0.001,0.29658259999996517,residual,passed,,0.0013287000001582783,nan,1.221990260091842e-05,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,marmote_mpigs,1,0,0.99,0.001,0.26446869999927003,residual,passed,,0.001290599999265396,nan,4.539403164471874e-06,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,marmote_mpigs,2,1,0.99,0.001,0.26025509999999485,residual,passed,,0.001282100000025821,nan,4.539403164471874e-06,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,marmote_mpigs,3,2,0.99,0.001,0.2587722999996913,residual,passed,,0.0012764000002789544,nan,4.539403164471874e-06,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,marmote_vi,1,0,0.99,0.001,0.14441729999998643,residual,passed,,0.0012604000003193505,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,marmote_vi,2,1,0.99,0.001,0.1446880000003148,residual,passed,,0.0016947000003710855,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,marmote_vi,3,2,0.99,0.001,0.1417036000002554,residual,passed,,0.0012280999999347841,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,marmote_vigs,1,0,0.99,0.001,0.14263779999964754,residual,passed,,0.0012282999996386934,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,marmote_vigs,2,1,0.99,0.001,0.1417470999986108,residual,passed,,0.0012365000002318993,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,marmote_vigs,3,2,0.99,0.001,0.14590769999995246,residual,passed,,0.0013019000016356586,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_mpi,1,0,0.99,0.001,0.31054499999845575,span,passed,,0.0013188000011723489,nan,2.1316282072802986e-11,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_mpi,2,1,0.99,0.001,0.3249331999995775,span,passed,,0.0012993000000278698,nan,2.1316282072802986e-11,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_mpi,3,2,0.99,0.001,0.32560540000122273,span,passed,,0.0012341999990894692,nan,2.1316282072802986e-11,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_mpigs,1,0,0.99,0.001,0.2017467999994551,residual,passed,,0.0015430000003107125,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_mpigs,2,1,0.99,0.001,0.2072203999996418,residual,passed,,0.0014009000005898997,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_mpigs,3,2,0.99,0.001,0.20352269999966666,residual,passed,,0.0013498999996954808,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_mpigs_init,1,0,0.99,0.001,0.28547689999868453,residual,passed,,0.0012599000001500826,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_mpigs_init,2,1,0.99,0.001,0.28816139999980805,residual,passed,,0.001284400001168251,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_mpigs_init,3,2,0.99,0.001,0.2833716999994067,residual,passed,,0.0013252000007923925,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_mpisor,1,0,0.99,0.001,0.20627310000054422,residual,passed,,0.0013209000007918803,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_mpisor,2,1,0.99,0.001,0.20717389999845182,residual,passed,,0.0013247999995655846,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_mpisor,3,2,0.99,0.001,0.19885269999940647,residual,passed,,0.0013496999999915715,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_mpisor_init,1,0,0.99,0.001,0.2868194000002404,residual,passed,,0.0013708000005863141,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_mpisor_init,2,1,0.99,0.001,0.286818200000198,residual,passed,,0.0013840000010532094,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_mpisor_init,3,2,0.99,0.001,0.29071470000053523,residual,passed,,0.0013168000004952773,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_pi,1,0,0.99,0.001,0.3470441000008577,span,passed,,0.001194799999211682,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_pi,2,1,0.99,0.001,0.35001290000036533,span,passed,,0.0012325000006967457,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_pi,3,2,0.99,0.001,0.34122990000105347,span,passed,,0.0012901000009151176,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_vi,1,0,0.99,0.001,0.14910540000164474,span,passed,,0.0012532999990071403,nan,1.847411112976259e-11,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_vi,2,1,0.99,0.001,0.14126720000058413,span,passed,,0.0012188999990030425,nan,1.847411112976259e-11,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_vi,3,2,0.99,0.001,0.15184580000095593,span,passed,,0.001332100000581704,nan,1.847411112976259e-11,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_vigs,1,0,0.99,0.001,0.6456369000006816,residual,passed,,0.0012463000002753688,nan,4.935324993127206e-06,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_vigs,2,1,0.99,0.001,0.6466204000007565,residual,passed,,0.001359599998977501,nan,4.935324993127206e-06,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_vigs,3,2,0.99,0.001,0.6438006999997015,residual,passed,,0.0012705000008281786,nan,4.935324993127206e-06,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_visor,1,0,0.99,0.001,0.136988600001132,residual,passed,,0.0013414000004559057,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_visor,2,1,0.99,0.001,0.14050520000091637,residual,passed,,0.0013005000000703149,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdpsolver_visor,3,2,0.99,0.001,0.13807379999889235,residual,passed,,0.0013674000001628883,nan,0.0,success,
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdptoolbox_mpi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdptoolbox_mpi,2,1,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdptoolbox_mpi,3,2,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdptoolbox_pi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdptoolbox_pi,2,1,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdptoolbox_pi,3,2,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdptoolbox_vi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdptoolbox_vi,2,1,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdptoolbox_vi,3,2,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdptoolbox_vigs,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdptoolbox_vigs,2,1,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3d9db8dd-29bb-4921-ae04-8b7c4355aecb,14283_4_cliff,14283,14400,4,mdptoolbox_vigs,3,2,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s

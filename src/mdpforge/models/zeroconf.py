@@ -46,6 +46,7 @@ class Model(MDP):
     def __init__(
         self,
         state_dim: int = 670,
+        action_dim: int = 4,
         *,
         probes: int | None = None,
         existing_hosts: int = 1000,

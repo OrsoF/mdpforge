@@ -1,0 +1,52 @@
+experiment_id,model,state_dim,requested_state_dim,action_dim,solver,repeat,seed,discount,epsilon,runtime,validation_method,validation_status,validation_error,validation_runtime,residual,error_bound,status,error
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,marmote_mpi,1,0,0.99,0.001,0.12837770000078308,residual,passed,,0.00120499999866297,nan,0.0004889158375931397,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,marmote_mpi,2,1,0.99,0.001,0.1270029000006616,residual,passed,,0.0016560999993089354,nan,0.0004889158375931397,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,marmote_mpi,3,2,0.99,0.001,0.12897370000064257,residual,passed,,0.00170330000037211,nan,0.0004889158375931397,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,marmote_mpigs,1,0,0.99,0.001,0.14265750000049593,residual,passed,,0.001073299999916344,nan,0.00047918641286059894,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,marmote_mpigs,2,1,0.99,0.001,0.1270088000001124,residual,passed,,0.0010632999983499758,nan,0.00047918641286059894,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,marmote_mpigs,3,2,0.99,0.001,0.12690459999976156,residual,passed,,0.0010800000000017462,nan,0.00047918641286059894,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,marmote_vi,1,0,0.99,0.001,0.42631839999921795,residual,passed,,0.0010538999995333143,nan,0.0004988428372598715,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,marmote_vi,2,1,0.99,0.001,0.4310823000014352,residual,passed,,0.0009616999996069353,nan,0.0004988428372598715,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,marmote_vi,3,2,0.99,0.001,0.4283887000001414,residual,passed,,0.0010151000005862443,nan,0.0004988428372598715,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,marmote_vigs,1,0,0.99,0.001,0.4321474999997008,residual,passed,,0.0010337999992771074,nan,0.0004988427917851364,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,marmote_vigs,2,1,0.99,0.001,0.43316239999876416,residual,passed,,0.0010077000006276648,nan,0.0004988427917851364,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,marmote_vigs,3,2,0.99,0.001,0.43126889999984996,residual,passed,,0.0009353000004921341,nan,0.0004988427917851364,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_mpi,1,0,0.99,0.001,0.16792180000084045,span,passed,,0.0013311999991856283,nan,0.0009880308041942945,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_mpi,2,1,0.99,0.001,0.17408849999992526,span,passed,,0.0009979000005841954,nan,0.0009880308041942945,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_mpi,3,2,0.99,0.001,0.17724829999860958,span,passed,,0.0010552000003372086,nan,0.0009880308041942945,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_mpigs,1,0,0.99,0.001,0.04061279999950784,residual,passed,,0.0009714999996504048,nan,0.0,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_mpigs,2,1,0.99,0.001,0.04324129999986326,residual,passed,,0.001007200000458397,nan,0.0,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_mpigs,3,2,0.99,0.001,0.04011969999919529,residual,passed,,0.0010297999997419538,nan,0.0,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_mpigs_init,1,0,0.99,0.001,0.04288119999910123,residual,passed,,0.0010504999991098884,nan,0.0,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_mpigs_init,2,1,0.99,0.001,0.040747500001089065,residual,passed,,0.0010196999992331257,nan,0.0,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_mpigs_init,3,2,0.99,0.001,0.04278359999989334,residual,passed,,0.0010412000010546762,nan,0.0,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_mpisor,1,0,0.99,0.001,0.04281080000146176,residual,passed,,0.0010171999983867863,nan,0.0,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_mpisor,2,1,0.99,0.001,0.03909569999996165,residual,passed,,0.0014575000004697358,nan,0.0,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_mpisor,3,2,0.99,0.001,0.04071549999935087,residual,passed,,0.0010065000005852198,nan,0.0,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_mpisor_init,1,0,0.99,0.001,0.04068410000036238,residual,passed,,0.0010332000001653796,nan,0.0,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_mpisor_init,2,1,0.99,0.001,0.041088599999056896,residual,passed,,0.0009764999995240942,nan,0.0,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_mpisor_init,3,2,0.99,0.001,0.040435400000205846,residual,passed,,0.0010563999985606642,nan,0.0,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_pi,1,0,0.99,0.001,0.24450579999938782,span,passed,,0.0010289999991073273,nan,3.154809746774842e-10,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_pi,2,1,0.99,0.001,0.24383750000015425,span,passed,,0.0011457000000518747,nan,3.154809746774842e-10,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_pi,3,2,0.99,0.001,0.23796059999949648,span,passed,,0.001039400000081514,nan,3.154809746774842e-10,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_vi,1,0,0.99,0.001,0.5723404000000301,span,passed,,0.0010780999982671347,nan,9.802230493960443e-06,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_vi,2,1,0.99,0.001,0.5899398000001383,span,passed,,0.0010535999990679557,nan,9.802230493960443e-06,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_vi,3,2,0.99,0.001,0.58074680000027,span,passed,,0.0010473999991518212,nan,9.802230493960443e-06,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_vigs,1,0,0.99,0.001,0.6125640999998723,residual,passed,,0.0009644999990996439,nan,4.949006893184556e-06,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_vigs,2,1,0.99,0.001,0.5998149000006379,residual,passed,,0.0010711000013543526,nan,4.949006893184556e-06,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_vigs,3,2,0.99,0.001,0.606318399999509,residual,passed,,0.0009470999993936857,nan,4.949006893184556e-06,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_visor,1,0,0.99,0.001,0.03859389999888663,residual,passed,,0.0010820999996212777,nan,0.0,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_visor,2,1,0.99,0.001,0.03842319999967003,residual,passed,,0.0009623000005376525,nan,0.0,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdpsolver_visor,3,2,0.99,0.001,0.040447300001687836,residual,passed,,0.0010661000014806632,nan,0.0,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdptoolbox_mpi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdptoolbox_mpi,2,1,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdptoolbox_mpi,3,2,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdptoolbox_pi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdptoolbox_pi,2,1,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdptoolbox_pi,3,2,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdptoolbox_vi,1,0,0.99,0.001,8.326811299999463,span,passed,,0.001043099999151309,nan,0.000998010955299832,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdptoolbox_vi,2,1,0.99,0.001,8.452900999998747,span,passed,,0.0011435000014898833,nan,0.000998010955299832,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdptoolbox_vi,3,2,0.99,0.001,8.827877499999886,span,passed,,0.0010230000007140916,nan,0.000998010955299832,success,
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdptoolbox_vigs,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdptoolbox_vigs,2,1,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+8dd58915-8837-4e79-b243-2e5810ba8fea,6859_6_hexagonal_grid_soccer,6859,6859,6,mdptoolbox_vigs,3,2,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s

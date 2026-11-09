@@ -1,0 +1,18 @@
+experiment_id,model,state_dim,requested_state_dim,action_dim,solver,repeat,seed,discount,epsilon,runtime,validation_method,validation_status,validation_error,validation_runtime,residual,error_bound,status,error
+c2addbda-81ad-4a4e-b1bf-ce7d9fa0d26a,20400_2_unichain,20400,20400,2,marmote_mpi,1,0,0.99,0.001,0.17765220000001136,residual,passed,,0.0010633999991114251,nan,0.0004924891186419695,success,
+c2addbda-81ad-4a4e-b1bf-ce7d9fa0d26a,20400_2_unichain,20400,20400,2,marmote_mpigs,1,0,0.99,0.001,0.17122020000169869,residual,passed,,0.0019492999999783933,nan,0.0004924891087205385,success,
+c2addbda-81ad-4a4e-b1bf-ce7d9fa0d26a,20400_2_unichain,20400,20400,2,marmote_vi,1,0,0.99,0.001,0.2906793000001926,residual,passed,,0.0018409000003885012,nan,0.0004974637462851201,success,
+c2addbda-81ad-4a4e-b1bf-ce7d9fa0d26a,20400_2_unichain,20400,20400,2,marmote_vigs,1,0,0.99,0.001,0.2770678999986558,residual,passed,,0.001796600001398474,nan,0.0004974637462851201,success,
+c2addbda-81ad-4a4e-b1bf-ce7d9fa0d26a,20400_2_unichain,20400,20400,2,mdpsolver_mpi,1,0,0.99,0.001,0.23430939999889233,span,passed,,0.001845599999796832,nan,0.0009852993784420496,success,
+c2addbda-81ad-4a4e-b1bf-ce7d9fa0d26a,20400_2_unichain,20400,20400,2,mdpsolver_mpigs,1,0,0.99,0.001,0.04418140000052517,residual,passed,,0.001498199999332428,nan,0.0,success,
+c2addbda-81ad-4a4e-b1bf-ce7d9fa0d26a,20400_2_unichain,20400,20400,2,mdpsolver_mpigs_init,1,0,0.99,0.001,0.04480109999713022,residual,passed,,0.0013352999994822312,nan,0.0,success,
+c2addbda-81ad-4a4e-b1bf-ce7d9fa0d26a,20400_2_unichain,20400,20400,2,mdpsolver_mpisor,1,0,0.99,0.001,0.04254900000159978,residual,passed,,0.0019131999979435932,nan,0.0,success,
+c2addbda-81ad-4a4e-b1bf-ce7d9fa0d26a,20400_2_unichain,20400,20400,2,mdpsolver_mpisor_init,1,0,0.99,0.001,0.04584160000013071,residual,passed,,0.0009032000016304664,nan,0.0,success,
+c2addbda-81ad-4a4e-b1bf-ce7d9fa0d26a,20400_2_unichain,20400,20400,2,mdpsolver_pi,1,0,0.99,0.001,0.22825530000045546,span,passed,,0.0009597999996913131,nan,0.0009852993670733659,success,
+c2addbda-81ad-4a4e-b1bf-ce7d9fa0d26a,20400_2_unichain,20400,20400,2,mdpsolver_vi,1,0,0.99,0.001,0.48965509999834467,span,passed,,0.000938299999688752,nan,9.873880912891755e-06,success,
+c2addbda-81ad-4a4e-b1bf-ce7d9fa0d26a,20400_2_unichain,20400,20400,2,mdpsolver_vigs,1,0,0.99,0.001,0.5112389999994775,residual,passed,,0.0017423999997845385,nan,4.935324991828196e-06,success,
+c2addbda-81ad-4a4e-b1bf-ce7d9fa0d26a,20400_2_unichain,20400,20400,2,mdpsolver_visor,1,0,0.99,0.001,0.045090800002071774,residual,passed,,0.0009711000020615757,nan,0.0,success,
+c2addbda-81ad-4a4e-b1bf-ce7d9fa0d26a,20400_2_unichain,20400,20400,2,mdptoolbox_mpi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+c2addbda-81ad-4a4e-b1bf-ce7d9fa0d26a,20400_2_unichain,20400,20400,2,mdptoolbox_pi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+c2addbda-81ad-4a4e-b1bf-ce7d9fa0d26a,20400_2_unichain,20400,20400,2,mdptoolbox_vi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+c2addbda-81ad-4a4e-b1bf-ce7d9fa0d26a,20400_2_unichain,20400,20400,2,mdptoolbox_vigs,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s

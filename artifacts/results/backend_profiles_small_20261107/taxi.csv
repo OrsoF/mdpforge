@@ -1,0 +1,18 @@
+experiment_id,model,state_dim,requested_state_dim,action_dim,solver,repeat,seed,discount,epsilon,runtime,validation_method,validation_status,validation_error,validation_runtime,residual,error_bound,status,error
+f3b33af2-5c75-4803-b7ab-6d3dd7605da4,5781_6_taxi,5781,6000,6,marmote_mpi,1,0,0.99,0.001,0.09418490000098245,residual,passed,,0.001081099999282742,nan,0.0004924891143787131,success,
+f3b33af2-5c75-4803-b7ab-6d3dd7605da4,5781_6_taxi,5781,6000,6,marmote_mpigs,1,0,0.99,0.001,0.0930515000000014,residual,passed,,0.0022268000029725954,nan,0.0004948150973405059,success,
+f3b33af2-5c75-4803-b7ab-6d3dd7605da4,5781_6_taxi,5781,6000,6,marmote_vi,1,0,0.99,0.001,0.26887639999768,residual,passed,,0.0009714000007079449,nan,0.000497463751969462,success,
+f3b33af2-5c75-4803-b7ab-6d3dd7605da4,5781_6_taxi,5781,6000,6,marmote_vigs,1,0,0.99,0.001,0.26925089999713236,residual,passed,,0.002077699999063043,nan,0.0004974637505483766,success,
+f3b33af2-5c75-4803-b7ab-6d3dd7605da4,5781_6_taxi,5781,6000,6,mdpsolver_mpi,1,0,0.99,0.001,0.0633720000005269,span,passed,,0.002107700001943158,nan,1.0658141036401493e-11,success,
+f3b33af2-5c75-4803-b7ab-6d3dd7605da4,5781_6_taxi,5781,6000,6,mdpsolver_mpigs,1,0,0.99,0.001,0.04802379999819095,residual,passed,,0.0016818000003695488,nan,0.0,success,
+f3b33af2-5c75-4803-b7ab-6d3dd7605da4,5781_6_taxi,5781,6000,6,mdpsolver_mpigs_init,1,0,0.99,0.001,0.043469300002470845,residual,passed,,0.0009133000021392945,nan,0.0,success,
+f3b33af2-5c75-4803-b7ab-6d3dd7605da4,5781_6_taxi,5781,6000,6,mdpsolver_mpisor,1,0,0.99,0.001,0.044108199999755016,residual,passed,,0.0008539000009477604,nan,0.0,success,
+f3b33af2-5c75-4803-b7ab-6d3dd7605da4,5781_6_taxi,5781,6000,6,mdpsolver_mpisor_init,1,0,0.99,0.001,0.0425732000003336,residual,passed,,0.0009008000015455764,nan,0.0,success,
+f3b33af2-5c75-4803-b7ab-6d3dd7605da4,5781_6_taxi,5781,6000,6,mdpsolver_pi,1,0,0.99,0.001,0.10686440000063158,span,passed,,0.0009157999993476551,nan,1.421085471520199e-11,success,
+f3b33af2-5c75-4803-b7ab-6d3dd7605da4,5781_6_taxi,5781,6000,6,mdpsolver_vi,1,0,0.99,0.001,0.04581509999843547,span,passed,,0.0008793000015430152,nan,4.263256414560597e-12,success,
+f3b33af2-5c75-4803-b7ab-6d3dd7605da4,5781_6_taxi,5781,6000,6,mdpsolver_vigs,1,0,0.99,0.001,0.38558199999897624,residual,passed,,0.0019378999968466815,nan,4.935330366606645e-06,success,
+f3b33af2-5c75-4803-b7ab-6d3dd7605da4,5781_6_taxi,5781,6000,6,mdpsolver_visor,1,0,0.99,0.001,0.039777599999069935,residual,passed,,0.001399599997967016,nan,0.0,success,
+f3b33af2-5c75-4803-b7ab-6d3dd7605da4,5781_6_taxi,5781,6000,6,mdptoolbox_mpi,1,0,0.99,0.001,11.754440699998668,span,failed,ValueError: span validation failed: error bound 1.85 exceeds precision 0.001 or is nonfinite,0.002159899999242043,nan,nan,success,
+f3b33af2-5c75-4803-b7ab-6d3dd7605da4,5781_6_taxi,5781,6000,6,mdptoolbox_pi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+f3b33af2-5c75-4803-b7ab-6d3dd7605da4,5781_6_taxi,5781,6000,6,mdptoolbox_vi,1,0,0.99,0.001,6.550281600000744,span,failed,ValueError: span validation failed: error bound 51.5137 exceeds precision 0.001 or is nonfinite,0.002023699998972006,nan,nan,success,
+f3b33af2-5c75-4803-b7ab-6d3dd7605da4,5781_6_taxi,5781,6000,6,mdptoolbox_vigs,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s

@@ -1,0 +1,52 @@
+experiment_id,model,state_dim,requested_state_dim,action_dim,solver,repeat,seed,discount,epsilon,runtime,validation_method,validation_status,validation_error,validation_runtime,residual,error_bound,status,error
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,marmote_mpi,1,0,0.99,0.001,0.15394980000019132,residual,passed,,0.0012366999999358086,nan,0.0004930106456413337,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,marmote_mpi,2,1,0.99,0.001,0.19067619999987073,residual,passed,,0.002627300000312971,nan,0.0004930106456413337,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,marmote_mpi,3,2,0.99,0.001,0.15257810000002792,residual,passed,,0.0024883999994926853,nan,0.0004930106456413337,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,marmote_mpigs,1,0,0.99,0.001,0.1531113999999434,residual,passed,,0.0011488000000099419,nan,0.0004896248782415564,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,marmote_mpigs,2,1,0.99,0.001,0.16337560000010853,residual,passed,,0.00238199999967037,nan,0.0004896248782415564,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,marmote_mpigs,3,2,0.99,0.001,0.164768799999365,residual,passed,,0.0024236999997810926,nan,0.0004896248782415564,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,marmote_vi,1,0,0.99,0.001,0.3574787000006836,residual,passed,,0.0013774999997622217,nan,0.0004974637462851201,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,marmote_vi,2,1,0.99,0.001,0.3700850999994145,residual,passed,,0.001104700000723824,nan,0.0004974637462851201,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,marmote_vi,3,2,0.99,0.001,0.3473100000001068,residual,passed,,0.0011192000001756242,nan,0.0004974637462851201,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,marmote_vigs,1,0,0.99,0.001,0.3489582000001974,residual,passed,,0.0010528000002523186,nan,0.0004974637462851201,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,marmote_vigs,2,1,0.99,0.001,0.34300359999997454,residual,passed,,0.0010768000001917244,nan,0.0004974637462851201,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,marmote_vigs,3,2,0.99,0.001,0.4850278000003527,residual,passed,,0.0015687999994042912,nan,0.0004974637462851201,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_mpi,1,0,0.99,0.001,0.1586723999998867,span,passed,,0.0010879000001295935,nan,0.0009852994594439215,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_mpi,2,1,0.99,0.001,0.1626513999999588,span,passed,,0.0010550999995757593,nan,0.0009852994594439215,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_mpi,3,2,0.99,0.001,0.1723816000003353,span,passed,,0.001078100000086124,nan,0.0009852994594439215,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_mpigs,1,0,0.99,0.001,0.09131739999975252,residual,passed,,0.0010884999992413213,nan,0.0,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_mpigs,2,1,0.99,0.001,0.09121760000016366,residual,passed,,0.0011194000007890281,nan,0.0,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_mpigs,3,2,0.99,0.001,0.08940529999927094,residual,passed,,0.0010394999999334686,nan,0.0,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_mpigs_init,1,0,0.99,0.001,0.08970069999941188,residual,passed,,0.0010437999999339809,nan,0.0,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_mpigs_init,2,1,0.99,0.001,0.09062950000043202,residual,passed,,0.001072099999873899,nan,0.0,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_mpigs_init,3,2,0.99,0.001,0.09663939999973081,residual,passed,,0.001144699999713339,nan,0.0,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_mpisor,1,0,0.99,0.001,0.09162710000055085,residual,passed,,0.0011120999997729086,nan,0.0,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_mpisor,2,1,0.99,0.001,0.0911668999997346,residual,passed,,0.0010847000003195717,nan,0.0,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_mpisor,3,2,0.99,0.001,0.09126680000008491,residual,passed,,0.0010114999995494145,nan,0.0,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_mpisor_init,1,0,0.99,0.001,0.09490800000003219,residual,passed,,0.0010956000005535316,nan,0.0,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_mpisor_init,2,1,0.99,0.001,0.08739059999970777,residual,passed,,0.0010892000000239932,nan,0.0,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_mpisor_init,3,2,0.99,0.001,0.09532110000054672,residual,passed,,0.001330900000539259,nan,0.0,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_pi,1,0,0.99,0.001,0.27638699999988603,span,passed,,0.0011829999994006357,nan,3.63797880709171e-10,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_pi,2,1,0.99,0.001,0.27308259999972506,span,passed,,0.0011176999996678205,nan,3.63797880709171e-10,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_pi,3,2,0.99,0.001,0.26614359999985027,span,passed,,0.001084399999854213,nan,3.63797880709171e-10,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_vi,1,0,0.99,0.001,0.5228537000002689,span,passed,,0.0011905000001206645,nan,9.873974704532876e-06,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_vi,2,1,0.99,0.001,0.5519431000002442,span,passed,,0.001055199999427714,nan,9.873974704532876e-06,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_vi,3,2,0.99,0.001,0.5440013999996154,span,passed,,0.0010880999998335028,nan,9.873974704532876e-06,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_vigs,1,0,0.99,0.001,0.5696222000005946,residual,passed,,0.0010736999993241625,nan,4.935325392807495e-06,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_vigs,2,1,0.99,0.001,0.558220099999744,residual,passed,,0.0011094999999841093,nan,4.935325392807495e-06,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_vigs,3,2,0.99,0.001,0.5826307000006636,residual,passed,,0.0010513999995964696,nan,4.935325392807495e-06,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_visor,1,0,0.99,0.001,0.1844215000000986,residual,passed,,0.0011293999996269122,nan,0.0,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_visor,2,1,0.99,0.001,0.19404990000020916,residual,passed,,0.0011019000003216206,nan,0.0,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdpsolver_visor,3,2,0.99,0.001,0.19182980000005045,residual,passed,,0.0011260999999649357,nan,0.0,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdptoolbox_mpi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdptoolbox_mpi,2,1,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdptoolbox_mpi,3,2,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdptoolbox_pi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdptoolbox_pi,2,1,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdptoolbox_pi,3,2,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdptoolbox_vi,1,0,0.99,0.001,11.186924100000397,span,passed,,0.001172000000224216,nan,0.0009952518851719097,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdptoolbox_vi,2,1,0.99,0.001,11.140849700000217,span,passed,,0.0010728999995990307,nan,0.0009952518851719097,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdptoolbox_vi,3,2,0.99,0.001,11.179403300000558,span,passed,,0.0011844999999084393,nan,0.0009952518851719097,success,
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdptoolbox_vigs,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdptoolbox_vigs,2,1,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+3bafe697-bee4-4e96-8e91-c66ed1f1ddc3,8000_6_blocks_world,8000,8000,6,mdptoolbox_vigs,3,2,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s

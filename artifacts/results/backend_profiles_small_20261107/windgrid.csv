@@ -1,0 +1,18 @@
+experiment_id,model,state_dim,requested_state_dim,action_dim,solver,repeat,seed,discount,epsilon,runtime,validation_method,validation_status,validation_error,validation_runtime,residual,error_bound,status,error
+c7190acb-84a7-4eed-aae7-157e106c5558,12099_4_windgrid,12099,12000,4,marmote_mpi,1,0,0.99,0.001,0.1632525999993959,residual,passed,,0.001274100002774503,nan,0.00010268027352822164,success,
+c7190acb-84a7-4eed-aae7-157e106c5558,12099_4_windgrid,12099,12000,4,marmote_mpigs,1,0,0.99,0.001,0.15857739999773912,residual,passed,,0.002750499999820022,nan,0.0001962821691847692,success,
+c7190acb-84a7-4eed-aae7-157e106c5558,12099_4_windgrid,12099,12000,4,marmote_vi,1,0,0.99,0.001,0.10030900000128895,residual,passed,,0.001205899996421067,nan,0.0,success,
+c7190acb-84a7-4eed-aae7-157e106c5558,12099_4_windgrid,12099,12000,4,marmote_vigs,1,0,0.99,0.001,0.10155570000279113,residual,passed,,0.002778599999146536,nan,0.0,success,
+c7190acb-84a7-4eed-aae7-157e106c5558,12099_4_windgrid,12099,12000,4,mdpsolver_mpi,1,0,0.99,0.001,0.2234978999986197,span,passed,,0.00246300000071642,nan,1.847411112976259e-11,success,
+c7190acb-84a7-4eed-aae7-157e106c5558,12099_4_windgrid,12099,12000,4,mdpsolver_mpigs,1,0,0.99,0.001,0.12986730000193347,residual,passed,,0.0024045999998634215,nan,0.0,success,
+c7190acb-84a7-4eed-aae7-157e106c5558,12099_4_windgrid,12099,12000,4,mdpsolver_mpigs_init,1,0,0.99,0.001,0.1224173000009614,residual,passed,,0.0022666000004392117,nan,0.0,success,
+c7190acb-84a7-4eed-aae7-157e106c5558,12099_4_windgrid,12099,12000,4,mdpsolver_mpisor,1,0,0.99,0.001,0.1362762000026123,residual,passed,,0.0023168999978224747,nan,0.0,success,
+c7190acb-84a7-4eed-aae7-157e106c5558,12099_4_windgrid,12099,12000,4,mdpsolver_mpisor_init,1,0,0.99,0.001,0.13273610000032932,residual,passed,,0.0011550000017450657,nan,0.0,success,
+c7190acb-84a7-4eed-aae7-157e106c5558,12099_4_windgrid,12099,12000,4,mdpsolver_pi,1,0,0.99,0.001,0.2367565000022296,span,passed,,0.002289199997903779,nan,0.0,success,
+c7190acb-84a7-4eed-aae7-157e106c5558,12099_4_windgrid,12099,12000,4,mdpsolver_vi,1,0,0.99,0.001,0.09384200000204146,span,passed,,0.001280899999983376,nan,1.847411112976259e-11,success,
+c7190acb-84a7-4eed-aae7-157e106c5558,12099_4_windgrid,12099,12000,4,mdpsolver_vigs,1,0,0.99,0.001,0.5289553000002343,residual,passed,,0.001103400001738919,nan,4.935331787692117e-06,success,
+c7190acb-84a7-4eed-aae7-157e106c5558,12099_4_windgrid,12099,12000,4,mdpsolver_visor,1,0,0.99,0.001,0.10170909999942523,residual,passed,,0.0011743999966711272,nan,0.0,success,
+c7190acb-84a7-4eed-aae7-157e106c5558,12099_4_windgrid,12099,12000,4,mdptoolbox_mpi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+c7190acb-84a7-4eed-aae7-157e106c5558,12099_4_windgrid,12099,12000,4,mdptoolbox_pi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+c7190acb-84a7-4eed-aae7-157e106c5558,12099_4_windgrid,12099,12000,4,mdptoolbox_vi,1,0,0.99,0.001,17.01146180000069,span,passed,,0.002400500001385808,nan,0.0,success,
+c7190acb-84a7-4eed-aae7-157e106c5558,12099_4_windgrid,12099,12000,4,mdptoolbox_vigs,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s

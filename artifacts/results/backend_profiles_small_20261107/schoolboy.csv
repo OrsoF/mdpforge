@@ -1,0 +1,18 @@
+experiment_id,model,state_dim,requested_state_dim,action_dim,solver,repeat,seed,discount,epsilon,runtime,validation_method,validation_status,validation_error,validation_runtime,residual,error_bound,status,error
+137a915c-6a8b-4a05-be99-721510eb81fa,86400_3_schoolboy,86400,86400,3,marmote_mpi,1,0,0.99,0.001,2.0930654000003415,residual,passed,,0.016658799999277107,nan,0.0004897680280890877,success,
+137a915c-6a8b-4a05-be99-721510eb81fa,86400_3_schoolboy,86400,86400,3,marmote_mpigs,1,0,0.99,0.001,1.4996162999996159,residual,passed,,0.018476500001270324,nan,0.0004947151797913473,success,
+137a915c-6a8b-4a05-be99-721510eb81fa,86400_3_schoolboy,86400,86400,3,marmote_vi,1,0,0.99,0.001,0.4833001000006334,residual,passed,,0.011784400001488393,nan,0.0,success,
+137a915c-6a8b-4a05-be99-721510eb81fa,86400_3_schoolboy,86400,86400,3,marmote_vigs,1,0,0.99,0.001,0.48556549999921117,residual,passed,,0.010143199997401098,nan,0.0,success,
+137a915c-6a8b-4a05-be99-721510eb81fa,86400_3_schoolboy,86400,86400,3,mdpsolver_mpi,1,0,0.99,0.001,0.39870370000062394,span,passed,,0.009533500000543427,nan,2.4556356947869e-11,success,
+137a915c-6a8b-4a05-be99-721510eb81fa,86400_3_schoolboy,86400,86400,3,mdpsolver_mpigs,1,0,0.99,0.001,0.386909699998796,residual,passed,,0.011058600000978913,nan,0.0,success,
+137a915c-6a8b-4a05-be99-721510eb81fa,86400_3_schoolboy,86400,86400,3,mdpsolver_mpigs_init,1,0,0.99,0.001,0.40641770000002,residual,passed,,0.010865099997317884,nan,0.0,success,
+137a915c-6a8b-4a05-be99-721510eb81fa,86400_3_schoolboy,86400,86400,3,mdpsolver_mpisor,1,0,0.99,0.001,0.4015553999997792,residual,passed,,0.01157220000095549,nan,0.0,success,
+137a915c-6a8b-4a05-be99-721510eb81fa,86400_3_schoolboy,86400,86400,3,mdpsolver_mpisor_init,1,0,0.99,0.001,0.39438239999799407,residual,passed,,0.012139999998908024,nan,0.0,success,
+137a915c-6a8b-4a05-be99-721510eb81fa,86400_3_schoolboy,86400,86400,3,mdpsolver_pi,1,0,0.99,0.001,0.386934599999222,span,passed,,0.016153099997609388,nan,0.0,success,
+137a915c-6a8b-4a05-be99-721510eb81fa,86400_3_schoolboy,86400,86400,3,mdpsolver_vi,1,0,0.99,0.001,0.395270500001061,span,passed,,0.010709100002713967,nan,1.1013412404281543e-11,success,
+137a915c-6a8b-4a05-be99-721510eb81fa,86400_3_schoolboy,86400,86400,3,mdpsolver_vigs,1,0,0.99,0.001,9.794459500000812,residual,passed,,0.011859100002766354,nan,4.9080568942372296e-06,success,
+137a915c-6a8b-4a05-be99-721510eb81fa,86400_3_schoolboy,86400,86400,3,mdpsolver_visor,1,0,0.99,0.001,0.39470470000014757,residual,passed,,0.011180199999216711,nan,0.0,success,
+137a915c-6a8b-4a05-be99-721510eb81fa,86400_3_schoolboy,86400,86400,3,mdptoolbox_mpi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+137a915c-6a8b-4a05-be99-721510eb81fa,86400_3_schoolboy,86400,86400,3,mdptoolbox_pi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+137a915c-6a8b-4a05-be99-721510eb81fa,86400_3_schoolboy,86400,86400,3,mdptoolbox_vi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+137a915c-6a8b-4a05-be99-721510eb81fa,86400_3_schoolboy,86400,86400,3,mdptoolbox_vigs,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s

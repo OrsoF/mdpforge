@@ -1,0 +1,18 @@
+experiment_id,model,state_dim,requested_state_dim,action_dim,solver,repeat,seed,discount,epsilon,runtime,validation_method,validation_status,validation_error,validation_runtime,residual,error_bound,status,error
+4a50a156-a115-4e53-86b6-a129eac913de,8625_3_wlan_2_1_time,8625,8625,3,marmote_mpi,1,0,0.99,0.001,0.15822560000015073,residual,passed,,0.0008851999991748016,nan,0.0004936935738442112,success,
+4a50a156-a115-4e53-86b6-a129eac913de,8625_3_wlan_2_1_time,8625,8625,3,marmote_mpigs,1,0,0.99,0.001,0.12237649999951827,residual,passed,,0.001579799998580711,nan,0.00048602023525745565,success,
+4a50a156-a115-4e53-86b6-a129eac913de,8625_3_wlan_2_1_time,8625,8625,3,marmote_vi,1,0,0.99,0.001,0.06516580000243266,residual,passed,,0.0011118000002170447,nan,0.0,success,
+4a50a156-a115-4e53-86b6-a129eac913de,8625_3_wlan_2_1_time,8625,8625,3,marmote_vigs,1,0,0.99,0.001,0.06239120000100229,residual,passed,,0.00167180000062217,nan,0.0,success,
+4a50a156-a115-4e53-86b6-a129eac913de,8625_3_wlan_2_1_time,8625,8625,3,mdpsolver_mpi,1,0,0.99,0.001,0.049668499999825144,span,passed,,0.00162570000247797,nan,7.958078640513115e-10,success,
+4a50a156-a115-4e53-86b6-a129eac913de,8625_3_wlan_2_1_time,8625,8625,3,mdpsolver_mpigs,1,0,0.99,0.001,0.047909299999446375,residual,passed,,0.0015366999978141394,nan,0.0,success,
+4a50a156-a115-4e53-86b6-a129eac913de,8625_3_wlan_2_1_time,8625,8625,3,mdpsolver_mpigs_init,1,0,0.99,0.001,0.047311500002251705,residual,passed,,0.0007501000000047497,nan,0.0,success,
+4a50a156-a115-4e53-86b6-a129eac913de,8625_3_wlan_2_1_time,8625,8625,3,mdpsolver_mpisor,1,0,0.99,0.001,0.04448879999836208,residual,passed,,0.0007407999983115587,nan,0.0,success,
+4a50a156-a115-4e53-86b6-a129eac913de,8625_3_wlan_2_1_time,8625,8625,3,mdpsolver_mpisor_init,1,0,0.99,0.001,0.04793760000029579,residual,passed,,0.0007393000014417339,nan,0.0,success,
+4a50a156-a115-4e53-86b6-a129eac913de,8625_3_wlan_2_1_time,8625,8625,3,mdpsolver_pi,1,0,0.99,0.001,0.07974409999951604,span,passed,,0.001550400000269292,nan,1.1368683772161593e-11,success,
+4a50a156-a115-4e53-86b6-a129eac913de,8625_3_wlan_2_1_time,8625,8625,3,mdpsolver_vi,1,0,0.99,0.001,0.06113090000144439,span,passed,,0.0007112000021152198,nan,7.503331289626652e-10,success,
+4a50a156-a115-4e53-86b6-a129eac913de,8625_3_wlan_2_1_time,8625,8625,3,mdpsolver_vigs,1,0,0.99,0.001,0.42242669999905047,residual,passed,,0.0016348000026482623,nan,4.947406750943624e-06,success,
+4a50a156-a115-4e53-86b6-a129eac913de,8625_3_wlan_2_1_time,8625,8625,3,mdpsolver_visor,1,0,0.99,0.001,0.05895959999907063,residual,passed,,0.0007386000033875462,nan,0.0,success,
+4a50a156-a115-4e53-86b6-a129eac913de,8625_3_wlan_2_1_time,8625,8625,3,mdptoolbox_mpi,1,0,0.99,0.001,11.351711400002387,span,failed,ValueError: span validation failed: error bound 942.784 exceeds precision 0.001 or is nonfinite,0.0007734999999229331,nan,nan,success,
+4a50a156-a115-4e53-86b6-a129eac913de,8625_3_wlan_2_1_time,8625,8625,3,mdptoolbox_pi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+4a50a156-a115-4e53-86b6-a129eac913de,8625_3_wlan_2_1_time,8625,8625,3,mdptoolbox_vi,1,0,0.99,0.001,7.204195299997082,span,passed,,0.0007040999989840202,nan,0.0,success,
+4a50a156-a115-4e53-86b6-a129eac913de,8625_3_wlan_2_1_time,8625,8625,3,mdptoolbox_vigs,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s

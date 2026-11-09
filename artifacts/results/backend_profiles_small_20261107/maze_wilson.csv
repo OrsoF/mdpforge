@@ -1,0 +1,18 @@
+experiment_id,model,state_dim,requested_state_dim,action_dim,solver,repeat,seed,discount,epsilon,runtime,validation_method,validation_status,validation_error,validation_runtime,residual,error_bound,status,error
+d0ce2d28-eea9-46db-bec3-a94eae3db223,11881_4_maze_wilson,11881,12000,4,marmote_mpi,1,0,0.99,0.001,0.3054480999999214,residual,passed,,0.0026058999992528697,nan,4.831690603168677e-11,success,
+d0ce2d28-eea9-46db-bec3-a94eae3db223,11881_4_maze_wilson,11881,12000,4,marmote_mpigs,1,0,0.99,0.001,0.3105967999999848,residual,passed,,0.002391699999861885,nan,4.1495695768389815e-10,success,
+d0ce2d28-eea9-46db-bec3-a94eae3db223,11881_4_maze_wilson,11881,12000,4,marmote_vi,1,0,0.99,0.001,0.24290620000101626,residual,passed,,0.00253569999949832,nan,0.0,success,
+d0ce2d28-eea9-46db-bec3-a94eae3db223,11881_4_maze_wilson,11881,12000,4,marmote_vigs,1,0,0.99,0.001,0.28344209999886516,residual,passed,,0.0012537000002339482,nan,0.0,success,
+d0ce2d28-eea9-46db-bec3-a94eae3db223,11881_4_maze_wilson,11881,12000,4,mdpsolver_mpi,1,0,0.99,0.001,0.43281629999910365,span,passed,,0.0022865999999339692,nan,2.4158453015843384e-11,success,
+d0ce2d28-eea9-46db-bec3-a94eae3db223,11881_4_maze_wilson,11881,12000,4,mdpsolver_mpigs,1,0,0.99,0.001,0.31701740000062273,residual,passed,,0.0010576999993645586,nan,0.0,success,
+d0ce2d28-eea9-46db-bec3-a94eae3db223,11881_4_maze_wilson,11881,12000,4,mdpsolver_mpigs_init,1,0,0.99,0.001,0.36127200000009907,residual,passed,,0.0011392999986128416,nan,0.0,success,
+d0ce2d28-eea9-46db-bec3-a94eae3db223,11881_4_maze_wilson,11881,12000,4,mdpsolver_mpisor,1,0,0.99,0.001,0.3202578000000358,residual,passed,,0.0010155999989365228,nan,0.0,success,
+d0ce2d28-eea9-46db-bec3-a94eae3db223,11881_4_maze_wilson,11881,12000,4,mdpsolver_mpisor_init,1,0,0.99,0.001,0.4403130999999121,residual,passed,,0.0011425000011513475,nan,0.0,success,
+d0ce2d28-eea9-46db-bec3-a94eae3db223,11881_4_maze_wilson,11881,12000,4,mdpsolver_pi,1,0,0.99,0.001,0.4721351999996841,span,passed,,0.0010481999997864477,nan,0.0,success,
+d0ce2d28-eea9-46db-bec3-a94eae3db223,11881_4_maze_wilson,11881,12000,4,mdpsolver_vi,1,0,0.99,0.001,0.2869233000001259,span,passed,,0.0012122000007366296,nan,2.1316282072802986e-11,success,
+d0ce2d28-eea9-46db-bec3-a94eae3db223,11881_4_maze_wilson,11881,12000,4,mdpsolver_vigs,1,0,0.99,0.001,0.746425299999828,residual,passed,,0.0022284999995463295,nan,4.935325392807495e-06,success,
+d0ce2d28-eea9-46db-bec3-a94eae3db223,11881_4_maze_wilson,11881,12000,4,mdpsolver_visor,1,0,0.99,0.001,0.25175099999978556,residual,passed,,0.001136499999120133,nan,0.0,success,
+d0ce2d28-eea9-46db-bec3-a94eae3db223,11881_4_maze_wilson,11881,12000,4,mdptoolbox_mpi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+d0ce2d28-eea9-46db-bec3-a94eae3db223,11881_4_maze_wilson,11881,12000,4,mdptoolbox_pi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+d0ce2d28-eea9-46db-bec3-a94eae3db223,11881_4_maze_wilson,11881,12000,4,mdptoolbox_vi,1,0,0.99,0.001,18.021896000000197,span,passed,,0.001217299999552779,nan,0.0,success,
+d0ce2d28-eea9-46db-bec3-a94eae3db223,11881_4_maze_wilson,11881,12000,4,mdptoolbox_vigs,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s

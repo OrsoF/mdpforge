@@ -1,0 +1,18 @@
+experiment_id,model,state_dim,requested_state_dim,action_dim,solver,repeat,seed,discount,epsilon,runtime,validation_method,validation_status,validation_error,validation_runtime,residual,error_bound,status,error
+ec0539d4-9ad1-4898-be2e-c7540b8ca597,11881_4_maze_prims,11881,12000,4,marmote_mpi,1,0,0.99,0.001,0.24732489999951213,residual,passed,,0.0011864999996760162,nan,1.4941576864657678e-07,success,
+ec0539d4-9ad1-4898-be2e-c7540b8ca597,11881_4_maze_prims,11881,12000,4,marmote_mpigs,1,0,0.99,0.001,0.22472540000126173,residual,passed,,0.0012952000015502563,nan,5.887159204576159e-07,success,
+ec0539d4-9ad1-4898-be2e-c7540b8ca597,11881_4_maze_prims,11881,12000,4,marmote_vi,1,0,0.99,0.001,0.18916499999977532,residual,passed,,0.0023836999989725882,nan,0.0,success,
+ec0539d4-9ad1-4898-be2e-c7540b8ca597,11881_4_maze_prims,11881,12000,4,marmote_vigs,1,0,0.99,0.001,0.19597190000058617,residual,passed,,0.0010966999998345273,nan,0.0,success,
+ec0539d4-9ad1-4898-be2e-c7540b8ca597,11881_4_maze_prims,11881,12000,4,mdpsolver_mpi,1,0,0.99,0.001,0.3133035999999265,span,passed,,0.002316399999472196,nan,1.989519660128279e-11,success,
+ec0539d4-9ad1-4898-be2e-c7540b8ca597,11881_4_maze_prims,11881,12000,4,mdpsolver_mpigs,1,0,0.99,0.001,0.17939269999988028,residual,passed,,0.0014788999997108476,nan,0.0,success,
+ec0539d4-9ad1-4898-be2e-c7540b8ca597,11881_4_maze_prims,11881,12000,4,mdpsolver_mpigs_init,1,0,0.99,0.001,0.22204430000056163,residual,passed,,0.0011290000002190936,nan,0.0,success,
+ec0539d4-9ad1-4898-be2e-c7540b8ca597,11881_4_maze_prims,11881,12000,4,mdpsolver_mpisor,1,0,0.99,0.001,0.17451310000069498,residual,passed,,0.0011801000000559725,nan,0.0,success,
+ec0539d4-9ad1-4898-be2e-c7540b8ca597,11881_4_maze_prims,11881,12000,4,mdpsolver_mpisor_init,1,0,0.99,0.001,0.2199211999995896,residual,passed,,0.0010949999996228144,nan,0.0,success,
+ec0539d4-9ad1-4898-be2e-c7540b8ca597,11881_4_maze_prims,11881,12000,4,mdpsolver_pi,1,0,0.99,0.001,0.3724562000006699,span,passed,,0.0011627999992924742,nan,0.0,success,
+ec0539d4-9ad1-4898-be2e-c7540b8ca597,11881_4_maze_prims,11881,12000,4,mdpsolver_vi,1,0,0.99,0.001,0.18963949999852048,span,passed,,0.0021895000008953502,nan,2.4158453015843384e-11,success,
+ec0539d4-9ad1-4898-be2e-c7540b8ca597,11881_4_maze_prims,11881,12000,4,mdpsolver_vigs,1,0,0.99,0.001,0.8840455999998085,residual,passed,,0.0013228999996499624,nan,4.935324993127206e-06,success,
+ec0539d4-9ad1-4898-be2e-c7540b8ca597,11881_4_maze_prims,11881,12000,4,mdpsolver_visor,1,0,0.99,0.001,0.16850279999925988,residual,passed,,0.002244299999802024,nan,0.0,success,
+ec0539d4-9ad1-4898-be2e-c7540b8ca597,11881_4_maze_prims,11881,12000,4,mdptoolbox_mpi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+ec0539d4-9ad1-4898-be2e-c7540b8ca597,11881_4_maze_prims,11881,12000,4,mdptoolbox_pi,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
+ec0539d4-9ad1-4898-be2e-c7540b8ca597,11881_4_maze_prims,11881,12000,4,mdptoolbox_vi,1,0,0.99,0.001,18.21357270000044,span,passed,,0.0012836000005336246,nan,0.0,success,
+ec0539d4-9ad1-4898-be2e-c7540b8ca597,11881_4_maze_prims,11881,12000,4,mdptoolbox_vigs,1,0,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 20 s
