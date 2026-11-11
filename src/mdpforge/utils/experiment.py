@@ -23,7 +23,7 @@ from scipy.sparse import issparse
 from threadpoolctl import threadpool_info
 
 from mdpforge.core.solve_result import SolveResult
-from mdpforge.solvers import is_catalogue_solver
+from mdpforge.solvers.discounted import is_catalogue_solver
 
 
 def _qualified_name(value):
@@ -93,7 +93,7 @@ def model_config(model):
     }
 
 
-def _solver_metadata(constructor, options):
+def _solver_metadata(constructor, options, criterion="discounted"):
     module = inspect.getmodule(constructor)
     metadata = (
         getattr(module, "METADATA", {})
@@ -112,7 +112,10 @@ def _solver_metadata(constructor, options):
             )
         ]
         # Match Benchmark's calling convention, regardless of argument names.
-        input_count = 2 if inspect.isclass(constructor) else 4
+        if criterion == "discounted":
+            input_count = 2 if inspect.isclass(constructor) else 4
+        else:
+            input_count = 1 if inspect.isclass(constructor) else 2
         controlled = set(positional[:input_count])
         if inspect.isclass(constructor):
             controlled.add("final_precision")
@@ -205,6 +208,7 @@ def capture_experiment(
     timeout=None,
     validate=True,
     validation_methods=None,
+    criterion="discounted",
 ):
     """Freeze metadata once per run, before any solver is constructed."""
     model_metadata = {}
@@ -224,7 +228,7 @@ def capture_experiment(
             ),
         }
     solver_metadata = {
-        name: _solver_metadata(constructor, options)
+        name: _solver_metadata(constructor, options, criterion)
         for name, (constructor, options) in solvers.items()
     }
     for name, method in (validation_methods or {}).items():
@@ -234,7 +238,8 @@ def capture_experiment(
         "experiment_id": str(uuid4()),
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "settings": {
-            "discount": float(discount),
+            "criterion": criterion,
+            "discount": None if discount is None else float(discount),
             "precision": float(precision),
             "repeats": repeats,
             "seed": seed,
@@ -271,19 +276,28 @@ def _solver_signature(constructor, precision):
     return signature, precision_options
 
 
-def _check_solver_options(name, constructor, options):
+def _check_solver_options(name, constructor, options, criterion="discounted"):
     """Check options against the benchmark's class or function calling convention."""
     try:
         signature, precision_options = _solver_signature(constructor, None)
         if isinstance(constructor, type):
-            signature.bind(None, None, **precision_options, **options)
+            if criterion != "discounted":
+                signature.bind(None, **precision_options, **options)
+            else:
+                signature.bind(None, None, **precision_options, **options)
         else:
-            signature.bind(None, None, None, None, **options)
+            if criterion != "discounted":
+                signature.bind(None, None, **options)
+            else:
+                signature.bind(None, None, None, None, **options)
     except (TypeError, ValueError) as exc:
         raise TypeError(f"Invalid options for solver {name!r}: {exc}") from exc
 
 
-def _solver_trial(model, constructor, options, discount, precision, seed, solver_name):
+def _solver_trial(
+    model, constructor, options, discount, precision, seed, solver_name,
+    criterion="discounted",
+):
     """Return the full result, solver runtime, status and error for one trial."""
     runtime = np.nan
     start = None
@@ -296,18 +310,26 @@ def _solver_trial(model, constructor, options, discount, precision, seed, solver
             _, precision_options = _solver_signature(constructor, precision)
         start = perf_counter()
         if isinstance(constructor, type):
-            solver = constructor(trial_model, discount, **precision_options, **options)
+            if criterion != "discounted":
+                solver = constructor(trial_model, **precision_options, **options)
+            else:
+                solver = constructor(
+                    trial_model, discount, **precision_options, **options
+                )
             if is_catalogue_solver(constructor):
                 solver.name = solver_name
             result = solver.run()
         else:
-            result = constructor(
-                trial_model.transition_matrix,
-                trial_model.reward_matrix,
-                discount,
-                precision,
-                **options,
-            )
+            if criterion != "discounted":
+                result = constructor(trial_model, precision, **options)
+            else:
+                result = constructor(
+                    trial_model.transition_matrix,
+                    trial_model.reward_matrix,
+                    discount,
+                    precision,
+                    **options,
+                )
         runtime = perf_counter() - start
         if not isinstance(constructor, type) and not isinstance(result, SolveResult):
             result = SolveResult(np.asarray(result), None, validation_method="residual")
@@ -327,7 +349,8 @@ def _solver_worker(input_path, result_path):
 
 
 def _isolated_solver_trial(
-    model, constructor, options, discount, precision, seed, solver_name, timeout
+    model, constructor, options, discount, precision, seed, solver_name, timeout,
+    criterion="discounted",
 ):
     context = multiprocessing.get_context("spawn")
     with TemporaryDirectory(prefix="mdpforge-trial-") as directory:
@@ -336,7 +359,10 @@ def _isolated_solver_trial(
         input_path = Path(directory) / "input.pkl"
         with input_path.open("wb") as handle:
             pickle.dump(
-                (model, constructor, options, discount, precision, seed, solver_name),
+                (
+                    model, constructor, options, discount, precision, seed,
+                    solver_name, criterion,
+                ),
                 handle,
             )
         result_path = Path(directory) / "result.pkl"

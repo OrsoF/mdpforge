@@ -21,7 +21,7 @@ _FIELD_TYPES = {
     "action_dim": int,
     "repeat": int,
     "seed": int,
-    "discount": float,
+    "discount": lambda value: float(value) if value else None,
     "epsilon": float,
     "runtime": float,
     "validation_runtime": float,
@@ -264,7 +264,10 @@ class BenchmarkResult:
         if not rows:
             raise ValueError(f"{path}: no benchmark measurements")
         experiment_ids = {row.get("experiment_id") for row in rows}
-        settings = {(row["discount"], row["epsilon"]) for row in rows}
+        settings = {
+            (row.get("criterion", "discounted"), row["discount"], row["epsilon"])
+            for row in rows
+        }
         if len(experiment_ids) > 1 or len(settings) > 1:
             raise ValueError(f"{path}: CSV contains multiple benchmark runs")
         manifest_path = path.with_suffix(".experiment.json")

@@ -11,8 +11,14 @@ def _aggregate_rows(rows, experiment=None):
         raise ValueError("No benchmark measurements available")
     models = list(dict.fromkeys(row["model"] for row in rows))
     solvers = list(dict.fromkeys(row["solver"] for row in rows))
-    if len({(row.get("discount"), row.get("epsilon")) for row in rows}) > 1:
-        raise ValueError("Cannot compare different discount or precision settings")
+    settings = {
+        (row.get("criterion", "discounted"), row.get("discount"), row.get("epsilon"))
+        for row in rows
+    }
+    if len(settings) > 1:
+        raise ValueError(
+            "Cannot compare different criterion, discount or precision settings"
+        )
     if len({row.get("experiment_id") for row in rows}) > 1:
         raise ValueError("Cannot compare multiple benchmark runs")
 
@@ -287,10 +293,13 @@ def plot_heat(
     ax.set_xlabel("MDP")
     ax.set_ylabel("Solver")
     settings = results[0]
-    ax.set_title(
-        f"Runtime at fixed precision — γ={settings['discount']:g}, "
-        f"ε={settings['epsilon']:g}"
-    )
+    if settings.get("criterion", "discounted") == "total":
+        ax.set_title(f"Total reward runtime — ε={settings['epsilon']:g}")
+    else:
+        ax.set_title(
+            f"Runtime at fixed precision — γ={settings['discount']:g}, "
+            f"ε={settings['epsilon']:g}"
+        )
     for i in range(len(solver_names)):
         for j in range(len(model_names)):
             if failures[i, j]:

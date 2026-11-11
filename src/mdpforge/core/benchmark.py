@@ -1,4 +1,4 @@
-"""Benchmark finite discounted MDP solvers at a fixed value precision."""
+"""Benchmark finite MDP solvers under a selected reward criterion."""
 
 import random
 from collections.abc import Sequence
@@ -7,12 +7,15 @@ from time import perf_counter
 
 import numpy as np
 
-from mdpforge import models
+from mdpforge.models import average, discounted, total
 from mdpforge.core.benchmark_result import BenchmarkResult
 from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.validation import validate_result
-from mdpforge.solvers import is_catalogue_solver, list_solvers
+from mdpforge.solvers.discounted import is_catalogue_solver
+from mdpforge.solvers import average as average_solvers
+from mdpforge.solvers import discounted as discounted_solvers
+from mdpforge.solvers import total as total_solvers
 from mdpforge.utils.catalogue import (
     _available_solvers,
     _load_model,
@@ -50,20 +53,24 @@ def _same_options(left, right):
 
 
 class Benchmark:
-    """Compare catalogue, matrix-defined or already-built finite discounted MDPs.
+    """Compare catalogue, matrix-defined or already-built finite MDPs.
 
     Models must expose ``name``, ``state_dim``, ``action_dim``,
     ``transition_matrix`` and ``reward_matrix``. Solver functions accept
     ``(transitions, rewards, discount, precision)`` and return a value vector
     or a ``SolveResult``.
-    Solver classes accept ``(model, discount)`` with optional ``final_precision``
-    and return a ``SolveResult`` from ``run()``.
+    Solver classes accept ``(model, discount)`` for discounted or ``(model)``
+    for total and average, with optional ``final_precision``; ``run()`` returns
+    a ``SolveResult``. Total and average functions accept ``(model, precision)``.
 
     Runtime includes function execution or class construction and ``run()``,
     but excludes model copying and experiment bookkeeping.
     """
 
-    def __init__(self):
+    def __init__(self, criterion="discounted"):
+        if criterion not in ("discounted", "total", "average"):
+            raise ValueError("criterion must be 'discounted', 'total' or 'average'")
+        self.criterion = criterion
         self._mdps: list[MDP] = []
         self._solvers = {}  # unique key -> (solver class/function, options)
         self._custom_validation_methods: dict[str, str] = {}
@@ -133,7 +140,9 @@ class Benchmark:
             names = None
             if model is not None:
                 names = list(dict.fromkeys(model)) if named_group else [model]
-            for entry in _select_models(names, size=size, category=category):
+            for entry in _select_models(
+                names, size=size, category=category, catalogue=self._model_catalogue()
+            ):
                 preset = entry["sizes"][size] if size is not None else None
                 self._add_catalogue_model(
                     entry,
@@ -150,7 +159,9 @@ class Benchmark:
         if isinstance(model, str):
             if not model.strip():
                 raise ValueError("Each MDP must have a nonempty string 'name'.")
-            catalogue = {entry["name"]: entry for entry in models.list_models()}
+            catalogue = {
+                entry["name"]: entry for entry in self._model_catalogue().list_models()
+            }
             if model in catalogue:
                 if transitions is not None or reward is not None:
                     raise ValueError(
@@ -173,6 +184,11 @@ class Benchmark:
         name = getattr(model, "name", None)
         if not isinstance(name, str) or not name.strip():
             raise ValueError("Each MDP must have a nonempty string 'name'.")
+        supported = getattr(model, "supported_criteria", frozenset({"discounted"}))
+        if self.criterion not in supported:
+            raise ValueError(
+                f"MDP {name!r} does not support criterion {self.criterion!r}"
+            )
         if any(existing.name == name for existing in self._mdps):
             raise ValueError(f"An MDP named {name!r} is already registered.")
         self._mdps.append(model)
@@ -194,7 +210,10 @@ class Benchmark:
         matches = [
             index
             for index, model in enumerate(self._mdps)
-            if type(model).__module__ == f"{models.__name__}.{model_name}"
+            if (
+                type(model).__module__
+                == f"{self._model_catalogue().__name__}.{model_name}"
+            )
         ]
         if len(matches) == 1:
             del self._mdps[matches[0]]
@@ -218,6 +237,7 @@ class Benchmark:
             registered=self._mdps,
             grouped=grouped,
             verbose=verbose,
+            catalogue=self._model_catalogue(),
         )
         if model is not None:
             self.add_mdp(model)
@@ -238,7 +258,7 @@ class Benchmark:
         verbose: True prints model-loading progress; False keeps additions quiet.
         Unavailable sizes, duplicates and missing dependencies are skipped.
         """
-        for entry in models.list_models(size=size, available=True):
+        for entry in self._model_catalogue().list_models(size=size, available=True):
             preset = entry["sizes"][size] if size is not None else None
             self._add_catalogue_model(
                 entry, preset=preset, grouped=True, verbose=verbose
@@ -246,10 +266,28 @@ class Benchmark:
         return self
 
     def add_default_mdps(self, *, verbose=False):
-        """Add small Rooms, Mountain Car and Garnet models; return self."""
+        """Add the selected criterion's default small models; return self."""
+        if self.criterion == "total":
+            return self.add_mdp("progress_chain", size="small", verbose=verbose)
+        if self.criterion == "average":
+            raise ValueError("No default average-reward models are registered")
         return self.add_mdp(
             ("rooms", "mountain", "garnet"), size="small", verbose=verbose
         )
+
+    def _model_catalogue(self):
+        """Return the model catalogue selected by this benchmark."""
+        return {"discounted": discounted, "total": total, "average": average}[
+            self.criterion
+        ]
+
+    def _solver_catalogue(self):
+        """Return the solver catalogue selected by this benchmark."""
+        return {
+            "discounted": discounted_solvers,
+            "total": total_solvers,
+            "average": average_solvers,
+        }[self.criterion]
 
     def add_solver(
         self,
@@ -290,9 +328,13 @@ class Benchmark:
             "bounds",
         ):
             raise ValueError(f"Unsupported validation_method: {validation_method!r}")
+        if self.criterion == "total" and validation_method != "residual":
+            raise ValueError("total-reward validation supports only 'residual'")
         custom = solve_function is not None
         if not custom and validation_method != "residual":
-            raise ValueError("validation_method is only configurable for custom solvers")
+            raise ValueError(
+                "validation_method is only configurable for custom solvers"
+            )
         filters = {
             "family": family,
             "backend": backend,
@@ -320,23 +362,31 @@ class Benchmark:
                 f"Solver parameters controlled by run(): {sorted(reserved)}"
             )
         if grouped:
-            return self._add_solver_group(list_solvers(**filters), options)
+            return self._add_solver_group(
+                self._solver_catalogue().list_solvers(**filters), options
+            )
         if solve_function is None:
-            catalogue = {entry["name"]: entry for entry in list_solvers()}
+            catalogue = {
+                entry["name"]: entry
+                for entry in self._solver_catalogue().list_solvers()
+            }
             if solver_name not in catalogue:
                 raise ValueError(
                     f"Unknown solver {solver_name!r}. Available solvers: "
                     + ", ".join(sorted(catalogue))
                 )
             if filtered and solver_name not in {
-                entry["name"] for entry in list_solvers(**filters)
+                entry["name"]
+                for entry in self._solver_catalogue().list_solvers(**filters)
             }:
                 raise ValueError(
                     f"Solver {solver_name!r} does not match the requested "
                     "metadata filters"
                 )
             solve_function = _load_solver(
-                solver_name, backend=catalogue[solver_name]["backend"]
+                solver_name,
+                backend=catalogue[solver_name]["backend"],
+                catalogue=self._solver_catalogue(),
             )
         registered_name = self._register_solver(solver_name, solve_function, options)
         if custom:
@@ -349,7 +399,7 @@ class Benchmark:
         """Assign a unique key and register one solver configuration."""
         if not callable(constructor):
             raise TypeError("solve_function must be a callable function or class.")
-        _check_solver_options(name, constructor, options)
+        _check_solver_options(name, constructor, options, self.criterion)
         if registry is None:
             registry = self._solvers
         auto_name = (
@@ -391,7 +441,9 @@ class Benchmark:
     def _add_solver_group(self, entries, options):
         """Check the entire selection before committing new registrations."""
         registry = self._solvers.copy()
-        for name, constructor in _available_solvers(entries):
+        for name, constructor in _available_solvers(
+            entries, catalogue=self._solver_catalogue()
+        ):
             self._register_solver(
                 name, constructor, options, registry=registry, skip_existing=True
             )
@@ -399,10 +451,14 @@ class Benchmark:
         return self
 
     def add_default_solvers(self):
-        """Add catalogue mdpforge VI and MPI solvers; return self."""
+        """Add the selected criterion's default solvers; return self."""
+        if self.criterion == "total":
+            return self.add_solver("marmote_vi")
+        if self.criterion == "average":
+            raise ValueError("No default average-reward solvers are registered")
         registry = self._solvers.copy()
         for name in ("mdpforge_vi", "mdpforge_mpi"):
-            constructor = _load_solver(name)
+            constructor = _load_solver(name, catalogue=self._solver_catalogue())
             if any(existing is constructor for existing, _ in registry.values()):
                 continue
             if name in registry:
@@ -414,27 +470,29 @@ class Benchmark:
     def add_all_solvers(self):
         """Add all catalogue solvers, preserving existing entries."""
         entries = (
-            entry for entry in list_solvers() if entry["name"] not in self._solvers
+            entry
+            for entry in self._solver_catalogue().list_solvers()
+            if entry["name"] not in self._solvers
         )
         return self._add_solver_group(entries, {})
 
     def run(
         self,
-        discount,
+        discount=None,
         precision=1e-3,
         *,
         repeats=3,
         seed=0,
         verbose=False,
         timeout=None,
-        validate=True,
+        validate=False,
     ) -> BenchmarkResult:
         """Run each MDP/solver pair and return an independent BenchmarkResult.
 
         ``precision`` is passed to each solver. All failures are recorded rather
         than interrupting the remaining comparisons.
 
-        ``validate``: True validates each result (default); False skips certification.
+        ``validate``: True validates each result; False skips certification (default).
         Validation runs outside solver timing and releases the result before the
         next trial.
         Validation status, errors and runtime are recorded separately;
@@ -466,8 +524,13 @@ class Benchmark:
         The result's ``experiment`` captures settings, versions and
         machine information before solver timing. Each row includes its ID.
         """
-        if not np.isfinite(discount) or not 0 < discount < 1:
-            raise ValueError("discount must be strictly between 0 and 1")
+        if self.criterion == "discounted":
+            if discount is None or not np.isfinite(discount) or not 0 < discount < 1:
+                raise ValueError("discount must be strictly between 0 and 1")
+        elif discount is not None:
+            raise ValueError("discount is used only with criterion='discounted'")
+        if self.criterion == "average" and validate:
+            raise ValueError("average-reward result validation is not implemented")
         if not np.isfinite(precision) or precision <= 0:
             raise ValueError("precision must be finite and positive")
         if type(repeats) is not int or repeats < 1:
@@ -501,6 +564,7 @@ class Benchmark:
                 timeout=timeout,
                 validate=validate,
                 validation_methods=self._custom_validation_methods,
+                criterion=self.criterion,
             )
             for model in self._mdps:
                 model_label = getattr(model, "display_name", model.name)
@@ -530,12 +594,13 @@ class Benchmark:
                                 precision,
                                 seed + repeat,
                                 solver_name,
+                                self.criterion,
                             )
                             if timeout is None:
                                 result, runtime, status, error = _solver_trial(*args)
                             else:
                                 result, runtime, status, error = _isolated_solver_trial(
-                                    *args, timeout
+                                    *args[:-1], timeout, criterion=self.criterion
                                 )
                             if status == "success":
                                 if solver_name in self._custom_validation_methods:
@@ -553,12 +618,21 @@ class Benchmark:
                         if validate and status == "success":
                             validation_start = perf_counter()
                             try:
-                                error_bound = validate_result(
-                                    model,
-                                    result,
-                                    discount=discount,
-                                    precision=precision,
-                                )
+                                if self.criterion == "total":
+                                    from mdpforge.core.validation import (
+                                        validate_total_result,
+                                    )
+
+                                    error_bound = validate_total_result(
+                                        model, result, precision=precision
+                                    )
+                                else:
+                                    error_bound = validate_result(
+                                        model,
+                                        result,
+                                        discount=discount,
+                                        precision=precision,
+                                    )
                                 validation_status = "passed"
                             except Exception as exc:
                                 validation_status = "failed"
@@ -578,6 +652,7 @@ class Benchmark:
                                 "solver": solver_name,
                                 "repeat": repeat + 1,
                                 "seed": seed + repeat,
+                                "criterion": self.criterion,
                                 "discount": discount,
                                 "epsilon": precision,  # Keep the original CSV schema.
                                 "runtime": runtime,

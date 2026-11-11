@@ -51,19 +51,7 @@ For each available size, use `{"requested_state_dim": <positive integer>, "param
 
 **Calibration:** indicative `small / medium / large` targets are approximately `1 / 5 / 30 s` per model/solver pair, with `discount=0.99`, absolute error `1e-3` and one thread. Measure solver preparation and execution; report model construction and memory separately. Keep CSVs and provenance: parameters, requested/actual dimensions, seeds, solvers/versions, precision, machine, repeats, timeouts and any extrapolations (method, assumptions, covered solvers). Sizes may remain unavailable with a reason.
 
-From the repository root, in Conda `benchmark` (Python 3.11+):
-
-```bash
-# Check dimensions, construction and solving in sequence
-conda run -n benchmark python check_model_sizes.py --dimensions-only --models <name>
-conda run -n benchmark python check_model_sizes.py --build-only --sizes small medium large --models <name>
-conda run -n benchmark python check_model_sizes.py --sizes large --models <name>
-
-# Calibrate only the new model when requested
-conda run -n benchmark python benchmark_sizes.py --models <name> --repeats 3 --output artifacts/results/<name>_sizes.csv
-```
-
-`benchmark_sizes.py` measures only `small` and `medium` using its own `STATE_DIM_REQUESTS`, rather than `METADATA` presets. `check_model_sizes.py` runs each case with a timeout, resumes existing results and returns a nonzero exit code for unavailable configurations, failures or budget overruns; change `--output` to force a fresh measurement. Put scratch scripts in `artifacts/tmp/` and reference results in `artifacts/results/`. Do not run heavy measurements automatically.
+Put scratch scripts in `artifacts/tmp/` and reference results in `artifacts/results/`. Do not run heavy measurements automatically.
 
 Declare dependencies in `pyproject.toml`; optional dependencies belong in extras and must not block core imports or catalogue access. **Run pytest/Ruff only when explicitly requested**; see [AGENTS.md](../AGENTS.md). Report checks actually performed, results and remaining limitations.
 

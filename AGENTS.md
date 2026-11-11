@@ -7,6 +7,7 @@ mdpforge benchmarks new finite MDPs and new MDP solvers. Prefer small, useful ch
 - Treat requests for advice or proposals (for example, "How would you modify the README?") as discussion only: describe the suggested changes in chat without editing files or executing the proposed actions. Apply them only when the user asks you to do so.
 - Inspect the working-tree status, affected files, and relevant callers. Read the whole repository or run a baseline only when needed to understand the change.
 - Make the smallest robust change. Avoid unrelated refactors, wrappers, compatibility layers, new hierarchies, and repository-wide formatting.
+- Do not create, move, or edit repository-root scripts as a side effect of model, solver, catalogue, or benchmark changes. Change a root script only when the user explicitly requests that script; keep scratch scripts in `artifacts/tmp/`. When deleting a script, remove its references in the same change.
 - Organizational refactors move or rename code and update references without changing runtime behavior. Do not introduce new computations, validation, or benchmark protocol changes unless explicitly requested.
 - Preserve user changes and deliberate deletions. Do not restore removed models or solvers, or modify baseline algorithms, unless the task calls for it.
 - Do not create or modify documentation unless the user explicitly asks for it. When requested, write concisely and compactly, and verify paths and interfaces before documenting them.

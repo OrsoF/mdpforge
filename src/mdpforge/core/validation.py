@@ -15,6 +15,78 @@ if TYPE_CHECKING:
     from mdpforge.core.mdp import MDP
 
 
+def validate_total_result(
+    model: "MDP", result: SolveResult, *, precision: float
+) -> float:
+    """Certify value error for an absorbing acyclic total-reward MDP."""
+    validate_model(model)
+    if not isinstance(result, SolveResult) or result.validation_method != "residual":
+        raise ValueError("total-reward validation requires a residual SolveResult")
+    if not np.isfinite(precision) or precision <= 0:
+        raise ValueError("precision must be finite and positive")
+    value = np.asarray(result.value)
+    if value.shape != (model.state_dim,) or not np.isfinite(value).all():
+        raise ValueError("result.value must be a finite value vector")
+    terminal = set(getattr(model, "terminal_states", ()))
+    if not terminal or any(
+        type(state) is not int or not 0 <= state < model.state_dim
+        for state in terminal
+    ):
+        raise ValueError("total-reward model must declare valid terminal_states")
+    successors = [set() for _ in range(model.state_dim)]
+    for action, matrix in enumerate(model.transition_matrix):
+        for state in range(model.state_dim):
+            row = matrix.getrow(state)
+            if state in terminal:
+                if (
+                    row.nnz != 1
+                    or row.indices[0] != state
+                    or model.reward_matrix[state, action] != 0
+                ):
+                    raise ValueError(
+                        "terminal states must be absorbing with zero reward"
+                    )
+            else:
+                successors[state].update(
+                    int(next_state)
+                    for next_state, probability in zip(row.indices, row.data)
+                    if probability > 0 and next_state not in terminal
+                )
+    transient = set(range(model.state_dim)) - terminal
+    indegree = {state: 0 for state in transient}
+    for state in transient:
+        for next_state in successors[state]:
+            indegree[next_state] += 1
+    ready = [state for state, degree in indegree.items() if degree == 0]
+    order = []
+    while ready:
+        state = ready.pop()
+        order.append(state)
+        for next_state in successors[state]:
+            indegree[next_state] -= 1
+            if indegree[next_state] == 0:
+                ready.append(next_state)
+    if len(order) != len(transient):
+        raise ValueError(
+            "total-reward residual certificate requires acyclic transient states"
+        )
+    steps = [0] * model.state_dim
+    for state in reversed(order):
+        steps[state] = 1 + max(
+            (steps[next_state] for next_state in successors[state]), default=0
+        )
+    horizon = max(steps)
+    backup = compact_optimal_bellman_operator(model, value, 1.0)
+    terminal_error = max(abs(float(value[state])) for state in terminal)
+    error_bound = float(terminal_error + horizon * np.max(np.abs(backup - value)))
+    if not np.isfinite(error_bound) or error_bound > precision:
+        raise ValueError(
+            f"total-reward validation failed: error bound {error_bound:g} "
+            f"exceeds precision {precision:g}"
+        )
+    return error_bound
+
+
 def validate_result(
     model: "MDP",
     result: SolveResult,
