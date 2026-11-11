@@ -295,7 +295,13 @@ def _check_solver_options(name, constructor, options, criterion="discounted"):
 
 
 def _solver_trial(
-    model, constructor, options, discount, precision, seed, solver_name,
+    model,
+    constructor,
+    options,
+    discount,
+    precision,
+    seed,
+    solver_name,
     criterion="discounted",
 ):
     """Return the full result, solver runtime, status and error for one trial."""
@@ -349,7 +355,14 @@ def _solver_worker(input_path, result_path):
 
 
 def _isolated_solver_trial(
-    model, constructor, options, discount, precision, seed, solver_name, timeout,
+    model,
+    constructor,
+    options,
+    discount,
+    precision,
+    seed,
+    solver_name,
+    timeout,
     criterion="discounted",
 ):
     context = multiprocessing.get_context("spawn")
@@ -360,8 +373,14 @@ def _isolated_solver_trial(
         with input_path.open("wb") as handle:
             pickle.dump(
                 (
-                    model, constructor, options, discount, precision, seed,
-                    solver_name, criterion,
+                    model,
+                    constructor,
+                    options,
+                    discount,
+                    precision,
+                    seed,
+                    solver_name,
+                    criterion,
                 ),
                 handle,
             )

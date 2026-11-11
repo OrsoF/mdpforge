@@ -7,15 +7,15 @@ from time import perf_counter
 
 import numpy as np
 
-from mdpforge.models import average, discounted, total
 from mdpforge.core.benchmark_result import BenchmarkResult
 from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.validation import validate_result
-from mdpforge.solvers.discounted import is_catalogue_solver
+from mdpforge.models import discounted, total
 from mdpforge.solvers import average as average_solvers
 from mdpforge.solvers import discounted as discounted_solvers
 from mdpforge.solvers import total as total_solvers
+from mdpforge.solvers.discounted import is_catalogue_solver
 from mdpforge.utils.catalogue import (
     _available_solvers,
     _load_model,
@@ -96,6 +96,7 @@ class Benchmark:
         *,
         transitions=None,
         reward=None,
+        terminal_states=None,
         size: str | None = None,
         category: str | None = None,
         verbose=False,
@@ -106,6 +107,7 @@ class Benchmark:
             model: Catalogue ID(s), built MDP, or custom name.
             transitions: Transition matrices (S, S), one per action.
             reward: Reward matrix (S, A).
+            terminal_states: Terminal state indices for a total-reward matrix model.
             size: "small", "medium", or "large".
             category: Model category (e.g., "navigation", "abstract").
             verbose: Whether to print loading progress.
@@ -119,6 +121,8 @@ class Benchmark:
             and duplicates. Explicit IDs must match filters.
             Use `add_all_mdps()` to select the entire catalogue.
         """
+        if terminal_states is not None and self.criterion != "total":
+            raise ValueError("terminal_states is only used with criterion='total'")
         named_group = isinstance(model, Sequence) and not isinstance(model, str)
         if named_group and (
             not model
@@ -130,6 +134,7 @@ class Benchmark:
                 (model is not None and not isinstance(model, str) and not named_group)
                 or transitions is not None
                 or reward is not None
+                or terminal_states is not None
             ):
                 raise ValueError(
                     "Catalogue selections cannot be combined with built objects "
@@ -163,7 +168,11 @@ class Benchmark:
                 entry["name"]: entry for entry in self._model_catalogue().list_models()
             }
             if model in catalogue:
-                if transitions is not None or reward is not None:
+                if (
+                    transitions is not None
+                    or reward is not None
+                    or terminal_states is not None
+                ):
                     raise ValueError(
                         f"Catalogue model {model!r} uses its generator; "
                         "choose a custom name when supplying matrices."
@@ -179,13 +188,23 @@ class Benchmark:
                 if verbose:
                     print(f"Creating MDP {model!r} from matrices...", flush=True)
                 model = MDP.from_matrices(model, transitions, reward)
+                model.supported_criteria = frozenset({self.criterion})
+                if terminal_states is not None:
+                    model.terminal_states = tuple(terminal_states)
         elif transitions is not None or reward is not None:
             raise ValueError("Pass a name when providing transitions and reward.")
+        elif terminal_states is not None:
+            raise ValueError("terminal_states requires a matrix-defined model")
         name = getattr(model, "name", None)
         if not isinstance(name, str) or not name.strip():
             raise ValueError("Each MDP must have a nonempty string 'name'.")
         supported = getattr(model, "supported_criteria", frozenset({"discounted"}))
-        if self.criterion not in supported:
+        accepted = (
+            {"discounted", "average"}
+            if self.criterion == "average"
+            else {self.criterion}
+        )
+        if not accepted.intersection(supported):
             raise ValueError(
                 f"MDP {name!r} does not support criterion {self.criterion!r}"
             )
@@ -269,15 +288,13 @@ class Benchmark:
         """Add the selected criterion's default small models; return self."""
         if self.criterion == "total":
             return self.add_mdp("progress_chain", size="small", verbose=verbose)
-        if self.criterion == "average":
-            raise ValueError("No default average-reward models are registered")
         return self.add_mdp(
             ("rooms", "mountain", "garnet"), size="small", verbose=verbose
         )
 
     def _model_catalogue(self):
         """Return the model catalogue selected by this benchmark."""
-        return {"discounted": discounted, "total": total, "average": average}[
+        return {"discounted": discounted, "total": total, "average": discounted}[
             self.criterion
         ]
 

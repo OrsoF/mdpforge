@@ -4,7 +4,7 @@ Catalogue integration requirements for mdpforge; read alongside [AGENTS.md](../A
 
 ## 1. Definition and interface
 
-Create `src/mdpforge/models/<name>.py` using lowercase letters and underscores, without a leading underscore. Discovery is automatic. Provide:
+Create `src/mdpforge/models/discounted/<name>.py` or `src/mdpforge/models/total/<name>.py` using lowercase letters and underscores, without a leading underscore. Discovery is automatic. Provide:
 
 - `Model(MDP)` with `__init__(state_dim, ...)` and `_build_model()`; let `create_model()` handle construction, caching and CSR conversion.
 - By the end of the constructor: `state_dim` and `action_dim` are the **actual dimensions**, as positive Python integers; `requested_state_dim` preserves the original target before adjustment; invalid parameters raise an explicit error. Document dimension adjustments and keep the constructor lightweight.
@@ -20,7 +20,7 @@ After `create_model()`, the data must satisfy:
 
 `S = state_dim`, `A = action_dim`. All values are finite; `P >= 0` and each row sums to 1 (current tolerance: `1e-6`). Compute the expected reward if it depends on the next state. Prefer sparse structures; do not convert the model for a specific backend.
 
-**Required scientific documentation:** state encoding, valid/invalid actions, transitions, rewards (sign/scale), terminal/absorbing states, parameters (defaults/domains), references and adaptations. For an original model, use `reference=None` and state its purpose and assumptions. The MDP must be finite, discounted (`0 < discount < 1`), independent of solvers, and free of implicit reward normalization.
+**Required scientific documentation:** state encoding, valid/invalid actions, transitions, rewards (sign/scale), terminal/absorbing states, parameters (defaults/domains), references and adaptations. For an original model, use `reference=None` and state its purpose and assumptions. Total-reward models declare `supported_criteria={"total"}` and `terminal_states`; they must have finite total reward. Average benchmarks reuse discounted models.
 
 ## 2. Metadata and sizes
 
@@ -33,7 +33,7 @@ Declare `METADATA` as a **literal dictionary** (read with `ast.literal_eval`, so
 
 For each available size, use `{"requested_state_dim": <positive integer>, "parameters": {<other arguments>}}`; `parameters` may be `{}` and never contains `state_dim`. Actual dimensions come **only** from the constructor: do not repeat them in presets. For an unavailable size, use `{"requested_state_dim": None, "parameters": None, "reason": "<reason>"}`. Do not present one configuration as several sizes; adjustments must preserve the model's structure. Provide at least one small usable test instance, even if some presets are unavailable.
 
-`list_models()` must read metadata without importing or constructing the model. Check `list_models(size="small", category="abstract")` (filters intersect) and `bench.add_mdp("<name>", size="small")`. Explicitly requesting an unavailable preset must fail, **without** silent fallback. Collective additions warn and skip missing optional dependencies; other errors propagate. Importing the package must not require files from `artifacts/`.
+Each criterion catalogue's `list_models()` must read metadata without importing or constructing the model. Check its size/category filters and `Benchmark(criterion=...).add_mdp("<name>", size="small")`. Explicitly requesting an unavailable preset must fail, **without** silent fallback. Collective additions warn and skip missing optional dependencies; other errors propagate. Importing the package must not require files from `artifacts/`.
 
 ## 3. Reproducibility and caching
 
@@ -47,9 +47,9 @@ For each available size, use `{"requested_state_dim": <positive integer>, "param
 
 1. Validate matrices with `mdpforge.core.validation.validate_model(model)` and verify catalogue discovery. Supply the small instance through `TEST_PARAMETERS`.
 2. When tests are explicitly requested, cover at least one **scientific** property beyond array shapes (known transition/reward, terminal behavior, value or policy). Include relevant invalid parameters and size adjustments; for random models, check reproducibility with an isolated cache.
-3. When using a solver for validation, check solution quality. The full optimal Bellman residual gives the bound `||T(V) - V||∞ / (1 - discount)` on absolute value error. A failure or timeout never counts as a successful solve time.
+3. When using a solver for validation, check solution quality. The discounted full Bellman residual bounds absolute value error by `||T(V) - V||∞ / (1 - discount)`; total validation currently certifies absorbing acyclic models. A failure or timeout never counts as a successful solve time.
 
-**Calibration:** indicative `small / medium / large` targets are approximately `1 / 5 / 30 s` per model/solver pair, with `discount=0.99`, absolute error `1e-3` and one thread. Measure solver preparation and execution; report model construction and memory separately. Keep CSVs and provenance: parameters, requested/actual dimensions, seeds, solvers/versions, precision, machine, repeats, timeouts and any extrapolations (method, assumptions, covered solvers). Sizes may remain unavailable with a reason.
+**Discounted calibration:** indicative `small / medium / large` targets are approximately `1 / 5 / 30 s` per model/solver pair, with `discount=0.99`, absolute error `1e-3` and one thread. Measure solver preparation and execution; report model construction and memory separately. Keep CSVs and provenance: parameters, requested/actual dimensions, seeds, solvers/versions, precision, machine, repeats, timeouts and any extrapolations (method, assumptions, covered solvers). Sizes may remain unavailable with a reason.
 
 Put scratch scripts in `artifacts/tmp/` and reference results in `artifacts/results/`. Do not run heavy measurements automatically.
 

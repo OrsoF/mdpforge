@@ -29,8 +29,7 @@ def validate_total_result(
         raise ValueError("result.value must be a finite value vector")
     terminal = set(getattr(model, "terminal_states", ()))
     if not terminal or any(
-        type(state) is not int or not 0 <= state < model.state_dim
-        for state in terminal
+        type(state) is not int or not 0 <= state < model.state_dim for state in terminal
     ):
         raise ValueError("total-reward model must declare valid terminal_states")
     successors = [set() for _ in range(model.state_dim)]

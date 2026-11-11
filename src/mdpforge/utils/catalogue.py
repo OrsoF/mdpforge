@@ -2,6 +2,7 @@
 
 import ast
 import warnings
+from collections.abc import Sequence
 from importlib import import_module
 from importlib.util import find_spec
 
@@ -31,6 +32,38 @@ def _read_metadata(directory):
                     raise TypeError(f"{source.name}: METADATA must be a literal dict")
                 break
         yield source.name[:-3], metadata
+
+
+def _filter_solver_entries(entries, *, family=None, backend=None):
+    """Filter solver metadata with the public catalogue's sequence semantics."""
+    filters = {}
+    for field, value in (("family", family), ("backend", backend)):
+        if value is None:
+            continue
+        values = [value] if isinstance(value, str) else value
+        if (
+            not isinstance(values, Sequence)
+            or not values
+            or any(not isinstance(item, str) or not item.strip() for item in values)
+        ):
+            raise ValueError(
+                f"{field} must be a string or nonempty sequence of strings"
+            )
+        available = {
+            entry.get(field) for entry in entries if entry.get(field) is not None
+        }
+        unknown = set(values) - available
+        if unknown:
+            raise ValueError(f"Unknown solver {field}: {sorted(unknown)}")
+        filters[field] = set(values)
+    selected = [
+        entry
+        for entry in entries
+        if all(entry.get(field) in values for field, values in filters.items())
+    ]
+    if filters and not selected:
+        raise ValueError("No catalogue solver matches the requested metadata filters")
+    return selected
 
 
 def _load_solver(name, *, backend=None, catalogue=None):
