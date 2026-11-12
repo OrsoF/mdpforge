@@ -22,6 +22,8 @@ After `create_model()`, the data must satisfy:
 
 **Required scientific documentation:** state encoding, valid/invalid actions, transitions, rewards (sign/scale), terminal/absorbing states, parameters (defaults/domains), references and adaptations. For an original model, use `reference=None` and state its purpose and assumptions. Total-reward models declare `supported_criteria={"total"}` and `terminal_states`; they must have finite total reward. Average benchmarks reuse discounted models.
 
+When adapting a discounted catalogue model with an absorbing exit to total reward, preserve its states, actions and transition probabilities exactly; do not add a timeout or other termination rule. Set `reward_matrix[s, a]` to 1 when a nonterminal action has positive probability of entering the exit, and to 0 otherwise, including at the absorbing exit. Give the total model a distinct cache name. If the discounted model has no absorbing exit, document the necessary transition change explicitly rather than presenting it as an exact copy.
+
 ## 2. Metadata and sizes
 
 Declare `METADATA` as a **literal dictionary** (read with `ast.literal_eval`, so no computations or variable references), containing:

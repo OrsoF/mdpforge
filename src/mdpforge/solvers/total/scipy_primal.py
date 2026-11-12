@@ -36,10 +36,7 @@ class Solver:
             [transition - identity for transition in self.model.transition_matrix],
             format="csr",
         )
-        bounds = [
-            (0, 0) if state in terminal else (None, None)
-            for state in range(n)
-        ]
+        bounds = [(0, 0) if state in terminal else (None, None) for state in range(n)]
         result = linprog(
             np.ones(n),
             A_ub=constraints,

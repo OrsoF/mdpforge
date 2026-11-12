@@ -5,6 +5,8 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+DIRECTIONS = ((-1, 0), (1, 0), (0, 1), (0, -1))  # North, south, east, west
+
 METADATA = {
     "sizes": {
         "small": {
@@ -21,7 +23,7 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Grid navigation through four connected rooms.",
+    "description": "Reach the absorbing exit through four rooms with reward on entry.",
     "reference": (
         "Hengst, B. (2012). Hierarchical approaches. In Reinforcement Learning: "
         "State-of-the-Art, pp. 293-323."
@@ -29,7 +31,12 @@ METADATA = {
 }
 
 
+TEST_PARAMETERS = {"state_dim": 100}
+
+
 class Model(MDP):
+    supported_criteria = frozenset({"total"})
+
     def __init__(self, state_dim: int = 100, action_dim: int = 10):
         self.requested_state_dim = int(state_dim)
         state_dim = max(100, state_dim)
@@ -39,7 +46,10 @@ class Model(MDP):
         self.action_dim = 4
         self.state_dim = 4 * self.size_of_one_room**2
 
-        self.name = "{}_{}_rooms".format(self.state_dim, self.action_dim)
+        self.name = "{}_{}_rooms_total_entry_reward".format(
+            self.state_dim, self.action_dim
+        )
+        self.terminal_states = (self.size_of_one_room // 2,)
 
     def _build_model(self):
         self.side_size = self.size_of_one_room * 2
@@ -57,100 +67,63 @@ class Model(MDP):
         self.transition_matrix: list = [
             lil_matrix((self.state_dim, self.state_dim)) for _ in range(self.action_dim)
         ]
-        self.transition_matrix = self._add_displacements(self.transition_matrix)
-        self.transition_matrix = self._add_walls(self.transition_matrix)
-        self.transition_matrix, self.reward_matrix = self._add_exit(
-            self.transition_matrix, self.reward_matrix
-        )
+        self._add_displacements()
+        self._add_walls()
+        self._add_exit()
 
         self.transition_matrix = [matrix.tocsr() for matrix in self.transition_matrix]
+        exit_state = self.terminal_states[0]
+        for action, transition in enumerate(self.transition_matrix):
+            self.reward_matrix[:, action] = (
+                transition[:, exit_state].toarray().ravel() > 0
+            )
+        self.reward_matrix[exit_state, :] = 0.0
 
     def _coord(self, ss: int):
-        assert ss < self.side_size**2
         return ss // self.side_size, ss % self.side_size
 
     def _state(self, i: int, j: int):
         return i * self.side_size + j
 
-    def _next_state(self, i, j, direction):
-        assert isinstance(direction, int) and 0 <= direction < 4
-        if direction == 0:  # North
-            return i - 1, j
-        elif direction == 1:  # South
-            return i + 1, j
-        elif direction == 2:  # East
-            return i, j + 1
-        else:  # West
-            return i, j - 1
-
     def _is_in_grid(self, i: int, j: int):
         return 0 <= i < self.side_size and 0 <= j < self.side_size
 
-    def _add_displacements(self, transition_matrix: list):
-        for a in range(self.action_dim):
+    def _add_displacements(self):
+        for action, (row_step, col_step) in enumerate(DIRECTIONS):
             for ss in range(self.state_dim):
                 i, j = self._coord(ss)
-                next_coord = self._next_state(i, j, a)
+                next_coord = i + row_step, j + col_step
                 if self._is_in_grid(*next_coord):
-                    transition_matrix[a][ss, ss] = 0.2
-                    transition_matrix[a][ss, self._state(*next_coord)] = 0.8
+                    self.transition_matrix[action][ss, ss] = 0.2
+                    self.transition_matrix[action][ss, self._state(*next_coord)] = 0.8
                 else:
-                    transition_matrix[a][ss, ss] = 1.0
-        return transition_matrix
+                    self.transition_matrix[action][ss, ss] = 1.0
 
-    def _add_wall_element(
-        self, ss1: int, ss2: int, transition_matrix: list, direction: str
-    ):
-        assert direction in ["horizontal", "vertical"]
-        i, j = self._coord(ss1)
-        k, l = self._coord(ss2)
-        assert (i - k) ** 2 + (j - l) ** 2 == 1
-        if direction == "vertical":
-            assert j < l
-            transition_matrix[2][ss1, ss1] = 1.0
-            transition_matrix[2][ss1, ss2] = 0.0
-            transition_matrix[3][ss2, ss2] = 1.0
-            transition_matrix[3][ss2, ss1] = 0.0
-        else:
-            assert i < k
-            transition_matrix[1][ss1, ss1] = 1.0
-            transition_matrix[1][ss1, ss2] = 0.0
-            transition_matrix[0][ss2, ss2] = 1.0
-            transition_matrix[0][ss2, ss1] = 0.0
-        return transition_matrix
+    def _block_edge(self, first: int, second: int, forward: int, backward: int):
+        self.transition_matrix[forward][first, first] = 1.0
+        self.transition_matrix[forward][first, second] = 0.0
+        self.transition_matrix[backward][second, second] = 1.0
+        self.transition_matrix[backward][second, first] = 0.0
 
-    def _add_walls(self, transition_matrix: list):
-        # Horizontal wall
-        direction = "horizontal"
-        i, k = self.side_size // 2 - 1, self.side_size // 2
+    def _add_walls(self):
+        middle = self.side_size // 2
         for index in range(self.side_size):
-            if index not in self.doors_indices:
-                j, l = index, index
-                ss1, ss2 = self._state(i, j), self._state(k, l)
-                transition_matrix = self._add_wall_element(
-                    ss1, ss2, transition_matrix, direction
-                )
+            if index in self.doors_indices:
+                continue
 
-        # Vertical wall
-        direction = "vertical"
-        j, l = self.side_size // 2 - 1, self.side_size // 2
-        for index in range(self.side_size):
-            if index not in self.doors_indices:
-                i, k = index, index
-                ss1, ss2 = self._state(i, j), self._state(k, l)
-                transition_matrix = self._add_wall_element(
-                    ss1, ss2, transition_matrix, direction
-                )
+            upper = self._state(middle - 1, index)
+            lower = self._state(middle, index)
+            self._block_edge(upper, lower, 1, 0)  # South, north
 
-        return transition_matrix
+            left = self._state(index, middle - 1)
+            right = self._state(index, middle)
+            self._block_edge(left, right, 2, 3)  # East, west
 
-    def _add_exit(self, transition_matrix: list, reward_matrix: np.ndarray):
+    def _add_exit(self):
         """Add exit at the third top left box."""
         i, j = 0, self.side_size // 4
         exit_state = self._state(i, j)
         for a in range(self.action_dim):
-            transition_matrix[a][exit_state, :] = 0
-            transition_matrix[a][exit_state, exit_state] = 1
-        reward_matrix[exit_state, :] = 0
-
-        return transition_matrix, reward_matrix
+            self.transition_matrix[a][exit_state, :] = 0
+            self.transition_matrix[a][exit_state, exit_state] = 1
+        self.reward_matrix[exit_state, :] = 0

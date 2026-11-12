@@ -13,7 +13,8 @@
 - [ ] How should MDP solver parameters be tuned?
 - [ ] Translate the documentation into English and shorten it to the strict minimum. Translate the roadmap.
 - [ ] Plan experiments: list standard solvers/approaches, identify improvements that can actually be implemented, and add a contribution.
-- [ ] Should tests check the final value function or the Bellman residual?
+
+
 - [ ] Quels paramètres devraient aller dans Metadata, lesquels directement dans le solveur ou le modèle ?
 - [ ] Comment rendre universel le format des solveurs, avec tous leurs paramètres ? un dictionnaire d'options ? avec seulement une precision finale ?
 

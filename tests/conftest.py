@@ -2,8 +2,8 @@ import numpy as np
 import pytest
 from scipy.sparse import csr_matrix
 
-from mdpforge.solvers import discounted
 from mdpforge.core.mdp import MDP
+from mdpforge.solvers import discounted
 from mdpforge.utils import persistence
 from tests._contracts import sample_models
 from tests._solver_support import solver_names
