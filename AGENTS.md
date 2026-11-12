@@ -7,6 +7,7 @@ mdpforge benchmarks new finite MDPs and new MDP solvers. Prefer small, useful ch
 - Treat requests for advice or proposals (for example, "How would you modify the README?") as discussion only: describe the suggested changes in chat without editing files or executing the proposed actions. Apply them only when the user asks you to do so.
 - Inspect the working-tree status, affected files, and relevant callers. Read the whole repository or run a baseline only when needed to understand the change.
 - Make the smallest robust change. Avoid unrelated refactors, wrappers, compatibility layers, new hierarchies, and repository-wide formatting.
+- Follow the clarity of `src/mdpforge/models/discounted/rooms.py` when writing code: make the main operation read as an ordered sequence of domain steps, give each helper one clear responsibility and a descriptive name, and keep rules, constants and state transformations explicit. Prefer straightforward control flow over abstractions that hide the model's logic; adapt these principles to the module rather than copying incidental details.
 - Do not create, move, or edit repository-root scripts as a side effect of model, solver, catalogue, or benchmark changes. Change a root script only when the user explicitly requests that script; keep scratch scripts in `artifacts/tmp/`. When deleting a script, remove its references in the same change.
 - Organizational refactors move or rename code and update references without changing runtime behavior. Do not introduce new computations, validation, or benchmark protocol changes unless explicitly requested.
 - Preserve user changes and deliberate deletions. Do not restore removed models or solvers, or modify baseline algorithms, unless the task calls for it.
@@ -52,4 +53,6 @@ conda run -n benchmark python -m ruff format --check .
 
 Declare dependencies in `pyproject.toml`; keep NumPy/SciPy core imports independent of optional integrations. Put scratch scripts and outputs in `artifacts/tmp/`; preserve reference results and existing tool configuration.
 
-Finish with a short report: changes, checks and outcomes, remaining limitations. Distinguish existing failures from regressions and local checks from hosted CI. Do not claim checks that were skipped, unavailable, or collected no tests.
+In every reply to the user, use simple words and direct sentences. Explain technical terms when they are necessary, and describe concrete actions and results so the user does not have to guess what you mean. Avoid jargon and vague summaries.
+
+Finish with a short report: changes, checks and outcomes, remaining limitations. Explicitly report every major code change or design decision initiated by the agent beyond the user's request, including its reason and impact. Distinguish existing failures from regressions and local checks from hosted CI. Do not claim checks that were skipped, unavailable, or collected no tests.
