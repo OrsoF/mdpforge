@@ -1,36 +1,27 @@
-# README and visualization roadmap
+# Visualization roadmap
 
-The README should help a visitor answer two questions quickly: "Can I test my MDP here?" and "Can I compare my solver here?" Its opening now offers both paths, a compact comparison with repeat spread, and a link to an executed visual gallery.
+The [README](../README.md) introduces model and solver registration. The [visual gallery](../notebooks/visualize_results.ipynb) explains paired speedups, performance profiles, trial outcomes and runtime/error-bound plots using saved CSVs.
 
-## Views available from benchmark results
+## README additions
 
-The library provides `BenchmarkResult.plot_heat()`, `plot_performance_profile()`, `summary()` and `solver_summary()` for comparisons of a single benchmark run. Load saved exports with `BenchmarkResult.from_csv()` without executing solvers.
+- [ ] Add two short walkthroughs: register an external model and compare an external solver. Link the existing [model](adding-a-model.md) and [solver](adding-a-solver.md) guides.
+- [ ] Preview the model catalogue with representative tasks, available sizes and recipe links drawn from metadata.
+- [ ] Refresh the broad comparison and pair its performance profile with full-repeat coverage. Keep complete settings in the experiment manifest and explain any legend selection.
+- [ ] Explain one scientific contribution: model structure, the solver that exploits it and the checks supporting the result.
 
-| View                                   | Best use                                                | Interpretation                                                                     |
-| -------------------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Paired speedups                        | First README figure; compare a new solver on a few MDPs | Higher is faster; each trial uses the same repeat and seed as its reference        |
-| Performance profiles                   | Compare many solvers on many MDPs                       | Fraction of all models solved within a given factor of the fastest eligible median |
-| Trial outcomes and full-model coverage | Show robustness next to speed                           | One failed repeat excludes that solver/model pair from the runtime comparison      |
-| Runtime vs error bound                 | Explain shared accuracy and diagnose oversolving        | A tighter certified bound is not a measurement of actual value or policy error     |
+## Measurements needed
 
-Use the small README export to illustrate model-dependent rankings. The larger backend export was recorded on 2026-10-09 with MDPSolver 0.10.1; its old VISOR errors are historical. Regenerate that export before making claims about current backend performance. Keep the CSV and matching experiment manifest with every published comparison. A solver-set change changes a performance profile's reference minima; do not compare profiles built from different candidate sets as though they used the same baseline.
+| Plot | Controlled experiment |
+| --- | --- |
+| Runtime vs states or transition nonzeros | Several sizes of one model family; fixed solver settings, precision, discount and thread counts. |
+| Runtime vs discount | Identical matrices; shared absolute error target. |
+| Runtime vs requested precision | Identical matrices and discount; vary the error target. |
+| Bellman-residual convergence | Iteration or elapsed-time traces; document measurement overhead. |
 
-## Suggested next additions to the README
+Keep a CSV and matching experiment manifest for each setting, including validation mode. The saved sensitivity demo varies one factor at a time; it does not measure interactions or scaling. Final-result CSVs have no convergence traces, and the size-calibration export mixes families at largely one selected size each.
 
-1. **Two short contribution walkthroughs.** Show one external model entering the benchmark and one external solver producing a comparison. The current quickstart already demonstrates both registrations. Add a dedicated solver contribution guide before implying that such a guide exists.
-2. **An MDP catalogue preview.** A small table of navigation, physical-control, service-operations and abstract examples, with actual size presets and recipe links, would make the collection easier to discover. Read catalogue metadata rather than maintaining a manually counted headline.
-3. **A current broad comparison.** Once refreshed, pair the performance profile with the coverage figure. Keep full solver settings in the experiment manifest and only a readable subset of legends in the README, documenting the selection.
-4. **One worked scientific contribution.** Explain an MDP structure, why one solver exploits it, and which accuracy checks support the result. This gives potential contributors a concrete standard beyond a runtime leaderboard.
+## Interpreting saved results
 
-## Next plots that need new measurements
+The small README sample illustrates model-dependent rankings. The broad backend export dates from 2026-10-09 with MDPSolver 0.10.1; its VISOR failures are historical. Regenerate it before drawing conclusions about current performance.
 
-The saved sensitivity demo varies one factor at a time and does not estimate interactions or scaling. Sensitivity comparisons should reuse each model's matrices and record per-setting experiment manifests.
-
-| Plot                                     | Experiment needed                                                                                        | Why it helps                                                             |
-| ---------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Runtime vs states or transition nonzeros | Several sizes of the **same** model family, fixed solver settings, precision, discount and thread counts | Reveals scaling without confusing model structure with size              |
-| Runtime vs discount                      | Reuse the exact matrices; sweep discount with a shared absolute error target                             | Shows which solvers handle long horizons well                            |
-| Runtime vs requested precision           | Reuse matrices and discount; sweep target precision                                                      | Compares the cost of tighter accuracy                                    |
-| Bellman-residual convergence             | Record iteration or elapsed-time traces, with documented measurement overhead                            | Explains how algorithms make progress, rather than just their final time |
-
-The final-result CSVs do not contain convergence traces. The size-calibration export contains different model families at largely one selected size each, so it cannot justify a single scalability curve. Avoid drawing either curve from those records. The visual gallery uses historical measurements; the sensitivity figures use a separate small-instance study.
+Runtime comparisons require every expected repeat to succeed. Performance profiles retain all models in their denominator and use the fastest eligible median across the selected solvers; changing that set changes the baseline. A certified error bound is not the measured value or policy error. Current benchmarks certify results only with `validate=True`; keep validation status separate from execution success.

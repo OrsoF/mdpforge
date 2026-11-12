@@ -1,20 +1,21 @@
-# Open questions
+# Roadmap
 
-- [ ] Add an automated test for the benchmark's existing output-precision check.
-- [ ] Finish migrating solvers with custom `run()` methods and remaining callers to `SolveResult`; stop exposing `value`, `policy` and `runtime` as solver result attributes.
-- [ ] Simplify the benchmark class by moving functions into utilities or splitting responsibilities across classes.
-- [ ] List and add VI variants; clarify the VIGS performance gap between C++ and Python.
-- [ ] Support several VISOR configurations?
-- [ ] Define the remaining minimum test coverage: each model's arguments and useful cases beyond the shared contract.
-- [ ] Get madupite working; none of its solvers currently work.
-- [ ] Shorten the Markdown documentation where possible.
-- [ ] Which other solvers should be added?
-- [ ] How should MDP solver parameters be tuned?
-- [ ] Translate the documentation into English and shorten it to the strict minimum. Translate the roadmap.
-- [ ] Plan experiments: list standard solvers/approaches, identify improvements that can actually be implemented, and add a contribution.
+## Interfaces and benchmarks
 
+- [ ] Finish migrating solvers and callers to `SolveResult`; remove solver result attributes `value`, `policy` and `runtime`.
+- [ ] Simplify `Benchmark` by moving helpers into utilities or separating responsibilities.
+- [ ] Decide which parameters belong in `METADATA` or model/solver constructors, and whether solvers need a shared options format and final precision target.
 
-- [ ] Quels paramètres devraient aller dans Metadata, lesquels directement dans le solveur ou le modèle ?
-- [ ] Comment rendre universel le format des solveurs, avec tous leurs paramètres ? un dictionnaire d'options ? avec seulement une precision finale ?
+## Tests and backends
 
-- [ ] Normalize local Python files to LF to match the existing `.gitattributes` rule and resolve line-ending warnings.
+- [ ] Test the benchmark's optional output-precision validation.
+- [ ] Define model-specific test coverage beyond the shared contract, including arguments and useful edge cases.
+- [ ] Diagnose and resolve madupite solver failures.
+
+## Algorithms and experiments
+
+- [ ] Review VI variants to add and explain the C++/Python VIGS performance gap.
+- [ ] Decide whether VISOR needs additional registered configurations beyond its constructor options.
+- [ ] Select other solvers to add.
+- [ ] Define a method for tuning solver parameters.
+- [ ] Plan experiments against standard methods, identify feasible improvements and demonstrate a scientific contribution. See the [visualization roadmap](visualization-roadmap.md) for measurements and README additions.

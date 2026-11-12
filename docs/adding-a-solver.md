@@ -1,42 +1,38 @@
 # Adding a solver
 
-Catalogue integration requirements for mdpforge; see also [AGENTS.md](../AGENTS.md).
+Follow [AGENTS.md](../AGENTS.md); existing solver algorithms and backend internals must remain unchanged.
 
 ## 1. Interface
 
-Create `src/mdpforge/solvers/<criterion>/<name>.py` using lowercase letters and underscores, without a leading underscore, and expose `Solver`. The criterion is `discounted`, `total`, or `average`; discovery is automatic within its catalogue.
+Create `src/mdpforge/solvers/<criterion>/<name>.py` and expose `Solver`. Use lowercase letters and underscores without a leading underscore; `<criterion>` is `discounted`, `total` or `average`. Discovery is automatic.
 
-- API: discounted solvers use `Solver(model, discount, ...)` with `0 < discount < 1`; total and average solvers use `Solver(model, ...)`. All use argument-free `run()`. Iterative solvers accept finite positive `final_precision` when needed.
-- Available data: `state_dim=S`, `action_dim=A`, `transition_matrix[a]` as SciPy CSR `(S, S)`, and `reward_matrix` as NumPy `(S, A)`. No additional model methods are required. **Preserve inputs**, including their representation; keep backend conversions local and avoid unnecessary dense matrices.
-- `run()` returns a [`SolveResult`](../src/mdpforge/core/solve_result.py): finite NumPy `value` `(S,)` and `policy` as `None` or integer actions `(S,)` in `[0, A)`. Expose a readable solver `name`; callers consume results through `SolveResult`.
+- Discounted constructors accept `(model, discount, ...)`, with `0 < discount < 1`; total/average constructors accept `(model, ...)`. Use explicit options and finite positive `final_precision` where needed; `run()` takes no options.
+- Models supply `state_dim=S`, `action_dim=A`, SciPy CSR `transition_matrix[a]` `(S, S)` and NumPy `reward_matrix` `(S, A)`. Preserve inputs and their representation; keep backend conversions local.
+- Return [`SolveResult`](../src/mdpforge/core/solve_result.py) with finite NumPy `value` `(S,)` and `policy=None` or integer actions `(S,)` in `[0, A)`. Expose a readable solver `name`.
 
-**Prefer [`GenericSolver`](../src/mdpforge/core/solver.py) for discounted solvers:** call its constructor, set `self.name`, and implement `_solve()` to return `SolveResult` explicitly. A custom `run()` returns the same result type. Example: [`mdpforge_vi.py`](../src/mdpforge/solvers/discounted/mdpforge_vi.py).
+For discounted solvers, prefer [`GenericSolver`](../src/mdpforge/core/solver.py): call its constructor, set `self.name` and implement `_solve()`. See [`mdpforge_vi.py`](../src/mdpforge/solvers/discounted/mdpforge_vi.py). Custom `run()` methods return the same result type.
 
-Timing belongs to the benchmark, which measures construction and `run()`, including conversions. `SolveResult` has no `runtime` field; durations remain in `BenchmarkResult` and benchmark CSV exports.
+The benchmark times construction, conversions and `run()`. Durations belong in benchmark results, not `SolveResult`.
 
 ## 2. Catalogue
 
-Declare a **literal** `METADATA` dictionary, readable without importing the backend, with four nonempty strings:
+Declare a literal `METADATA` dictionary readable without backend imports:
 
-- `display_name` (label) and `description` (one sentence).
-- `family`: `vi`, `pi`, `mpi`, `lp`, `experimental`.
-- `backend`: `mdpforge`, `mdptoolbox`, `mdpsolver`, `marmote`, `madupite`, `mdpax`, `cma`.
+- `display_name` and `description`: nonempty label and one-sentence description.
+- `family`: `vi`, `pi`, `mpi`, `lp` or `experimental`.
+- `backend`: nonempty implementation-library name, such as `mdpforge`, `scipy` or `mdpsolver`.
 
-For discounted VI, add `solver_type = "vi"` for discovery by VI-specific fixtures. Check the criterion catalogue's `list_solvers()` and `Benchmark(criterion=...).add_solver("<name>")`. Declare dependencies in `pyproject.toml`; optional backends use extras and must not block the NumPy/SciPy core or the catalogue.
+For discounted VI, set `solver_type = "vi"`. Check `list_solvers()` in the selected catalogue and `Benchmark(criterion=...).add_solver("<name>")`. Declare dependencies in `pyproject.toml`; optional integrations must not block core imports or discovery.
 
 ## 3. Precision and behavior
 
-- Document the algorithm/reference, adaptations, initialization, stopping rule and accepted option values. Random behavior must reproduce after resetting NumPy/Python seeds, including private RNGs.
-- Discounted validation uses `||T(V) - V||∞ / (1 - discount)` with the full optimal Bellman operator. Total validation currently certifies absorbing acyclic models; average validation is unavailable.
-- Report failures explicitly and preserve algorithm-specific stopping rules. The benchmark records unsuccessful or imprecise runs separately from successful solves.
-- Use **public backend APIs** without bypassing initialization, checks or bounds; propagate native errors. Preserve reward scales, discount conventions, numerical behavior, existing solver algorithms and the VI reference cache.
+- Document the reference, adaptations, initialization, stopping rule and option domains. Reproduce random behavior after resetting NumPy/Python seeds, including private RNGs.
+- Use public backend APIs and propagate errors. Preserve reward scales, discount conventions, stopping rules and the VI reference cache.
+- `Benchmark.run(validate=True)` checks results after timing. Execution and validation statuses are separate; `success` alone does not certify accuracy.
+- Discounted residual validation bounds value error by `||T(V) - V||∞ / (1 - discount)`. Total certification covers absorbing acyclic models; average certification is unavailable. Declare the appropriate `validation_method` in `SolveResult`.
 
-**Specific options:** positive integer budgets are `max_iterations`, `max_evaluation_iterations`, `max_projected_iterations` and `max_fallback_iterations`; batch update counts are `bellman_iterations` and `aggregation_iterations`. Respect existing signatures and profiles. Current names are `initial_value`, `initial_policy`, `seed` (CMA-ES) and `refinement`, with **no historical aliases**. Constructors do not expose `verbose`; benchmark output is controlled by `Benchmark.run(verbose=...)`.
+Keep option names consistent with existing constructors: `initial_value`, `initial_policy`, `refinement`, positive integer budgets `max_iterations`, `max_evaluation_iterations`, `max_projected_iterations`, `max_fallback_iterations`, and batch counts `bellman_iterations`/`aggregation_iterations`. Preserve backend defaults and registered profiles; avoid historical aliases. Constructors do not expose `verbose`; benchmark output uses `Benchmark.run(verbose=...)`.
 
-**Existing backend behavior:** `mdptoolbox_vi`/`mdptoolbox_vigs` pass `max_iterations` as `max_iter` without overriding native limits; `mdptoolbox_vi` calls `ValueIteration`. MDPSolver budgets cover internal policy evaluation. MPIGS/MPISOR default to `max_evaluation_iterations=10`, and the relevant `*_init` profiles retain fixed zero initialization. Native mdpforge VI/MPI solvers handle convergence, nonfinite values, stagnation and iteration limits locally; failures raise `RuntimeError`, and convergence on the last allowed iteration is accepted.
+## 4. Tests
 
-## 4. Validation
-
-[`tests/test_solver_contracts.py`](../tests/test_solver_contracts.py) checks solver interfaces and input preservation on the cases configured in [`tests/conftest.py`](../tests/conftest.py). [`tests/test_solvers_rooms.py`](../tests/test_solvers_rooms.py) validates installed catalogue solvers on the Rooms small preset with `validate_result()`. See the [test guide](../tests/README.md).
-
-Use Python 3.11+ in Conda `benchmark`. **Add tests and run pytest/Ruff only when explicitly requested.** When pytest is requested, run the full suite, including installed backends; skip only missing dependencies. Do not run heavy benchmarks automatically. Report changes, checks actually performed, results and limitations; commands are in [AGENTS.md](../AGENTS.md).
+See the [test guide](../tests/README.md) for shared interface and Rooms coverage. Add tests or run pytest/Ruff only when explicitly requested; follow [AGENTS.md](../AGENTS.md) for execution and reporting rules.

@@ -1,6 +1,6 @@
 <h1 align="center">mdpforge</h1>
 
-<p align="center"><strong>Benchmark finite MDPs. Compare solvers at a shared accuracy.</strong></p>
+<p align="center"><strong>Benchmark finite MDPs and compare solvers.</strong></p>
 
 <p align="center">
   <a href="https://github.com/OrsoF/mdpforge/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/OrsoF/mdpforge/ci.yml?branch=main&amp;label=Tests" alt="Tests"></a>
@@ -21,21 +21,17 @@
 
 ### Install
 
-Requires **Python 3.11+**. `Benchmark()` uses discounted reward (`0 < discount < 1`); `criterion="total"` uses absorbing total reward, and `criterion="average"` uses the discounted model catalogue with custom average-reward solvers.
-
-Install mdpforge with its built-in models, solvers and plotting:
+Requires **Python 3.11+**. Install the built-in models, solvers and plotting:
 
 ```sh
 python -m pip install "git+https://github.com/OrsoF/mdpforge.git"
 ```
 
-From an existing checkout, run this at the repository root instead:
+From a checkout:
 
 ```sh
 python -m pip install -e .
 ```
-
-The only extras are `[solvers]` for optional pip solver backends and `[models]` for optional model generators. From a checkout, use `python -m pip install ".[solvers]"` or `python -m pip install ".[models]"`. Marmote and madupite require separate native installations; see [Optional backends](#optional-backends).
 
 ### Run a benchmark
 
@@ -51,18 +47,14 @@ result = bench.run(discount=0.9, precision=1e-3, repeats=3, seed=0)
 result.export_csv("results.csv")
 ```
 
-Each trial records runtime. Pass `validate=True` to certify supported results after timing; average-reward validation is not yet available. `result.export_csv(path)` saves results and settings; use `BenchmarkResult.from_csv(path)` to reopen them.
-
-For total reward, use `Benchmark(criterion="total")`, `bench.add_mdp("progress_chain")`, `bench.add_solver("marmote_vi")`, then `bench.run(precision=1e-3)`. The Marmote backend is installed separately as described below.
-
-Plot the results:
+Runtime includes solver construction and execution. Pass `validate=True` to check solution quality after timing; execution success alone does not certify accuracy. CSV exports include a settings manifest; reopen them with `BenchmarkResult.from_csv(path)`.
 
 ```python
 result.plot_performance_profile()
 result.plot_heat(reference="mdpforge_vi")
 ```
 
-Paired speedups use models solved by both solvers on every repeat. Set the reference explicitly when comparing runs.
+`Benchmark()` uses discounted reward (`0 < discount < 1`). Use `criterion="total"` for finite total reward or `criterion="average"` for average reward with discounted models. Total validation covers absorbing acyclic models; average validation is unavailable.
 
 ## Visualizations
 
@@ -70,7 +62,7 @@ Paired speedups use models solved by both solvers on every repeat. Set the refer
 
 ![Performance profiles showing the share of models solved within a runtime factor of the fastest eligible solver, grouped by backend.](artifacts/figures/gallery_performance_profiles.png)
 
-At 2×, a curve shows the share of models solved within twice the fastest eligible median runtime; failed or missing pairs remain in the denominator. See the [historical export notes](docs/visualization-roadmap.md).
+At 2×, a curve shows the share of models solved within twice the fastest eligible median runtime. Eligibility requires every repeat to succeed; all models remain in the denominator. The [gallery](notebooks/visualize_results.ipynb) explains these historical measurements; see the [export notes](docs/visualization-roadmap.md#interpreting-saved-results) before comparing current backends.
 
 ### How do discount and precision affect runtime?
 
@@ -80,13 +72,13 @@ The curves use one Garnet instance; bands show the range over three repeats.
 
 ## Models and solvers
 
-Top-level `list_models()` and `list_solvers()` browse the discounted catalogues; total catalogues are in `mdpforge.models.total` and `mdpforge.solvers.total`. Select models by `size` and `category`, and solvers by `family` and `backend`. Use `ScalingBenchmark(criterion=...)` for size sweeps.
+`list_models()` and `list_solvers()` browse discounted catalogues. Other catalogues are `mdpforge.models.total`, `mdpforge.solvers.total` and `mdpforge.solvers.average`. Filter models by `size`/`category` and solvers by `family`/`backend`; use `ScalingBenchmark` for size sweeps.
 
-`Benchmark()` starts empty. Call `bench.add_default_mdps()` for small Rooms, Mountain Car and Garnet models, and `bench.add_default_solvers()` for `mdpforge_vi` and `mdpforge_mpi`.
+`Benchmark()` starts empty. For discounted defaults, call `add_default_mdps()` for small Rooms, Mountain Car and Garnet, and `add_default_solvers()` for `mdpforge_vi` and `mdpforge_mpi`.
 
 ### Bring your own model
 
-Register transition matrices, one per action, and expected rewards of shape `(states, actions)`. Dense and sparse inputs are accepted:
+Provide one transition matrix per action and expected rewards of shape `(states, actions)`; dense and sparse inputs are accepted:
 
 ```python
 bench.add_mdp(
@@ -98,19 +90,19 @@ bench.add_mdp(
 
 ### Bring your own solver
 
-Register a callable with `bench.add_solver("my_solver", solve_function=my_solver)`. Discounted functions take `(transitions, rewards, discount, precision)`; total and average functions take `(model, precision)`. Return a NumPy value vector or `SolveResult`; the benchmark handles copies and timing. For a matrix-defined total model, pass `terminal_states` to `add_mdp()` if you want residual validation.
+Register `bench.add_solver("my_solver", solve_function=my_solver)`. Discounted functions take `(transitions, rewards, discount, precision)`; total and average functions take `(model, precision)`. Return a NumPy value vector or `SolveResult`. The benchmark handles copies and timing; see the [solver guide](docs/adding-a-solver.md) for class interfaces. Matrix-defined total models need `terminal_states` for validation.
 
 ### Optional backends
 
-The `solvers` extra installs MDPax, MDPSolver, MDPToolbox, Pyomo with HiGHS, QuantEcon and CMA. The `models` extra installs mazelib. Version requirements are listed in [pyproject.toml](pyproject.toml).
+From a checkout, `python -m pip install ".[solvers]"` adds MDPax, MDPSolver, MDPToolbox, Pyomo/HiGHS, QuantEcon and CMA; `python -m pip install ".[models]"` adds mazelib. Versions are in [pyproject.toml](pyproject.toml).
 
-Install Marmote separately in the same active Conda environment using its [official installation instructions](https://marmote.gitlabpages.inria.fr/marmote/instructions/linux/install_linux.html):
+Install Marmote separately in the active Conda environment ([instructions](https://marmote.gitlabpages.inria.fr/marmote/instructions/linux/install_linux.html)):
 
 ```sh
 conda install -c marmote -c conda-forge marmote
 ```
 
-madupite requires MPI/PETSc and a separate installation following its upstream instructions.
+madupite requires a separate native installation with MPI/PETSc.
 
 ## Examples and documentation
 
