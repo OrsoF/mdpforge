@@ -24,7 +24,7 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Navigation through a maze generated using Wilson's algorithm.",
+    "description": "Reach the absorbing exit in a Wilson maze with reward on entry.",
     "reference": (
         "Wilson, D. B. (1996). Generating random spanning trees more quickly than "
         "the cover time. STOC, pp. 296-303."
@@ -33,6 +33,8 @@ METADATA = {
 
 
 class Model(MDP):
+    supported_criteria = frozenset({"total"})
+
     def __init__(self, state_dim: int = 100, action_dim: int = 10):
         self.requested_state_dim = int(state_dim)
         self.size = max(3, int(np.sqrt(state_dim)))
@@ -40,9 +42,12 @@ class Model(MDP):
         self._build_state_space()
         self.action_dim = 4
 
-        self.name = "{}_{}_maze_wilson".format(
+        self.name = "{}_{}_maze_wilson_total_entry_reward".format(
             self.state_dim,
             self.action_dim,
+        )
+        self.terminal_states = (
+            self.state_space[(2 * self.size - 1, 2 * self.size - 1)],
         )
 
     def _build_maze(self):
@@ -78,10 +83,7 @@ class Model(MDP):
         return x, y
 
     def _build_reward_matrix(self):
-        self.reward_matrix = -1 * np.ones((self.state_dim, self.action_dim))
-        self.reward_matrix[self.state_space[(2 * self.size - 1, 2 * self.size - 1)]] = (
-            0.0
-        )
+        self.reward_matrix = np.zeros((self.state_dim, self.action_dim))
 
     def _build_model(self):
         self._build_maze()
@@ -91,7 +93,13 @@ class Model(MDP):
             dok_array((self.state_dim, self.state_dim)) for _ in range(self.action_dim)
         ]
 
+        exit_state = self.terminal_states[0]
         for ss1, (x, y) in enumerate(self.state_list):
+            if ss1 == exit_state:
+                # The exit stays absorbing in the total-reward version.
+                for aa in range(self.action_dim):
+                    self.transition_matrix[aa][ss1, ss1] = 1.0
+                continue
             for aa in range(self.action_dim):
                 new_x, new_y = self._update_coord(x, y, aa)
                 ss2 = self.state_space[(new_x, new_y)]
@@ -104,3 +112,8 @@ class Model(MDP):
                     self.transition_matrix[aa][ss1, ss1] = 1.0
 
         self.transition_matrix = [matrix.tocsr() for matrix in self.transition_matrix]
+        for action, transition in enumerate(self.transition_matrix):
+            self.reward_matrix[:, action] = (
+                transition[:, exit_state].toarray().ravel() > 0
+            )
+        self.reward_matrix[exit_state, :] = 0.0

@@ -31,7 +31,7 @@ METADATA = {
         },
     },
     "category": "physical_control",
-    "description": "Discretized MountainCar position and velocity control.",
+    "description": "Reach an absorbing MountainCar goal with reward on entry.",
     "reference": (
         "Moore, A. W. (1990). Efficient Memory-based Learning for Robot Control. "
         "PhD thesis, University of Cambridge."
@@ -39,7 +39,12 @@ METADATA = {
 }
 
 
+TEST_PARAMETERS = {"state_dim": 100}
+
+
 class Model(MDP):
+    supported_criteria = frozenset({"total"})
+
     def __init__(self, state_dim: int = 100, action_dim: int = 10) -> None:
         """
         params variable should contain :
@@ -55,11 +60,18 @@ class Model(MDP):
         self.state_dim = self.x_axis_states_number * self.speed_states_number
         self.action_dim = 3
 
-        self.name = "{}_{}_mountain_{}_{}".format(
+        self.name = "{}_{}_mountain_{}_{}_total_entry_reward".format(
             self.state_dim,
             self.action_dim,
             self.x_axis_states_number,
             self.speed_states_number,
+        )
+        positions = np.linspace(-1.2, 0.6, self.x_axis_states_number)
+        self.terminal_states = tuple(
+            position * self.speed_states_number + speed
+            for position, x in enumerate(positions)
+            if x > 0.5
+            for speed in range(self.speed_states_number)
         )
 
     def _build_model(self):
@@ -100,20 +112,14 @@ class Model(MDP):
             for ss1 in range(self.state_dim):
                 position, speed = self.state_list[ss1]
                 if position > 0.5:
-                    self.reward_matrix[ss1, aa] = 0.0
-                    for pos, speed in self._start_states:
-                        ss2 = self.state_space[(pos, speed)]
-                        self.transition_matrix[aa][ss1, ss2] = 1 / len(
-                            self._start_states
-                        )
+                    # The goal stays absorbing in the total-reward version.
+                    self.transition_matrix[aa][ss1, ss1] = 1.0
 
                 else:
                     next_speed = (
                         speed + (aa - 1) * FORCE - np.cos(3 * position) * GRAVITY
                     )
                     next_position = position + next_speed
-
-                    self.reward_matrix[ss1, aa] = -1.0
 
                     _, next_speed_state_space = index_closest_value(
                         next_speed, self.speed_state_list
@@ -125,6 +131,7 @@ class Model(MDP):
                         (next_position_state_space, next_speed_state_space)
                     ]
                     self.transition_matrix[aa][ss1, ss2] = 1.0
+                    self.reward_matrix[ss1, aa] = float(next_position_state_space > 0.5)
 
         self.transition_matrix = [
             transition.tocsr() for transition in self.transition_matrix

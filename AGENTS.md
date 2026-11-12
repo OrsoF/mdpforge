@@ -19,7 +19,7 @@ mdpforge benchmarks new finite MDPs and new MDP solvers. Prefer small, useful ch
 
 ## Preserve the scientific contract
 
-- **Absolute golden rule: never modify solver implementations or their internal functions, including backend internals.** Limit changes to constructor interfaces, parameters passed to public backend APIs, metadata, documentation and tests. If a request requires changing computations, loops or internal stopping criteria, flag the conflict before making any changes.
+- **Absolute golden rule: never modify existing solver implementations or their internal functions, including backend internals.** A new solver may be implemented when explicitly requested. For existing solvers, limit changes to constructor interfaces, parameters passed to public backend APIs, metadata, documentation and tests. If a request requires changing their computations, loops or internal stopping criteria, flag the conflict before making any changes.
 - When adding a catalogue model, follow [docs/adding-a-model.md](docs/adding-a-model.md). Declare size presets and one task category, justify unavailable sizes, and add a small test instance with scientific validation only when tests are explicitly requested. Preserve the validation execution rules below.
 - Keep numerical conventions, stopping criteria, reward scales, and RNG behavior unless the requested change requires otherwise.
 - Models expose `state_dim`, `action_dim`, `transition_matrix[action]`, and `reward_matrix[state, action]`; construct them with `create_model()`. Solvers take explicit constructor options followed by an option-free `run()`. Transitions are a list of SciPy `csr_matrix` objects; rewards and values are NumPy arrays. Finalize CSR in `create_model()`; keep backend conversions local.
@@ -28,7 +28,7 @@ mdpforge benchmarks new finite MDPs and new MDP solvers. Prefer small, useful ch
 
 ## Benchmark execution
 
-- Benchmark runs orchestrate, time and record solver execution without numerical validation by default. `Benchmark.run(validate=True)` and `ScalingBenchmark.run(validate=True)` may explicitly certify each successful result with `validate_result()` after solver timing, in the parent process and outside any trial timeout. Record only scalar diagnostics and release the solution before the next trial; do not add reference solves, repeated solver executions or validation inside timed trial helpers. Validation increases total experiment time and can affect subsequent cache and allocation behavior, so record the mode in experiment metadata and distinguish campaigns with and without validation.
+- Benchmark runs orchestrate, time and record solver execution without numerical validation by default. `Benchmark.run(validate=True)` and `ScalingBenchmark.run(validate=True)` may explicitly certify each successful result with `validate_result()` for discounted reward or `validate_total_result()` for total reward after solver timing, in the parent process and outside any trial timeout. Record only scalar diagnostics and release the solution before the next trial; do not add reference solves, repeated solver executions or validation inside timed trial helpers. Validation increases total experiment time and can affect subsequent cache and allocation behavior, so record the mode in experiment metadata and distinguish campaigns with and without validation.
 - Runtime includes solver construction, backend conversions and `run()`. Keep model copying, seed setup, catalogue loading, experiment metadata, logging and exports outside solver timing. Preserve paired seeds and restore global RNG state.
 - A benchmark status of `success` means execution completed without an exception; it does not certify accuracy. `validation_method` identifies the requested certificate, not a completed check. Record validation status, errors and runtime separately; certification failure must not overwrite solver execution status or runtime. Keep unavailable residuals and error bounds as `NaN`, including legacy CSV fields, rather than implying they were checked.
 - Do not add implicit warm-up runs, extra repetitions, or cache clearing/disabling. Changes to JIT compilation, cache reuse, process isolation or timing boundaries require an explicit request; distinguish cold and warm measurements when interpreting results.
@@ -36,10 +36,6 @@ mdpforge benchmarks new finite MDPs and new MDP solvers. Prefer small, useful ch
 ## Validation
 
 Do not add new tests unless the user explicitly requests them. Do not run tests or Ruff automatically; run them only when explicitly requested. When pytest is requested, run the full suite without a separate backend mode. Tests run all installed backends automatically; skip only missing dependencies. When adding tests is requested, cover meaningful behavior changes using small deterministic instances, numerical invariants, and value/policy quality. Run requested checks once after the change stabilizes; repeat only after a failure or further edits. Do not run heavy benchmarks unless needed for the task. Respect requests to skip checks.
-
-## Checkpush
-
-When the user says `checkpush`, run Ruff check and format check, then the full pytest suite. If they pass, run `git add -A`, create a commit, push the current branch, and check the hosted CI result. `git add -A` intentionally stages every change, including deletions and untracked files. Stop before committing or pushing if a check fails, and report the failure.
 
 ## Environment and reporting
 

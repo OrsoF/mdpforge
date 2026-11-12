@@ -32,7 +32,7 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Racetrack navigation with velocity-dependent actions.",
+    "description": "Reach the absorbing racetrack finish with reward on entry.",
     "reference": (
         "Barto, A. G., Bradtke, S. J. and Singh, S. P. (1995). Learning to act "
         "using real-time dynamic programming. Artificial Intelligence "
@@ -41,7 +41,12 @@ METADATA = {
 }
 
 
+TEST_PARAMETERS = {"state_dim": 300}
+
+
 class Model(MDP):
+    supported_criteria = frozenset({"total"})
+
     def __init__(self, state_dim: int = 300, action_dim: int = 10):
         self.requested_state_dim = int(state_dim)
         self._proba_fail_action: float = 0.1
@@ -55,22 +60,24 @@ class Model(MDP):
         self._build_state_space()
         self._build_action_space()
 
-        self.name = "{}_{}_barto_{}_{}".format(
+        self.name = "{}_{}_barto_{}_{}_total_entry_reward".format(
             self.state_dim,
             self.action_dim,
             self._max_speed,
             self._proba_fail_action,
         )
+        self.terminal_states = tuple(
+            index
+            for index, (x, y, _, _) in enumerate(self.state_space)
+            if self.is_finish_cell(x, y)
+        )
 
     def _update_transition_matrix(
         self, aa: int, ax: int, ay: int, ss1: int, x: int, y: int, sx: int, sy: int
     ):
-        expected_reward = 0.0
-        for probability, state, reward in self.transition_from(x, y, sx, sy, ax, ay):
+        for probability, state, _ in self.transition_from(x, y, sx, sy, ax, ay):
             ss2 = self.state_space_index[state]
             self.transition_matrix[aa][ss1, ss2] += probability
-            expected_reward += probability * reward
-        self.reward_matrix[ss1, aa] = expected_reward
 
     def _build_model(self):
         self._init_matrices()
@@ -80,6 +87,11 @@ class Model(MDP):
                 self._update_transition_matrix(a, ax, ay, s1, x, y, sx, sy)
 
         self.transition_matrix = [matrix.tocsr() for matrix in self.transition_matrix]
+        goal_mask = np.zeros(self.state_dim)
+        goal_mask[list(self.terminal_states)] = 1.0
+        for action, transition in enumerate(self.transition_matrix):
+            self.reward_matrix[:, action] = transition @ goal_mask > 0
+        self.reward_matrix[list(self.terminal_states), :] = 0.0
         self._validate_model()
 
     def _build_state_space(self):
@@ -122,7 +134,7 @@ class Model(MDP):
         self.transition_matrix: list = [
             dok_matrix((self.state_dim, self.state_dim)) for _ in range(self.action_dim)
         ]
-        self.reward_matrix = -1 * np.ones(
+        self.reward_matrix = np.zeros(
             (self.state_dim, self.action_dim), dtype=np.float64
         )
 
