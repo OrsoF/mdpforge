@@ -3,8 +3,8 @@
 from mdpforge.core.benchmark import Benchmark
 from mdpforge.core.benchmark_result import BenchmarkResult
 from mdpforge.core.scaling_benchmark import ScalingBenchmark
-from mdpforge.models import list_models
-from mdpforge.solvers import list_solvers
+from mdpforge.models.discounted import list_models
+from mdpforge.solvers.discounted import list_solvers
 
 __all__ = [
     "Benchmark",

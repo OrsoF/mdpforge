@@ -5,7 +5,7 @@ from importlib import import_module
 import pytest
 
 from mdpforge.core.validation import validate_result
-from mdpforge.models.rooms import Model as Rooms
+from mdpforge.models.discounted.rooms import Model as Rooms
 from tests._contracts import run_solver_preserving_input
 from tests._solver_support import run_external_test, solver_names
 

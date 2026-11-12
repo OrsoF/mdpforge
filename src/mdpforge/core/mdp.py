@@ -18,6 +18,8 @@ class MDP:
     transitions and rewards are already available.
     """
 
+    supported_criteria = frozenset({"discounted"})
+
     def __init__(self, state_dim: int, action_dim: int) -> None:
         self.requested_state_dim = state_dim
         self.state_dim = state_dim
@@ -161,7 +163,7 @@ class MDP:
         """Get a VI reference at absolute value-error precision 1e-3."""
 
         def compute_value_function():
-            from mdpforge.solvers.mdpforge_vi import Solver
+            from mdpforge.solvers.discounted.mdpforge_vi import Solver
 
             return Solver(self, discount, 1e-3).run().value
 

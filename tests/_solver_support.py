@@ -10,7 +10,7 @@ from pkgutil import iter_modules
 
 import pytest
 
-from mdpforge import solvers
+from mdpforge.solvers import discounted
 
 OPTIONAL_BACKENDS = {
     "madupite": ("madupite",),
@@ -27,10 +27,10 @@ OPTIONAL_BACKENDS = {
 def solver_names():
     """Return solver cases with optional-dependency markers without importing backends."""
     parameters = []
-    for module in sorted(iter_modules(solvers.__path__), key=lambda item: item.name):
+    for module in sorted(iter_modules(discounted.__path__), key=lambda item: item.name):
         if module.ispkg or module.name.startswith("_"):
             continue
-        source = Path(solvers.__file__).with_name(f"{module.name}.py")
+        source = Path(discounted.__file__).with_name(f"{module.name}.py")
         tree = ast.parse(source.read_text(encoding="utf-8"))
         imports = set()
         for node in ast.walk(tree):

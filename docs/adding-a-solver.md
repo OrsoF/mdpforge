@@ -4,13 +4,13 @@ Catalogue integration requirements for mdpforge; see also [AGENTS.md](../AGENTS.
 
 ## 1. Interface
 
-Create `src/mdpforge/solvers/<name>.py` using lowercase letters and underscores, without a leading underscore, and expose `Solver`. Discovery is automatic: `<name>` is the identifier used by `list_solvers()` and `bench.add_solver("<name>")`.
+Create `src/mdpforge/solvers/<criterion>/<name>.py` using lowercase letters and underscores, without a leading underscore, and expose `Solver`. The criterion is `discounted`, `total`, or `average`; discovery is automatic within its catalogue.
 
-- API: `Solver(model, discount, ...)` with explicit options, `assert 0 < discount < 1`, then argument-free `run()`. Iterative solvers accept a finite, positive `final_precision`; **omit** it when unused (`mdpforge_pi`, `mdptoolbox_pi`). The benchmark passes it only when accepted.
+- API: discounted solvers use `Solver(model, discount, ...)` with `0 < discount < 1`; total and average solvers use `Solver(model, ...)`. All use argument-free `run()`. Iterative solvers accept finite positive `final_precision` when needed.
 - Available data: `state_dim=S`, `action_dim=A`, `transition_matrix[a]` as SciPy CSR `(S, S)`, and `reward_matrix` as NumPy `(S, A)`. No additional model methods are required. **Preserve inputs**, including their representation; keep backend conversions local and avoid unnecessary dense matrices.
 - `run()` returns a [`SolveResult`](../src/mdpforge/core/solve_result.py): finite NumPy `value` `(S,)` and `policy` as `None` or integer actions `(S,)` in `[0, A)`. Expose a readable solver `name`; callers consume results through `SolveResult`.
 
-**Prefer [`GenericSolver`](../src/mdpforge/core/solver.py):** call its constructor, set `self.name`, and implement `_solve()` to return `SolveResult` explicitly. `run()` forwards that result. A custom `run()` must return the same result type. Example: [`mdpforge_vi.py`](../src/mdpforge/solvers/mdpforge_vi.py).
+**Prefer [`GenericSolver`](../src/mdpforge/core/solver.py) for discounted solvers:** call its constructor, set `self.name`, and implement `_solve()` to return `SolveResult` explicitly. A custom `run()` returns the same result type. Example: [`mdpforge_vi.py`](../src/mdpforge/solvers/discounted/mdpforge_vi.py).
 
 Timing belongs to the benchmark, which measures construction and `run()`, including conversions. `SolveResult` has no `runtime` field; durations remain in `BenchmarkResult` and benchmark CSV exports.
 
@@ -22,12 +22,12 @@ Declare a **literal** `METADATA` dictionary, readable without importing the back
 - `family`: `vi`, `pi`, `mpi`, `lp`, `experimental`.
 - `backend`: `mdpforge`, `mdptoolbox`, `mdpsolver`, `marmote`, `madupite`, `mdpax`, `cma`.
 
-For VI, add `solver_type = "vi"` for discovery by VI-specific fixtures. Check `list_solvers()` and `bench.add_solver("<name>")`. Declare dependencies in `pyproject.toml`; optional backends use extras and must not block the NumPy/SciPy core or the catalogue.
+For discounted VI, add `solver_type = "vi"` for discovery by VI-specific fixtures. Check the criterion catalogue's `list_solvers()` and `Benchmark(criterion=...).add_solver("<name>")`. Declare dependencies in `pyproject.toml`; optional backends use extras and must not block the NumPy/SciPy core or the catalogue.
 
 ## 3. Precision and behavior
 
 - Document the algorithm/reference, adaptations, initialization, stopping rule and accepted option values. Random behavior must reproduce after resetting NumPy/Python seeds, including private RNGs.
-- The benchmark currently assesses absolute value precision using `||T(V) - V||∞ / (1 - discount)`, with the **full optimal Bellman operator**. Iteration differences or span alone do not establish this bound. The output-precision check and its replacement test are tracked in the [roadmap](roadmap.md).
+- Discounted validation uses `||T(V) - V||∞ / (1 - discount)` with the full optimal Bellman operator. Total validation currently certifies absorbing acyclic models; average validation is unavailable.
 - Report failures explicitly and preserve algorithm-specific stopping rules. The benchmark records unsuccessful or imprecise runs separately from successful solves.
 - Use **public backend APIs** without bypassing initialization, checks or bounds; propagate native errors. Preserve reward scales, discount conventions, numerical behavior, existing solver algorithms and the VI reference cache.
 

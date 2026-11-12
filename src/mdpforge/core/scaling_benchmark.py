@@ -6,8 +6,8 @@ from mdpforge.core.benchmark import Benchmark
 class ScalingBenchmark(Benchmark):
     """Benchmark independent instances of one parameterized MDP family."""
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, criterion="discounted"):
+        super().__init__(criterion=criterion)
         self._scaling_study = None
 
     def add_family(self, factory, sizes, *, instances=3, seed=0, family=None):

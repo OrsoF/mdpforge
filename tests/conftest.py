@@ -2,8 +2,8 @@ import numpy as np
 import pytest
 from scipy.sparse import csr_matrix
 
-from mdpforge import solvers
 from mdpforge.core.mdp import MDP
+from mdpforge.solvers import discounted
 from mdpforge.utils import persistence
 from tests._contracts import sample_models
 from tests._solver_support import solver_names
@@ -47,7 +47,7 @@ def small_model(isolated_model_cache):
     params=[entry for entry in solver_names() if entry.id != "mdptoolbox_vigs"]
 )
 def solver_module(request):
-    return f"{solvers.__name__}.{request.param}"
+    return f"{discounted.__name__}.{request.param}"
 
 
 @pytest.fixture
@@ -80,4 +80,4 @@ def solver_case(request):
     """Return a retained solver, small model, and discount combination."""
     module, name, discount = request.param
     model = next(case for case in sample_models() if case.name == name)
-    return f"{solvers.__name__}.{module}", model, discount
+    return f"{discounted.__name__}.{module}", model, discount

@@ -21,7 +21,7 @@
 
 ### Install
 
-Requires **Python 3.11+** and supports finite discounted problems with `0 < discount < 1`.
+Requires **Python 3.11+**. `Benchmark()` uses discounted reward (`0 < discount < 1`); `criterion="total"` uses absorbing total reward, and `criterion="average"` uses the discounted model catalogue with custom average-reward solvers.
 
 Install mdpforge with its built-in models, solvers and plotting:
 
@@ -51,7 +51,9 @@ result = bench.run(discount=0.9, precision=1e-3, repeats=3, seed=0)
 result.export_csv("results.csv")
 ```
 
-Each trial records runtime and an independently checked value-error bound. `result.export_csv(path)` saves the results and their experiment settings; use `BenchmarkResult.from_csv(path)` to reopen them.
+Each trial records runtime. Pass `validate=True` to certify supported results after timing; average-reward validation is not yet available. `result.export_csv(path)` saves results and settings; use `BenchmarkResult.from_csv(path)` to reopen them.
+
+For total reward, use `Benchmark(criterion="total")`, `bench.add_mdp("progress_chain")`, `bench.add_solver("marmote_vi")`, then `bench.run(precision=1e-3)`. The Marmote backend is installed separately as described below.
 
 Plot the results:
 
@@ -78,7 +80,7 @@ The curves use one Garnet instance; bands show the range over three repeats.
 
 ## Models and solvers
 
-Browse the catalogue with `list_models()` and `list_solvers()` from `mdpforge`. Select models by `size` and `category`, and solvers by `family` and `backend`. Use `ScalingBenchmark` for size sweeps over seeded model families.
+Top-level `list_models()` and `list_solvers()` browse the discounted catalogues; total catalogues are in `mdpforge.models.total` and `mdpforge.solvers.total`. Select models by `size` and `category`, and solvers by `family` and `backend`. Use `ScalingBenchmark(criterion=...)` for size sweeps.
 
 `Benchmark()` starts empty. Call `bench.add_default_mdps()` for small Rooms, Mountain Car and Garnet models, and `bench.add_default_solvers()` for `mdpforge_vi` and `mdpforge_mpi`.
 
@@ -96,7 +98,7 @@ bench.add_mdp(
 
 ### Bring your own solver
 
-Register a callable with `bench.add_solver("my_solver", solve_function=my_solver)`. It takes `(transitions, rewards, discount, precision)` and returns a NumPy value vector. Inputs are SciPy CSR transitions and NumPy rewards; the benchmark handles copies, timing and accuracy checks.
+Register a callable with `bench.add_solver("my_solver", solve_function=my_solver)`. Discounted functions take `(transitions, rewards, discount, precision)`; total and average functions take `(model, precision)`. Return a NumPy value vector or `SolveResult`; the benchmark handles copies and timing. For a matrix-defined total model, pass `terminal_states` to `add_mdp()` if you want residual validation.
 
 ### Optional backends
 

@@ -2,6 +2,7 @@
 
 import ast
 import warnings
+from collections.abc import Sequence
 from importlib import import_module
 from importlib.util import find_spec
 
@@ -33,9 +34,42 @@ def _read_metadata(directory):
         yield source.name[:-3], metadata
 
 
-def _load_solver(name, *, backend=None):
+def _filter_solver_entries(entries, *, family=None, backend=None):
+    """Filter solver metadata with the public catalogue's sequence semantics."""
+    filters = {}
+    for field, value in (("family", family), ("backend", backend)):
+        if value is None:
+            continue
+        values = [value] if isinstance(value, str) else value
+        if (
+            not isinstance(values, Sequence)
+            or not values
+            or any(not isinstance(item, str) or not item.strip() for item in values)
+        ):
+            raise ValueError(
+                f"{field} must be a string or nonempty sequence of strings"
+            )
+        available = {
+            entry.get(field) for entry in entries if entry.get(field) is not None
+        }
+        unknown = set(values) - available
+        if unknown:
+            raise ValueError(f"Unknown solver {field}: {sorted(unknown)}")
+        filters[field] = set(values)
+    selected = [
+        entry
+        for entry in entries
+        if all(entry.get(field) in values for field, values in filters.items())
+    ]
+    if filters and not selected:
+        raise ValueError("No catalogue solver matches the requested metadata filters")
+    return selected
+
+
+def _load_solver(name, *, backend=None, catalogue=None):
     """Load a catalogue solver, checking an explicitly selected backend first."""
-    from mdpforge import solvers
+    if catalogue is None:
+        from mdpforge.solvers import discounted as catalogue
 
     dependencies = {
         "marmote": ("marmote",),
@@ -51,15 +85,17 @@ def _load_solver(name, *, backend=None):
             raise ModuleNotFoundError(
                 f"Missing solver dependency: {dependency}", name=dependency
             )
-    return import_module(f"{solvers.__name__}.{name}").Solver
+    return import_module(f"{catalogue.__name__}.{name}").Solver
 
 
-def _available_solvers(entries):
+def _available_solvers(entries, *, catalogue=None):
     """Yield selected solvers, warning only for missing dependencies."""
     for entry in entries:
         name = entry["name"]
         try:
-            constructor = _load_solver(name, backend=entry.get("backend"))
+            constructor = _load_solver(
+                name, backend=entry.get("backend"), catalogue=catalogue
+            )
         except ModuleNotFoundError as exc:
             warnings.warn(
                 f"Skipping solver {name!r}: missing dependency {exc.name!r}",
@@ -69,22 +105,23 @@ def _available_solvers(entries):
         yield name, constructor
 
 
-def _select_models(names=None, *, size=None, category=None):
+def _select_models(names=None, *, size=None, category=None, catalogue=None):
     """Resolve optional names and filters to ordered model catalogue entries."""
-    from mdpforge import models
+    if catalogue is None:
+        from mdpforge.models import discounted as catalogue
 
-    entries = models.list_models(size=size, category=category)
+    entries = catalogue.list_models(size=size, category=category)
     if names is None:
         return [entry for entry in entries if entry["available"]]
     selected = {entry["name"]: entry for entry in entries}
     for name in names:
         if name in selected:
             continue
-        catalogue = {item["name"] for item in models.list_models()}
-        if name not in catalogue:
+        all_names = {item["name"] for item in catalogue.list_models()}
+        if name not in all_names:
             raise ValueError(
                 f"Unknown model {name!r}. Available models: "
-                + ", ".join(sorted(catalogue))
+                + ", ".join(sorted(all_names))
             )
         raise ValueError(
             f"Model {name!r} does not match size={size!r}, "
@@ -94,9 +131,12 @@ def _select_models(names=None, *, size=None, category=None):
     return [selected[name] for name in names]
 
 
-def _load_model(entry, *, preset=None, registered=(), grouped=False, verbose=False):
+def _load_model(
+    entry, *, preset=None, registered=(), grouped=False, verbose=False, catalogue=None
+):
     """Build a catalogue model, optionally skipping duplicates or missing dependencies."""
-    from mdpforge import models
+    if catalogue is None:
+        from mdpforge.models import discounted as catalogue
 
     name = entry["name"]
     if not entry["available"]:
@@ -109,7 +149,7 @@ def _load_model(entry, *, preset=None, registered=(), grouped=False, verbose=Fal
         options = dict(preset["parameters"]) if preset is not None else {}
         if preset is not None:
             options["state_dim"] = preset["requested_state_dim"]
-        model = import_module(f"{models.__name__}.{name}").Model(**options)
+        model = import_module(f"{catalogue.__name__}.{name}").Model(**options)
         if any(existing.name == model.name for existing in registered):
             if grouped:
                 if verbose:
