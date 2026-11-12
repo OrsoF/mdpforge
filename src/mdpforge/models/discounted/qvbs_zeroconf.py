@@ -11,7 +11,7 @@ Sources and parameters: _qvbs/_data/model_manifest.json.
 from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
-    "category": "service_operations",
+    "category": "distributed_systems",
     "description": "IPv4 Zeroconf Protocol",
     "reference": "https://www.rfc-editor.org/info/rfc3927",
     "model_type": "mdp",

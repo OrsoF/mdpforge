@@ -19,7 +19,7 @@ this preserves the catalogue's discretized Euler adaptation.
 from mdpforge.models.discounted.acrobot import Model as DiscountedAcrobot
 
 METADATA = {
-    "category": "physical_control",
+    "category": "navigation",
     "description": "Swing a discretized Acrobot to an absorbing height target.",
     "reference": (
         "Sutton, R. S. (1996). Generalization in Reinforcement Learning: Successful "

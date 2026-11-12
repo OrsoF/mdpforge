@@ -30,7 +30,7 @@ METADATA = {
             "parameters": {},
         },
     },
-    "category": "physical_control",
+    "category": "navigation",
     "description": "Discretized MountainCar position and velocity control.",
     "reference": (
         "Moore, A. W. (1990). Efficient Memory-based Learning for Robot Control. "

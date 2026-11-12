@@ -11,7 +11,7 @@ Sources and parameters: _qvbs/_data/model_manifest.json.
 from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
-    "category": "service_operations",
+    "category": "distributed_systems",
     "description": "Bounded Exponential Backoff",
     "reference": "https://doi.org/10.1007/978-3-642-21461-5_4",
     "model_type": "mdp",

@@ -11,7 +11,7 @@ Source authors, conversion and CC-BY 4.0 attribution: _qvbs/_data/model_manifest
 from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
-    "category": "abstract",
+    "category": "distributed_systems",
     "description": (
         "QVBS JANI import in Python: Shared-coin consensus; native step cost."
     ),

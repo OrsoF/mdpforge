@@ -12,7 +12,7 @@ Source authors, conversion and CC-BY 4.0 attribution: _qvbs/_data/model_manifest
 from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
-    "category": "service_operations",
+    "category": "distributed_systems",
     "description": (
         "QVBS JANI import in Python: Abstract IEEE 1394 root "
         "contention; native round cost."

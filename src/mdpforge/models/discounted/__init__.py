@@ -7,7 +7,7 @@ from mdpforge.utils.catalogue import _read_metadata
 _CATEGORIES = (
     "abstract",
     "navigation",
-    "physical_control",
+    "distributed_systems",
     "service_operations",
     "asset_management",
     "games_and_puzzles",
@@ -22,7 +22,7 @@ def list_models(
 ) -> list[dict]:
     """Read individual model modules without importing them or building matrices.
 
-    category: abstract, navigation, physical_control, service_operations,
+    category: abstract, navigation, distributed_systems, service_operations,
         asset_management, games_and_puzzles or None; selects a task family.
     size: small, medium, large or None; selects an available preset.
     available: True for recipes, False for unavailable sources, None for both.

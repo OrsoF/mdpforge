@@ -28,7 +28,7 @@ METADATA = {
             "parameters": {},
         },
     },
-    "category": "physical_control",
+    "category": "navigation",
     "description": "Discretized control of an underactuated two-link pendulum.",
     "reference": (
         "Sutton, R. S. (1996). Generalization in Reinforcement Learning: Successful "

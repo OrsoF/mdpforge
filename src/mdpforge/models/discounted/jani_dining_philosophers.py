@@ -11,7 +11,7 @@ Sources and parameters: _jani/_data/model_manifest.json.
 from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
-    "category": "abstract",
+    "category": "distributed_systems",
     "description": "Randomised dining philosophers",
     "reference": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/DiningPhilosophers",
     "model_type": "mdp",

@@ -11,7 +11,7 @@ Sources and parameters: _qvbs/_data/model_manifest.json.
 from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
-    "category": "abstract",
+    "category": "distributed_systems",
     "description": "Israeli Jalfon Randomized Self-Stabilizing",
     "reference": "https://doi.org/10.1145/93385.93409",
     "model_type": "mdp",

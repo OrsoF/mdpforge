@@ -11,7 +11,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.models.discounted._prism.reader import build_prism, configure_prism
 
 METADATA = {
-    "category": "abstract",
+    "category": "distributed_systems",
     "description": (
         "PRISM shared-coin consensus with separate flip/write/check phases "
         "and native step cost."

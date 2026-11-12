@@ -11,7 +11,7 @@ Sources and parameters: _qvbs/_data/model_manifest.json.
 from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
-    "category": "abstract",
+    "category": "distributed_systems",
     "description": "Pnueli Zuck Mutual Exclusion Protocol",
     "reference": "https://doi.org/10.1007/BF01843570",
     "model_type": "mdp",

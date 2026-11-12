@@ -20,7 +20,7 @@ METADATA = {
             "parameters": {},
         },
     },
-    "category": "physical_control",
+    "category": "navigation",
     "description": (
         "Discretized scalar dynamics with quadratic state and control costs."
     ),

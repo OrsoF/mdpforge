@@ -1,3 +1,5 @@
+*.py text eol=lf
+
 src/mdpforge/models/_jani/_data/** -text
 src/mdpforge/models/_qvbs/_data/** -text
 src/mdpforge/models/_prism/_data/** -text

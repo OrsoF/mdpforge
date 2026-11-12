@@ -11,7 +11,7 @@ Sources and parameters: _qvbs/_data/model_manifest.json.
 from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
-    "category": "service_operations",
+    "category": "distributed_systems",
     "description": "EchoRing",
     "reference": "https://doi.org/10.1109/SRDS.2016.048",
     "model_type": "mdp",

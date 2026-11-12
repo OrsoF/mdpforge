@@ -11,7 +11,7 @@ Sources and parameters: _qvbs/_data/model_manifest.json.
 from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
-    "category": "service_operations",
+    "category": "distributed_systems",
     "description": "IEEE 802.11 Wireless LAN (with timer)",
     "reference": "https://doi.org/10.1007/3-540-45605-8_11",
     "model_type": "mdp",

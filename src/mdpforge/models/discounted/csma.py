@@ -11,7 +11,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.models.discounted._prism.reader import build_prism, configure_prism
 
 METADATA = {
-    "category": "service_operations",
+    "category": "distributed_systems",
     "description": (
         "PRISM CSMA/CD with native bus synchronisation, station clocks and "
         "exponential backoff."

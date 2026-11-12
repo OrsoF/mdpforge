@@ -13,7 +13,7 @@ from mdpforge.core.mdp import MDP
 from mdpforge.models.discounted._prism.reader import build_prism, configure_prism
 
 METADATA = {
-    "category": "abstract",
+    "category": "distributed_systems",
     "description": (
         "PRISM Lehmann-Rabin philosophers: discounted steps until a designated "
         "philosopher first reaches the native eating phases."
