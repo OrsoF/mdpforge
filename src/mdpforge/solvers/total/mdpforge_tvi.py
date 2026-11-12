@@ -160,9 +160,9 @@ def _greedy_policy(model: MDP, value: np.ndarray) -> np.ndarray:
     best = model.reward_matrix[:, 0] + model.transition_matrix[0].dot(value)
     policy = np.zeros(model.state_dim, dtype=np.intp)
     for action in range(1, model.action_dim):
-        candidate = model.reward_matrix[:, action] + model.transition_matrix[action].dot(
-            value
-        )
+        candidate = model.reward_matrix[:, action] + model.transition_matrix[
+            action
+        ].dot(value)
         improvement = candidate > best
         best[improvement] = candidate[improvement]
         policy[improvement] = action

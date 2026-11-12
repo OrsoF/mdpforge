@@ -237,10 +237,9 @@ class Solver:
         )
         self.policy = np.zeros(self.model.state_dim, dtype=np.intp)
         for action in range(1, self.model.action_dim):
-            candidate = (
-                self.model.reward_matrix[:, action]
-                + self.model.transition_matrix[action].dot(self.value)
-            )
+            candidate = self.model.reward_matrix[
+                :, action
+            ] + self.model.transition_matrix[action].dot(self.value)
             better = candidate > best
             best[better] = candidate[better]
             self.policy[better] = action

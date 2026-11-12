@@ -23,7 +23,9 @@ a faithful grounding of the original IPPC model.
 Reference: IPPC 2008 Search-and-Rescue (Teichteil-Konigsbuch).
 """
 
-from mdpforge.models.discounted.search_and_rescue import Model as DiscountedSearchAndRescue
+from mdpforge.models.discounted.search_and_rescue import (
+    Model as DiscountedSearchAndRescue,
+)
 
 METADATA = {
     "category": "navigation",

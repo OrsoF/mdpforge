@@ -21,7 +21,9 @@ Reference: ElSayed-Aly, Parker & Feng, NFM 2024 DS Treasure; this retains
 the local reduced model, not the original distributional formulation.
 """
 
-from mdpforge.models.discounted.deep_sea_treasure import Model as DiscountedDeepSeaTreasure
+from mdpforge.models.discounted.deep_sea_treasure import (
+    Model as DiscountedDeepSeaTreasure,
+)
 
 METADATA = {
     "category": "navigation",

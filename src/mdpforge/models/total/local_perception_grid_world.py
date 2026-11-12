@@ -74,6 +74,6 @@ class Model(DiscountedLocalPerceptionGridWorld):
                 count=self.state_dim,
             )
             self.observation_matrix = np.zeros((self.state_dim, self.observation_dim))
-            self.observation_matrix[
-                np.arange(self.state_dim), self.observation_map
-            ] = 1.0
+            self.observation_matrix[np.arange(self.state_dim), self.observation_map] = (
+                1.0
+            )

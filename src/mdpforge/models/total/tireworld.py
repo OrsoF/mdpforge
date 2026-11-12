@@ -43,9 +43,7 @@ class Model(DiscountedTireworld):
 
     def __init__(self, state_dim: int = 98, puncture_probability: float = 0.15):
         """Use positive integer state_dim and puncture_probability in [0, 1]."""
-        super().__init__(
-            state_dim=state_dim, puncture_probability=puncture_probability
-        )
+        super().__init__(state_dim=state_dim, puncture_probability=puncture_probability)
         self.name += "_total_goal_entry_reward_v1"
         self.terminal_states = (self.goal, self.stranded)
 
