@@ -1,9 +1,7 @@
-"""SHARP-style hierarchical adaptive block value iteration for discounted MDPs.
+"""SHARP-style adaptive block value iteration for absorbing total-reward MDPs.
 
-Adapted from Evangelidis, Vázquez and Gerasimou (FSE 2026). Unlike the
-original Pmax/Rmin solver, this implementation optimizes discounted reward.
-States are never aggregated: each leaf solves concrete-state Bellman equations
-with frozen values at its outgoing boundary.
+Adapted from Evangelidis, Vázquez and Gerasimou (FSE 2026).
+Maximize undiscounted rewards with zero terminal values and frozen boundaries.
 """
 
 from dataclasses import dataclass, field
@@ -16,14 +14,14 @@ from scipy.sparse.csgraph import connected_components
 from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import compact_optimal_bellman_operator
 from mdpforge.core.solve_result import SolveResult
-from mdpforge.utils.solver_options import validate_discount
+from mdpforge.solvers.total._common import check_options
 
 METADATA = {
-    "display_name": "SHARP · mdpforge",
+    "display_name": "Total SHARP · mdpforge",
     "family": "experimental",
     "backend": "mdpforge",
     "description": (
-        "Hierarchical adaptive refinement with concrete-state local VI, "
+        "Total-reward hierarchical adaptive refinement with concrete-state local VI, "
         "frozen boundary values and boundary-change-triggered re-solving."
     ),
     "update_scheme": "asynchronous",
@@ -48,7 +46,6 @@ class Solver:
     def __init__(
         self,
         model: MDP,
-        discount: float,
         final_precision: float = 1e-3,
         *,
         initial_blocks: int = 8,
@@ -60,10 +57,8 @@ class Solver:
         max_iterations: int = 10_000,
         max_local_iterations: int = 100_000,
     ):
-        """Configure the discounted SHARP adaptation (index/scc, absolute/relative)."""
-        validate_discount(discount)
-        if not (np.isfinite(final_precision) and final_precision > 0):
-            raise ValueError("final_precision must be finite and positive")
+        """Configure the total-reward SHARP adaptation (index/scc, absolute/relative)."""
+        self.terminal = check_options(model, final_precision, max_iterations)
         if initial_blocks < 1 or max_depth < 1:
             raise ValueError("initial_blocks and max_depth must be positive")
         if max_iterations < 1 or max_local_iterations < 1:
@@ -80,7 +75,6 @@ class Solver:
             raise ValueError("spread_mode must be 'absolute' or 'relative'")
 
         self.model = model
-        self.discount = float(discount)
         self.final_precision = float(final_precision)
         self.initial_blocks = int(initial_blocks)
         self.max_depth = int(max_depth)
@@ -89,7 +83,7 @@ class Solver:
         self.spread_mode = spread_mode
         self.max_iterations = int(max_iterations)
         self.max_local_iterations = int(max_local_iterations)
-        self.name = "mdpforge SHARP"
+        self.name = "mdpforge_sharp"
         self.runtime = 0.0
         self.policy: np.ndarray | None = None
         self.value: np.ndarray | None = None
@@ -100,14 +94,11 @@ class Solver:
         self.n_outer_iterations = 0
         self.final_residual = np.inf
 
-        # A full Bellman residual <= (1-gamma)*precision certifies the
-        # absolute error. Local and boundary errors consume part of this budget.
-        self._target = self.final_precision * (1 - self.discount)
+        # This is a residual tolerance, not a discounted value-error bound.
+        self._target = self.final_precision
         self._local_tolerance = self._target / 2
         if boundary_threshold is None:
-            reward_bound = np.max(np.abs(model.reward_matrix)) / (1 - self.discount)
-            value_bound = max(1.0, float(reward_bound))
-            self.boundary_threshold = self._target / (4 * value_bound)
+            self.boundary_threshold = self._target / 4
         else:
             self.boundary_threshold = float(boundary_threshold)
 
@@ -166,38 +157,40 @@ class Solver:
         snapshot = self.value[boundary].copy()
         local = self.value[states].copy()
         rewards = self.model.reward_matrix[states, :]
+        terminal = np.isin(states, list(self.terminal))
+        local[terminal] = 0.0
         # Boundary contributions remain fixed during the entire local solve.
         offset = np.array(rewards, copy=True)
         for action, matrix in enumerate(block.outside):
-            offset[:, action] += self.discount * matrix.dot(snapshot)
+            offset[:, action] += matrix.dot(snapshot)
 
         for _ in range(self.max_local_iterations):
-            updated = offset[:, 0] + self.discount * block.inside[0].dot(local)
+            updated = offset[:, 0] + block.inside[0].dot(local)
             for action in range(1, self.model.action_dim):
-                candidate = offset[:, action] + self.discount * block.inside[
-                    action
-                ].dot(local)
+                candidate = offset[:, action] + block.inside[action].dot(local)
                 np.maximum(updated, candidate, out=updated)
+            updated[terminal] = 0.0
+            if not np.isfinite(updated).all():
+                raise RuntimeError("SHARP: nonfinite local values")
             variation = float(np.max(np.abs(updated - local)))
             local = updated
             if variation <= self._local_tolerance:
-                # Since T_B is a gamma-contraction, its residual at the new
-                # iterate is <= gamma * variation <= local_tolerance.
-                block.local_residual = self.discount * variation
+                # The undiscounted local operator is nonexpansive after
+                # fixing terminal values at zero.
+                block.local_residual = variation
                 break
         else:
             raise RuntimeError("SHARP: max_local_iterations exhausted")
 
-        best_value = offset[:, 0] + self.discount * block.inside[0].dot(local)
+        best_value = offset[:, 0] + block.inside[0].dot(local)
         best_action = np.zeros(len(states), dtype=np.intp)
         for action in range(1, self.model.action_dim):
-            candidate = offset[:, action] + self.discount * block.inside[action].dot(
-                local
-            )
+            candidate = offset[:, action] + block.inside[action].dot(local)
             better = candidate > best_value
             best_value[better] = candidate[better]
             best_action[better] = action
         self.value[states] = local
+        best_action[terminal] = 0
         self.policy[states] = best_action
         block.previous_boundary = snapshot
         self.n_local_solves += 1
@@ -239,19 +232,22 @@ class Solver:
     def _extract_policy(self) -> None:
         # Greedify once using the final global values: this removes action
         # inconsistencies caused by stale local boundary snapshots.
-        best = self.model.reward_matrix[:, 0] + self.discount * (
-            self.model.transition_matrix[0].dot(self.value)
+        best = self.model.reward_matrix[:, 0] + self.model.transition_matrix[0].dot(
+            self.value
         )
         self.policy = np.zeros(self.model.state_dim, dtype=np.intp)
         for action in range(1, self.model.action_dim):
-            candidate = self.model.reward_matrix[:, action] + self.discount * (
-                self.model.transition_matrix[action].dot(self.value)
+            candidate = (
+                self.model.reward_matrix[:, action]
+                + self.model.transition_matrix[action].dot(self.value)
             )
             better = candidate > best
             best[better] = candidate[better]
             self.policy[better] = action
+        self.policy[list(self.terminal)] = 0
 
     def run(self) -> SolveResult:
+        """Refine local solves until the full total-reward residual is small."""
         start = perf_counter()
         n = self.model.state_dim
         self.value = np.zeros(n, dtype=float)
@@ -288,13 +284,11 @@ class Solver:
             change = float(np.max(np.abs(self.value - previous)))
             pending = any(self._boundary_changed(leaf) for leaf in self.leaves)
             if not refined and change <= self._target:
-                backup = compact_optimal_bellman_operator(
-                    self.model, self.value, self.discount
-                )
+                backup = compact_optimal_bellman_operator(self.model, self.value, 1.0)
                 self.final_residual = float(np.max(np.abs(backup - self.value)))
                 if self.final_residual <= self._target:
-                    # The discounted global certificate makes it safe to stop
-                    # even if a small number of boundaries remain out of date.
+                    # Check the full residual even when some boundaries
+                    # remain out of date.
                     self._extract_policy()
                     self.runtime = perf_counter() - start
                     return SolveResult.from_solver(self, validation_method="residual")
@@ -308,5 +302,5 @@ class Solver:
                     self._solve_leaf(leaf)
 
         raise RuntimeError(
-            "SHARP: max_iterations exhausted before certified convergence"
+            "SHARP: max_iterations exhausted before the residual tolerance was reached"
         )

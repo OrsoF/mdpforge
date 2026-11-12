@@ -6,6 +6,7 @@ import pytest
 
 from mdpforge.core.validation import validate_result
 from mdpforge.models.discounted.rooms import Model as Rooms
+from mdpforge.solvers import discounted
 from tests._contracts import run_solver_preserving_input
 from tests._solver_support import run_external_test, solver_names
 
@@ -25,6 +26,6 @@ def rooms_small():
 def test_all_solvers_validate_rooms_small(solver_name, rooms_small, request, tmp_path):
     if run_external_test(request, tmp_path):
         return
-    solver_class = import_module(f"mdpforge.solvers.{solver_name}").Solver
+    solver_class = import_module(f"{discounted.__name__}.{solver_name}").Solver
     result = run_solver_preserving_input(solver_class, rooms_small, DISCOUNT, PRECISION)
     validate_result(rooms_small, result, discount=DISCOUNT, precision=PRECISION)

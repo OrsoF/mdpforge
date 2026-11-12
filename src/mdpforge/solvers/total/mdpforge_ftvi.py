@@ -1,19 +1,8 @@
-"""Focused Topological Value Iteration (FTVI) for finite discounted MDPs.
+"""Focused topological value iteration for absorbing total-reward MDPs.
 
-Dai, Mausam, Weld & Goldsmith, *Topological Value Iteration Algorithms*,
-JAIR (2011), Algorithm 3.
-
-Adaptation: the paper minimizes undiscounted SSP costs. mdpforge maximizes
-infinite-horizon discounted reward, hence the sound pruning test is
-
-    upper_Q(s, a) < lower_V(s)  =>  action a is strictly suboptimal.
-
-Bounds use global reward extrema divided by (1 - discount), followed by
-monotone Bellman updates on an optimistic-policy search graph. The final
-stage solves *all* states, not just those reachable from initial_state,
-because mdpforge validates the entire value vector. No state/action is pruned
-unless certified by the bounds. Large-component intra-SCC search (an optional
-experiment in the paper) is intentionally omitted, as in its final benchmarks.
+Adapted from Dai, Mausam, Weld and Goldsmith (JAIR 2011), Algorithm 3.
+Maximize undiscounted rewards over all states with zero terminal values.
+Prune using uniform absorption bounds when available; otherwise use TVI.
 """
 
 from __future__ import annotations
@@ -23,29 +12,30 @@ import numpy as np
 from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import compact_optimal_bellman_operator
 from mdpforge.core.solve_result import SolveResult
-from mdpforge.core.solver import GenericSolver
-from mdpforge.solvers.discounted.mdpforge_tvi import (
+from mdpforge.solvers.total._common import check_options
+from mdpforge.solvers.total.mdpforge_tvi import (
     _greedy_policy,
     _scc_dependency_order,
     _solve_sccs,
 )
-from mdpforge.utils.solver_options import validate_discount
 
 METADATA = {
-    "display_name": "FTVI · mdpforge",
+    "display_name": "Total FTVI · mdpforge",
     "family": "vi",
     "backend": "mdpforge",
-    "description": "Bound-certified action elimination followed by topological value iteration (Dai et al., 2011).",
+    "description": (
+        "Total-reward bound-certified action elimination and topological value "
+        "iteration, falling back to TVI without uniform absorption bounds."
+    ),
 }
 
 
-class Solver(GenericSolver):
+class Solver:
     solver_type = "vi"
 
     def __init__(
         self,
         model: MDP,
-        discount: float,
         final_precision: float = 1e-3,
         initial_value: np.ndarray | None = None,
         *,
@@ -55,21 +45,18 @@ class Solver(GenericSolver):
         min_relative_improvement: float = 0.03,
         max_iterations: int = 100_000,
     ):
-        """Configure discounted FTVI.
+        """Configure total FTVI with a full Bellman-residual tolerance.
 
-        initial_state: root of heuristic DFS (default 0); final stage solves all S.
-        search_batch_size: DFS trials per batch (paper: 100; default 20 for
-            inexpensive pre-processing on the smaller mdpforge benchmarks).
-        max_search_batches: hard search budget, distinct from SCC-VI budget.
-        min_relative_improvement: stop searching when root lower-bound change
-            over a batch is <= this fraction (paper: 0.03).
-        max_iterations: maximum VI iterations *per SCC* in the computation stage.
+        initial_state: valid state index; root of heuristic search.
+        search_batch_size: positive int; search trials per batch.
+        max_search_batches: positive int; search batch budget.
+        min_relative_improvement: float in [0, 1); search stopping threshold.
+        max_iterations: positive int; local VI and absorption-bound budgets.
         """
-        validate_discount(discount)
-        if not np.isfinite(final_precision) or final_precision <= 0:
-            raise ValueError("final_precision must be finite and positive")
-        if not isinstance(max_iterations, int) or max_iterations < 1:
-            raise ValueError("max_iterations must be a positive integer")
+        self.terminal = check_options(model, final_precision, max_iterations)
+        self.model = model
+        self.final_precision = final_precision
+        self.max_iterations = max_iterations
         if not isinstance(initial_state, (int, np.integer)) or not (
             0 <= initial_state < model.state_dim
         ):
@@ -82,9 +69,6 @@ class Solver(GenericSolver):
             0 <= min_relative_improvement < 1
         ):
             raise ValueError("min_relative_improvement must lie in [0, 1)")
-        super().__init__(
-            model, discount, final_precision, max_iterations=max_iterations
-        )
         if initial_value is not None:
             initial_value = np.asarray(initial_value, dtype=np.float64)
             if (
@@ -116,7 +100,7 @@ class Solver(GenericSolver):
         for action in np.flatnonzero(enabled[state]):
             matrix = self.model.transition_matrix[action]
             left, right = matrix.indptr[state], matrix.indptr[state + 1]
-            q = self.model.reward_matrix[state, action] + self.discount * np.dot(
+            q = self.model.reward_matrix[state, action] + np.dot(
                 matrix.data[left:right], upper[matrix.indices[left:right]]
             )
             if q > best:
@@ -138,8 +122,8 @@ class Solver(GenericSolver):
             left, right = matrix.indptr[state], matrix.indptr[state + 1]
             indices, weights = matrix.indices[left:right], matrix.data[left:right]
             reward = self.model.reward_matrix[state, action]
-            lower_q[action] = reward + self.discount * np.dot(weights, lower[indices])
-            upper_q[action] = reward + self.discount * np.dot(weights, upper[indices])
+            lower_q[action] = reward + np.dot(weights, lower[indices])
+            upper_q[action] = reward + np.dot(weights, upper[indices])
 
         # Any Q lower bound is a value-function lower bound for max-reward MDPs.
         lower_certificate = max(float(lower[state]), float(np.max(lower_q[active])))
@@ -174,7 +158,7 @@ class Solver(GenericSolver):
             if exiting:
                 self._bound_backup(state, lower, upper, enabled)
                 continue
-            if visited[state]:
+            if visited[state] or state in self.terminal:
                 continue
             visited[state] = True
             touched += 1
@@ -190,68 +174,92 @@ class Solver(GenericSolver):
                     stack.append((successor, False))
         return touched
 
-    def _solve(self) -> SolveResult:
-        n, actions = self.model.state_dim, self.model.action_dim
+    def _initial_bounds(self) -> tuple[np.ndarray, np.ndarray] | None:
+        """Return total-reward bounds when uniform absorption is established."""
         reward = np.asarray(self.model.reward_matrix, dtype=np.float64)
         if not np.isfinite(reward).all():
             raise ValueError("FTVI requires finite rewards")
-        lo = float(np.min(reward)) / (1.0 - self.discount)
-        hi = float(np.max(reward)) / (1.0 - self.discount)
-        if not (np.isfinite(lo) and np.isfinite(hi)):
-            raise ValueError("FTVI: nonfinite initial bounds")
-        lower = np.full(n, lo, dtype=np.float64)
-        upper = np.full(n, hi, dtype=np.float64)
+        survival = np.ones(self.model.state_dim)
+        survival[list(self.terminal)] = 0.0
+        # The maximal probability of surviving k steps bounds every policy.
+        # If it is <= q < 1, the expected absorption time is <= k / (1-q).
+        for steps in range(1, min(self.model.state_dim, self.max_iterations) + 1):
+            next_survival = np.zeros(self.model.state_dim)
+            for matrix in self.model.transition_matrix:
+                np.maximum(next_survival, matrix.dot(survival), out=next_survival)
+            next_survival[list(self.terminal)] = 0.0
+            contraction = float(np.max(next_survival)) + 1e-12
+            if contraction < 1.0:
+                horizon = steps / (1.0 - contraction)
+                break
+            if np.array_equal(next_survival, survival):
+                return None
+            survival = next_survival
+        else:
+            return None
+        lower = np.full(self.model.state_dim, min(0.0, float(reward.min())) * horizon)
+        upper = np.full(self.model.state_dim, max(0.0, float(reward.max())) * horizon)
+        lower[list(self.terminal)] = upper[list(self.terminal)] = 0.0
+        if not (np.isfinite(lower).all() and np.isfinite(upper).all()):
+            return None
+        return lower, upper
+
+    def run(self) -> SolveResult:
+        """Prune actions with total-reward bounds, then solve the components."""
+        n, actions = self.model.state_dim, self.model.action_dim
+        bounds = self._initial_bounds()
         enabled = np.ones((n, actions), dtype=np.bool_)
         self.n_pruned_actions = 0
         self.n_search_trials = 0
 
-        # Heuristic search + certified action elimination, Algorithm 3 step 1.
-        for _ in range(self.max_search_batches):
-            previous_root = float(lower[self.initial_state])
-            for _ in range(self.search_batch_size):
-                self._search_trial(lower, upper, enabled)
-                self.n_search_trials += 1
-            root = float(lower[self.initial_state])
-            improvement = abs(root - previous_root) / max(
-                1.0, abs(root), abs(previous_root)
-            )
-            if improvement <= self.min_relative_improvement:
-                break
+        value = np.zeros(n) if self.initial_value is None else self.initial_value.copy()
+        value[list(self.terminal)] = 0.0
+        if bounds is not None:
+            lower, upper = bounds
+            # Heuristic search and certified elimination, Algorithm 3 step 1.
+            for _ in range(self.max_search_batches):
+                previous_root = float(lower[self.initial_state])
+                for _ in range(self.search_batch_size):
+                    self._search_trial(lower, upper, enabled)
+                    self.n_search_trials += 1
+                root = float(lower[self.initial_state])
+                improvement = abs(root - previous_root) / max(
+                    1.0, abs(root), abs(previous_root)
+                )
+                if improvement <= self.min_relative_improvement:
+                    break
+            value = np.clip(value, lower, upper)
 
         self.enabled = enabled
         sccs = _scc_dependency_order(self.model, enabled)
         self.n_scc = len(sccs)
         self.largest_scc = max(map(len, sccs))
-        base = np.zeros(n) if self.initial_value is None else self.initial_value.copy()
-        value = np.clip(base, lower, upper)
-        target = self.final_precision * (1.0 - self.discount)
+        target = self.final_precision
         # Algorithm 3 step 2: TVI on the pruned MDP, with a stricter internal
-        # threshold because the public certificate uses the *full* Bellman T.
+        # threshold because the final check uses the *full* Bellman T.
         local_tolerance = target / 4.0
         self.n_sweeps = 0
         for _ in range(7):
             self.n_sweeps += _solve_sccs(
                 self.model,
-                self.discount,
                 value,
                 sccs,
                 local_tolerance,
                 self.max_iterations,
+                self.terminal,
                 enabled,
             )
-            full_backup = compact_optimal_bellman_operator(
-                self.model, value, self.discount
-            )
+            full_backup = compact_optimal_bellman_operator(self.model, value, 1.0)
             self.final_residual = float(np.max(np.abs(full_backup - value)))
             if np.isfinite(self.final_residual) and self.final_residual <= target * (
                 1 + 1e-10
             ):
                 return SolveResult(
                     value=value,
-                    policy=_greedy_policy(self.model, value, self.discount),
+                    policy=_greedy_policy(self.model, value),
                     validation_method="residual",
                 )
             local_tolerance /= 4
         raise RuntimeError(
-            "FTVI: full Bellman-residual certificate failed after pruning"
+            "FTVI: full Bellman residual exceeds the tolerance after pruning"
         )

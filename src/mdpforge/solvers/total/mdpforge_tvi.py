@@ -1,12 +1,7 @@
-"""Topological Value Iteration (TVI) for finite discounted MDPs.
+"""Topological value iteration for absorbing total-reward MDPs.
 
-Dai, Mausam, Weld & Goldsmith, *Topological Value Iteration Algorithms*,
-JAIR (2011), Algorithm 2.
-
-The paper uses undiscounted stochastic-shortest-path cost minimization.
-This mdpforge implementation instead maximizes expected discounted reward,
-solves all states (there is no mandatory initial state), and uses the
-repository's full Bellman-residual accuracy criterion.
+Adapted from Dai, Mausam, Weld and Goldsmith (JAIR 2011), Algorithm 2.
+Maximize undiscounted rewards over all states with zero terminal values.
 """
 
 from __future__ import annotations
@@ -20,25 +15,23 @@ from scipy.sparse.csgraph import connected_components
 from mdpforge.core.mdp import MDP
 from mdpforge.core.operators import compact_optimal_bellman_operator
 from mdpforge.core.solve_result import SolveResult
-from mdpforge.core.solver import GenericSolver
-from mdpforge.utils.solver_options import validate_discount
+from mdpforge.solvers.total._common import check_options
 
 METADATA = {
-    "display_name": "TVI · mdpforge",
+    "display_name": "Total TVI · mdpforge",
     "family": "vi",
     "backend": "mdpforge",
-    "description": "SCC decomposition and dependency-ordered local value iteration (Dai et al., 2011).",
+    "description": (
+        "Total-reward SCC decomposition and dependency-ordered local value "
+        "iteration (Dai et al., 2011)."
+    ),
 }
 
 
 def _scc_dependency_order(
     model: MDP, enabled: np.ndarray | None = None
 ) -> list[np.ndarray]:
-    """Return SCCs in *reverse* topological order (successors before sources).
-
-    An edge s -> t denotes dependence of V(s) on V(t). With ``enabled``,
-    only transitions belonging to non-eliminated actions are retained.
-    """
+    """Order SCCs with successors first, retaining only enabled actions."""
     n, actions = model.state_dim, model.action_dim
     graph = csr_matrix((n, n), dtype=np.float64)
     for action in range(actions):
@@ -94,22 +87,22 @@ def _scc_dependency_order(
 
 def _solve_sccs(
     model: MDP,
-    discount: float,
     value: np.ndarray,
     sccs: list[np.ndarray],
     tolerance: float,
     max_iterations: int,
+    terminal: set[int],
     enabled: np.ndarray | None = None,
 ) -> int:
-    """In-place SCC-local Bellman iteration. Returns number of local sweeps.
-
-    Singleton SCCs are solved *exactly*, including a potential self-loop.
-    Other components use synchronous restricted VI with fixed outside values.
-    No dense S-by-S transition matrix is formed.
-    """
+    """Solve transient components with fixed successor values."""
     actions = model.action_dim
     sweeps = 0
     for states in sccs:
+        states = np.array(
+            [state for state in states if state not in terminal], dtype=np.intp
+        )
+        if states.size == 0:
+            continue
         if states.size == 1:
             state = int(states[0])
             best = -np.inf
@@ -119,9 +112,15 @@ def _solve_sccs(
                 row = model.transition_matrix[action].getrow(state)
                 self_prob = float(row[0, state])
                 external = float(row.dot(value)[0] - self_prob * value[state])
-                candidate = (
-                    model.reward_matrix[state, action] + discount * external
-                ) / (1.0 - discount * self_prob)
+                reward = model.reward_matrix[state, action]
+                if self_prob == 1.0:
+                    if reward > 0:
+                        raise ValueError(
+                            "TVI: positive-reward self-loop has infinite value"
+                        )
+                    candidate = 0.0 if reward == 0 else -np.inf
+                else:
+                    candidate = (reward + external) / (1.0 - self_prob)
                 best = max(best, candidate)
             if not np.isfinite(best):
                 raise RuntimeError(
@@ -140,7 +139,7 @@ def _solve_sccs(
             for action, matrix in enumerate(matrices):
                 if active is not None and not np.any(active[:, action]):
                     continue
-                candidate = rewards[:, action] + discount * matrix.dot(value)
+                candidate = rewards[:, action] + matrix.dot(value)
                 if active is not None:
                     candidate[~active[:, action]] = -np.inf
                 np.maximum(updated, candidate, out=updated)
@@ -149,7 +148,7 @@ def _solve_sccs(
             variation = float(np.max(np.abs(updated - value[states])))
             value[states] = updated
             sweeps += 1
-            # The local Bellman residual at the new vector is <= gamma*variation.
+            # The undiscounted local operator is nonexpansive in the maximum norm.
             if variation <= tolerance:
                 break
         else:
@@ -157,40 +156,35 @@ def _solve_sccs(
     return sweeps
 
 
-def _greedy_policy(model: MDP, value: np.ndarray, discount: float) -> np.ndarray:
-    best = model.reward_matrix[:, 0] + discount * model.transition_matrix[0].dot(value)
+def _greedy_policy(model: MDP, value: np.ndarray) -> np.ndarray:
+    best = model.reward_matrix[:, 0] + model.transition_matrix[0].dot(value)
     policy = np.zeros(model.state_dim, dtype=np.intp)
     for action in range(1, model.action_dim):
-        candidate = model.reward_matrix[:, action] + discount * model.transition_matrix[
-            action
-        ].dot(value)
+        candidate = model.reward_matrix[:, action] + model.transition_matrix[action].dot(
+            value
+        )
         improvement = candidate > best
         best[improvement] = candidate[improvement]
         policy[improvement] = action
     return policy
 
 
-class Solver(GenericSolver):
+class Solver:
     solver_type = "vi"
 
     def __init__(
         self,
         model: MDP,
-        discount: float,
         final_precision: float = 1e-3,
         initial_value: np.ndarray | None = None,
         *,
         max_iterations: int = 100_000,
     ):
         """Initialize TVI; max_iterations is the per-SCC VI iteration budget."""
-        validate_discount(discount)
-        if not np.isfinite(final_precision) or final_precision <= 0:
-            raise ValueError("final_precision must be finite and positive")
-        if not isinstance(max_iterations, int) or max_iterations < 1:
-            raise ValueError("max_iterations must be a positive integer")
-        super().__init__(
-            model, discount, final_precision, max_iterations=max_iterations
-        )
+        self.terminal = check_options(model, final_precision, max_iterations)
+        self.model = model
+        self.final_precision = final_precision
+        self.max_iterations = max_iterations
         if initial_value is None:
             self.initial_value = np.zeros(model.state_dim, dtype=np.float64)
         else:
@@ -201,34 +195,36 @@ class Solver(GenericSolver):
             ):
                 raise ValueError("initial_value must be a finite vector of shape (S,)")
             self.initial_value = initial_value.copy()
+        self.initial_value[list(self.terminal)] = 0.0
         self.name = "mdpforge_tvi"
         self.n_scc = 0
         self.largest_scc = 0
         self.n_sweeps = 0
         self.final_residual = np.inf
 
-    def _solve(self) -> SolveResult:
+    def run(self) -> SolveResult:
+        """Solve components and check the full undiscounted Bellman residual."""
         value = self.initial_value.copy()
         sccs = _scc_dependency_order(self.model)
         self.n_scc = len(sccs)
         self.largest_scc = max(map(len, sccs))
-        tolerance = self.final_precision * (1.0 - self.discount)
+        tolerance = self.final_precision
         self.n_sweeps = _solve_sccs(
             self.model,
-            self.discount,
             value,
             sccs,
             tolerance,
             self.max_iterations,
+            self.terminal,
         )
-        backup = compact_optimal_bellman_operator(self.model, value, self.discount)
+        backup = compact_optimal_bellman_operator(self.model, value, 1.0)
         self.final_residual = float(np.max(np.abs(backup - value)))
         if not np.isfinite(self.final_residual) or self.final_residual > tolerance * (
             1 + 1e-10
         ):
-            raise RuntimeError("TVI: global Bellman-residual certificate failed")
+            raise RuntimeError("TVI: full Bellman residual exceeds the tolerance")
         return SolveResult(
             value=value,
-            policy=_greedy_policy(self.model, value, self.discount),
+            policy=_greedy_policy(self.model, value),
             validation_method="residual",
         )

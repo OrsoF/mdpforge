@@ -24,13 +24,13 @@ OPTIONAL_BACKENDS = {
 }
 
 
-def solver_names():
+def solver_names(catalogue=discounted):
     """Return solver cases with optional-dependency markers without importing backends."""
     parameters = []
-    for module in sorted(iter_modules(discounted.__path__), key=lambda item: item.name):
+    for module in sorted(iter_modules(catalogue.__path__), key=lambda item: item.name):
         if module.ispkg or module.name.startswith("_"):
             continue
-        source = Path(discounted.__file__).with_name(f"{module.name}.py")
+        source = Path(catalogue.__file__).with_name(f"{module.name}.py")
         tree = ast.parse(source.read_text(encoding="utf-8"))
         imports = set()
         for node in ast.walk(tree):
