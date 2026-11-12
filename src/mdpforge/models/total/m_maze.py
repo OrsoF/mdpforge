@@ -5,7 +5,7 @@ from mdpforge.models.total._episodic import EpisodicModel
 
 METADATA = {
     "category": "navigation",
-    "description": "Reach the goal in an M-shaped maze with episodic termination.",
+    "description": "Reach the goal in an M-shaped maze with a 1% step timeout.",
     "reference": "McCallum (1996), U-Tree / UDM aliased maze variants.",
     "sizes": {
         "small": {"requested_state_dim": 8000, "parameters": {}},

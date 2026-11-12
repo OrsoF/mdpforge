@@ -5,7 +5,7 @@ from mdpforge.models.total._episodic import EpisodicModel
 
 METADATA = {
     "category": "navigation",
-    "description": "Reach the exit in a backtracking maze with episodic termination.",
+    "description": "Reach the exit in a backtracking maze with a 1% step timeout.",
     "reference": "Buck, J. (2015). Mazes for Programmers.",
     "sizes": {
         "small": {"requested_state_dim": 4000, "parameters": {"seed": 0}},

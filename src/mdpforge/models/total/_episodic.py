@@ -33,7 +33,8 @@ class EpisodicModel(MDP):
     source_model = None
     stop_probability = 0.01
 
-    def __init__(self, state_dim, *, seed=None):
+    def __init__(self, state_dim=100, *, seed=None):
+        """Create a total model; seed selects a reproducible generated maze."""
         if type(state_dim) is not int or state_dim <= 0:
             raise ValueError("state_dim must be a positive integer")
         if seed is not None and (type(seed) is not int or seed < 0):
@@ -50,7 +51,11 @@ class EpisodicModel(MDP):
         ):
             raise ValueError("source model must have valid goal states")
         self.terminal_states = goals + (source.state_dim,)
-        self.name = f"{source.name}_total_stop_{self.stop_probability}_seed_{seed}"
+        source_name = source.name.split("_", 2)[2]
+        self.name = (
+            f"{self.state_dim}_{self.action_dim}_{source_name}"
+            f"_total_stop_{self.stop_probability}_seed_{seed}"
+        )
 
     def _goal_states(self, source):
         raise NotImplementedError
@@ -60,6 +65,8 @@ class EpisodicModel(MDP):
             self._source.create_model(cache="off")
         source = self._source
         n = source.state_dim
+        if n + 1 != self.state_dim or source.action_dim != self.action_dim:
+            raise ValueError("source model dimensions changed during construction")
         goals = self.terminal_states[:-1]
         timeout_probability = np.full(n, self.stop_probability)
         timeout_probability[list(goals)] = 0.0

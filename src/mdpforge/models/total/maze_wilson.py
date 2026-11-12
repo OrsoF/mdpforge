@@ -5,7 +5,7 @@ from mdpforge.models.total._episodic import EpisodicModel
 
 METADATA = {
     "category": "navigation",
-    "description": "Reach the exit in a Wilson maze with episodic termination.",
+    "description": "Reach the exit in a Wilson maze with a 1% step timeout.",
     "reference": (
         "Wilson, D. B. (1996). Generating random spanning trees more quickly "
         "than the cover time. STOC, pp. 296-303."

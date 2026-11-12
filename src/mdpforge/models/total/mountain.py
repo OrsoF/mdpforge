@@ -7,7 +7,7 @@ from mdpforge.models.total._episodic import EpisodicModel
 
 METADATA = {
     "category": "physical_control",
-    "description": "Reach the Mountain Car goal with episodic termination.",
+    "description": "Reach the Mountain Car goal with a 1% step timeout.",
     "reference": (
         "Moore, A. W. (1990). Efficient Memory-based Learning for Robot Control. "
         "PhD thesis, University of Cambridge."

@@ -5,7 +5,9 @@ from mdpforge.models.total._episodic import EpisodicModel
 
 METADATA = {
     "category": "navigation",
-    "description": "Reach the exit through nine connected rooms with a 1% step timeout.",
+    "description": (
+        "Reach the exit through nine connected rooms with a 1% step timeout."
+    ),
     "reference": "Inspired by Hengst, B. (2012). Hierarchical approaches.",
     "sizes": {
         "small": {"requested_state_dim": 18000, "parameters": {}},

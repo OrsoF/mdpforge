@@ -5,7 +5,7 @@ from mdpforge.models.total._episodic import EpisodicModel
 
 METADATA = {
     "category": "navigation",
-    "description": "Reach the exit in a Prim maze with episodic termination.",
+    "description": "Reach the exit in a Prim maze with a 1% step timeout.",
     "reference": (
         "Prim, R. C. (1957). Shortest connection networks and some "
         "generalizations. Bell System Technical Journal 36(6):1389-1401."
