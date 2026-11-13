@@ -7,8 +7,8 @@ from mdpforge.utils.catalogue import _read_metadata
 
 def list_models(category=None, *, size=None, available=None):
     """List total-reward models without importing their implementations."""
-    if size is not None and size not in ("small", "medium", "large"):
-        raise ValueError("size must be 'small', 'medium', 'large' or None")
+    if size is not None and size not in ("tiny", "small", "medium", "large"):
+        raise ValueError("size must be 'tiny', 'small', 'medium', 'large' or None")
     if available is not None and type(available) is not bool:
         raise ValueError("available must be True, False or None")
     entries = []

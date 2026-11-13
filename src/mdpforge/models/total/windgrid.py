@@ -25,6 +25,7 @@ METADATA = {
         "Windy Gridworld."
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 1200, "parameters": {}},
         "small": {"requested_state_dim": 12000, "parameters": {}},
         "medium": {"requested_state_dim": 48000, "parameters": {}},
         "large": {"requested_state_dim": 192000, "parameters": {}},
@@ -44,7 +45,7 @@ class Model(DiscountedWindgrid):
         if type(state_dim) is not int or state_dim <= 0:
             raise ValueError("state_dim must be a positive integer")
         super().__init__(state_dim=state_dim)
-        self.name += "_total_goal_entry_reward_v1"
+        self.name = "{}_{}_windgrid_total".format(self.state_dim, self.action_dim)
         self.terminal_states = (self.goal_state,)
 
     def _build_model(self):

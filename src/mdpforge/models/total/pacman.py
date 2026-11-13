@@ -25,6 +25,7 @@ METADATA = {
     "description": "Collect both pellets without capture, rewarding possible victory.",
     "reference": "QVBS Pacman benchmark: https://qcomp.org/benchmarks/",
     "sizes": {
+        "tiny": {"requested_state_dim": 2640, "parameters": {}},
         "small": {"requested_state_dim": 26400, "parameters": {}},
         "medium": {"requested_state_dim": 105600, "parameters": {}},
         "large": {"requested_state_dim": 422400, "parameters": {}},
@@ -42,7 +43,10 @@ class Model(DiscountedPacman):
     def __init__(self, state_dim: int = 326):
         """Accept state_dim as a positive Python integer target (default 326)."""
         super().__init__(state_dim=state_dim)
-        self.name += "_total_win_entry_reward_v1"
+        self.name = (
+            f"{self.state_dim}_{self.action_dim}_pacman_total_1"
+            f"_{self.width}_{self.width}"
+        )
         self.terminal_states = (self.win, self.lose)
 
     def _build_model(self):

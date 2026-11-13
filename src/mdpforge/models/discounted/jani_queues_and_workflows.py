@@ -11,8 +11,13 @@ METADATA = {
     "available": False,
     "reason": "Source type ma requires a finite discrete-time MDP adaptation before benchmarking.",
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 500,
+            "parameters": None,
+            "reason": "Source type ma requires a finite discrete-time MDP adaptation before benchmarking.",
+        },
         "small": {
-            "requested_state_dim": None,
+            "requested_state_dim": 5000,
             "parameters": None,
             "reason": "Source type ma requires a finite discrete-time MDP adaptation before benchmarking.",
         },

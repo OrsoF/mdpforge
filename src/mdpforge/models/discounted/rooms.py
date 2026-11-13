@@ -9,6 +9,10 @@ DIRECTIONS = ((-1, 0), (1, 0), (0, 1), (0, -1))  # North, south, east, west
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 1000,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 10000,
             "parameters": {},

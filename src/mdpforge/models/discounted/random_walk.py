@@ -13,6 +13,10 @@ from mdpforge.core.mdp import MDP
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 1560,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 15600,
             "parameters": {},
@@ -46,7 +50,7 @@ class Model(MDP):
         self.state_dim = max(5, int(state_dim))
         self.action_dim = 2
         self.direction_probability = 0.8
-        self.name = f"{self.state_dim}_{self.action_dim}_random_walk"
+        self.name = f"{self.state_dim}_{self.action_dim}_randomwalk"
 
     def _build_model(self) -> None:
         self.reward_matrix = np.zeros(

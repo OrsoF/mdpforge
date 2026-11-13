@@ -17,6 +17,7 @@ METADATA = {
         "https://www.prismmodelchecker.org/files/nfm24dpmc/"
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 2400, "parameters": {}},
         "small": {"requested_state_dim": 24000, "parameters": {}},
         "medium": {"requested_state_dim": 192000, "parameters": {}},
         "large": {"requested_state_dim": 768000, "parameters": {}},
@@ -40,7 +41,7 @@ class Model(MDP):
         self.requested_state_dim = state_dim
         self.treasure, self.drowned = self.state_dim - 2, self.state_dim - 1
         self.name = (
-            f"{self.state_dim}_{self.action_dim}_deep_sea_treasure_1"
+            f"{self.state_dim}_{self.action_dim}_treasure_1"
             f"_{self.depth}_{self.current_probability}"
         )
 

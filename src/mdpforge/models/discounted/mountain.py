@@ -17,6 +17,10 @@ def index_closest_value(value: float, list_of_values) -> Tuple:
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 1080,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 10800,
             "parameters": {},

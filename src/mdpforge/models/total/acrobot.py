@@ -27,6 +27,7 @@ METADATA = {
         "Processing Systems 8."
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 1000, "parameters": {}},
         "small": {"requested_state_dim": 10000, "parameters": {}},
         "medium": {"requested_state_dim": 225000, "parameters": {}},
         "large": {"requested_state_dim": 1229314, "parameters": {}},
@@ -46,7 +47,7 @@ class Model(DiscountedAcrobot):
         if type(state_dim) is not int or state_dim <= 0:
             raise ValueError("state_dim must be a positive integer")
         super().__init__(state_dim=state_dim)
-        self.name += "_total_height_entry_reward_v1"
+        self.name = f"{self.state_dim}_{self.action_dim}_acrobot_total"
         self.terminal_states = (self.terminal_state,)
 
     def _build_model(self):

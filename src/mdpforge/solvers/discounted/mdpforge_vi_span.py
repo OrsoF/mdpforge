@@ -46,7 +46,7 @@ class Solver(GenericSolver):
         value = self.initial_value.copy()
         tolerance = 2 * self.final_precision * (1 - self.discount) / self.discount
 
-        for iteration in range(1, self.max_iterations + 1):
+        for _ in range(1, self.max_iterations + 1):
             new_value = optimal_bellman_operator(self.model, value, self.discount)
 
             residual = new_value - value

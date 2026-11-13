@@ -28,6 +28,7 @@ METADATA = {
         "Introduction, 2nd ed. Random-walk prediction examples."
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 1560, "parameters": {}},
         "small": {"requested_state_dim": 15600, "parameters": {}},
         "medium": {"requested_state_dim": 249600, "parameters": {}},
         "large": {"requested_state_dim": 1996800, "parameters": {}},
@@ -47,7 +48,7 @@ class Model(DiscountedRandomWalk):
         if type(state_dim) is not int or state_dim <= 0:
             raise ValueError("state_dim must be a positive integer")
         super().__init__(state_dim=state_dim)
-        self.name += "_total_right_entry_reward_v1"
+        self.name = f"{self.state_dim}_{self.action_dim}_randomwalk_total"
         self.terminal_states = (0, self.state_dim - 1)
 
     def _build_model(self):

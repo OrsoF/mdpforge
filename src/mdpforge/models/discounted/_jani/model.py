@@ -185,9 +185,21 @@ class JANIModel(MDP):
         identity = hashlib.sha256(
             json.dumps(config, sort_keys=True).encode()
         ).hexdigest()
-        self.name = (
-            f"{self.state_dim}_{self.action_dim}_{self.display_name}"
-            f"_v2_{self.objective}_{identity}"
+        model_name = self.display_name.replace("_", "")
+        parameters = [
+            str(int(value)) if isinstance(value, bool) else str(value)
+            for _, value in sorted(self.constants.items())
+            if isinstance(value, (int, float))
+        ]
+        self.name = "_".join(
+            (
+                str(self.state_dim),
+                str(self.action_dim),
+                model_name,
+                "2",
+                *parameters,
+                str(int(identity, 16)),
+            )
         )
 
     def get_config(self):

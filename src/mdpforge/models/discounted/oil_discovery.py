@@ -12,6 +12,10 @@ from mdpforge.core.mdp import MDP
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 500,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 700,
             "parameters": {},
@@ -59,7 +63,7 @@ class Model(MDP):
         self.transition_std = 0.02
         self.kernel_tolerance = 1e-6
 
-        self.name = f"{self.state_dim}_{self.action_dim}_oil_discovery"
+        self.name = f"{self.state_dim}_{self.action_dim}_oildiscovery"
 
     def _build_model(self) -> None:
         self.state_grid = np.linspace(

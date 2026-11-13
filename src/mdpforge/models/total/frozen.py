@@ -26,6 +26,7 @@ METADATA = {
     "description": "Slippery lake navigation with holes and reward for goal access.",
     "reference": "Gymnasium FrozenLake-v1 / OpenAI Gym FrozenLake.",
     "sizes": {
+        "tiny": {"requested_state_dim": 1400, "parameters": {}},
         "small": {"requested_state_dim": 14000, "parameters": {}},
         "medium": {"requested_state_dim": 224000, "parameters": {}},
         "large": {"requested_state_dim": 896000, "parameters": {}},
@@ -45,7 +46,7 @@ class Model(DiscountedFrozen):
         if type(state_dim) is not int or state_dim <= 0:
             raise ValueError("state_dim must be a positive integer")
         super().__init__(state_dim=state_dim)
-        self.name += "_total_goal_entry_reward_v1"
+        self.name = "{}_{}_frozen_total".format(self.state_dim, self.action_dim)
         self.terminal_states = tuple(
             self._state(row, col)
             for row, cells in enumerate(self.desc)

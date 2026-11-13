@@ -24,6 +24,7 @@ METADATA = {
         "source examples: prismmodelchecker/prism, GPL-2.0."
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 2776, "parameters": {}},
         "small": {"requested_state_dim": 27766, "parameters": {"processes": 3}},
         "medium": {"requested_state_dim": 167209, "parameters": {"processes": 4}},
         "large": {
@@ -64,7 +65,7 @@ class Model(MDP):
             raise ValueError("target_process must not exceed processes")
         self.target_process = target_process
         self._prism_target = f"p{target_process}=2"
-        self.name += f"_target_{target_process}"
+        self.name += f"_{target_process}"
 
     def _build_model(self):
         build_prism(self)

@@ -30,6 +30,7 @@ METADATA = {
         "inspired by Littman (1994) Markov games. Single-agent tabular reduction."
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 685, "parameters": {}},
         "small": {"requested_state_dim": 6859, "parameters": {}},
         "medium": {"requested_state_dim": 405224, "parameters": {}},
         "large": {"requested_state_dim": 753571, "parameters": {}},
@@ -49,7 +50,7 @@ class Model(DiscountedHexagonalGridSoccer):
         if type(state_dim) is not int or state_dim <= 0:
             raise ValueError("state_dim must be a positive integer")
         super().__init__(state_dim=state_dim)
-        self.name += "_total_right_goal_entry_reward_v1"
+        self.name = f"{self.state_dim}_{self.action_dim}_hexagonalgridsoccer_total"
         self.right_goal = max(range(self.n_cells), key=lambda k: self.cells[k][0])
         self.terminal_states = tuple(
             self._encode(player, self.right_goal, defender)

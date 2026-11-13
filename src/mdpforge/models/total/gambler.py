@@ -28,6 +28,7 @@ METADATA = {
         "Gambler's Problem."
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 1000, "parameters": {}},
         "small": {"requested_state_dim": 10000, "parameters": {}},
         "medium": {"requested_state_dim": 160000, "parameters": {}},
         "large": {"requested_state_dim": 640000, "parameters": {}},
@@ -49,7 +50,7 @@ class Model(DiscountedGambler):
         if type(action_dim) is not int or action_dim <= 0:
             raise ValueError("action_dim must be a positive integer")
         super().__init__(state_dim=state_dim, action_dim=action_dim)
-        self.name += "_total_goal_entry_reward_v1"
+        self.name = "{}_{}_gambler_total".format(self.state_dim, self.action_dim)
         self.terminal_states = (0, self.goal)
 
     def _build_model(self):

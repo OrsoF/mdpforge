@@ -35,6 +35,7 @@ METADATA = {
         "https://ipc08.icaps-conference.org/probabilistic/wiki/images/0/03/Results.pdf"
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 9120, "parameters": {}},
         "small": {"requested_state_dim": 91200, "parameters": {}},
         "medium": {"requested_state_dim": 364800, "parameters": {}},
         "large": {"requested_state_dim": 2918400, "parameters": {}},
@@ -65,7 +66,11 @@ class Model(DiscountedSearchAndRescue):
             pickup_success=pickup_success,
             per_step_loss=per_step_loss,
         )
-        self.name += "_total_rescued_entry_reward_v1"
+        self.name = (
+            f"{self.state_dim}_{self.action_dim}_searchandrescue_total_1"
+            f"_{self.zones}_{max_urgency}"
+            f"_{survey_success}_{pickup_success}_{per_step_loss}"
+        )
         self.terminal_states = (self.rescued, self.lost)
 
     def _build_model(self):

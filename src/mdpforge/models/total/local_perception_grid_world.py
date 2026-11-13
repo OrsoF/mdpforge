@@ -31,6 +31,7 @@ METADATA = {
         "Hidden State."
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 1160, "parameters": {}},
         "small": {"requested_state_dim": 11600, "parameters": {}},
         "medium": {"requested_state_dim": 46400, "parameters": {}},
         "large": {"requested_state_dim": 185600, "parameters": {}},
@@ -50,7 +51,7 @@ class Model(DiscountedLocalPerceptionGridWorld):
         if type(state_dim) is not int or state_dim <= 0:
             raise ValueError("state_dim must be a positive integer")
         super().__init__(state_dim=state_dim)
-        self.name += "_total_goal_entry_reward_v1"
+        self.name = f"{self.state_dim}_{self.action_dim}_localperceptiongridworld_total"
         self.goal_cell = self._cell(1, self.width - 2)
         self.terminal_states = (self.goal_cell,)
 

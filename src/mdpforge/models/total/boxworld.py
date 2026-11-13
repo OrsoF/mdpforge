@@ -31,6 +31,7 @@ METADATA = {
         "https://www.cs.cmu.edu/afs/cs/project/jair/pub/volume24/younes05a-html/"
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 2000, "parameters": {}},
         "small": {"requested_state_dim": 20000, "parameters": {}},
         "medium": {"requested_state_dim": 80000, "parameters": {}},
         "large": {"requested_state_dim": 320000, "parameters": {}},
@@ -59,7 +60,10 @@ class Model(DiscountedBoxworld):
             traffic_delay=traffic_delay,
             cargo_damage=cargo_damage,
         )
-        self.name += "_total_delivered_entry_reward_v1"
+        self.name = (
+            f"{self.state_dim}_{self.action_dim}_boxworld_total_1"
+            f"_{self.locations}_{traffic_delay}_{cargo_damage}"
+        )
         self.terminal_states = (self.delivered, self.damaged)
 
     def _build_model(self):

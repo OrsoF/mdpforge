@@ -17,6 +17,7 @@ METADATA = {
         "https://users.cecs.anu.edu.au/~ssanner/IPPC_2011/"
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 1560, "parameters": {}},
         "small": {"requested_state_dim": 15600, "parameters": {}},
         "medium": {"requested_state_dim": 124800, "parameters": {}},
         "large": {"requested_state_dim": 998400, "parameters": {}},
@@ -46,7 +47,7 @@ class Model(MDP):
         super().__init__(2 * (self.capacity + 1) ** 2, 2)
         self.requested_state_dim = state_dim
         self.name = (
-            f"{self.state_dim}_{self.action_dim}_traffic_control_1"
+            f"{self.state_dim}_{self.action_dim}_trafficcontrol_1"
             f"_{self.capacity}_{self.arrival_north}_{self.arrival_east}"
         )
 

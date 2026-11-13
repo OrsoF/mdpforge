@@ -32,6 +32,7 @@ METADATA = {
         "MAXQ value function decomposition. JAIR 13:227-303."
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 600, "parameters": {}},
         "small": {"requested_state_dim": 6000, "parameters": {}},
         "medium": {"requested_state_dim": 48000, "parameters": {}},
         "large": {"requested_state_dim": 192000, "parameters": {}},
@@ -51,7 +52,7 @@ class Model(DiscountedTaxi):
         if type(state_dim) is not int or state_dim <= 0:
             raise ValueError("state_dim must be a positive integer")
         super().__init__(state_dim=state_dim)
-        self.name += "_total_delivered_entry_reward_v1"
+        self.name = f"{self.state_dim}_{self.action_dim}_taxi_total"
         self.terminal_states = (self.terminal_state,)
 
     def _build_model(self):

@@ -36,7 +36,9 @@ class Solver:
 
     def run(self):
         """Return values and policy when the full residual is small."""
-        policy = proper_initial_policy(self.model, self.terminal)
+        policy = proper_initial_policy(
+            self.model, self.terminal, require_all_states=False
+        )
         value = np.zeros(self.model.state_dim)
         for _ in range(self.max_iterations):
             transition, reward = compute_transition_reward_policy(self.model, policy)

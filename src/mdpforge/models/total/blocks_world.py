@@ -29,6 +29,7 @@ METADATA = {
     "description": "Complete sequential block puzzles, rewarding only final completion.",
     "reference": "McCallum (1996), Whitehead's Blocks World revisited.",
     "sizes": {
+        "tiny": {"requested_state_dim": 800, "parameters": {}},
         "small": {"requested_state_dim": 8000, "parameters": {}},
         "medium": {"requested_state_dim": 64000, "parameters": {}},
         "large": {"requested_state_dim": 256000, "parameters": {}},
@@ -48,7 +49,7 @@ class Model(DiscountedBlocksWorld):
         if type(state_dim) is not int or state_dim <= 0:
             raise ValueError("state_dim must be a positive integer")
         super().__init__(state_dim=state_dim)
-        self.name += "_total_final_level_entry_reward_v1"
+        self.name = f"{self.state_dim}_{self.action_dim}_blocksworld_total"
         if self.n_levels:
             self.terminal_states = tuple(range(1, self._world_limit, 2))
             self.goal_states = tuple(range(1, self._LEVEL_SIZE, 2))

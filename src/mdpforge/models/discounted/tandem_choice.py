@@ -32,6 +32,10 @@ def params_match_state_dim(state_dim: int, max_index=50) -> tuple:
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 500,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 400,
             "parameters": {},
@@ -99,7 +103,7 @@ class Model(MDP):
         )
 
         self.action_dim = int(self.K1 * self.K2)
-        self.name = "{}_{}_tandem_choice".format(self.state_dim, self.action_dim)
+        self.name = "{}_{}_tandemchoice".format(self.state_dim, self.action_dim)
 
     def _build_model(self):
         self.state_space_tuples = [

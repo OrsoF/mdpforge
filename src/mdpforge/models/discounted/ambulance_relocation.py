@@ -8,6 +8,10 @@ from mdpforge.core.mdp import MDP
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 500,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 200,
             "parameters": {},
@@ -42,7 +46,7 @@ class Model(MDP):
         self.requested_state_dim = int(state_dim)
         self.state_dim = max(50, int(state_dim))
         self.action_dim = max(10, int(action_dim))
-        self.name = f"{self.state_dim}_{self.action_dim}_ambulance_relocation"
+        self.name = f"{self.state_dim}_{self.action_dim}_ambulancerelocation"
 
     def _build_model(self):
         self.state_grid = np.linspace(0.0, 1.0, self.state_dim)

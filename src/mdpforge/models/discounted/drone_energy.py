@@ -19,6 +19,7 @@ METADATA = {
         "https://www.prismmodelchecker.org/files/nfm24dpmc/"
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 2000, "parameters": {"battery_capacity": 5}},
         "small": {"requested_state_dim": 20000, "parameters": {"battery_capacity": 5}},
         "medium": {
             "requested_state_dim": 160000,
@@ -54,7 +55,7 @@ class Model(MDP):
         self.requested_state_dim = state_dim
         self.landed, self.crashed = self.state_dim - 2, self.state_dim - 1
         self.name = (
-            f"{self.state_dim}_{self.action_dim}_drone_energy_1"
+            f"{self.state_dim}_{self.action_dim}_droneenergy_1"
             f"_{self.locations}_{battery_capacity}"
             f"_{self.wind_probability}_{self.stall_probability}"
         )

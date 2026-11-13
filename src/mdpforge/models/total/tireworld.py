@@ -27,6 +27,7 @@ METADATA = {
         "https://ipc04.icaps-conference.org/probabilistic/"
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 1560, "parameters": {}},
         "small": {"requested_state_dim": 15600, "parameters": {}},
         "medium": {"requested_state_dim": 62400, "parameters": {}},
         "large": {"requested_state_dim": 499200, "parameters": {}},
@@ -44,7 +45,10 @@ class Model(DiscountedTireworld):
     def __init__(self, state_dim: int = 98, puncture_probability: float = 0.15):
         """Use positive integer state_dim and puncture_probability in [0, 1]."""
         super().__init__(state_dim=state_dim, puncture_probability=puncture_probability)
-        self.name += "_total_goal_entry_reward_v1"
+        self.name = (
+            f"{self.state_dim}_{self.action_dim}_tireworld_total_1"
+            f"_{self.length}_{self.puncture_probability}"
+        )
         self.terminal_states = (self.goal, self.stranded)
 
     def _build_model(self):

@@ -30,6 +30,7 @@ METADATA = {
         "Applications and Algorithms, 4th ed."
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 500, "parameters": {}},
         "small": {"requested_state_dim": 640, "parameters": {}},
         "medium": {"requested_state_dim": 40000, "parameters": {}},
         "large": {"requested_state_dim": 81920, "parameters": {}},
@@ -52,7 +53,7 @@ class Model(DiscountedPegSolitaire):
         goal = 1 << (self.size * self.size - 1 - (2 * self.size + 2))
         if goal >= self.state_dim:
             raise ValueError("state_dim must include the single-peg goal at [2, 2]")
-        self.name += "_total_single_peg_entry_reward_v1"
+        self.name = "{}_{}_pegsolitaire_total".format(self.state_dim, self.action_dim)
         self.terminal_states = (goal,)
 
     def _build_model(self):

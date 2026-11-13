@@ -18,6 +18,10 @@ def build_track(state_dim: int, max_speed: int) -> np.ndarray:
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 900,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 9000,
             "parameters": {},

@@ -20,10 +20,13 @@ METADATA = {
     "source_url": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/RandomWalk",
     "variants": 1,
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 500,
+            "parameters": {},
+        },
         "small": {
-            "requested_state_dim": None,
-            "parameters": None,
-            "reason": "No additional distinct published tractable size; runtime calibration is pending.",
+            "requested_state_dim": 5000,
+            "parameters": {},
         },
         "medium": {
             "requested_state_dim": None,

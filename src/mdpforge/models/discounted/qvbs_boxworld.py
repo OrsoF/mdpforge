@@ -27,6 +27,10 @@ METADATA = {
     "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/boxworld",
     "variants": 5,
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 500,
+            "parameters": {"trucks": 1, "planes": 0},
+        },
         "small": {
             "requested_state_dim": 30,
             "parameters": {"boxes": 1, "trucks": 1, "planes": 0},

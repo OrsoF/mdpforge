@@ -9,6 +9,10 @@ from mdpforge.core.mdp import MDP
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 8180,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 81800,
             "parameters": {},
@@ -46,7 +50,7 @@ class Model(MDP):
         self.shortage_cost = 1.0
         self.order_cost = 0.4
 
-        self.name = "{}_{}_inventory_leadtime_{}_{}".format(
+        self.name = "{}_{}_inventoryleadtime_{}_{}".format(
             self.state_dim,
             self.action_dim,
             self.stock_capacity,

@@ -18,6 +18,10 @@ def build_track(state_dim: int, max_speed: int) -> np.ndarray:
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 900,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 9000,
             "parameters": {},
@@ -60,7 +64,7 @@ class Model(MDP):
         self._build_state_space()
         self._build_action_space()
 
-        self.name = "{}_{}_barto_{}_{}_total_entry_reward".format(
+        self.name = "{}_{}_barto_total_{}_{}".format(
             self.state_dim,
             self.action_dim,
             self._max_speed,

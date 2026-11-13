@@ -8,7 +8,7 @@ Create `src/mdpforge/models/discounted/<name>.py` or `src/mdpforge/models/total/
 
 - `Model(MDP)` with `__init__(state_dim, ...)` and `_build_model()`; `create_model()` handles construction, caching and CSR conversion.
 - Positive Python integers `state_dim` and `action_dim` giving actual dimensions after construction; `requested_state_dim` retains the original target. Reject invalid arguments and document adjustments; keep constructors lightweight.
-- `name = "<state_dim>_<action_dim>_<name>[_parameters]"` including every option affecting dynamics or rewards, such as seeds and geometry. Version names when definitions change; use unrounded `str(value)` for floats.
+- `name = "<state_dim>_<action_dim>_<nameoneword>[_<param1>_<param2>_...]"` for discounted models; total models use `"<state_dim>_<action_dim>_<nameoneword>_total[_<param1>_<param2>_...]"`. Use actual state and action counts, one lowercase model name without underscores, then numeric parameter values only. Include every option affecting dynamics or rewards, such as seeds and geometry; use unrounded `str(value)` for floats. Encode categorical options with stable numeric identifiers; retain source/configuration fingerprints as decimal integers when needed for cache identity. Do not append reward descriptions or text versions such as `entry_reward` or `v1`; use a numeric version parameter when definitions change. Examples: `2282_5_treasure_1_18_0.15` and `2282_5_treasure_total_1_18_0.15`.
 - Literal `TEST_PARAMETERS` for a small, fast instance.
 
 After `create_model()`, the data must satisfy:

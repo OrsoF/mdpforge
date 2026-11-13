@@ -22,6 +22,10 @@ METADATA = {
         "https://github.com/prismmodelchecker/prism-benchmarks"
     ),
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 500,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 4093,
             "parameters": {"delay": 3},

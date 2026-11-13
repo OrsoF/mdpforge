@@ -24,6 +24,7 @@ METADATA = {
         "source examples: prismmodelchecker/prism, GPL-2.0."
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 500, "parameters": {}},
         "small": {"requested_state_dim": 956, "parameters": {"philosophers": 3}},
         "medium": {"requested_state_dim": 75520, "parameters": {"philosophers": 4}},
         "large": {"requested_state_dim": 93068, "parameters": {"philosophers": 5}},
@@ -61,7 +62,7 @@ class Model(MDP):
             raise ValueError("target_philosopher must not exceed philosophers")
         self.target_philosopher = target_philosopher
         self._prism_target = f"p{target_philosopher}>=8 & p{target_philosopher}<=9"
-        self.name += f"_target_{target_philosopher}"
+        self.name += f"_{target_philosopher}"
 
     def _build_model(self):
         build_prism(self)

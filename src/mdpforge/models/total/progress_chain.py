@@ -18,6 +18,7 @@ METADATA = {
     ),
     "reference": None,
     "sizes": {
+        "tiny": {"requested_state_dim": 500, "parameters": {}},
         "small": {"requested_state_dim": 20, "parameters": {}},
         "medium": {"requested_state_dim": 200, "parameters": {}},
         "large": {"requested_state_dim": 2000, "parameters": {}},
@@ -36,7 +37,7 @@ class Model(MDP):
         if type(state_dim) is not int or state_dim < 3:
             raise ValueError("state_dim must be an integer of at least 3")
         super().__init__(state_dim, 2)
-        self.name = f"{state_dim}_2_progress_chain"
+        self.name = f"{state_dim}_2_progresschain_total"
         self.terminal_states = (state_dim - 1,)
         self.max_steps = state_dim - 1
 

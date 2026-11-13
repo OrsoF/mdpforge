@@ -8,6 +8,10 @@ from mdpforge.core.mdp import MDP
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 685,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 6859,
             "parameters": {},
@@ -52,7 +56,7 @@ class Model(MDP):
         self.n_cells = len(self.cells)
         self.action_dim = 6
         self.state_dim = self.n_cells**3
-        self.name = f"{self.state_dim}_{self.action_dim}_hexagonal_grid_soccer"
+        self.name = f"{self.state_dim}_{self.action_dim}_hexagonalgridsoccer"
 
     def _build_model(self):
         self.left_goal = min(range(self.n_cells), key=lambda k: self.cells[k][0])

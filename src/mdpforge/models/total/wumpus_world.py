@@ -32,6 +32,7 @@ METADATA = {
         "2023)."
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 680, "parameters": {}},
         "small": {"requested_state_dim": 6800, "parameters": {}},
         "medium": {"requested_state_dim": 54400, "parameters": {}},
         "large": {"requested_state_dim": 217600, "parameters": {}},
@@ -51,7 +52,7 @@ class Model(DiscountedWumpusWorld):
         if type(state_dim) is not int or state_dim <= 0:
             raise ValueError("state_dim must be a positive integer")
         super().__init__(state_dim=state_dim)
-        self.name += "_total_gold_exit_entry_reward_v1"
+        self.name = f"{self.state_dim}_{self.action_dim}_wumpusworld_total"
         self.terminal_states = tuple(range(1, self.state_dim, 2))
         start = self._cell(self.size - 1, 0)
         self.goal_states = tuple(

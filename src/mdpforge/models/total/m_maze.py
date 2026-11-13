@@ -8,6 +8,10 @@ from mdpforge.core.mdp import MDP
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 800,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 8000,
             "parameters": {},
@@ -46,7 +50,7 @@ class Model(MDP):
         self.action_dim = 4
         self.state_dim = self.height * self.width
         self.observation_dim = 32
-        self.name = f"{self.state_dim}_{self.action_dim}_m_maze_total_entry_reward"
+        self.name = f"{self.state_dim}_{self.action_dim}_mmaze_total"
         self.terminal_states = (self._cell(1, self.width - 2),)
 
     def _build_model(self):

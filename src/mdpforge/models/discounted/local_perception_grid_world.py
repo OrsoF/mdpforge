@@ -8,6 +8,10 @@ from mdpforge.core.mdp import MDP
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 1160,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 11600,
             "parameters": {},
@@ -45,7 +49,7 @@ class Model(MDP):
         self.action_dim = 4
         self.state_dim = self.height * self.width
         self.observation_dim = 16
-        self.name = f"{self.state_dim}_{self.action_dim}_local_perception_grid_world"
+        self.name = f"{self.state_dim}_{self.action_dim}_localperceptiongridworld"
 
     def _build_model(self):
         self.blocked = self._make_walls()

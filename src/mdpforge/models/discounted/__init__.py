@@ -24,13 +24,13 @@ def list_models(
 
     category: abstract, navigation, distributed_systems, service_operations,
         asset_management, games_and_puzzles or None; selects a task family.
-    size: small, medium, large or None; selects an available preset.
+    size: tiny, small, medium, large or None; selects an available preset.
     available: True for recipes, False for unavailable sources, None for both.
     """
     if available is not None and type(available) is not bool:
         raise ValueError("available must be True, False or None")
-    if size is not None and size not in ("small", "medium", "large"):
-        raise ValueError("size must be 'small', 'medium', 'large' or None")
+    if size is not None and size not in ("tiny", "small", "medium", "large"):
+        raise ValueError("size must be 'tiny', 'small', 'medium', 'large' or None")
     if category is not None and (
         not isinstance(category, str) or category not in _CATEGORIES
     ):

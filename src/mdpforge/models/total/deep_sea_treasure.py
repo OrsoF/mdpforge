@@ -33,6 +33,7 @@ METADATA = {
         "https://www.prismmodelchecker.org/files/nfm24dpmc/"
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 2400, "parameters": {}},
         "small": {"requested_state_dim": 24000, "parameters": {}},
         "medium": {"requested_state_dim": 192000, "parameters": {}},
         "large": {"requested_state_dim": 768000, "parameters": {}},
@@ -50,7 +51,10 @@ class Model(DiscountedDeepSeaTreasure):
     def __init__(self, state_dim: int = 542, current_probability: float = 0.15):
         """Use positive integer state_dim and current_probability in [0,1]."""
         super().__init__(state_dim=state_dim, current_probability=current_probability)
-        self.name += "_total_treasure_entry_reward_v1"
+        self.name = (
+            f"{self.state_dim}_{self.action_dim}_treasure_total_1"
+            f"_{self.depth}_{self.current_probability}"
+        )
         self.terminal_states = (self.treasure, self.drowned)
 
     def _build_model(self):

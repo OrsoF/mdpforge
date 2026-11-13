@@ -22,6 +22,10 @@ METADATA = {
         "https://qcomp.org/benchmarks/"
     ),
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 500,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 1038,
             "parameters": {},

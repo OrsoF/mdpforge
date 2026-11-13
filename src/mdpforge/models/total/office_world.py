@@ -32,6 +32,7 @@ METADATA = {
         "used as a tabular/factored benchmark in CAT+RL (Dadvar et al., 2023)."
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 800, "parameters": {}},
         "small": {"requested_state_dim": 8000, "parameters": {}},
         "medium": {"requested_state_dim": 32000, "parameters": {}},
         "large": {"requested_state_dim": 256000, "parameters": {}},
@@ -51,7 +52,7 @@ class Model(DiscountedOfficeWorld):
         if type(state_dim) is not int or state_dim <= 0:
             raise ValueError("state_dim must be a positive integer")
         super().__init__(state_dim=state_dim)
-        self.name += "_total_office_entry_reward_v1"
+        self.name = f"{self.state_dim}_{self.action_dim}_officeworld_total"
         office_cell = self._cell(self.height - 2, self.width - 2)
         self.terminal_states = (self._encode(office_cell, True, True),)
 

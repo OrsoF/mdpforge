@@ -364,7 +364,11 @@ def configure_prism(model, family, requested, parameters, reward):
         str(int(value)) if isinstance(value, bool) else str(value)
         for value in selected["parameters"].values()
     )
-    model.name = f"{model.state_dim}_{model.action_dim}_{family}_2_{suffix}_{reward}"
+    model_name = family.replace("_", "")
+    reward_id = definition["rewards"].index(reward)
+    model.name = (
+        f"{model.state_dim}_{model.action_dim}_{model_name}_2_{suffix}_{reward_id}"
+    )
 
 
 def build_prism(model):

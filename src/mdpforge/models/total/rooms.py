@@ -9,6 +9,10 @@ DIRECTIONS = ((-1, 0), (1, 0), (0, 1), (0, -1))  # North, south, east, west
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 1000,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 10000,
             "parameters": {},
@@ -46,7 +50,7 @@ class Model(MDP):
         self.action_dim = 4
         self.state_dim = 4 * self.size_of_one_room**2
 
-        self.name = "{}_{}_rooms_total_entry_reward".format(
+        self.name = "{}_{}_rooms_total".format(
             self.state_dim, self.action_dim
         )
         self.terminal_states = (self.size_of_one_room // 2,)

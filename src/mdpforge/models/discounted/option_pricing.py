@@ -9,6 +9,10 @@ from mdpforge.core.mdp import MDP
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 3600,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 36000,
             "parameters": {},
@@ -46,7 +50,7 @@ class Model(MDP):
         self.down_factor = 0.94
         self.up_probability = 0.5
 
-        self.name = "{}_{}_option_pricing_{}_{}".format(
+        self.name = "{}_{}_optionpricing_{}_{}".format(
             self.state_dim,
             self.action_dim,
             self.price_points,

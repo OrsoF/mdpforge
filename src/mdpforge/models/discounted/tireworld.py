@@ -13,6 +13,7 @@ METADATA = {
         "https://ipc04.icaps-conference.org/probabilistic/"
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 1560, "parameters": {}},
         "small": {"requested_state_dim": 15600, "parameters": {}},
         "medium": {"requested_state_dim": 62400, "parameters": {}},
         "large": {"requested_state_dim": 499200, "parameters": {}},

@@ -17,8 +17,8 @@ def check_options(model, final_precision, max_iterations):
     return terminal
 
 
-def proper_initial_policy(model, terminal):
-    """Choose actions with a positive-probability path to a terminal state."""
+def proper_initial_policy(model, terminal, *, require_all_states=True):
+    """Choose terminal-directed actions, requiring all states by default."""
     predecessors = [[] for _ in range(model.state_dim)]
     for action, transition in enumerate(model.transition_matrix):
         for state in range(model.state_dim):
@@ -37,6 +37,6 @@ def proper_initial_policy(model, terminal):
                 reached.add(state)
                 policy[state] = action
                 frontier.append(state)
-    if len(reached) != model.state_dim:
+    if require_all_states and len(reached) != model.state_dim:
         raise ValueError("every state must be able to reach a terminal state")
     return policy

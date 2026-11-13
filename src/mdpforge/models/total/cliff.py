@@ -23,6 +23,7 @@ METADATA = {
         "Introduction, 2nd ed., Example 6.6."
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 1440, "parameters": {}},
         "small": {"requested_state_dim": 14400, "parameters": {}},
         "medium": {"requested_state_dim": 57600, "parameters": {}},
         "large": {"requested_state_dim": 230400, "parameters": {}},
@@ -42,7 +43,10 @@ class Model(DiscountedCliff):
         if type(state_dim) is not int or state_dim <= 0:
             raise ValueError("state_dim must be a positive integer")
         super().__init__(state_dim=state_dim)
-        self.name += "_total_exit_entry_reward_v1"
+        self.name = "{}_{}_cliff_total".format(
+            self.state_dim,
+            self.action_dim,
+        )
         self.terminal_states = (self.h_dim - 1,)
 
     def _build_model(self):

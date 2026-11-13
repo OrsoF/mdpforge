@@ -13,6 +13,10 @@ from mdpforge.core.mdp import MDP
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 1470,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 14700,
             "parameters": {},
@@ -48,7 +52,7 @@ class Model(MDP):
         self.state_dim = max(4, int(state_dim))
         self.action_dim = 2
         self.success_probability = 0.9
-        self.name = f"{self.state_dim}_{self.action_dim}_chain_walk"
+        self.name = f"{self.state_dim}_{self.action_dim}_chainwalk"
 
     def _build_model(self) -> None:
         self.reward_matrix = np.zeros(

@@ -22,6 +22,10 @@ METADATA = {
         "et al., TACAS 2019), CC-BY 4.0: https://qcomp.org/benchmarks/"
     ),
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 1282,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 12828,
             "parameters": {},

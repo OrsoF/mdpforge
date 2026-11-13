@@ -30,15 +30,15 @@ class Solver:
         self,
         model,
         final_precision=1e-3,
-        bellman_iterations=10,
+        bellman_iterations=25,
+        max_projected_iterations=10,
         refinement="width",
         n_tiles=None,
-        max_projected_iterations=100,
         *,
-        max_iterations=100_000,
-        max_fallback_iterations=100_000,
+        max_iter_policy=100_000,
+        max_iter_eval=100_000,
         switch_to_vi_ratio=0.9,
-        max_evaluation_iterations=100_000,
+        max_iter_eval_agg=100_000,
     ):
         """Configure undiscounted aggregate policy evaluation.
 
@@ -47,40 +47,42 @@ class Solver:
         refinement: "width" or "tiles"; partition splitting rule.
         n_tiles: None for automatic sizing, or int > 0; tiles per region.
         max_projected_iterations: int > 0; projected policy backups per batch.
-        max_iterations: int > 0; policy improvement budget.
-        max_fallback_iterations: int > 0; full-state policy evaluation budget.
+        max_iterations_policy: int > 0; policy improvement budget.
+        max_iterations_evaluation: int > 0; full-state policy evaluation budget.
         switch_to_vi_ratio: float in (0, 1]; region fraction triggering fallback.
         max_evaluation_iterations: int > 0; aggregation batches per evaluation.
         """
-        self.terminal = check_options(model, final_precision, max_iterations)
+        self.terminal = check_options(model, final_precision, max_iter_policy)
         check_aggregation_options(
             bellman_iterations,
             max_projected_iterations,
-            max_fallback_iterations,
+            max_iter_eval,
             switch_to_vi_ratio,
             refinement,
             n_tiles,
         )
-        if type(max_evaluation_iterations) is not int or max_evaluation_iterations < 1:
-            raise ValueError("max_evaluation_iterations must be a positive integer")
+        if type(max_iter_eval) is not int or max_iter_eval < 1:
+            raise ValueError("max_iterations_evaluation must be a positive integer")
         self.model = model
         self.final_precision = final_precision
         self.bellman_iterations = bellman_iterations
         self.refinement = refinement
         self.n_tiles = n_tiles
         self.max_projected_iterations = max_projected_iterations
-        self.max_iterations = max_iterations
-        self.max_fallback_iterations = max_fallback_iterations
+        self.max_iter_policy = max_iter_policy
+        self.max_iter_eval = max_iter_eval
         self.switch_to_vi_ratio = switch_to_vi_ratio
-        self.max_evaluation_iterations = max_evaluation_iterations
+        self.max_iter_eval_agg = max_iter_eval_agg
         self.partition = terminal_partition(model, self.terminal)
         self.name = __name__.rsplit(".", 1)[-1]
 
     def run(self):
-        """Start from a terminal-reaching policy and check the full residual."""
-        policy = proper_initial_policy(self.model, self.terminal)
+        """Initialize available terminal paths and check the full residual."""
+        policy = proper_initial_policy(
+            self.model, self.terminal, require_all_states=False
+        )
         value = np.zeros(self.model.state_dim)
-        for _ in range(self.max_iterations):
+        for _ in range(self.max_iter_policy):
             transition, reward = compute_transition_reward_policy(self.model, policy)
             value = self._policy_evaluation(transition, reward, value)
             q_value = bellman_operator(self.model, value, 1.0)
@@ -95,7 +97,7 @@ class Solver:
         """Refine projected policy values until the full policy residual is small."""
         partition = self.partition
         contracted_value = partition.weights @ value
-        for _ in range(self.max_evaluation_iterations):
+        for _ in range(self.max_iter_eval_agg):
             if partition.n_regions > self.switch_to_vi_ratio * self.model.state_dim:
                 return self._full_policy_evaluation(
                     transition, reward, partition.phi @ contracted_value
@@ -134,7 +136,7 @@ class Solver:
 
     def _full_policy_evaluation(self, transition, reward, value):
         """Finish policy evaluation without aggregation or discounted shifts."""
-        for _ in range(self.max_fallback_iterations):
+        for _ in range(self.max_iter_eval):
             next_value = reward + transition.dot(value)
             if not np.isfinite(next_value).all():
                 raise RuntimeError("AGGMPI stopped: non-finite values")

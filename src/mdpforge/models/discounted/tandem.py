@@ -30,6 +30,10 @@ def get_params(state_dim: int, max_index=50) -> tuple:
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 500,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 3000,
             "parameters": {},

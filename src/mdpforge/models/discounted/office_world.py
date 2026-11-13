@@ -8,6 +8,10 @@ from mdpforge.core.mdp import MDP
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 800,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 8000,
             "parameters": {},
@@ -47,7 +51,7 @@ class Model(MDP):
         self.n_cells = self.height * self.width
         self.action_dim = 4
         self.state_dim = self.n_cells * 4
-        self.name = f"{self.state_dim}_{self.action_dim}_office_world"
+        self.name = f"{self.state_dim}_{self.action_dim}_officeworld"
 
     def _build_model(self):
         self.wall_cells = self._default_walls()

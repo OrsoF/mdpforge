@@ -18,6 +18,10 @@ from mdpforge.core.mdp import MDP
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 500,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 300,
             "parameters": {},
@@ -59,7 +63,7 @@ class Model(MDP):
         self.movement_cost = 2.0
         self.poisson_cutoff = max(8, self.max_cars + 1)
 
-        self.name = f"{self.state_dim}_{self.action_dim}_car_rental"
+        self.name = f"{self.state_dim}_{self.action_dim}_carrental"
 
     def _encode(self, cars_1: int, cars_2: int) -> int:
         return cars_1 * (self.max_cars + 1) + cars_2

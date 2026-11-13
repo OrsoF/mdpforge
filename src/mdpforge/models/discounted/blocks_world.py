@@ -10,6 +10,10 @@ TEST_PARAMETERS = {"state_dim": 96, "action_dim": 6}
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 800,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 8000,
             "parameters": {},
@@ -76,7 +80,7 @@ class Model(MDP):
             if self.n_preparation
             else (self.n_levels - 1) * self._LEVEL_SIZE + self._start_local
         )
-        self.name = f"{self.state_dim}_{self.action_dim}_blocks_world"
+        self.name = f"{self.state_dim}_{self.action_dim}_blocksworld"
 
     def _build_model(self):
         """Build sparse deterministic transitions in O(state_dim * action_dim)."""

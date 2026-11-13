@@ -14,6 +14,10 @@ from mdpforge.core.mdp import MDP
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 500,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 500,
             "parameters": {},
@@ -51,7 +55,7 @@ class Model(MDP):
         self.free_probability = 0.06
         self.action_dim = 2
         self.state_dim = (self.num_servers + 1) * self.num_priorities
-        self.name = f"{self.state_dim}_{self.action_dim}_access_control"
+        self.name = f"{self.state_dim}_{self.action_dim}_accesscontrol"
 
     def _encode(self, free_servers: int, priority: int) -> int:
         return free_servers * self.num_priorities + priority

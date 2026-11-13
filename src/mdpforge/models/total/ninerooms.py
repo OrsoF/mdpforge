@@ -14,6 +14,10 @@ from mdpforge.core.mdp import MDP
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 1800,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 18000,
             "parameters": {},
@@ -53,7 +57,7 @@ class Model(MDP):
         self.side_size = 3 * self.size_of_one_room
         self.state_dim = self.side_size**2
 
-        self.name = "{}_{}_ninerooms_total_entry_reward".format(
+        self.name = "{}_{}_ninerooms_total".format(
             self.state_dim, self.action_dim
         )
         self.terminal_states = (self._state(0, max(0, self.side_size // 6)),)

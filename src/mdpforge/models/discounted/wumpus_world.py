@@ -8,6 +8,10 @@ from mdpforge.core.mdp import MDP
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 680,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 6800,
             "parameters": {},
@@ -46,7 +50,7 @@ class Model(MDP):
         self.n_cells = self.size * self.size
         self.action_dim = 6
         self.state_dim = self.n_cells * 4 * 2 * 2 * 2 * 2
-        self.name = f"{self.state_dim}_{self.action_dim}_wumpus_world"
+        self.name = f"{self.state_dim}_{self.action_dim}_wumpusworld"
 
     def _build_model(self):
         self.start_cell = self._cell(self.size - 1, 0)

@@ -22,6 +22,7 @@ METADATA = {
     "description": "Reach school using uncertain transport, rewarding access to school.",
     "reference": "Hyon, E. (2020). Apprehender le hasard. Tangente Magazine.",
     "sizes": {
+        "tiny": {"requested_state_dim": 8640, "parameters": {}},
         "small": {"requested_state_dim": 86400, "parameters": {}},
         "medium": {"requested_state_dim": 1500000, "parameters": {}},
         "large": {"requested_state_dim": 2764800, "parameters": {}},
@@ -41,7 +42,7 @@ class Model(DiscountedSchoolboy):
         if type(state_dim) is not int or state_dim <= 0:
             raise ValueError("state_dim must be a positive integer")
         super().__init__(state_dim=state_dim)
-        self.name += "_total_school_entry_reward_v1"
+        self.name = "{}_{}_schoolboy_total".format(self.state_dim, self.action_dim)
         self.terminal_states = (self.state_dim - 1,)
 
     def _build_model(self):

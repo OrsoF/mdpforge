@@ -17,6 +17,7 @@ METADATA = {
         "https://www.cs.cmu.edu/afs/cs/project/jair/pub/volume24/younes05a-html/"
     ),
     "sizes": {
+        "tiny": {"requested_state_dim": 1200, "parameters": {}},
         "small": {"requested_state_dim": 12000, "parameters": {}},
         "medium": {"requested_state_dim": 96000, "parameters": {}},
         "large": {"requested_state_dim": 768000, "parameters": {}},

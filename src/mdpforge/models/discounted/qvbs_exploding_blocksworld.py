@@ -19,6 +19,10 @@ METADATA = {
     "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/exploding-blocksworld",
     "variants": 4,
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 8169,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 81693,
             "parameters": {},

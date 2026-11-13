@@ -31,6 +31,7 @@ from mdpforge.models.discounted.sysadmin import Model as DiscountedSysAdmin
 
 METADATA = {
     "sizes": {
+        "tiny": {"requested_state_dim": 500, "parameters": {}},
         "small": {"requested_state_dim": 2050, "parameters": {}},
         "medium": {"requested_state_dim": 32800, "parameters": {}},
         "large": {"requested_state_dim": 131200, "parameters": {}},
@@ -59,7 +60,11 @@ class Model(DiscountedSysAdmin):
         if type(state_dim) is not int or state_dim <= 0:
             raise ValueError("state_dim must be a positive integer")
         super().__init__(state_dim=state_dim)
-        self.name += "_total_all_up_entry_reward_v1"
+        self.name = "{}_{}_sysadmin_total_{}".format(
+            self.state_dim,
+            self.action_dim,
+            self.machines,
+        )
         self.terminal_states = (self.state_dim - 1,)
 
     def _build_model(self):

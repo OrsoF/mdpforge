@@ -108,7 +108,7 @@ class Benchmark:
             transitions: Transition matrices (S, S), one per action.
             reward: Reward matrix (S, A).
             terminal_states: Terminal state indices for a total-reward matrix model.
-            size: "small", "medium", or "large".
+            size: "tiny", "small", "medium", or "large".
             category: Model category (e.g., "navigation", "abstract").
             verbose: Whether to print loading progress.
 
@@ -273,7 +273,7 @@ class Benchmark:
     def add_all_mdps(self, *, size: str | None = "small", verbose=False):
         """Add all catalogue MDPs for an optional size preset; return self.
 
-        size: "small", "medium" or "large"; None uses recipe defaults.
+        size: "tiny", "small", "medium" or "large"; None uses recipe defaults.
         verbose: True prints model-loading progress; False keeps additions quiet.
         Unavailable sizes, duplicates and missing dependencies are skipped.
         """

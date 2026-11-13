@@ -10,6 +10,10 @@ TEST_PARAMETERS = {"state_dim": 9, "action_dim": 4}
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 500,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 4000,
             "parameters": {},
@@ -41,7 +45,7 @@ class Model(MDP):
         self._build_state_space()
         self.action_dim = 4
 
-        self.name = "{}_{}_maze_backtrack_total_entry_reward".format(
+        self.name = "{}_{}_mazebacktrack_total".format(
             self.state_dim,
             self.action_dim,
         )

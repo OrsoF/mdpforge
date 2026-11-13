@@ -8,6 +8,10 @@ from scipy.sparse import lil_matrix
 
 from mdpforge.core.mdp import MDP
 
+FORCE = 1e-3
+GRAVITY = 2.5e-3
+GOAL_POSITION = 0.5
+
 
 def index_closest_value(value: float, list_of_values) -> Tuple:
     distances = [abs(elem - value) for elem in list_of_values]
@@ -17,6 +21,10 @@ def index_closest_value(value: float, list_of_values) -> Tuple:
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 1080,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 10800,
             "parameters": {},
@@ -46,11 +54,7 @@ class Model(MDP):
     supported_criteria = frozenset({"total"})
 
     def __init__(self, state_dim: int = 100, action_dim: int = 10) -> None:
-        """
-        params variable should contain :
-        - x_axis_states_number
-        - speed_states_number
-        """
+        """state_dim: target, clamped to 100; action_dim: ignored, three actions."""
         self.requested_state_dim = int(state_dim)
 
         state_dim = max(state_dim, 100)
@@ -60,19 +64,28 @@ class Model(MDP):
         self.state_dim = self.x_axis_states_number * self.speed_states_number
         self.action_dim = 3
 
-        self.name = "{}_{}_mountain_{}_{}_total_entry_reward".format(
+        self.name = "{}_{}_mountain_total_{}_{}".format(
             self.state_dim,
             self.action_dim,
             self.x_axis_states_number,
             self.speed_states_number,
         )
-        positions = np.linspace(-1.2, 0.6, self.x_axis_states_number)
+        self.x_axis_state_list = np.linspace(-1.2, 0.6, self.x_axis_states_number)
+        self.speed_state_list = np.linspace(-0.07, 0.07, self.speed_states_number)
         self.terminal_states = tuple(
             position * self.speed_states_number + speed
-            for position, x in enumerate(positions)
-            if x > 0.5
+            for position, x in enumerate(self.x_axis_state_list)
+            if x > GOAL_POSITION
             for speed in range(self.speed_states_number)
         )
+
+    def create_model(self, check_transition: bool = False, *, cache: str = "readwrite"):
+        """Build or load matrices, then declare zero-reward absorbing terminals."""
+        super().create_model(check_transition, cache=cache)
+        terminal = np.all(self.reward_matrix == 0.0, axis=1)
+        for transition in self.transition_matrix:
+            terminal &= transition.diagonal() == 1.0
+        self.terminal_states = tuple(np.flatnonzero(terminal).tolist())
 
     def _build_model(self):
         self.transition_matrix = [
@@ -80,12 +93,9 @@ class Model(MDP):
         ]
         self.reward_matrix = np.zeros((self.state_dim, self.action_dim))
 
-        self.x_axis_state_list = np.linspace(-1.2, 0.6, self.x_axis_states_number)
-        self.speed_state_list = np.linspace(-0.07, 0.07, self.speed_states_number)
-
         self.state_space = {
-            (position, speed): ss
-            for ss, (position, speed) in enumerate(
+            (position, speed): state
+            for state, (position, speed) in enumerate(
                 itertools.product(self.x_axis_state_list, self.speed_state_list)
             )
         }
@@ -105,34 +115,26 @@ class Model(MDP):
             )
         )
 
-        FORCE = 1e-3
-        GRAVITY = 2.5e-3
-
-        for aa in range(self.action_dim):
-            for ss1 in range(self.state_dim):
-                position, speed = self.state_list[ss1]
-                if position > 0.5:
+        for action in range(self.action_dim):
+            for state, (position, speed) in enumerate(self.state_list):
+                if position > GOAL_POSITION:
                     # The goal stays absorbing in the total-reward version.
-                    self.transition_matrix[aa][ss1, ss1] = 1.0
+                    self.transition_matrix[action][state, state] = 1.0
+                    continue
 
-                else:
-                    next_speed = (
-                        speed + (aa - 1) * FORCE - np.cos(3 * position) * GRAVITY
-                    )
-                    next_position = position + next_speed
-
-                    _, next_speed_state_space = index_closest_value(
-                        next_speed, self.speed_state_list
-                    )
-                    _, next_position_state_space = index_closest_value(
-                        next_position, self.x_axis_state_list
-                    )
-                    ss2 = self.state_space[
-                        (next_position_state_space, next_speed_state_space)
-                    ]
-                    self.transition_matrix[aa][ss1, ss2] = 1.0
-                    self.reward_matrix[ss1, aa] = float(next_position_state_space > 0.5)
+                next_position, next_speed = self._next_state(position, speed, action)
+                next_state = self.state_space[(next_position, next_speed)]
+                self.transition_matrix[action][state, next_state] = 1.0
+                self.reward_matrix[state, action] = float(next_position > GOAL_POSITION)
 
         self.transition_matrix = [
             transition.tocsr() for transition in self.transition_matrix
         ]
+
+    def _next_state(self, position, speed, action):
+        """Apply the dynamics and select the nearest position and speed grid points."""
+        next_speed = speed + (action - 1) * FORCE - np.cos(3 * position) * GRAVITY
+        next_position = position + next_speed
+        _, next_speed = index_closest_value(next_speed, self.speed_state_list)
+        _, next_position = index_closest_value(next_position, self.x_axis_state_list)
+        return next_position, next_speed

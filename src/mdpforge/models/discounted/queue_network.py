@@ -9,6 +9,10 @@ from mdpforge.core.mdp import MDP
 
 METADATA = {
     "sizes": {
+        "tiny": {
+            "requested_state_dim": 700,
+            "parameters": {},
+        },
         "small": {
             "requested_state_dim": 7000,
             "parameters": {},
@@ -44,7 +48,7 @@ class Model(MDP):
         self.service_probability = 0.6
         self.routing_probability = 0.7
 
-        self.name = "{}_{}_queue_network_{}".format(
+        self.name = "{}_{}_queuenetwork_{}".format(
             self.state_dim,
             self.action_dim,
             self.capacity,
