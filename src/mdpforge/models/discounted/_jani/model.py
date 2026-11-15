@@ -85,7 +85,7 @@ class JANIModel(MDP):
         if type(state_dim) is not int or state_dim < 1:
             raise ValueError("state_dim must be a positive integer")
         package = {"qvbs": "_qvbs", "library": "_jani"}[self.collection]
-        data = files(f"mdpforge.models.{package}").joinpath("_data")
+        data = files(f"mdpforge.models.discounted.{package}").joinpath("_data")
         manifest = json.loads(
             data.joinpath("model_manifest.json").read_text(encoding="utf-8")
         )

@@ -250,9 +250,7 @@ def _count(value, name, lower, upper):
 
 def build_instance(family, parameters):
     """Ground original action schemas over a selected subset of source objects."""
-    directory = files("mdpforge.models._qvbs").joinpath(
-        "_data", "benchmarks", "mdp", family
-    )
+    directory = files(__package__).joinpath("_data", "benchmarks", "mdp", family)
     prefix = "p01-b10-c5-dc0-fc0-dr0-gr1" if family == "boxworld" else "p01"
     raw_domain = directory.joinpath(prefix + "-domain.pddl").read_bytes()
     raw_problem = directory.joinpath(prefix + "-problem.pddl").read_bytes()

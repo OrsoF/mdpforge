@@ -1,5 +1,5 @@
 *.py text eol=lf
 
-src/mdpforge/models/_jani/_data/** -text
-src/mdpforge/models/_qvbs/_data/** -text
-src/mdpforge/models/_prism/_data/** -text
+src/mdpforge/models/discounted/_jani/_data/** -text
+src/mdpforge/models/discounted/_qvbs/_data/** -text
+src/mdpforge/models/discounted/_prism/_data/** -text
