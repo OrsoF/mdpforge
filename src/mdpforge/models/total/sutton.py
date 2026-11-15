@@ -62,9 +62,7 @@ class Model(MDP):
         # Racetrack always uses the 3 x 3 acceleration action set.
         self.action_dim = 9
         self.state_dim = self._count_states()
-        self.name = "{}_{}_sutton_total".format(
-            self.state_dim, self.action_dim
-        )
+        self.name = "{}_{}_sutton_total".format(self.state_dim, self.action_dim)
         self.terminal_states = (self.state_dim - 1,)
 
     def _build_model(self):

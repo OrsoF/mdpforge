@@ -13,7 +13,11 @@ from mdpforge.utils.projected_bellman import (
     apply_pobo_until_var_small,
     projected_optimal_bellman_operator_residual,
 )
-from mdpforge.utils.solver_options import bounded_iterations
+from mdpforge.utils.solver_options import (
+    bounded_iterations,
+    validate_aggregation_options,
+    validate_discount,
+)
 
 METADATA = {
     "display_name": "Aggregated VI · mdpforge",
@@ -46,10 +50,10 @@ class Solver:
         norm_method: str = "region_size",
         with_norm_weights: bool = False,
         n_tiles: int | None = None,
-        max_projected_iterations: int = 100,
+        max_projected_iter: int = 100,
         *,
-        max_iterations: int = 100_000,
-        max_fallback_iterations: int = 100_000,
+        max_agg_iter: int = 100_000,
+        max_eval_iter: int = 100_000,
         switch_to_vi_ratio: float = 0.9,
     ):
         """Configure this solver.
@@ -63,15 +67,30 @@ class Solver:
             False.
         n_tiles: None for automatic sizing, or an int > 0; tiles per refinement; default
             None.
-        max_projected_iterations: int > 0; projected iteration budget per batch; default
+        max_projected_iter: int > 0; projected iteration budget per batch; default
             100.
-        max_iterations: int > 0; outer iteration budget; default 100_000.
-        max_fallback_iterations: int > 0; full-state iteration budget; default 100_000.
+        max_agg_iter: int > 0; outer iteration budget; default 100_000.
+        max_eval_iter: int > 0; full-state iteration budget; default 100_000.
         switch_to_vi_ratio: float in (0, 1]; region fraction triggering full-state VI;
             default 0.9.
         """
-        self.max_iterations = max_iterations
-        self.max_fallback_iterations = max_fallback_iterations
+        validate_discount(discount)
+        validate_aggregation_options(
+            final_precision=final_precision,
+            bellman_iterations=bellman_iterations,
+            max_projected_iter=max_projected_iter,
+            max_agg_iter=max_agg_iter,
+            max_eval_iter=max_eval_iter,
+            switch_to_vi_ratio=switch_to_vi_ratio,
+            refinement=refinement,
+            n_tiles=n_tiles,
+        )
+        if not isinstance(norm_method, str) or norm_method not in self.norm_methods:
+            raise ValueError(f"norm_method must be one of {sorted(self.norm_methods)}")
+        if type(with_norm_weights) is not bool:
+            raise ValueError("with_norm_weights must be a bool")
+        self.max_agg_iter = max_agg_iter
+        self.max_eval_iter = max_eval_iter
         self.switch_to_vi_ratio = float(switch_to_vi_ratio)
         self.model = model
         self.discount = discount
@@ -91,12 +110,12 @@ class Solver:
         self.partition = Partition(self.model)
         self.epsilon_pbr = self.epsilon * (1 - self.discount) / 2
         self.epsilon_span = self.epsilon * (1 - self.discount) / 2
-        self.max_projected_iterations = max_projected_iterations
+        self.max_projected_iter = max_projected_iter
 
     def run(self) -> SolveResult:
         contracted_value = np.zeros(self.partition.n_regions)
 
-        for _ in bounded_iterations(self.max_iterations, "aggregation"):
+        for _ in bounded_iterations(self.max_agg_iter, "aggregation"):
             switch_to_vi_condition = (
                 self.partition.n_regions
                 > self.switch_to_vi_ratio * self.model.state_dim
@@ -108,7 +127,7 @@ class Solver:
                     self.discount,
                     2 * self.epsilon_pbr,
                     value,
-                    max_iterations=self.max_fallback_iterations,
+                    max_iterations=self.max_eval_iter,
                 )
 
                 self._finish(value)
@@ -125,7 +144,7 @@ class Solver:
                 self.epsilon_pbr,
                 contracted_value,
                 norm_weights,
-                max_steps=self.max_projected_iterations,
+                max_steps=self.max_projected_iter,
                 shift_acceleration=True,
             )
 

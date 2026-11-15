@@ -501,7 +501,7 @@ class Benchmark:
         repeats=3,
         seed=0,
         verbose=False,
-        timeout=None,
+        timeout=60,
         validate=False,
     ) -> BenchmarkResult:
         """Run each MDP/solver pair and return an independent BenchmarkResult.

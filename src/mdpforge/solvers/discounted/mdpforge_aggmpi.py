@@ -25,7 +25,11 @@ from mdpforge.utils.bellman import (
 from mdpforge.utils.projected_bellman import (
     apply_ppbo_until_var_small,
 )
-from mdpforge.utils.solver_options import bounded_iterations
+from mdpforge.utils.solver_options import (
+    bounded_iterations,
+    validate_aggregation_options,
+    validate_discount,
+)
 
 METADATA = {
     "display_name": "Aggregated MPI · mdpforge",
@@ -47,12 +51,12 @@ class Solver:
         bellman_iterations: int = 10,
         refinement: str = "width",
         n_tiles: int | None = None,
-        max_projected_iterations: int = 100,
+        max_projected_iter: int = 100,
         *,
-        max_iterations: int = 100_000,
-        max_fallback_iterations: int = 100_000,
+        max_policy_iter: int = 100_000,
+        max_eval_iter: int = 100_000,
         switch_to_vi_ratio: float = 0.9,
-        max_evaluation_iterations: int = 100_000,
+        max_agg_iter: int = 100_000,
     ):
         """Configure this solver.
 
@@ -61,19 +65,32 @@ class Solver:
         refinement: "width" or "tiles"; partition refinement method; default "width".
         n_tiles: None for automatic sizing, or an int > 0; tiles per refinement; default
             None.
-        max_projected_iterations: int > 0; projected iteration budget per batch; default
+        max_projected_iter: int > 0; projected iteration budget per batch; default
             100.
-        max_iterations: int > 0; outer iteration budget; default 100_000.
-        max_fallback_iterations: int > 0; full-state iteration budget; default 100_000.
+        max_policy_iter: int > 0; outer iteration budget; default 100_000.
+        max_eval_iter: int > 0; full-state iteration budget; default 100_000.
         switch_to_vi_ratio: float in (0, 1]; region fraction triggering full-state VI;
             default 0.9.
-        max_evaluation_iterations: int > 0; policy-evaluation iteration budget; default
+        max_agg_iter: int > 0; policy-evaluation iteration budget; default
             100_000.
         """
-        self.max_iterations = max_iterations
-        self.max_fallback_iterations = max_fallback_iterations
+        validate_discount(discount)
+        if type(max_policy_iter) is not int or max_policy_iter < 1:
+            raise ValueError("max_policy_iter must be a positive integer")
+        validate_aggregation_options(
+            final_precision=final_precision,
+            bellman_iterations=bellman_iterations,
+            max_projected_iter=max_projected_iter,
+            max_agg_iter=max_agg_iter,
+            max_eval_iter=max_eval_iter,
+            switch_to_vi_ratio=switch_to_vi_ratio,
+            refinement=refinement,
+            n_tiles=n_tiles,
+        )
+        self.max_policy_iter = max_policy_iter
+        self.max_eval_iter = max_eval_iter
         self.switch_to_vi_ratio = float(switch_to_vi_ratio)
-        self.max_evaluation_iterations = max_evaluation_iterations
+        self.max_agg_iter = max_agg_iter
         self.model = model
         self.discount = discount
 
@@ -87,7 +104,7 @@ class Solver:
             self.model.reward_matrix == self.model.reward_matrix[:, [0]]
         )
 
-        self.max_projected_iterations = max_projected_iterations
+        self.max_projected_iter = max_projected_iter
 
         self.name = __name__.rsplit(".", 1)[-1]
 
@@ -104,7 +121,7 @@ class Solver:
             dtype=float,
         )
 
-        for _ in bounded_iterations(self.max_iterations, "aggregation"):
+        for _ in bounded_iterations(self.max_policy_iter, "aggregation"):
             self.value = self._policy_evaluation(
                 self.policy,
                 self.epsilon_policy_evaluation,
@@ -188,9 +205,7 @@ class Solver:
             policy
         )
 
-        for _ in bounded_iterations(
-            self.max_evaluation_iterations, "policy evaluation"
-        ):
+        for _ in bounded_iterations(self.max_agg_iter, "policy evaluation"):
             if (
                 self.partition.n_regions
                 > self.switch_to_vi_ratio * self.model.state_dim
@@ -203,7 +218,7 @@ class Solver:
                     self.discount,
                     epsilon_policy_evaluation * (1 - self.discount),
                     value,
-                    max_iterations=self.max_fallback_iterations,
+                    max_iterations=self.max_eval_iter,
                 )
 
                 return value
@@ -219,7 +234,7 @@ class Solver:
                 self.partition.aggregate_reward_policy,
                 epsilon_pbr,
                 contracted_value,
-                self.max_projected_iterations,
+                self.max_projected_iter,
                 shift_acceleration=True,
             )
 

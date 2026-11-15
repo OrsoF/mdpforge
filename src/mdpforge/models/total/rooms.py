@@ -50,9 +50,7 @@ class Model(MDP):
         self.action_dim = 4
         self.state_dim = 4 * self.size_of_one_room**2
 
-        self.name = "{}_{}_rooms_total".format(
-            self.state_dim, self.action_dim
-        )
+        self.name = "{}_{}_rooms_total".format(self.state_dim, self.action_dim)
         self.terminal_states = (self.size_of_one_room // 2,)
 
     def _build_model(self):
