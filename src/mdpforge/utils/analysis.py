@@ -459,6 +459,253 @@ def plot_performance_profile(
     return fig, ax
 
 
+def plot_runtime_distribution(
+    results, experiment=None, *, solver_labels=None, ax=None, show=True
+):
+    """Plot model-weighted cumulative eligible median runtimes in seconds.
+
+    solver_labels: optional mapping of solver IDs to display names.
+    ax: Matplotlib axes, or None to create a figure.
+    show: True displays the figure; False returns (figure, axes).
+    Failed and missing pairs remain in the denominator, without imputed times.
+    """
+    models, solvers, aggregated = _aggregate_rows(results, experiment)
+    models = list(dict.fromkeys([*(experiment or {}).get("models", {}), *models]))
+    solvers = list(dict.fromkeys([*(experiment or {}).get("solvers", {}), *solvers]))
+    ordered, labels = _ordered_solver_labels(solvers, experiment)
+    labels = [
+        (solver_labels or {}).get(solver, label)
+        for solver, label in zip(ordered, labels)
+    ]
+    times = {
+        solver: np.array(
+            [
+                aggregated.get((model, solver), {}).get("median_runtime", np.nan)
+                for model in models
+            ]
+        )
+        for solver in ordered
+    }
+    eligible = np.concatenate(
+        [values[np.isfinite(values)] for values in times.values()]
+    )
+    lower, upper = (
+        (eligible.min() / 2, eligible.max() * 2) if eligible.size else (1e-3, 1)
+    )
+
+    import matplotlib.pyplot as plt
+    from matplotlib.ticker import PercentFormatter
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(9, 5.2))
+    else:
+        fig = ax.figure
+    palette = plt.get_cmap("tab10")
+    styles = ("-", "--", "-.", ":")
+    for index, (solver, label) in enumerate(zip(ordered, labels)):
+        values = np.sort(times[solver][np.isfinite(times[solver])])
+        thresholds = np.unique(np.r_[lower, values, upper])
+        fractions = np.searchsorted(values, thresholds, side="right") / len(models)
+        ax.step(
+            thresholds,
+            fractions,
+            where="post",
+            label=label,
+            linewidth=2,
+            color=palette(index % 10),
+            linestyle=styles[(index // 10) % len(styles)],
+        )
+    ax.set_xscale("log")
+    ax.set_xlim(lower, upper)
+    ax.set_ylim(0, 1.04)
+    ax.yaxis.set_major_formatter(PercentFormatter(1))
+    ax.set_xlabel("Median solver runtime threshold (s)")
+    ax.set_ylabel("Share of all benchmark models")
+    ax.set_title(
+        f"Runtime distribution — {len(models)} models\n"
+        "All repeats must complete; failed / missing pairs stay in the denominator"
+    )
+    if not eligible.size:
+        ax.text(
+            0.5,
+            0.5,
+            "No eligible median runtimes",
+            transform=ax.transAxes,
+            ha="center",
+            va="center",
+        )
+    ax.grid(alpha=0.3)
+    ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1), frameon=False)
+    fig.tight_layout()
+    if show:
+        plt.show()
+    return fig, ax
+
+
+def _trial_status_counts(results, experiment):
+    """Count recorded trial statuses and missing slots known from the manifest."""
+    models, solvers, _ = _aggregate_rows(results, experiment)
+    models = list(dict.fromkeys([*(experiment or {}).get("models", {}), *models]))
+    solvers = list(dict.fromkeys([*(experiment or {}).get("solvers", {}), *solvers]))
+    ordered, labels = _ordered_solver_labels(solvers, experiment)
+    repeats = (experiment or {}).get("settings", {}).get("repeats")
+    has_validation = any("validation_status" in row for row in results)
+    execution = {solver: Counter() for solver in ordered}
+    validation = {solver: Counter() for solver in ordered}
+    grouped = {}
+    for row in results:
+        solver = row["solver"]
+        status = row["status"]
+        execution_status = (
+            status if status in {"success", "timeout", "error"} else "other"
+        )
+        execution[solver][execution_status] += 1
+        grouped.setdefault((row["model"], solver), []).append(row)
+        if status == "success":
+            certificate = row.get("validation_status", "unavailable")
+            if certificate not in {"passed", "failed", "not_run", "unavailable"}:
+                certificate = "other"
+            validation[solver][certificate] += 1
+    if repeats is not None:
+        for model in models:
+            for solver in ordered:
+                group = grouped.get((model, solver), [])
+                if len(group) > repeats:
+                    raise ValueError(f"Too many trials for {model!r} / {solver!r}")
+                repeat_ids = [row["repeat"] for row in group if "repeat" in row]
+                if repeat_ids and (
+                    len(repeat_ids) != len(group)
+                    or len(set(repeat_ids)) != len(repeat_ids)
+                    or not set(repeat_ids) <= set(range(1, repeats + 1))
+                ):
+                    raise ValueError(f"Invalid repeats for {model!r} / {solver!r}")
+                execution[solver]["missing"] += repeats - len(group)
+    return ordered, labels, execution, validation if has_validation else None
+
+
+def _plot_status_bars(ax, solvers, labels, counts, categories, title):
+    """Draw trial counts as stacked proportions with explicit denominators."""
+    from matplotlib.ticker import PercentFormatter
+
+    totals = np.array([sum(counts[solver].values()) for solver in solvers])
+    left = np.zeros(len(solvers))
+    for status, caption, color in categories:
+        values = np.array([counts[solver][status] for solver in solvers])
+        widths = np.divide(values, totals, out=np.zeros(len(solvers)), where=totals > 0)
+        bars = ax.barh(
+            range(len(solvers)), widths, left=left, label=caption, color=color
+        )
+        ax.bar_label(
+            bars,
+            labels=[str(value) if value else "" for value in values],
+            label_type="center",
+            fontsize=8,
+        )
+        left += widths
+    for index, total in enumerate(totals):
+        ax.text(
+            1.02,
+            index,
+            f"n={total}",
+            va="center",
+            fontsize=9,
+            transform=ax.get_yaxis_transform(),
+        )
+    ax.set_yticks(range(len(solvers)), labels)
+    ax.invert_yaxis()
+    ax.set_xlim(0, 1)
+    ax.xaxis.set_major_formatter(PercentFormatter(1))
+    ax.set_title(title)
+    ax.set_xlabel("Share of trials (counts inside bars)")
+    ax.legend(loc="upper left", bbox_to_anchor=(0, -0.22), ncol=3, frameon=False)
+    ax.spines[["top", "right"]].set_visible(False)
+
+
+def plot_status(results, experiment=None, *, solver_labels=None, ax=None, show=True):
+    """Plot execution trials and validation among completed trials separately.
+
+    solver_labels: optional mapping of solver IDs to display names.
+    ax: one axes per panel, or None to create the required panels.
+    show: True displays the figure; False returns (figure, axes array).
+    Missing trials are counted only when the manifest records expected repeats.
+    Legacy results without validation fields have only an execution panel.
+    """
+    solvers, labels, execution, validation = _trial_status_counts(results, experiment)
+    labels = [
+        (solver_labels or {}).get(solver, label)
+        for solver, label in zip(solvers, labels)
+    ]
+    panels = 1 + (validation is not None)
+
+    import matplotlib.pyplot as plt
+
+    if ax is None:
+        fig, axes = plt.subplots(
+            1,
+            panels,
+            figsize=(9 * panels, max(4, 0.45 * len(solvers) + 2.5)),
+            squeeze=False,
+        )
+        axes = axes.ravel()
+    else:
+        axes = np.asarray(ax, dtype=object).reshape(-1)
+        if len(axes) != panels:
+            raise ValueError(f"Expected {panels} axes, got {len(axes)}")
+        fig = axes[0].figure
+        if any(axis.figure is not fig for axis in axes):
+            raise ValueError("All axes must belong to the same figure")
+    execution_categories = [
+        ("success", "Completed", "#59a14f"),
+        ("timeout", "Timeout", "#f28e2b"),
+        ("error", "Error", "#e15759"),
+        ("missing", "Missing", "#bab0ac"),
+        ("other", "Other status", "#b07aa1"),
+    ]
+    execution_categories = [
+        entry
+        for entry in execution_categories
+        if entry[0] in {"success", "timeout", "error"}
+        or any(counts[entry[0]] for counts in execution.values())
+    ]
+    known_repeats = (experiment or {}).get("settings", {}).get("repeats") is not None
+    _plot_status_bars(
+        axes[0],
+        solvers,
+        labels,
+        execution,
+        execution_categories,
+        "Execution — expected trials"
+        if known_repeats
+        else "Execution — recorded trials (missing trials unknown)",
+    )
+    if validation is not None:
+        validation_categories = [
+            ("passed", "Passed", "#59a14f"),
+            ("failed", "Failed", "#e15759"),
+            ("not_run", "Not run", "#bab0ac"),
+            ("unavailable", "Unavailable", "#76b7b2"),
+            ("other", "Other status", "#b07aa1"),
+        ]
+        validation_categories = [
+            entry
+            for entry in validation_categories
+            if entry[0] in {"passed", "failed", "not_run"}
+            or any(counts[entry[0]] for counts in validation.values())
+        ]
+        _plot_status_bars(
+            axes[1],
+            solvers,
+            labels,
+            validation,
+            validation_categories,
+            "Validation — completed trials only",
+        )
+    fig.tight_layout()
+    if show:
+        plt.show()
+    return fig, axes
+
+
 def plot_scaling(
     results,
     experiment=None,

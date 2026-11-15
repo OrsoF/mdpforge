@@ -166,6 +166,33 @@ class BenchmarkResult:
             show=show,
         )
 
+    def plot_runtime_distribution(self, *, solver_labels=None, ax=None, show=True):
+        """Plot the share of all models below each eligible median runtime.
+
+        solver_labels: optional mapping of solver IDs to display names.
+        ax: Matplotlib axes, or None to create a figure.
+        show: True displays the figure; False returns (figure, axes).
+        """
+        from mdpforge.utils.analysis import plot_runtime_distribution
+
+        return plot_runtime_distribution(
+            self.rows, self.experiment, solver_labels=solver_labels, ax=ax, show=show
+        )
+
+    def plot_status(self, *, solver_labels=None, ax=None, show=True):
+        """Plot trial execution counts and recorded validation counts separately.
+
+        solver_labels: optional mapping of solver IDs to display names.
+        ax: one axes per panel, or None to create execution/validation panels.
+        show: True displays the figure; False returns (figure, axes array).
+        Results without validation fields have only an execution panel.
+        """
+        from mdpforge.utils.analysis import plot_status
+
+        return plot_status(
+            self.rows, self.experiment, solver_labels=solver_labels, ax=ax, show=show
+        )
+
     def plot_heat(self, *, reference=None, metric="speedup", ax=None, show=True):
         """Plot eligible medians or speedups; failed or missing trials mark FAIL.
 
