@@ -7,7 +7,7 @@ import numpy as np
 
 @dataclass(slots=True)
 class SolveResult:
-    """Store values, policy, validation method and optional average-reward gain."""
+    """Store the solution, validation inputs and optional termination details."""
 
     value: np.ndarray
     policy: np.ndarray | None
@@ -15,6 +15,8 @@ class SolveResult:
     lower_value: np.ndarray | None = None
     upper_value: np.ndarray | None = None
     gain: float | None = None
+    termination_reason: str = "unknown"
+    iterations: int | None = None
 
     @classmethod
     def from_solver(
