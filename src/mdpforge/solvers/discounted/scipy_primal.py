@@ -12,7 +12,7 @@ from mdpforge.utils.solver_options import validate_discount
 METADATA = {
     "display_name": "LP · SciPy · primal",
     "family": "lp",
-    "backend": "scipy",
+    "backend": "linear",
     "description": (
         "Solve the discounted value-function primal linear program with "
         "Bellman inequality constraints using SciPy/HiGHS."

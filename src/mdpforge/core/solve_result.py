@@ -10,31 +10,10 @@ class SolveResult:
     """Store the solution, validation inputs and optional termination details."""
 
     value: np.ndarray
-    policy: np.ndarray | None
+    policy: np.ndarray | None = None
     validation_method: str = "unknown"
     lower_value: np.ndarray | None = None
     upper_value: np.ndarray | None = None
     gain: float | None = None
     termination_reason: str = "unknown"
     iterations: int | None = None
-
-    @classmethod
-    def from_solver(
-        cls, solver, *, validation_method: str = "unknown"
-    ) -> "SolveResult":
-        """Capture the outcome of a completed solver run."""
-        return cls(
-            solver.value,
-            solver.policy,
-            validation_method=validation_method,
-            lower_value=(
-                getattr(solver, "lower_value", None)
-                if validation_method == "bounds"
-                else None
-            ),
-            upper_value=(
-                getattr(solver, "upper_value", None)
-                if validation_method == "bounds"
-                else None
-            ),
-        )

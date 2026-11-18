@@ -71,6 +71,7 @@ def _load_solver(name, *, backend=None, catalogue=None):
     if catalogue is None:
         from mdpforge.solvers import discounted as catalogue
 
+    implementation = name.split("_", 1)[0] if backend == "linear" else backend
     dependencies = {
         "marmote": ("marmote",),
         "mdpsolver": ("mdpsolver",),
@@ -79,7 +80,7 @@ def _load_solver(name, *, backend=None, catalogue=None):
         "mdptoolbox": ("mdptoolbox",),
         "pyomo": ("pyomo", "highspy"),
         "quantecon": ("quantecon",),
-    }.get(backend, ())
+    }.get(implementation, ())
     for dependency in dependencies:
         if find_spec(dependency) is None:
             raise ModuleNotFoundError(

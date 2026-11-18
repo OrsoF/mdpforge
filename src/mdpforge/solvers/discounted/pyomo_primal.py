@@ -13,7 +13,7 @@ from mdpforge.utils.solver_options import validate_discount
 METADATA = {
     "display_name": "LP · Pyomo/HiGHS · primal",
     "family": "lp",
-    "backend": "pyomo",
+    "backend": "linear",
     "description": (
         "Solve the discounted value-function primal linear program with "
         "Bellman inequality constraints using Pyomo and HiGHS."

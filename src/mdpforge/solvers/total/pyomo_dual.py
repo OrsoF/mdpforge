@@ -14,7 +14,7 @@ from mdpforge.solvers.total._common import check_options
 METADATA = {
     "display_name": "Total LP · Pyomo/HiGHS · dual",
     "family": "lp",
-    "backend": "pyomo",
+    "backend": "linear",
     "description": "Total-reward occupancy-flow linear program using Pyomo/HiGHS.",
 }
 

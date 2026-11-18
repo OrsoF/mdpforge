@@ -192,6 +192,6 @@ class Solver(GenericSolver):
 
         self.n_regions = self.partition.n_regions
         self.q_value = self.contracted_q_value[self.partition.state_to_region]
-        self.value = self.q_value.max(axis=1)
-        self.policy = self.q_value.argmax(axis=1)
-        return SolveResult.from_solver(self, validation_method="residual")
+        value = self.q_value.max(axis=1)
+        policy = self.q_value.argmax(axis=1)
+        return SolveResult(value, policy, validation_method="residual")

@@ -9,7 +9,7 @@ from mdpforge.core.solve_result import SolveResult
 METADATA = {
     "display_name": "Total LP · SciPy · primal",
     "family": "lp",
-    "backend": "scipy",
+    "backend": "linear",
     "description": "Solve total-reward Bellman inequalities with SciPy/HiGHS.",
 }
 

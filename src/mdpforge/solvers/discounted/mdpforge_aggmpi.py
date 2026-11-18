@@ -111,45 +111,45 @@ class Solver:
         self.partition = Partition(self.model)
 
     def run(self) -> SolveResult:
-        self.policy = np.zeros(
+        policy = np.zeros(
             self.model.state_dim,
             dtype=int,
         )
 
-        self.value = np.zeros(
+        value = np.zeros(
             self.model.state_dim,
             dtype=float,
         )
 
         for _ in bounded_iterations(self.max_policy_iter, "aggregation"):
-            self.value = self._policy_evaluation(
-                self.policy,
+            value = self._policy_evaluation(
+                policy,
                 self.epsilon_policy_evaluation,
-                self.value,
+                value,
             )
 
             q_value = bellman_operator(
                 self.model,
-                self.value,
+                value,
                 self.discount,
             )
 
             new_policy = q_value.argmax(axis=1)
             new_value = q_value.max(axis=1)
 
-            condition_variation = norminf(
-                new_value - self.value
-            ) < self.epsilon_variation * (1 - self.discount)
+            condition_variation = norminf(new_value - value) < self.epsilon_variation * (
+                1 - self.discount
+            )
 
-            self.value = new_value
+            value = new_value
 
             if condition_variation:
-                self.policy = new_policy
+                policy = new_policy
                 break
 
-            self.policy = new_policy
+            policy = new_policy
 
-        return SolveResult.from_solver(self, validation_method="residual")
+        return SolveResult(value, policy, validation_method="residual")
 
     def _compute_transition_reward_policy(
         self,
@@ -249,9 +249,7 @@ class Solver:
             span = max(self.partition.span(bellman_of_value))
 
             if span <= epsilon_span and pbr_value <= epsilon_pbr:
-                self.value = self.partition.phi @ contracted_value
-
-                return self.value
+                return self.partition.phi @ contracted_value
 
             if self.refinement == "width":
                 parent = self.partition.refine_by_width(

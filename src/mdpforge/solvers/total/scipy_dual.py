@@ -9,7 +9,7 @@ from mdpforge.core.solve_result import SolveResult
 METADATA = {
     "display_name": "Total LP · SciPy · dual",
     "family": "lp",
-    "backend": "scipy",
+    "backend": "linear",
     "description": "Solve total-reward occupancy flows with SciPy/HiGHS.",
 }
 

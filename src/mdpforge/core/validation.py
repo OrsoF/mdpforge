@@ -15,6 +15,43 @@ if TYPE_CHECKING:
     from mdpforge.core.mdp import MDP
 
 
+def average_bellman_residual(model: "MDP", result: SolveResult) -> float:
+    """Return the gain-centered Bellman residual, or its span without a gain."""
+    validate_model(model)
+    if not isinstance(result, SolveResult):
+        raise ValueError("result must be a SolveResult")
+    value = result.value
+    if (
+        not isinstance(value, np.ndarray)
+        or value.shape != (model.state_dim,)
+        or value.dtype.kind not in "fiu"
+        or not np.isfinite(value).all()
+    ):
+        raise ValueError(
+            "result.value must be a finite real NumPy vector "
+            f"of shape ({model.state_dim},)"
+        )
+    gain = result.gain
+    if gain is not None and (
+        isinstance(gain, (bool, np.bool_))
+        or not isinstance(gain, Real)
+        or not np.isfinite(gain)
+    ):
+        raise ValueError("result.gain must be a finite real scalar or None")
+
+    value = np.asarray(value, dtype=float)
+    difference = compact_optimal_bellman_operator(model, value, 1.0) - value
+    if not np.isfinite(difference).all():
+        raise ValueError("average-reward validation produced nonfinite Bellman values")
+    if gain is None:
+        residual = float(difference.max() - difference.min())
+    else:
+        residual = float(np.max(np.abs(difference - gain)))
+    if not np.isfinite(residual):
+        raise ValueError("average-reward validation produced a nonfinite residual")
+    return residual
+
+
 def validate_total_result(
     model: "MDP", result: SolveResult, *, precision: float
 ) -> float:

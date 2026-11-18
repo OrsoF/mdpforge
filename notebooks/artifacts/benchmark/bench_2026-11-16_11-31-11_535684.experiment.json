@@ -1,0 +1,456 @@
+{
+  "schema_version": 2,
+  "experiment_id": "b6760d6b-152a-4c48-bee1-e06e36c77599",
+  "created_at_utc": "2026-11-16T11:28:46.797115+00:00",
+  "settings": {
+    "criterion": "discounted",
+    "discount": 0.99,
+    "precision": 0.001,
+    "repeats": 5,
+    "seed": 0,
+    "trial_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "seed_scope": "solver trials; model generation is not reseeded",
+    "timeout": 10.0,
+    "execution_mode": "spawn",
+    "validate": false
+  },
+  "models": {
+    "3601_2_optionpricing_60_60": {
+      "class": "mdpforge.models.discounted.option_pricing.Model",
+      "display_name": "3601_2_optionpricing_60_60",
+      "state_dim": 3601,
+      "requested_state_dim": 3600,
+      "action_dim": 2,
+      "nnz": 10742,
+      "config": {
+        "state_dim": 3600,
+        "action_dim": 2
+      }
+    },
+    "1224_4_windgrid": {
+      "class": "mdpforge.models.discounted.windgrid.Model",
+      "display_name": "1224_4_windgrid",
+      "state_dim": 1224,
+      "requested_state_dim": 1200,
+      "action_dim": 4,
+      "nnz": 4896,
+      "config": {
+        "state_dim": 1200,
+        "action_dim": 4
+      }
+    },
+    "27766_3_prismrabin_2_3_0_1": {
+      "class": "mdpforge.models.discounted.prism_rabin.Model",
+      "display_name": "27766_3_prismrabin_2_3_0_1",
+      "state_dim": 27766,
+      "requested_state_dim": 2776,
+      "action_dim": 3,
+      "nnz": 332934,
+      "config": {
+        "state_dim": 2776,
+        "processes": 3,
+        "target_process": 1
+      }
+    },
+    "726_9_barto_3_0.1": {
+      "class": "mdpforge.models.discounted.barto.Model",
+      "display_name": "726_9_barto_3_0.1",
+      "state_dim": 726,
+      "requested_state_dim": 900,
+      "action_dim": 9,
+      "nnz": 15654,
+      "config": {
+        "state_dim": 900,
+        "action_dim": 9
+      }
+    },
+    "956_6_janidiningphilosophers_2_64757301317547558294489521455040881730512349652789756283732537034526859464927": {
+      "class": "mdpforge.models.discounted.jani_dining_philosophers.Model",
+      "display_name": "jani_dining_philosophers",
+      "state_dim": 956,
+      "requested_state_dim": 500,
+      "action_dim": 6,
+      "nnz": 6256,
+      "config": {
+        "benchmark": "DiningPhilosophers",
+        "source_collection": "library",
+        "requested_state_dim": 500,
+        "state_dim": 956,
+        "action_dim": 6,
+        "source_file": "DiningPhilosophers/phil3.jani",
+        "source_sha256": "a9be5c485b2496ab93c840c714df861cb244dcec3ebddd20303c6c35134ac995",
+        "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+        "constants": {},
+        "objective": "property_0",
+        "reward_spec": {
+          "mode": "reachability",
+          "reach": {
+            "op": "∨",
+            "left": {
+              "op": "∨",
+              "left": {
+                "op": "∧",
+                "left": {
+                  "op": "≥",
+                  "left": "p1",
+                  "right": 8
+                },
+                "right": {
+                  "op": "≤",
+                  "left": "p1",
+                  "right": 9
+                }
+              },
+              "right": {
+                "op": "∧",
+                "left": {
+                  "op": "≥",
+                  "left": "p2",
+                  "right": 8
+                },
+                "right": {
+                  "op": "≤",
+                  "left": "p2",
+                  "right": 9
+                }
+              }
+            },
+            "right": {
+              "op": "∧",
+              "left": {
+                "op": "≥",
+                "left": "p3",
+                "right": 8
+              },
+              "right": {
+                "op": "≤",
+                "left": "p3",
+                "right": 9
+              }
+            }
+          },
+          "continuation": true,
+          "op": "Pmin",
+          "source_property": "Property_phil3_0"
+        },
+        "reward_name": null,
+        "reward_sign": -1,
+        "adaptation_version": 2,
+        "construction_backend": "python-jani",
+        "construction_version": 4
+      }
+    },
+    "1743_3_qvbsfirewire_2_200_1_98354582705015290242559752434705986659386353798281515703431135753597220660958": {
+      "class": "mdpforge.models.discounted.qvbs_firewire.Model",
+      "display_name": "qvbs_firewire",
+      "state_dim": 1743,
+      "requested_state_dim": 500,
+      "action_dim": 3,
+      "nnz": 5272,
+      "config": {
+        "benchmark": "firewire",
+        "source_collection": "qvbs",
+        "requested_state_dim": 500,
+        "state_dim": 1743,
+        "action_dim": 3,
+        "source_file": "benchmarks/mdp/firewire/firewire.false.jani",
+        "source_sha256": "b2b0aeb103faded08fb724a32e41d06659b9ed0e4a9ba53f4c903b9ba0b043f1",
+        "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+        "constants": {
+          "delay": 1,
+          "deadline": 200
+        },
+        "objective": "time_min",
+        "reward_spec": {
+          "accumulate": [
+            "steps"
+          ],
+          "exp": "time",
+          "op": "Emin",
+          "reach": "done"
+        },
+        "reward_name": "time",
+        "reward_sign": -1,
+        "adaptation_version": 2,
+        "construction_backend": "python-jani",
+        "construction_version": 4
+      }
+    },
+    "109515_5_qvbsechoring_2_2_23540902438079329155641700679506139163255478954389044134129836852181605591364": {
+      "class": "mdpforge.models.discounted.qvbs_echoring.Model",
+      "display_name": "qvbs_echoring",
+      "state_dim": 109515,
+      "requested_state_dim": 10951,
+      "action_dim": 5,
+      "nnz": 596090,
+      "config": {
+        "benchmark": "echoring",
+        "source_collection": "qvbs",
+        "requested_state_dim": 10951,
+        "state_dim": 109515,
+        "action_dim": 5,
+        "source_file": "benchmarks/mdp/echoring/echoring.jani",
+        "source_sha256": "9574f6314f5afb4bb48d663f54df9244b693cd156621643f00bb5ce645906a8d",
+        "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+        "constants": {
+          "ITERATIONS": 2
+        },
+        "objective": "MinFailed",
+        "reward_spec": {
+          "mode": "reachability",
+          "reach": {
+            "op": "∧",
+            "left": "failed",
+            "right": {
+              "op": "≤",
+              "left": "iter",
+              "right": "ITERATIONS"
+            }
+          },
+          "continuation": true,
+          "op": "Pmin",
+          "source_property": "MinFailed"
+        },
+        "reward_name": null,
+        "reward_sign": -1,
+        "adaptation_version": 2,
+        "construction_backend": "python-jani",
+        "construction_version": 4
+      }
+    },
+    "500_36_pegsolitaire": {
+      "class": "mdpforge.models.discounted.peg_solitaire.Model",
+      "display_name": "500_36_pegsolitaire",
+      "state_dim": 500,
+      "requested_state_dim": 500,
+      "action_dim": 36,
+      "nnz": 18000,
+      "config": {
+        "state_dim": 500,
+        "action_dim": 36
+      }
+    },
+    "1206_6_zenotravel_1_86_6_0.12_0.015": {
+      "class": "mdpforge.models.discounted.zenotravel.Model",
+      "display_name": "1206_6_zenotravel_1_86_6_0.12_0.015",
+      "state_dim": 1206,
+      "requested_state_dim": 1200,
+      "action_dim": 6,
+      "nnz": 12660,
+      "config": {
+        "state_dim": 1200,
+        "fuel_capacity": 6,
+        "flight_failure": 0.12,
+        "accident_probability": 0.015
+      }
+    },
+    "580_10_lqregulator": {
+      "class": "mdpforge.models.discounted.lqregulator.Model",
+      "display_name": "580_10_lqregulator",
+      "state_dim": 580,
+      "requested_state_dim": 580,
+      "action_dim": 10,
+      "nnz": 16962,
+      "config": {
+        "state_dim": 580,
+        "action_dim": 10
+      }
+    }
+  },
+  "solvers": {
+    "marmote_mpi": {
+      "callable": "mdpforge.solvers.discounted.marmote_mpi.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000,
+        "max_evaluation_iterations": 10,
+        "evaluation_precision": null
+      },
+      "metadata": {
+        "display_name": "MPI · Marmote",
+        "family": "mpi",
+        "backend": "marmote",
+        "description": "Marmote C++ modified policy iteration with standard updates and at most ten inner policy-evaluation iterations."
+      }
+    },
+    "marmote_mpigs": {
+      "callable": "mdpforge.solvers.discounted.marmote_mpigs.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000,
+        "max_evaluation_iterations": 10,
+        "evaluation_precision": null
+      },
+      "metadata": {
+        "display_name": "MPI · Marmote · GS",
+        "family": "mpi",
+        "backend": "marmote",
+        "description": "Marmote C++ modified policy iteration with Gauss-Seidel updates and at most ten inner policy-evaluation iterations."
+      }
+    },
+    "marmote_vi": {
+      "callable": "mdpforge.solvers.discounted.marmote_vi.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000
+      },
+      "metadata": {
+        "display_name": "VI · Marmote",
+        "family": "vi",
+        "backend": "marmote",
+        "description": "Marmote C++ value iteration with standard Bellman sweeps."
+      }
+    },
+    "marmote_vigs": {
+      "callable": "mdpforge.solvers.discounted.marmote_vigs.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000
+      },
+      "metadata": {
+        "display_name": "VI · Marmote · GS",
+        "family": "vi",
+        "backend": "marmote",
+        "description": "Marmote C++ value iteration with Gauss-Seidel Bellman sweeps."
+      }
+    }
+  },
+  "environment": {
+    "python": "3.12.12",
+    "mdpforge": "0.1.0",
+    "numpy": "2.4.2",
+    "scipy": "1.17.0",
+    "threadpoolctl": "3.7.0",
+    "backends": {
+      "marmote": {
+        "distribution": "marmote",
+        "version": null
+      }
+    }
+  },
+  "machine": {
+    "os": "Windows",
+    "os_release": "11",
+    "architecture": "AMD64",
+    "logical_cpu_count": 20,
+    "thread_environment": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null,
+      "BLIS_NUM_THREADS": null,
+      "VECLIB_MAXIMUM_THREADS": null,
+      "NUMEXPR_NUM_THREADS": null
+    },
+    "thread_pools": [
+      {
+        "user_api": "blas",
+        "internal_api": "mkl",
+        "num_threads": 14,
+        "prefix": "mkl_rt",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\mkl_rt.2.dll",
+        "version": "2025.3-Product",
+        "threading_layer": "intel"
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 20,
+        "prefix": "libiomp",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\libiomp5md.dll",
+        "version": null
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 20,
+        "prefix": "libomp",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\libomp.dll",
+        "version": null
+      }
+    ],
+    "capture_scope": "benchmark process before solver execution",
+    "numpy_build": {
+      "Compilers": {
+        "c": {
+          "name": "msvc",
+          "linker": "link",
+          "version": "19.44.35222",
+          "commands": "cl.exe"
+        },
+        "cython": {
+          "name": "cython",
+          "linker": "cython",
+          "version": "3.2.4",
+          "commands": "cython"
+        },
+        "c++": {
+          "name": "msvc",
+          "linker": "link",
+          "version": "19.44.35222",
+          "commands": "cl.exe"
+        }
+      },
+      "Machine Information": {
+        "host": {
+          "cpu": "x86_64",
+          "family": "x86_64",
+          "endian": "little",
+          "system": "windows"
+        },
+        "build": {
+          "cpu": "x86_64",
+          "family": "x86_64",
+          "endian": "little",
+          "system": "windows"
+        }
+      },
+      "Build Dependencies": {
+        "blas": {
+          "name": "blas",
+          "found": true,
+          "version": "3.9.0",
+          "detection method": "pkgconfig",
+          "include directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/include",
+          "lib directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib",
+          "openblas configuration": "unknown",
+          "pc file directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib/pkgconfig"
+        },
+        "lapack": {
+          "name": "lapack",
+          "found": true,
+          "version": "3.9.0",
+          "detection method": "pkgconfig",
+          "include directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/include",
+          "lib directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib",
+          "openblas configuration": "unknown",
+          "pc file directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib/pkgconfig"
+        }
+      },
+      "Python Information": {
+        "path": "C:/Users/orsof/anaconda3/envs/benchmark/python.exe",
+        "version": "3.12"
+      },
+      "SIMD Extensions": {
+        "baseline": [
+          "X86_V2"
+        ],
+        "found": [
+          "X86_V3"
+        ]
+      }
+    }
+  },
+  "code": {
+    "git": {
+      "commit": "4b48e0b9a3ae9ce7c1e7074d2bf607dd9144fb8f",
+      "dirty": true
+    }
+  },
+  "results_file": "bench_2026-11-16_11-31-11_535684.csv"
+}

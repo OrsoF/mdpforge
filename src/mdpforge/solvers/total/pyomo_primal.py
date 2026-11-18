@@ -11,7 +11,7 @@ from mdpforge.solvers.total._common import check_options
 METADATA = {
     "display_name": "Total LP · Pyomo/HiGHS · primal",
     "family": "lp",
-    "backend": "pyomo",
+    "backend": "linear",
     "description": "Total-reward Bellman-inequality linear program using Pyomo/HiGHS.",
 }
 

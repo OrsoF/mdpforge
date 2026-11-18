@@ -178,14 +178,12 @@ class JANIModel(MDP):
         return document, reward_spec
 
     def _set_name(self):
-        """Separate cached matrices and values by construction provenance."""
+        """Name the model using its dimensions, parameters and source objective."""
         self.display_name = type(self).__module__.rsplit(".", 1)[-1]
-        config = self.get_config()
-        config.pop("requested_state_dim")
-        identity = hashlib.sha256(
-            json.dumps(config, sort_keys=True).encode()
-        ).hexdigest()
         model_name = self.display_name.replace("_", "")
+        variant = (
+            self.source_file.rsplit("/", 1)[-1].removesuffix(".gz").removesuffix(".jani")
+        )
         parameters = [
             str(int(value)) if isinstance(value, bool) else str(value)
             for _, value in sorted(self.constants.items())
@@ -198,7 +196,8 @@ class JANIModel(MDP):
                 model_name,
                 "2",
                 *parameters,
-                str(int(identity, 16)),
+                self.objective,
+                *((variant,) if variant != self.benchmark else ()),
             )
         )
 

@@ -10,7 +10,7 @@ import numpy as np
 from mdpforge.core.benchmark_result import BenchmarkResult
 from mdpforge.core.mdp import MDP
 from mdpforge.core.solve_result import SolveResult
-from mdpforge.core.validation import validate_result
+from mdpforge.core.validation import average_bellman_residual, validate_result
 from mdpforge.models import discounted, total
 from mdpforge.solvers import average as average_solvers
 from mdpforge.solvers import discounted as discounted_solvers
@@ -292,6 +292,34 @@ class Benchmark:
             ("rooms", "mountain", "garnet"), size="small", verbose=verbose
         )
 
+    def select_mdps_random(
+        self, n: int, *, size: str | None = "small", seed: int | None = 0, verbose=False
+    ):
+        """Add a random sample of catalogue recipes and return self.
+
+        n: positive integer, at most the number of available recipes for size.
+        size: "tiny", "small", "medium" or "large"; None uses recipe defaults.
+        seed: integer for repeatable sampling; None uses system randomness.
+        verbose: True prints model-loading progress; False keeps additions quiet.
+        Existing models and missing dependencies are skipped without replacement.
+        """
+        if type(n) is not int or n < 1:
+            raise ValueError("n must be a positive integer")
+        if seed is not None and type(seed) is not int:
+            raise ValueError("seed must be an integer or None")
+        entries = self._model_catalogue().list_models(size=size, available=True)
+        if n > len(entries):
+            raise ValueError(
+                f"Requested {n} models, but only {len(entries)} catalogue recipes "
+                f"are available for size={size!r}"
+            )
+        for entry in random.Random(seed).sample(entries, n):
+            preset = entry["sizes"][size] if size is not None else None
+            self._add_catalogue_model(
+                entry, preset=preset, grouped=True, verbose=verbose
+            )
+        return self
+
     def _model_catalogue(self):
         """Return the model catalogue selected by this benchmark."""
         return {"discounted": discounted, "total": total, "average": discounted}[
@@ -345,8 +373,10 @@ class Benchmark:
             "bounds",
         ):
             raise ValueError(f"Unsupported validation_method: {validation_method!r}")
-        if self.criterion == "total" and validation_method != "residual":
-            raise ValueError("total-reward validation supports only 'residual'")
+        if self.criterion in ("total", "average") and validation_method != "residual":
+            raise ValueError(
+                f"{self.criterion}-reward validation supports only 'residual'"
+            )
         custom = solve_function is not None
         if not custom and validation_method != "residual":
             raise ValueError(
@@ -502,20 +532,23 @@ class Benchmark:
         seed=0,
         verbose=False,
         timeout=60,
-        validate=False,
+        validate=True,
     ) -> BenchmarkResult:
         """Run each MDP/solver pair and return an independent BenchmarkResult.
 
         ``precision`` is passed to each solver. All failures are recorded rather
         than interrupting the remaining comparisons.
 
-        ``validate``: True validates each result; False skips certification (default).
+        ``validate``: True validates each result (default); False skips certification.
         Validation runs outside solver timing and releases the result before the
         next trial.
         Validation status, errors and runtime are recorded separately;
         ``success`` always means execution completed, not certified accuracy.
         ``validation_status`` is ``not_run``, ``passed`` or ``failed``;
-        ``error_bound`` is available only when certification passes.
+        ``error_bound`` is available only for passed discounted/total certificates.
+        Average reward checks the gain-centered Bellman residual, or its span
+        without a gain, against precision; ``residual`` records this diagnostic
+        without certifying relative value error.
 
         ``verbose=True`` prints trial progress, runtime and failure details
         outside solver timing.
@@ -546,8 +579,6 @@ class Benchmark:
                 raise ValueError("discount must be strictly between 0 and 1")
         elif discount is not None:
             raise ValueError("discount is used only with criterion='discounted'")
-        if self.criterion == "average" and validate:
-            raise ValueError("average-reward result validation is not implemented")
         if not np.isfinite(precision) or precision <= 0:
             raise ValueError("precision must be finite and positive")
         if type(repeats) is not int or repeats < 1:
@@ -597,10 +628,11 @@ class Benchmark:
                         runtime = np.nan
                         result = None
                         validation_method = self._custom_validation_methods.get(
-                            solver_name, "unknown"
+                            solver_name,
+                            "residual" if self.criterion == "average" else "unknown",
                         )
                         validation_status, validation_error = "not_run", ""
-                        validation_runtime, error_bound = np.nan, np.nan
+                        validation_runtime, error_bound, residual = np.nan, np.nan, np.nan
                         status, error = "error", ""
                         try:
                             args = (
@@ -625,7 +657,7 @@ class Benchmark:
                                         result = replace(
                                             result, validation_method=validation_method
                                         )
-                                else:
+                                elif self.criterion != "average":
                                     validation_method = getattr(
                                         result, "validation_method", "unknown"
                                     )
@@ -635,7 +667,15 @@ class Benchmark:
                         if validate and status == "success":
                             validation_start = perf_counter()
                             try:
-                                if self.criterion == "total":
+                                if self.criterion == "average":
+                                    residual = average_bellman_residual(model, result)
+                                    if residual > precision:
+                                        raise ValueError(
+                                            "average-reward validation failed: "
+                                            f"residual {residual:g} exceeds "
+                                            f"precision {precision:g}"
+                                        )
+                                elif self.criterion == "total":
                                     from mdpforge.core.validation import (
                                         validate_total_result,
                                     )
@@ -677,7 +717,7 @@ class Benchmark:
                                 "validation_status": validation_status,
                                 "validation_error": validation_error,
                                 "validation_runtime": validation_runtime,
-                                "residual": np.nan,
+                                "residual": residual,
                                 "error_bound": error_bound,
                                 "status": status,
                                 "error": error,

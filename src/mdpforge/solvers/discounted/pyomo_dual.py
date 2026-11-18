@@ -16,7 +16,7 @@ from mdpforge.utils.solver_options import validate_discount
 METADATA = {
     "display_name": "LP · Pyomo/HiGHS · dual",
     "family": "lp",
-    "backend": "pyomo",
+    "backend": "linear",
     "description": (
         "Solve the discounted occupancy-measure dual linear program using "
         "Pyomo and HiGHS, then recover and evaluate a deterministic policy."

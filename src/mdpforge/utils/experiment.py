@@ -143,10 +143,13 @@ def _package_version(distribution):
 
 
 def _backend_versions(solvers):
-    names = {record["metadata"].get("backend") for record in solvers.values()} - {
-        None,
-        "mdpforge",
-    }
+    names = set()
+    for record in solvers.values():
+        backend = record["metadata"].get("backend")
+        if backend == "linear":
+            backend = record["callable"].rsplit(".", 2)[-2].split("_", 1)[0]
+        if backend not in (None, "mdpforge"):
+            names.add(backend)
     aliases = {"mdptoolbox": "pymdptoolbox"}
     backends = {}
     for name in sorted(names):

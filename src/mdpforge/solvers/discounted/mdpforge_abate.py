@@ -6,7 +6,7 @@ Quantitative Adaptive Aggregations".
 The implementation follows the same solver formalism as mdpforge_aggqvi.py:
 - GenericSolver interface;
 - sparse model representation;
-- a run() method storing value, policy and runtime;
+- a run() method returning value and policy and storing runtime;
 - exact ground-state fallback when the abstraction becomes too large.
 
 It follows Algorithm 1 of Abate et al.: policy improvement is performed on the
@@ -76,7 +76,6 @@ class Solver(GenericSolver):
         self.max_error_matrix_entries = max_error_matrix_entries
         self.direct_threshold = direct_threshold
         self.name = __name__.rsplit(".", 1)[-1]
-        self.policy = None
 
         self.n_states = self.model.state_dim
         raw_reward = self.model.reward_matrix
@@ -330,7 +329,6 @@ class Solver(GenericSolver):
         value = np.asarray(value).ravel()
         if self.reward_shift and self.discount < 1:
             value = value - self.reward_shift / (1 - self.discount)
-        self.value = value
-        self.policy = np.asarray(policy, dtype=int)
+        policy = np.asarray(policy, dtype=int)
         self.runtime = time() - start_time
-        return SolveResult.from_solver(self, validation_method="policy")
+        return SolveResult(value, policy, validation_method="policy")

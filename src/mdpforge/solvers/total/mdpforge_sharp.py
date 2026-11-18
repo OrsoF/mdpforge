@@ -85,8 +85,6 @@ class Solver:
         self.max_local_iterations = int(max_local_iterations)
         self.name = "mdpforge_sharp"
         self.runtime = 0.0
-        self.policy: np.ndarray | None = None
-        self.value: np.ndarray | None = None
         self.root: _Block | None = None
         self.leaves: list[_Block] = []
         self.n_local_solves = 0
@@ -151,11 +149,13 @@ class Solver:
             outside=[matrix[:, boundary].tocsr() for matrix in rows],
         )
 
-    def _solve_leaf(self, block: _Block) -> None:
+    def _solve_leaf(
+        self, block: _Block, value: np.ndarray, policy: np.ndarray
+    ) -> None:
         states = block.states
         boundary = block.boundary
-        snapshot = self.value[boundary].copy()
-        local = self.value[states].copy()
+        snapshot = value[boundary].copy()
+        local = value[states].copy()
         rewards = self.model.reward_matrix[states, :]
         terminal = np.isin(states, list(self.terminal))
         local[terminal] = 0.0
@@ -189,31 +189,33 @@ class Solver:
             better = candidate > best_value
             best_value[better] = candidate[better]
             best_action[better] = action
-        self.value[states] = local
+        value[states] = local
         best_action[terminal] = 0
-        self.policy[states] = best_action
+        policy[states] = best_action
         block.previous_boundary = snapshot
         self.n_local_solves += 1
 
-    def _boundary_changed(self, block: _Block) -> bool:
+    def _boundary_changed(self, block: _Block, value: np.ndarray) -> bool:
         if block.previous_boundary is None:
             return True
         if block.boundary.size == 0:
             return False
-        change = np.max(np.abs(self.value[block.boundary] - block.previous_boundary))
+        change = np.max(np.abs(value[block.boundary] - block.previous_boundary))
         scale = max(1.0, float(np.max(np.abs(block.previous_boundary))))
         return bool(change > self.boundary_threshold * scale)
 
-    def _should_refine(self, block: _Block) -> bool:
+    def _should_refine(self, block: _Block, value: np.ndarray) -> bool:
         if block.depth >= self.max_depth or len(block.states) < 2:
             return False
-        values = self.value[block.states]
+        values = value[block.states]
         spread = float(np.max(values) - np.min(values))
         if self.spread_mode == "relative":
             spread /= abs(float(np.mean(values))) + 1e-6
         return spread > self.refinement_threshold
 
-    def _refine(self, block: _Block) -> list[_Block]:
+    def _refine(
+        self, block: _Block, value: np.ndarray, policy: np.ndarray
+    ) -> list[_Block]:
         halfway = len(block.states) // 2
         block.children = [
             self._make_leaf(block.states[:halfway], block.depth + 1),
@@ -225,32 +227,33 @@ class Solver:
         block.outside = None
         block.previous_boundary = None
         for child in block.children:
-            self._solve_leaf(child)
+            self._solve_leaf(child, value, policy)
         self.n_refinements += 1
         return block.children
 
-    def _extract_policy(self) -> None:
+    def _extract_policy(self, value: np.ndarray) -> np.ndarray:
         # Greedify once using the final global values: this removes action
         # inconsistencies caused by stale local boundary snapshots.
         best = self.model.reward_matrix[:, 0] + self.model.transition_matrix[0].dot(
-            self.value
+            value
         )
-        self.policy = np.zeros(self.model.state_dim, dtype=np.intp)
+        policy = np.zeros(self.model.state_dim, dtype=np.intp)
         for action in range(1, self.model.action_dim):
             candidate = self.model.reward_matrix[
                 :, action
-            ] + self.model.transition_matrix[action].dot(self.value)
+            ] + self.model.transition_matrix[action].dot(value)
             better = candidate > best
             best[better] = candidate[better]
-            self.policy[better] = action
-        self.policy[list(self.terminal)] = 0
+            policy[better] = action
+        policy[list(self.terminal)] = 0
+        return policy
 
     def run(self) -> SolveResult:
         """Refine local solves until the full total-reward residual is small."""
         start = perf_counter()
         n = self.model.state_dim
-        self.value = np.zeros(n, dtype=float)
-        self.policy = np.zeros(n, dtype=np.intp)
+        value = np.zeros(n, dtype=float)
+        policy = np.zeros(n, dtype=np.intp)
         self.n_local_solves = self.n_refinements = self.n_outer_iterations = 0
         self.final_residual = np.inf
         self.root = _Block(np.arange(n, dtype=np.intp), depth=0)
@@ -259,46 +262,46 @@ class Solver:
         ]
         self.leaves = list(self.root.children)
         for leaf in self.leaves:
-            self._solve_leaf(leaf)
+            self._solve_leaf(leaf, value, policy)
 
         for iteration in range(1, self.max_iterations + 1):
             self.n_outer_iterations = iteration
-            previous = self.value.copy()
+            previous = value.copy()
             solved = False
             for leaf in self.leaves:
-                if self._boundary_changed(leaf):
-                    self._solve_leaf(leaf)
+                if self._boundary_changed(leaf, value):
+                    self._solve_leaf(leaf, value, policy)
                     solved = True
 
             refined = False
             new_leaves = []
             for leaf in self.leaves:
-                if self._should_refine(leaf):
-                    new_leaves.extend(self._refine(leaf))
+                if self._should_refine(leaf, value):
+                    new_leaves.extend(self._refine(leaf, value, policy))
                     refined = True
                 else:
                     new_leaves.append(leaf)
             self.leaves = new_leaves
 
-            change = float(np.max(np.abs(self.value - previous)))
-            pending = any(self._boundary_changed(leaf) for leaf in self.leaves)
+            change = float(np.max(np.abs(value - previous)))
+            pending = any(self._boundary_changed(leaf, value) for leaf in self.leaves)
             if not refined and change <= self._target:
-                backup = compact_optimal_bellman_operator(self.model, self.value, 1.0)
-                self.final_residual = float(np.max(np.abs(backup - self.value)))
+                backup = compact_optimal_bellman_operator(self.model, value, 1.0)
+                self.final_residual = float(np.max(np.abs(backup - value)))
                 if self.final_residual <= self._target:
                     # Check the full residual even when some boundaries
                     # remain out of date.
-                    self._extract_policy()
+                    policy = self._extract_policy(value)
                     self.runtime = perf_counter() - start
-                    return SolveResult.from_solver(self, validation_method="residual")
+                    return SolveResult(value, policy, validation_method="residual")
                 if not pending:
                     # A large user-supplied boundary threshold can hide drift.
                     # Force a sweep rather than accept a low-accuracy result.
                     for leaf in self.leaves:
-                        self._solve_leaf(leaf)
+                        self._solve_leaf(leaf, value, policy)
             elif not solved and not refined and not pending:
                 for leaf in self.leaves:
-                    self._solve_leaf(leaf)
+                    self._solve_leaf(leaf, value, policy)
 
         raise RuntimeError(
             "SHARP: max_iterations exhausted before the residual tolerance was reached"

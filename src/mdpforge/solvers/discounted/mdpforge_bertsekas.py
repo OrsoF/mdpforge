@@ -72,35 +72,35 @@ class Solver:
         return value.max() - value.min()
 
     def run(self) -> SolveResult:
-        self.policy = np.zeros(self.model.state_dim, dtype=int)
-        self.value = np.zeros(self.model.state_dim)
+        policy = np.zeros(self.model.state_dim, dtype=int)
+        value = np.zeros(self.model.state_dim)
 
         for _ in bounded_iterations(self.max_iterations, "policy iteration"):
-            self.value = self._policy_evaluation(self.policy, self.value)
+            value = self._policy_evaluation(policy, value)
 
-            new_policy = self._greedy_policy(self.value, self.policy)
+            new_policy = self._greedy_policy(value, policy)
 
-            policy_condition = np.all(new_policy == self.policy)
+            policy_condition = np.all(new_policy == policy)
 
             if policy_condition:
                 transition_policy, reward_policy = compute_transition_reward_policy(
-                    self.model, self.policy
+                    self.model, policy
                 )
 
-                self.value = iterative_policy_evaluation(
+                value = iterative_policy_evaluation(
                     transition_policy,
                     reward_policy,
                     self.discount,
                     self.epsilon_final_policy_evaluation,
-                    self.value,
+                    value,
                     max_iterations=self.max_evaluation_iterations,
                 )
 
                 break
             else:
-                self.policy = new_policy
+                policy = new_policy
 
-        return SolveResult.from_solver(self, validation_method="policy")
+        return SolveResult(value, policy, validation_method="policy")
 
     def _greedy_policy(self, value: np.ndarray, policy: np.ndarray) -> np.ndarray:
         q_value = bellman_operator(self.model, value, self.discount)

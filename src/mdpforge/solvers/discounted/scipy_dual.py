@@ -14,7 +14,7 @@ from mdpforge.utils.solver_options import validate_discount
 METADATA = {
     "display_name": "LP · SciPy · dual",
     "family": "lp",
-    "backend": "scipy",
+    "backend": "linear",
     "description": (
         "Solve the discounted occupancy-measure dual linear program using "
         "SciPy/HiGHS, then recover and evaluate a deterministic policy."

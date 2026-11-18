@@ -57,7 +57,6 @@ class Solver:
         self.bellman_iterations = bellman_iterations
 
         self.name = __name__.rsplit(".", 1)[-1]
-        self.policy = None
         self.shared_reward = np.all(
             self.model.reward_matrix == self.model.reward_matrix[:, [0]]
         )
@@ -67,21 +66,21 @@ class Solver:
 
     def run(self) -> SolveResult:
         tolerance = self.epsilon * (1 - self.discount)
-        self.value = np.zeros((self.model.state_dim))
+        value = np.zeros((self.model.state_dim))
 
         for iteration in bounded_iterations(self.max_iterations, "Chen iteration"):
             n = iteration + 1
             for _ in range(self.bellman_iterations):
                 new_value = compact_optimal_bellman_operator(
-                    self.model, self.value, self.discount, self.shared_reward
+                    self.model, value, self.discount, self.shared_reward
                 )
-                if norminf(new_value - self.value) < tolerance:
-                    return SolveResult.from_solver(self, validation_method="residual")
-                self.value = new_value
+                if norminf(new_value - value) < tolerance:
+                    return SolveResult(value, validation_method="residual")
+                value = new_value
 
             self.partition = Partition(self.model)
-            self.partition.refine_by_width(self.value, self.epsilon / (n + 1))
-            self.contracted_value = self.partition.weights.dot(self.value)
+            self.partition.refine_by_width(value, self.epsilon / (n + 1))
+            self.contracted_value = self.partition.weights.dot(value)
             alpha = self.step_size / (
                 n * (self.aggregation_iterations + self.bellman_iterations) + 1
             )
@@ -107,4 +106,4 @@ class Solver:
                     1 - alpha
                 ) * self.contracted_value + alpha * q.max(axis=1)
 
-            self.value = self.partition.phi.dot(self.contracted_value)
+            value = self.partition.phi.dot(self.contracted_value)

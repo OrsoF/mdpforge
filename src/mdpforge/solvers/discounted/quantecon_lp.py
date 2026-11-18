@@ -11,7 +11,7 @@ from mdpforge.utils.solver_options import validate_discount
 METADATA = {
     "display_name": "LP · QuantEcon",
     "family": "lp",
-    "backend": "quantecon",
+    "backend": "linear",
     "description": (
         "QuantEcon dense simplex linear programming; transitions are densified locally."
     ),

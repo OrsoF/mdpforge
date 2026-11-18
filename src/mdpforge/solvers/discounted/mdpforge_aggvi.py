@@ -105,7 +105,6 @@ class Solver:
         )
 
         self.name = __name__.rsplit(".", 1)[-1]
-        self.policy = None
 
         self.partition = Partition(self.model)
         self.epsilon_pbr = self.epsilon * (1 - self.discount) / 2
@@ -130,8 +129,7 @@ class Solver:
                     max_iterations=self.max_eval_iter,
                 )
 
-                self._finish(value)
-                return SolveResult.from_solver(self, validation_method="residual")
+                return self._finish(value)
 
             self.partition.compute_agg_trans_reward_v()
             norm_weights = self._norm_weights()
@@ -178,8 +176,7 @@ class Solver:
                 if optimal_bellman_residual(
                     self.model, value, self.discount
                 ) <= self.epsilon * (1 - self.discount):
-                    self._finish(value)
-                    return SolveResult.from_solver(self, validation_method="residual")
+                    return self._finish(value)
 
     def _bellman_steps(self, contracted_value: np.ndarray) -> np.ndarray:
         """Optimal Bellman operator."""
@@ -204,9 +201,9 @@ class Solver:
             return None
         return aggregation_norm_weights(self.model, self.partition, self.norm_method)
 
-    def _finish(self, value: np.ndarray):
-        self.value = value
-        self.policy = bellman_operator(self.model, value, self.discount).argmax(axis=1)
+    def _finish(self, value: np.ndarray) -> SolveResult:
+        policy = bellman_operator(self.model, value, self.discount).argmax(axis=1)
+        return SolveResult(value, policy, validation_method="residual")
 
     def _name(self) -> str:
         if self.with_norm_weights:

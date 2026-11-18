@@ -1,0 +1,784 @@
+{
+  "schema_version": 2,
+  "experiment_id": "7a875375-589c-4581-9454-c0d80504df5a",
+  "created_at_utc": "2026-11-16T10:12:57.584344+00:00",
+  "settings": {
+    "criterion": "discounted",
+    "discount": 0.99,
+    "precision": 0.001,
+    "repeats": 5,
+    "seed": 0,
+    "trial_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "seed_scope": "solver trials; model generation is not reseeded",
+    "timeout": 10.0,
+    "execution_mode": "spawn",
+    "validate": false
+  },
+  "models": {
+    "500_10_block_0.85_10": {
+      "class": "mdpforge.models.discounted.block.Model",
+      "display_name": "500_10_block_0.85_10",
+      "state_dim": 500,
+      "requested_state_dim": 500,
+      "action_dim": 10,
+      "nnz": 237793,
+      "config": {
+        "state_dim": 500,
+        "action_dim": 10
+      }
+    },
+    "1470_2_chainwalk": {
+      "class": "mdpforge.models.discounted.chain_walk.Model",
+      "display_name": "1470_2_chainwalk",
+      "state_dim": 1470,
+      "requested_state_dim": 1470,
+      "action_dim": 2,
+      "nnz": 5880,
+      "config": {
+        "state_dim": 1470,
+        "action_dim": 2
+      }
+    },
+    "500_10_garnet_0.85_1.0": {
+      "class": "mdpforge.models.discounted.garnet.Model",
+      "display_name": "500_10_garnet_0.85_1.0",
+      "state_dim": 500,
+      "requested_state_dim": 500,
+      "action_dim": 10,
+      "nnz": 2125732,
+      "config": {
+        "state_dim": 500,
+        "action_dim": 10
+      }
+    },
+    "70087_1_janiapproxpi_2_56078666557430057054646238051091517432181499151580968943030350385624714171183": {
+      "class": "mdpforge.models.discounted.jani_approx_pi.Model",
+      "display_name": "jani_approx_pi",
+      "state_dim": 70087,
+      "requested_state_dim": 500,
+      "action_dim": 1,
+      "nnz": 312207,
+      "config": {
+        "benchmark": "ApproxPi",
+        "source_collection": "library",
+        "requested_state_dim": 500,
+        "state_dim": 70087,
+        "action_dim": 1,
+        "source_file": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_010_quadrant.jani",
+        "source_sha256": "26bc310ccdcd92601bbe517babc1bd0510b7d5677a9c6b94837985b97dd7db7f",
+        "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+        "constants": {},
+        "objective": "hits",
+        "reward_spec": {
+          "mode": "native",
+          "exp": "hits",
+          "op": "Emax"
+        },
+        "reward_name": "hits",
+        "reward_sign": 1,
+        "adaptation_version": 2,
+        "construction_backend": "python-jani",
+        "construction_version": 4
+      }
+    },
+    "376_1_janicouponcollector_2_60050979689274768423357938012440183568144216259137166112569796446163018765489": {
+      "class": "mdpforge.models.discounted.jani_coupon_collector.Model",
+      "display_name": "jani_coupon_collector",
+      "state_dim": 376,
+      "requested_state_dim": 500,
+      "action_dim": 1,
+      "nnz": 468,
+      "config": {
+        "benchmark": "CouponCollector",
+        "source_collection": "library",
+        "requested_state_dim": 500,
+        "state_dim": 376,
+        "action_dim": 1,
+        "source_file": "CouponCollector/MultiAllowed/coupon_m_03_02.jani",
+        "source_sha256": "bc26816d14e8b45c7c673c69e9629a5e8280dcbb4791dd7f8723ce1131b77e30",
+        "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+        "constants": {},
+        "objective": "draws",
+        "reward_spec": {
+          "mode": "native",
+          "exp": "numberDraws",
+          "op": "Emin"
+        },
+        "reward_name": "numberDraws",
+        "reward_sign": -1,
+        "adaptation_version": 2,
+        "construction_backend": "python-jani",
+        "construction_version": 4
+      }
+    },
+    "11_1_janirandomwalk_2_0.5_30699338345187719352014270092402734447514728360529037093433476710072577606177": {
+      "class": "mdpforge.models.discounted.jani_random_walk.Model",
+      "display_name": "jani_random_walk",
+      "state_dim": 11,
+      "requested_state_dim": 500,
+      "action_dim": 1,
+      "nnz": 22,
+      "config": {
+        "benchmark": "RandomWalk",
+        "source_collection": "library",
+        "requested_state_dim": 500,
+        "state_dim": 11,
+        "action_dim": 1,
+        "source_file": "RandomWalk/randomWalk.jani",
+        "source_sha256": "4953632740a4b22e55d88f9ef51da79047347a2d29708f7cd38bf6ab6f6456e8",
+        "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+        "constants": {
+          "p": 0.5
+        },
+        "objective": "position",
+        "reward_spec": {
+          "mode": "state",
+          "exp": "state",
+          "op": "Emax"
+        },
+        "reward_name": "state",
+        "reward_sign": 1,
+        "adaptation_version": 2,
+        "construction_backend": "python-jani",
+        "construction_version": 4
+      }
+    },
+    "23_6_qvbsrandompredicates_2_48978202916856906410282705753931009191308384599237954892883321305041254002393": {
+      "class": "mdpforge.models.discounted.qvbs_random_predicates.Model",
+      "display_name": "qvbs_random_predicates",
+      "state_dim": 23,
+      "requested_state_dim": 500,
+      "action_dim": 6,
+      "nnz": 177,
+      "config": {
+        "benchmark": "random-predicates",
+        "source_collection": "qvbs",
+        "requested_state_dim": 500,
+        "state_dim": 23,
+        "action_dim": 6,
+        "source_file": "benchmarks/mdp/random-predicates/random-predicates.a.jani",
+        "source_sha256": "551cd846fa13ff9eae733e301915d36c2833c785f91d03328e6c2b760f37c463",
+        "source_revision": "a96cf379885c0a160a552a8fe0de417e2b55b161",
+        "constants": {},
+        "objective": "goal",
+        "reward_spec": {
+          "mode": "reachability",
+          "reach": "uv__oz",
+          "continuation": true,
+          "op": "Pmax",
+          "source_property": "goal"
+        },
+        "reward_name": null,
+        "reward_sign": 1,
+        "adaptation_version": 2,
+        "construction_backend": "python-jani",
+        "construction_version": 4,
+        "planning_instance": {
+          "parameters": {
+            "objects": 1
+          },
+          "objects": {
+            "object": [
+              "oz"
+            ]
+          },
+          "generator_version": 1,
+          "domain_file": "p01-domain.pddl",
+          "problem_file": "p01-problem.pddl",
+          "domain_sha256": "8ed49065c228208f2e7d2235b91cddb2aa040d983f56f9eadfca5e844e8ca836",
+          "problem_sha256": "ec18b82d925e7fc765b666271a4ab65fb9348e727767b2073f1e62ac28ea02c3",
+          "generated_sha256": "a3b5ecfd6c5870a612d5f919a9c927b32e5b484d552bb1b0780a3b76658f4c7c"
+        }
+      }
+    },
+    "1560_2_randomwalk": {
+      "class": "mdpforge.models.discounted.random_walk.Model",
+      "display_name": "1560_2_randomwalk",
+      "state_dim": 1560,
+      "requested_state_dim": 1560,
+      "action_dim": 2,
+      "nnz": 6236,
+      "config": {
+        "state_dim": 1560,
+        "action_dim": 2
+      }
+    },
+    "2040_2_unichain": {
+      "class": "mdpforge.models.discounted.unichain.Model",
+      "display_name": "2040_2_unichain",
+      "state_dim": 2040,
+      "requested_state_dim": 2040,
+      "action_dim": 2,
+      "nnz": 4080,
+      "config": {
+        "state_dim": 2040,
+        "action_dim": 2
+      }
+    }
+  },
+  "solvers": {
+    "marmote_mpi": {
+      "callable": "mdpforge.solvers.discounted.marmote_mpi.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000,
+        "max_evaluation_iterations": 10,
+        "evaluation_precision": null
+      },
+      "metadata": {
+        "display_name": "MPI · Marmote",
+        "family": "mpi",
+        "backend": "marmote",
+        "description": "Marmote C++ modified policy iteration with standard updates and at most ten inner policy-evaluation iterations."
+      }
+    },
+    "marmote_mpigs": {
+      "callable": "mdpforge.solvers.discounted.marmote_mpigs.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000,
+        "max_evaluation_iterations": 10,
+        "evaluation_precision": null
+      },
+      "metadata": {
+        "display_name": "MPI · Marmote · GS",
+        "family": "mpi",
+        "backend": "marmote",
+        "description": "Marmote C++ modified policy iteration with Gauss-Seidel updates and at most ten inner policy-evaluation iterations."
+      }
+    },
+    "marmote_vi": {
+      "callable": "mdpforge.solvers.discounted.marmote_vi.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000
+      },
+      "metadata": {
+        "display_name": "VI · Marmote",
+        "family": "vi",
+        "backend": "marmote",
+        "description": "Marmote C++ value iteration with standard Bellman sweeps."
+      }
+    },
+    "marmote_vigs": {
+      "callable": "mdpforge.solvers.discounted.marmote_vigs.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000
+      },
+      "metadata": {
+        "display_name": "VI · Marmote · GS",
+        "family": "vi",
+        "backend": "marmote",
+        "description": "Marmote C++ value iteration with Gauss-Seidel Bellman sweeps."
+      }
+    },
+    "mdpax_pi": {
+      "callable": "mdpforge.solvers.discounted.mdpax_pi.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 1000,
+        "max_evaluation_iterations": 10000,
+        "max_event_entries": 2000000,
+        "max_batch_size": 1024
+      },
+      "metadata": {
+        "display_name": "PI · MDPax",
+        "family": "pi",
+        "backend": "mdpax",
+        "description": "MDPax JAX iterative policy evaluation and improvement."
+      }
+    },
+    "mdpax_vi": {
+      "callable": "mdpforge.solvers.discounted.mdpax_vi.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 20000,
+        "max_event_entries": 2000000,
+        "max_batch_size": 1024
+      },
+      "metadata": {
+        "display_name": "VI · MDPax",
+        "family": "vi",
+        "backend": "mdpax",
+        "description": "MDPax JAX value iteration over padded sparse CSR successors."
+      }
+    },
+    "mdpsolver_mpi": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_mpi.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "max_evaluation_iterations": 10,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "MPI · MDPSolver",
+        "family": "mpi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver modified policy iteration with standard updates and an explicit ten-step partial evaluation limit."
+      }
+    },
+    "mdpsolver_mpigs": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_mpigs.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "max_evaluation_iterations": 10,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "MPI · MDPSolver · GS",
+        "family": "mpi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver modified policy iteration with Gauss-Seidel value updates and backend-default initialization."
+      }
+    },
+    "mdpsolver_mpigs_init": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_mpigs_init.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "max_evaluation_iterations": 10
+      },
+      "metadata": {
+        "display_name": "MPI · MDPSolver · GS · V₀=0",
+        "family": "mpi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver modified policy iteration with Gauss-Seidel updates and explicitly zero-initialized values and policy."
+      }
+    },
+    "mdpsolver_mpisor": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_mpisor.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "max_evaluation_iterations": 10,
+        "relaxation": 1.0,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "MPI · MDPSolver · SOR",
+        "family": "mpi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver modified policy iteration with successive over-relaxation updates and backend-default initialization."
+      }
+    },
+    "mdpsolver_mpisor_init": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_mpisor_init.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "max_evaluation_iterations": 10,
+        "relaxation": 1.0
+      },
+      "metadata": {
+        "display_name": "MPI · MDPSolver · SOR · V₀=0",
+        "family": "mpi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver modified policy iteration with successive over-relaxation updates and explicitly zero-initialized values and policy."
+      }
+    },
+    "mdpsolver_pi": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_pi.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "PI · MDPSolver",
+        "family": "pi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver policy iteration with standard value updates, explicit zero initialization and backend postprocessing."
+      }
+    },
+    "mdpsolver_vi": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_vi.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "VI · MDPSolver",
+        "family": "vi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver value iteration with standard Bellman sweeps."
+      }
+    },
+    "mdpsolver_vigs": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_vigs.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "VI · MDPSolver · GS",
+        "family": "vi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver value iteration with Gauss-Seidel Bellman sweeps."
+      }
+    },
+    "mdpsolver_visor": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_visor.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "relaxation": 1.0,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "VI · MDPSolver · SOR",
+        "family": "vi",
+        "backend": "mdpsolver",
+        "description": "MDPSolver value iteration with successive over-relaxation Bellman updates."
+      }
+    },
+    "mdptoolbox_mpi": {
+      "callable": "mdpforge.solvers.discounted.mdptoolbox_mpi.Solver",
+      "options": {},
+      "parameters": {
+        "max_evaluation_iterations": 10
+      },
+      "metadata": {
+        "display_name": "MPI · MDPToolbox",
+        "family": "mpi",
+        "backend": "mdptoolbox",
+        "description": "MDPToolbox modified policy iteration with synchronous, truncated policy evaluation."
+      }
+    },
+    "mdptoolbox_pi": {
+      "callable": "mdpforge.solvers.discounted.mdptoolbox_pi.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000
+      },
+      "metadata": {
+        "display_name": "PI · MDPToolbox",
+        "family": "pi",
+        "backend": "mdptoolbox",
+        "description": "MDPToolbox policy iteration using its default matrix-based policy evaluation and greedy policy improvement."
+      }
+    },
+    "mdptoolbox_vi": {
+      "callable": "mdpforge.solvers.discounted.mdptoolbox_vi.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000
+      },
+      "metadata": {
+        "display_name": "VI · MDPToolbox",
+        "family": "vi",
+        "backend": "mdptoolbox",
+        "description": "MDPToolbox synchronous value iteration through its public API, with native initialization."
+      }
+    },
+    "mdptoolbox_vigs": {
+      "callable": "mdpforge.solvers.discounted.mdptoolbox_vigs.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000000
+      },
+      "metadata": {
+        "display_name": "VI · MDPToolbox · GS",
+        "family": "vi",
+        "backend": "mdptoolbox",
+        "description": "MDPToolbox value iteration with Gauss-Seidel sweeps."
+      }
+    },
+    "pyomo_dual": {
+      "callable": "mdpforge.solvers.discounted.pyomo_dual.Solver",
+      "options": {},
+      "parameters": {
+        "threads": 1
+      },
+      "metadata": {
+        "display_name": "LP · Pyomo/HiGHS · dual",
+        "family": "lp",
+        "backend": "pyomo",
+        "description": "Solve the discounted occupancy-measure dual linear program using Pyomo and HiGHS, then recover and evaluate a deterministic policy."
+      }
+    },
+    "pyomo_primal": {
+      "callable": "mdpforge.solvers.discounted.pyomo_primal.Solver",
+      "options": {},
+      "parameters": {
+        "threads": 1
+      },
+      "metadata": {
+        "display_name": "LP · Pyomo/HiGHS · primal",
+        "family": "lp",
+        "backend": "pyomo",
+        "description": "Solve the discounted value-function primal linear program with Bellman inequality constraints using Pyomo and HiGHS."
+      }
+    },
+    "quantecon_lp": {
+      "callable": "mdpforge.solvers.discounted.quantecon_lp.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000
+      },
+      "metadata": {
+        "display_name": "LP · QuantEcon",
+        "family": "lp",
+        "backend": "quantecon",
+        "description": "QuantEcon dense simplex linear programming; transitions are densified locally."
+      }
+    },
+    "quantecon_mpi": {
+      "callable": "mdpforge.solvers.discounted.quantecon_mpi.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000,
+        "max_evaluation_iterations": 20
+      },
+      "metadata": {
+        "display_name": "MPI · QuantEcon",
+        "family": "mpi",
+        "backend": "quantecon",
+        "description": "QuantEcon sparse modified policy iteration with span stopping and value shift."
+      }
+    },
+    "quantecon_pi": {
+      "callable": "mdpforge.solvers.discounted.quantecon_pi.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000
+      },
+      "metadata": {
+        "display_name": "PI · QuantEcon",
+        "family": "pi",
+        "backend": "quantecon",
+        "description": "QuantEcon sparse policy iteration with exact policy evaluation."
+      }
+    },
+    "quantecon_vi": {
+      "callable": "mdpforge.solvers.discounted.quantecon_vi.Solver",
+      "options": {},
+      "parameters": {
+        "max_iterations": 100000
+      },
+      "metadata": {
+        "display_name": "VI · QuantEcon",
+        "family": "vi",
+        "backend": "quantecon",
+        "description": "QuantEcon sparse value iteration with its native norm-based stopping rule."
+      }
+    },
+    "scipy_dual": {
+      "callable": "mdpforge.solvers.discounted.scipy_dual.Solver",
+      "options": {},
+      "parameters": {
+        "method": "highs"
+      },
+      "metadata": {
+        "display_name": "LP · SciPy · dual",
+        "family": "lp",
+        "backend": "scipy",
+        "description": "Solve the discounted occupancy-measure dual linear program using SciPy/HiGHS, then recover and evaluate a deterministic policy."
+      }
+    },
+    "scipy_primal": {
+      "callable": "mdpforge.solvers.discounted.scipy_primal.Solver",
+      "options": {},
+      "parameters": {
+        "method": "highs"
+      },
+      "metadata": {
+        "display_name": "LP · SciPy · primal",
+        "family": "lp",
+        "backend": "scipy",
+        "description": "Solve the discounted value-function primal linear program with Bellman inequality constraints using SciPy/HiGHS."
+      }
+    }
+  },
+  "environment": {
+    "python": "3.12.12",
+    "mdpforge": "0.1.0",
+    "numpy": "2.4.2",
+    "scipy": "1.17.0",
+    "threadpoolctl": "3.7.0",
+    "backends": {
+      "marmote": {
+        "distribution": "marmote",
+        "version": null
+      },
+      "mdpax": {
+        "distribution": "mdpax",
+        "version": "0.2.2"
+      },
+      "mdpsolver": {
+        "distribution": "mdpsolver",
+        "version": "0.10.2"
+      },
+      "mdptoolbox": {
+        "distribution": "pymdptoolbox",
+        "version": "4.0b3"
+      },
+      "pyomo": {
+        "distribution": "pyomo",
+        "version": "6.10.1"
+      },
+      "quantecon": {
+        "distribution": "quantecon",
+        "version": "0.13.1"
+      },
+      "scipy": {
+        "distribution": "scipy",
+        "version": "1.17.0"
+      }
+    }
+  },
+  "machine": {
+    "os": "Windows",
+    "os_release": "11",
+    "architecture": "AMD64",
+    "logical_cpu_count": 20,
+    "thread_environment": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null,
+      "BLIS_NUM_THREADS": null,
+      "VECLIB_MAXIMUM_THREADS": null,
+      "NUMEXPR_NUM_THREADS": null
+    },
+    "thread_pools": [
+      {
+        "user_api": "blas",
+        "internal_api": "mkl",
+        "num_threads": 14,
+        "prefix": "mkl_rt",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\mkl_rt.2.dll",
+        "version": "2025.3-Product",
+        "threading_layer": "intel"
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 20,
+        "prefix": "libiomp",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\libiomp5md.dll",
+        "version": null
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 20,
+        "prefix": "libomp",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\libomp.dll",
+        "version": null
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 20,
+        "prefix": "libomp",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Lib\\site-packages\\mdpsolver.libs\\libomp140.x86_64-4a20c1e5c115c29771a12324513eb109.dll",
+        "version": null
+      },
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "num_threads": 20,
+        "prefix": "libscipy_openblas",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Lib\\site-packages\\scipy.libs\\libscipy_openblas-64eda39e79589aedb16f58e5547eb599.dll",
+        "version": "0.3.30",
+        "threading_layer": "pthreads",
+        "architecture": "Haswell"
+      }
+    ],
+    "capture_scope": "benchmark process before solver execution",
+    "numpy_build": {
+      "Compilers": {
+        "c": {
+          "name": "msvc",
+          "linker": "link",
+          "version": "19.44.35222",
+          "commands": "cl.exe"
+        },
+        "cython": {
+          "name": "cython",
+          "linker": "cython",
+          "version": "3.2.4",
+          "commands": "cython"
+        },
+        "c++": {
+          "name": "msvc",
+          "linker": "link",
+          "version": "19.44.35222",
+          "commands": "cl.exe"
+        }
+      },
+      "Machine Information": {
+        "host": {
+          "cpu": "x86_64",
+          "family": "x86_64",
+          "endian": "little",
+          "system": "windows"
+        },
+        "build": {
+          "cpu": "x86_64",
+          "family": "x86_64",
+          "endian": "little",
+          "system": "windows"
+        }
+      },
+      "Build Dependencies": {
+        "blas": {
+          "name": "blas",
+          "found": true,
+          "version": "3.9.0",
+          "detection method": "pkgconfig",
+          "include directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/include",
+          "lib directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib",
+          "openblas configuration": "unknown",
+          "pc file directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib/pkgconfig"
+        },
+        "lapack": {
+          "name": "lapack",
+          "found": true,
+          "version": "3.9.0",
+          "detection method": "pkgconfig",
+          "include directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/include",
+          "lib directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib",
+          "openblas configuration": "unknown",
+          "pc file directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib/pkgconfig"
+        }
+      },
+      "Python Information": {
+        "path": "C:/Users/orsof/anaconda3/envs/benchmark/python.exe",
+        "version": "3.12"
+      },
+      "SIMD Extensions": {
+        "baseline": [
+          "X86_V2"
+        ],
+        "found": [
+          "X86_V3"
+        ]
+      }
+    }
+  },
+  "code": {
+    "git": {
+      "commit": "1bb2fedbdd507411a469ad0b49e514dbc0a4e0a1",
+      "dirty": true
+    }
+  },
+  "results_file": "bench_2026-11-16_10-53-13_440049.csv"
+}

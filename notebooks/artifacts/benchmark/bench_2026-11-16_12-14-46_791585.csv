@@ -1,0 +1,201 @@
+experiment_id,model,state_dim,requested_state_dim,action_dim,solver,repeat,seed,criterion,discount,epsilon,runtime,validation_method,validation_status,validation_error,validation_runtime,residual,error_bound,status,error
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_mpi,1,0,discounted,0.99,0.001,1.096611800001483,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_mpi,2,1,discounted,0.99,0.001,1.0166203000007954,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_mpi,3,2,discounted,0.99,0.001,1.047879899999316,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_mpi,4,3,discounted,0.99,0.001,1.0361854000002495,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_mpi,5,4,discounted,0.99,0.001,1.0236207999987528,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_pi,1,0,discounted,0.99,0.001,1.9249726999987615,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_pi,2,1,discounted,0.99,0.001,1.9239749999997002,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_pi,3,2,discounted,0.99,0.001,1.916073000000324,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_pi,4,3,discounted,0.99,0.001,1.9392649000001256,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_pi,5,4,discounted,0.99,0.001,1.911345299999084,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_vi,1,0,discounted,0.99,0.001,0.8995828999995865,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_vi,2,1,discounted,0.99,0.001,0.9127769000006083,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_vi,3,2,discounted,0.99,0.001,0.9298018999998021,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_vi,4,3,discounted,0.99,0.001,0.9081108999998833,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_vi,5,4,discounted,0.99,0.001,0.9099408000001858,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_vigs,1,0,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_vigs,2,1,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_vigs,3,2,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_vigs,4,3,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,3601_2_optionpricing_60_60,3601,3600,2,mdptoolbox_vigs,5,4,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_mpi,1,0,discounted,0.99,0.001,0.5064873000010266,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_mpi,2,1,discounted,0.99,0.001,0.5057386999997107,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_mpi,3,2,discounted,0.99,0.001,0.5003613999997469,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_mpi,4,3,discounted,0.99,0.001,0.5059164999984205,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_mpi,5,4,discounted,0.99,0.001,0.5064168000008067,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_pi,1,0,discounted,0.99,0.001,1.3753448000006756,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_pi,2,1,discounted,0.99,0.001,1.3606020000006538,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_pi,3,2,discounted,0.99,0.001,1.3688249999995605,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_pi,4,3,discounted,0.99,0.001,1.3628160000007483,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_pi,5,4,discounted,0.99,0.001,1.3806076000000758,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_vi,1,0,discounted,0.99,0.001,0.341718799998489,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_vi,2,1,discounted,0.99,0.001,0.33867710000049556,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_vi,3,2,discounted,0.99,0.001,0.34129509999911534,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_vi,4,3,discounted,0.99,0.001,0.34382670000013604,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_vi,5,4,discounted,0.99,0.001,0.34203879999950004,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_vigs,1,0,discounted,0.99,0.001,6.15745969999989,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_vigs,2,1,discounted,0.99,0.001,6.1259475000006205,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_vigs,3,2,discounted,0.99,0.001,6.13386939999873,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_vigs,4,3,discounted,0.99,0.001,6.121822899998733,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1224_4_windgrid,1224,1200,4,mdptoolbox_vigs,5,4,discounted,0.99,0.001,6.189188899999863,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_mpi,1,0,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_mpi,2,1,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_mpi,3,2,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_mpi,4,3,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_mpi,5,4,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_pi,1,0,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_pi,2,1,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_pi,3,2,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_pi,4,3,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_pi,5,4,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_vi,1,0,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_vi,2,1,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_vi,3,2,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_vi,4,3,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_vi,5,4,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_vigs,1,0,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_vigs,2,1,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_vigs,3,2,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_vigs,4,3,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,27766_3_prismrabin_2_3_0_1,27766,2776,3,mdptoolbox_vigs,5,4,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_mpi,1,0,discounted,0.99,0.001,0.1012010000013106,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_mpi,2,1,discounted,0.99,0.001,0.09829799999897659,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_mpi,3,2,discounted,0.99,0.001,0.10120389999974577,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_mpi,4,3,discounted,0.99,0.001,0.09940629999982775,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_mpi,5,4,discounted,0.99,0.001,0.09810109999853012,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_pi,1,0,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_pi,2,1,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_pi,3,2,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_pi,4,3,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_pi,5,4,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_vi,1,0,discounted,0.99,0.001,0.4223352999997587,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_vi,2,1,discounted,0.99,0.001,0.4160061000002315,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_vi,3,2,discounted,0.99,0.001,0.4151239999991958,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_vi,4,3,discounted,0.99,0.001,0.4123458000012761,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_vi,5,4,discounted,0.99,0.001,0.40614169999935257,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_vigs,1,0,discounted,0.99,0.001,1.9219078000005538,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_vigs,2,1,discounted,0.99,0.001,1.9605112000008376,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_vigs,3,2,discounted,0.99,0.001,1.91569569999956,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_vigs,4,3,discounted,0.99,0.001,1.909485099999074,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,726_9_barto_3_0.1,726,900,9,mdptoolbox_vigs,5,4,discounted,0.99,0.001,1.9101081999997405,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_mpi,1,0,discounted,0.99,0.001,0.10091800000009243,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_mpi,2,1,discounted,0.99,0.001,0.10284240000146383,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_mpi,3,2,discounted,0.99,0.001,0.10178489999998419,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_mpi,4,3,discounted,0.99,0.001,0.10012690000075963,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_mpi,5,4,discounted,0.99,0.001,0.10204109999904176,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_pi,1,0,discounted,0.99,0.001,0.12480039999900328,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_pi,2,1,discounted,0.99,0.001,0.1271790000009787,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_pi,3,2,discounted,0.99,0.001,0.1254475999994611,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_pi,4,3,discounted,0.99,0.001,0.12137369999982184,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_pi,5,4,discounted,0.99,0.001,0.11839259999942442,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_vi,1,0,discounted,0.99,0.001,0.3926757000008365,unknown,not_run,,nan,nan,nan,error,OverflowError: cannot convert float infinity to integer
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_vi,2,1,discounted,0.99,0.001,0.390556899999865,unknown,not_run,,nan,nan,nan,error,OverflowError: cannot convert float infinity to integer
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_vi,3,2,discounted,0.99,0.001,0.39498490000005404,unknown,not_run,,nan,nan,nan,error,OverflowError: cannot convert float infinity to integer
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_vi,4,3,discounted,0.99,0.001,0.39456090000021504,unknown,not_run,,nan,nan,nan,error,OverflowError: cannot convert float infinity to integer
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_vi,5,4,discounted,0.99,0.001,0.3941363000012643,unknown,not_run,,nan,nan,nan,error,OverflowError: cannot convert float infinity to integer
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_vigs,1,0,discounted,0.99,0.001,0.4009528999995382,unknown,not_run,,nan,nan,nan,error,OverflowError: cannot convert float infinity to integer
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_vigs,2,1,discounted,0.99,0.001,0.3861276999996335,unknown,not_run,,nan,nan,nan,error,OverflowError: cannot convert float infinity to integer
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_vigs,3,2,discounted,0.99,0.001,0.38172129999838944,unknown,not_run,,nan,nan,nan,error,OverflowError: cannot convert float infinity to integer
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_vigs,4,3,discounted,0.99,0.001,0.3895370999998704,unknown,not_run,,nan,nan,nan,error,OverflowError: cannot convert float infinity to integer
+e52f85e2-9136-45ac-b534-9e50c5df1c22,956_6_janidiningphilosophers_2_property_0_phil3,956,500,6,mdptoolbox_vigs,5,4,discounted,0.99,0.001,0.38333260000035807,unknown,not_run,,nan,nan,nan,error,OverflowError: cannot convert float infinity to integer
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_mpi,1,0,discounted,0.99,0.001,0.4217153000008693,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_mpi,2,1,discounted,0.99,0.001,0.43357149999974354,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_mpi,3,2,discounted,0.99,0.001,0.42394189999868104,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_mpi,4,3,discounted,0.99,0.001,0.4217372000002797,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_mpi,5,4,discounted,0.99,0.001,0.4210670000011305,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_pi,1,0,discounted,0.99,0.001,0.34189879999939876,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_pi,2,1,discounted,0.99,0.001,0.34500150000167196,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_pi,3,2,discounted,0.99,0.001,0.38824949999980163,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_pi,4,3,discounted,0.99,0.001,0.35567100000116625,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_pi,5,4,discounted,0.99,0.001,0.3524571999987529,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_vi,1,0,discounted,0.99,0.001,0.4475179000000935,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_vi,2,1,discounted,0.99,0.001,0.44970029999967664,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_vi,3,2,discounted,0.99,0.001,0.43664049999824783,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_vi,4,3,discounted,0.99,0.001,0.43875739999930374,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_vi,5,4,discounted,0.99,0.001,0.4422238999995898,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_vigs,1,0,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_vigs,2,1,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_vigs,3,2,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_vigs,4,3,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1743_3_qvbsfirewire_2_200_1_time_min_firewire.false,1743,500,3,mdptoolbox_vigs,5,4,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_mpi,1,0,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_mpi,2,1,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_mpi,3,2,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_mpi,4,3,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_mpi,5,4,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_pi,1,0,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_pi,2,1,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_pi,3,2,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_pi,4,3,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_pi,5,4,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_vi,1,0,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_vi,2,1,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_vi,3,2,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_vi,4,3,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_vi,5,4,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_vigs,1,0,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_vigs,2,1,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_vigs,3,2,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_vigs,4,3,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,109515_5_qvbsechoring_2_2_MinFailed,109515,10951,5,mdptoolbox_vigs,5,4,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_mpi,1,0,discounted,0.99,0.001,0.4379962999992131,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_mpi,2,1,discounted,0.99,0.001,0.42076389999965613,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_mpi,3,2,discounted,0.99,0.001,0.41487469999992754,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_mpi,4,3,discounted,0.99,0.001,0.41924660000040603,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_mpi,5,4,discounted,0.99,0.001,0.42221690000042145,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_pi,1,0,discounted,0.99,0.001,0.23858850000033271,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_pi,2,1,discounted,0.99,0.001,0.20718830000078015,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_pi,3,2,discounted,0.99,0.001,0.20441009999922244,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_pi,4,3,discounted,0.99,0.001,0.20131430000037653,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_pi,5,4,discounted,0.99,0.001,0.20215300000018033,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_vi,1,0,discounted,0.99,0.001,1.1917766999995365,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_vi,2,1,discounted,0.99,0.001,1.197457200001736,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_vi,3,2,discounted,0.99,0.001,1.2022871000008308,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_vi,4,3,discounted,0.99,0.001,1.207023200000549,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_vi,5,4,discounted,0.99,0.001,1.1997719000009965,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_vigs,1,0,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_vigs,2,1,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_vigs,3,2,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_vigs,4,3,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,500_36_pegsolitaire,500,500,36,mdptoolbox_vigs,5,4,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_mpi,1,0,discounted,0.99,0.001,0.2944960999993782,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_mpi,2,1,discounted,0.99,0.001,0.2938153000013699,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_mpi,3,2,discounted,0.99,0.001,0.29117719999885594,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_mpi,4,3,discounted,0.99,0.001,0.28992680000010296,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_mpi,5,4,discounted,0.99,0.001,0.29643190000024333,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_pi,1,0,discounted,0.99,0.001,0.46890460000031453,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_pi,2,1,discounted,0.99,0.001,0.44358920000013313,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_pi,3,2,discounted,0.99,0.001,0.4480550000007497,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_pi,4,3,discounted,0.99,0.001,0.44817610000063723,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_pi,5,4,discounted,0.99,0.001,0.4443083000005572,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_vi,1,0,discounted,0.99,0.001,0.5340937000000849,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_vi,2,1,discounted,0.99,0.001,0.5207892000016727,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_vi,3,2,discounted,0.99,0.001,0.5288517999997566,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_vi,4,3,discounted,0.99,0.001,0.5322576999988087,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_vi,5,4,discounted,0.99,0.001,0.5227119000010134,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_vigs,1,0,discounted,0.99,0.001,7.553940699999657,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_vigs,2,1,discounted,0.99,0.001,7.620625800000198,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_vigs,3,2,discounted,0.99,0.001,7.620397099999536,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_vigs,4,3,discounted,0.99,0.001,7.544045599999663,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,1206_6_zenotravel_1_86_6_0.12_0.015,1206,1200,6,mdptoolbox_vigs,5,4,discounted,0.99,0.001,7.705450800000108,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_mpi,1,0,discounted,0.99,0.001,0.22905770000033954,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_mpi,2,1,discounted,0.99,0.001,0.224046699999235,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_mpi,3,2,discounted,0.99,0.001,0.22956170000179554,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_mpi,4,3,discounted,0.99,0.001,0.2277336999995896,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_mpi,5,4,discounted,0.99,0.001,0.2253184000001056,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_pi,1,0,discounted,0.99,0.001,0.1428046999990329,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_pi,2,1,discounted,0.99,0.001,0.146097999999256,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_pi,3,2,discounted,0.99,0.001,0.14665469999999914,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_pi,4,3,discounted,0.99,0.001,0.14527829999860842,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_pi,5,4,discounted,0.99,0.001,0.14084100000036415,policy,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_vi,1,0,discounted,0.99,0.001,0.33834790000037174,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_vi,2,1,discounted,0.99,0.001,0.33894690000124683,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_vi,3,2,discounted,0.99,0.001,0.34351280000009865,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_vi,4,3,discounted,0.99,0.001,0.3412642000002961,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_vi,5,4,discounted,0.99,0.001,0.34425560000090627,span,not_run,,nan,nan,nan,success,
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_vigs,1,0,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_vigs,2,1,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_vigs,3,2,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_vigs,4,3,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s
+e52f85e2-9136-45ac-b534-9e50c5df1c22,580_10_lqregulator,580,580,10,mdptoolbox_vigs,5,4,discounted,0.99,0.001,nan,unknown,not_run,,nan,nan,nan,timeout,Trial exceeded timeout of 10 s

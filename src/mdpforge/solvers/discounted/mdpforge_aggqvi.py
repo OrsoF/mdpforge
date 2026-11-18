@@ -87,7 +87,6 @@ class Solver(GenericSolver):
             self.model.reward_matrix == self.model.reward_matrix[:, [0]]
         )
         self.name = __name__.rsplit(".", 1)[-1]
-        self.policy = None
 
         self.partition = Partition(self.model)
 
@@ -104,20 +103,19 @@ class Solver(GenericSolver):
                 self.partition.n_regions
                 > self.switch_to_vi_ratio * self.model.state_dim
             ):
-                self.value = self.partition.phi.dot(contracted_q_value).max(axis=1)
-                self.value, _ = apply_obo_until_var_small(
+                value = self.partition.phi.dot(contracted_q_value).max(axis=1)
+                value, _ = apply_obo_until_var_small(
                     self.model,
                     self.discount,
                     self.epsilon * (1 - self.discount),
-                    self.value,
+                    value,
                     shift_acceleration=True,
                     max_iterations=self.max_eval_iter,
                 )
                 self.q_value = q_optimal_bellman_operator(
-                    self.model, self.value[:, None], self.discount
+                    self.model, value[:, None], self.discount
                 )
-                self._finish(self.q_value)
-                return SolveResult.from_solver(self, validation_method="residual")
+                return self._finish(self.q_value)
 
             self.partition.compute_agg_trans_reward_q()
 
@@ -157,8 +155,7 @@ class Solver(GenericSolver):
                     self.model, q_value.max(axis=1), self.discount
                 ) <= self.epsilon * (1 - self.discount):
                     self.contracted_q_value = contracted_q_value
-                    self._finish(q_value)
-                    return SolveResult.from_solver(self, validation_method="residual")
+                    return self._finish(q_value)
 
     def _bellman_steps(self, q_value: np.ndarray) -> np.ndarray:
         value = q_value.max(axis=1)
@@ -168,7 +165,8 @@ class Solver(GenericSolver):
             )
         return q_optimal_bellman_operator(self.model, value[:, None], self.discount)
 
-    def _finish(self, q_value: np.ndarray):
+    def _finish(self, q_value: np.ndarray) -> SolveResult:
         self.q_value = q_value
-        self.value = q_value.max(axis=1)
-        self.policy = q_value.argmax(axis=1)
+        value = q_value.max(axis=1)
+        policy = q_value.argmax(axis=1)
+        return SolveResult(value, policy, validation_method="residual")
