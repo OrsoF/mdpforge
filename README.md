@@ -139,6 +139,8 @@ plt.show()
 
 ### Catalogue at a glance
 
+See the [complete model catalogue](docs/models.md) for every recipe's structure, rewards, sources, available presets and total-reward adaptations.
+
 The catalogue spans six task groups. The examples below are discounted recipes; the total-reward catalogue contains separate adaptations. T/S/M/L denote the `tiny`, `small`, `medium` and `large` presets available for each named example.
 
 | Task group | Example families and recipes | Sources | Presets |
