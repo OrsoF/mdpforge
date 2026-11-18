@@ -137,9 +137,9 @@ class Solver:
             new_policy = q_value.argmax(axis=1)
             new_value = q_value.max(axis=1)
 
-            condition_variation = norminf(new_value - value) < self.epsilon_variation * (
-                1 - self.discount
-            )
+            condition_variation = norminf(
+                new_value - value
+            ) < self.epsilon_variation * (1 - self.discount)
 
             value = new_value
 

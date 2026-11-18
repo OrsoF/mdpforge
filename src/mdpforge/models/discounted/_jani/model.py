@@ -182,7 +182,9 @@ class JANIModel(MDP):
         self.display_name = type(self).__module__.rsplit(".", 1)[-1]
         model_name = self.display_name.replace("_", "")
         variant = (
-            self.source_file.rsplit("/", 1)[-1].removesuffix(".gz").removesuffix(".jani")
+            self.source_file.rsplit("/", 1)[-1]
+            .removesuffix(".gz")
+            .removesuffix(".jani")
         )
         parameters = [
             str(int(value)) if isinstance(value, bool) else str(value)

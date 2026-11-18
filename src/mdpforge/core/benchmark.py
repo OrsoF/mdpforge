@@ -632,7 +632,11 @@ class Benchmark:
                             "residual" if self.criterion == "average" else "unknown",
                         )
                         validation_status, validation_error = "not_run", ""
-                        validation_runtime, error_bound, residual = np.nan, np.nan, np.nan
+                        validation_runtime, error_bound, residual = (
+                            np.nan,
+                            np.nan,
+                            np.nan,
+                        )
                         status, error = "error", ""
                         try:
                             args = (

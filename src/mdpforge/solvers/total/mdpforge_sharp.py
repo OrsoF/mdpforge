@@ -149,9 +149,7 @@ class Solver:
             outside=[matrix[:, boundary].tocsr() for matrix in rows],
         )
 
-    def _solve_leaf(
-        self, block: _Block, value: np.ndarray, policy: np.ndarray
-    ) -> None:
+    def _solve_leaf(self, block: _Block, value: np.ndarray, policy: np.ndarray) -> None:
         states = block.states
         boundary = block.boundary
         snapshot = value[boundary].copy()
