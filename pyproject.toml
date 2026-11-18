@@ -4,10 +4,28 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mdpforge"
-version = "0.2.0"
-description = "Finite Markov decision process models, solvers, and benchmarks"
+version = "0.2.1"
+description = "Finite Markov decision processes and reproducible solver benchmarks"
 readme = "README.md"
 requires-python = ">=3.11"
+authors = [{name = "Orso Forghieri"}]
+keywords = [
+    "markov-decision-process",
+    "dynamic-programming",
+    "value-iteration",
+    "policy-iteration",
+    "benchmarking",
+    "reinforcement-learning",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
 license = "MIT AND CC-BY-4.0 AND GPL-2.0-only"
 license-files = [
     "LICENSE",
@@ -29,9 +47,13 @@ solvers = [
     "quantecon>=0.10.1,<0.14",
 ]
 models = ["mazelib"]
+notebooks = ["ipykernel>=6", "jupyterlab>=4", "pandas>=2"]
 
 [project.urls]
 Repository = "https://github.com/OrsoF/mdpforge"
+Documentation = "https://github.com/OrsoF/mdpforge/tree/main/docs"
+Issues = "https://github.com/OrsoF/mdpforge/issues"
+Examples = "https://github.com/OrsoF/mdpforge/tree/main/notebooks"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

@@ -1,0 +1,74 @@
+name: Build and publish Python package
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Build artifacts only, or publish the selected revision
+        type: choice
+        required: true
+        default: build-only
+        options:
+          - build-only
+          - testpypi
+          - pypi
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+      - name: Require a matching version tag for PyPI
+        if: inputs.target == 'pypi'
+        shell: python
+        run: |
+          import os
+          import tomllib
+          from pathlib import Path
+
+          project = tomllib.loads(Path("pyproject.toml").read_text())
+          expected = f"refs/tags/v{project['project']['version']}"
+          if os.environ["GITHUB_REF"] != expected:
+              raise SystemExit(f"Select the release tag {expected} to publish on PyPI")
+      - name: Install packaging tools
+        run: python -m pip install build twine
+      - name: Build source distribution and wheel
+        run: python -m build
+      - name: Check package metadata and README
+        run: python -m twine check --strict dist/*
+      - name: Save distributions
+        uses: actions/upload-artifact@v7
+        with:
+          name: python-distributions
+          path: dist/*
+          if-no-files-found: error
+
+  publish:
+    if: inputs.target != 'build-only'
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: ${{ inputs.target }}
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: python-distributions
+          path: dist
+      - name: Publish to TestPyPI
+        if: inputs.target == 'testpypi'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+      - name: Publish to PyPI
+        if: inputs.target == 'pypi'
+        uses: pypa/gh-action-pypi-publish@release/v1
