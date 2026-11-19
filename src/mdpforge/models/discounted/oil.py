@@ -28,13 +28,6 @@ METADATA = {
         },
     },
     "category": "asset_management",
-    "description": (
-        "Survey-location decisions with distance-dependent exploration rewards."
-    ),
-    "reference": (
-        "Mason, W. A. and Watts, D. J. (2012). Collaborative learning in networks. "
-        "PNAS 109(3): 764–769."
-    ),
 }
 
 

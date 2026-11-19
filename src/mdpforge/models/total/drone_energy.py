@@ -27,12 +27,6 @@ from mdpforge.models.discounted.drone_energy import Model as DiscountedDroneEner
 
 METADATA = {
     "category": "navigation",
-    "description": "Reach an absorbing drone destination with battery and uncertain wind.",
-    "reference": (
-        "ElSayed-Aly, Parker & Feng, Distributional Probabilistic Model Checking "
-        "(NFM 2024), Energy drone example: "
-        "https://www.prismmodelchecker.org/files/nfm24dpmc/"
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 2000, "parameters": {"battery_capacity": 5}},
         "small": {"requested_state_dim": 20000, "parameters": {"battery_capacity": 5}},

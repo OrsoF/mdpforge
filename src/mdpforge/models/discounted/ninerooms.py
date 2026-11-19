@@ -32,11 +32,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Navigation through nine connected rooms with uncertain movement.",
-    "reference": (
-        "Inspired by Hengst, B. (2012). Hierarchical approaches. In Reinforcement "
-        "Learning: State-of-the-Art, pp. 293-323."
-    ),
 }
 
 

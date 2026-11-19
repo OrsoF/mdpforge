@@ -13,10 +13,6 @@ METADATA = {
     "display_name": "VI · MDPToolbox",
     "family": "vi",
     "backend": "mdptoolbox",
-    "description": (
-        "MDPToolbox synchronous value iteration through its public API, "
-        "with native initialization."
-    ),
 }
 
 

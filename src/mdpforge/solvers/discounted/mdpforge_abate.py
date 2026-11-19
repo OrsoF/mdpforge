@@ -37,10 +37,6 @@ METADATA = {
     "display_name": "Abate · mdpforge",
     "family": "experimental",
     "backend": "mdpforge",
-    "description": (
-        "Approximate policy iteration with adaptive state aggregation, "
-        "region-wise evaluation error bounds and full-state policy iteration fallback."
-    ),
 }
 
 

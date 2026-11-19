@@ -15,10 +15,6 @@ METADATA = {
     "display_name": "iPI · madupite",
     "family": "pi",
     "backend": "madupite",
-    "description": (
-        "madupite distributed inexact policy iteration, running on one MPI rank "
-        "with PETSc file conversion."
-    ),
 }
 
 

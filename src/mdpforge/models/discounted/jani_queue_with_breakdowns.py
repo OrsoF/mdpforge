@@ -16,8 +16,6 @@ from mdpforge.models.discounted._jani.uniformization import (
 
 METADATA = {
     "category": "service_operations",
-    "description": "Uniformized finite buffer with source/server breakdowns and a first-overflow reward.",
-    "reference": "Kroese and Nicola (1999), Efficient estimation of overflow probabilities in queues with breakdowns; pinned JANI source.",
     "model_type": "mdp",
     "source_model_type": "sta",
     "source_collection": "jani-models",

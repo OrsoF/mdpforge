@@ -12,7 +12,6 @@ METADATA = {
     "display_name": "Total PI · mdpforge",
     "family": "pi",
     "backend": "mdpforge",
-    "description": "Total-reward policy iteration with sparse policy evaluation.",
 }
 
 

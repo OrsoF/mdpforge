@@ -18,10 +18,6 @@ METADATA = {
     "display_name": "Chen aggregated VI · mdpforge",
     "family": "experimental",
     "backend": "mdpforge",
-    "description": (
-        "Value iteration alternating synchronous ground-state Bellman sweeps "
-        "and stochastic approximation on sampled aggregate states."
-    ),
 }
 
 

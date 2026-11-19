@@ -15,7 +15,6 @@ METADATA = {
     "display_name": "VI · Marmote",
     "family": "vi",
     "backend": "marmote",
-    "description": "Marmote C++ value iteration with standard Bellman sweeps.",
 }
 
 

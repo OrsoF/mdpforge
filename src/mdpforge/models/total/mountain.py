@@ -39,11 +39,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Reach an absorbing MountainCar goal with reward on entry.",
-    "reference": (
-        "Moore, A. W. (1990). Efficient Memory-based Learning for Robot Control. "
-        "PhD thesis, University of Cambridge."
-    ),
 }
 
 

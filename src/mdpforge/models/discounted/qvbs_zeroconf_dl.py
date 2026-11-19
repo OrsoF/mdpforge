@@ -12,8 +12,6 @@ from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
     "category": "distributed_systems",
-    "description": "IPv4 Zeroconf Protocol (with timer)",
-    "reference": "https://www.rfc-editor.org/info/rfc3927",
     "model_type": "mdp",
     "source_collection": "qvbs",
     "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/zeroconf_dl",

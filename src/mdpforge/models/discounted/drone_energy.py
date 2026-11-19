@@ -12,12 +12,6 @@ from mdpforge.utils.transitions import TransitionBuilder
 
 METADATA = {
     "category": "navigation",
-    "description": "Battery-constrained drone route with uncertain wind and charging pads.",
-    "reference": (
-        "ElSayed-Aly, Parker & Feng, Distributional Probabilistic Model Checking "
-        "(NFM 2024), Energy drone example: "
-        "https://www.prismmodelchecker.org/files/nfm24dpmc/"
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 2000, "parameters": {"battery_capacity": 5}},
         "small": {"requested_state_dim": 20000, "parameters": {"battery_capacity": 5}},

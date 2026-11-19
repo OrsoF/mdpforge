@@ -26,10 +26,6 @@ METADATA = {
         },
     },
     "category": "service_operations",
-    "description": "Ambulance relocation with response and movement costs.",
-    "reference": (
-        "Sinclair, Banerjee & Yu (2019), Adaptive Discretization for Episodic RL."
-    ),
 }
 
 

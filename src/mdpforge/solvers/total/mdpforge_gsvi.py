@@ -10,9 +10,6 @@ METADATA = {
     "display_name": "Total GS VI · mdpforge",
     "family": "vi",
     "backend": "mdpforge",
-    "description": (
-        "Total-reward Gauss-Seidel sweeps with a Bellman-residual threshold."
-    ),
 }
 
 

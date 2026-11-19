@@ -12,7 +12,6 @@ METADATA = {
     "display_name": "Total MPI · Marmote",
     "family": "mpi",
     "backend": "marmote",
-    "description": "Total-reward PolicyIterationModified using Marmote.",
 }
 
 

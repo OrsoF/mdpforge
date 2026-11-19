@@ -27,11 +27,6 @@ from mdpforge.models.discounted.deep_sea_treasure import (
 
 METADATA = {
     "category": "navigation",
-    "description": "Collect an underwater treasure while managing oxygen and currents.",
-    "reference": (
-        "ElSayed-Aly, Parker & Feng, NFM 2024, DS Treasure example: "
-        "https://www.prismmodelchecker.org/files/nfm24dpmc/"
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 2400, "parameters": {}},
         "small": {"requested_state_dim": 24000, "parameters": {}},

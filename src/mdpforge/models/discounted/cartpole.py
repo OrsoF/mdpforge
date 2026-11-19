@@ -36,11 +36,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Discretized CartPole balancing with bounded force actions.",
-    "reference": (
-        "inspired by the classical CartPole model Barto, Sutton and Anderson "
-        "(1983), and by discretized control benchmarks."
-    ),
 }
 
 

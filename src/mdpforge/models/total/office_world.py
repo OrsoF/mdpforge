@@ -26,11 +26,6 @@ from mdpforge.models.discounted.office_world import Model as DiscountedOfficeWor
 
 METADATA = {
     "category": "navigation",
-    "description": "Collect mail and coffee, rewarding access to the absorbing office.",
-    "reference": (
-        "Office World, adapted from Icarte et al. (2018) reward-machine benchmark; "
-        "used as a tabular/factored benchmark in CAT+RL (Dadvar et al., 2023)."
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 800, "parameters": {}},
         "small": {"requested_state_dim": 8000, "parameters": {}},

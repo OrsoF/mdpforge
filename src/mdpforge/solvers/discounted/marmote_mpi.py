@@ -15,10 +15,6 @@ METADATA = {
     "display_name": "MPI · Marmote",
     "family": "mpi",
     "backend": "marmote",
-    "description": (
-        "Marmote C++ modified policy iteration with standard updates and at "
-        "most ten inner policy-evaluation iterations."
-    ),
 }
 
 

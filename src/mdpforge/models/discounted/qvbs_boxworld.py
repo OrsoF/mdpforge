@@ -18,10 +18,6 @@ from mdpforge.models.discounted._qvbs.planning import _count, build_instance
 
 METADATA = {
     "category": "service_operations",
-    "description": (
-        "Boxworld with configurable boxes and vehicles from original PPDDL rules."
-    ),
-    "reference": "https://doi.org/10.1609/aimag.v21i2.1506",
     "model_type": "mdp",
     "source_collection": "qvbs",
     "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/boxworld",

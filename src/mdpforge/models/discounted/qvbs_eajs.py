@@ -13,14 +13,6 @@ from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
     "category": "service_operations",
-    "description": (
-        "QVBS JANI import in Python: Energy-aware job scheduling; "
-        "native on-time task utility."
-    ),
-    "reference": (
-        "https://doi.org/10.1007/978-3-319-06200-6_24; QVBS (Hartmanns "
-        "et al., TACAS 2019), CC-BY 4.0: https://qcomp.org/benchmarks/"
-    ),
     "sizes": {
         "tiny": {
             "requested_state_dim": 1282,

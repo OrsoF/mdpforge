@@ -28,10 +28,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Reach the absorbing exit in a backtracking maze with reward on entry.",
-    "reference": (
-        "Buck, J. (2015). Mazes for Programmers: Code Your Own Twisty Little Passages."
-    ),
 }
 
 

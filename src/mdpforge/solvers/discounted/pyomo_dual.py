@@ -17,10 +17,6 @@ METADATA = {
     "display_name": "LP · Pyomo/HiGHS · dual",
     "family": "lp",
     "backend": "linear",
-    "description": (
-        "Solve the discounted occupancy-measure dual linear program using "
-        "Pyomo and HiGHS, then recover and evaluate a deterministic policy."
-    ),
 }
 
 

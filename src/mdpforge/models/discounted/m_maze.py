@@ -26,8 +26,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "M-shaped maze with aliased local observations.",
-    "reference": "McCallum (1996), U-Tree / UDM aliased maze variants.",
 }
 
 

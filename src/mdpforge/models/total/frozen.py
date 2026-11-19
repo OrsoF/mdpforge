@@ -23,8 +23,6 @@ from mdpforge.models.discounted.frozen import Model as DiscountedFrozen
 
 METADATA = {
     "category": "navigation",
-    "description": "Slippery lake navigation with holes and reward for goal access.",
-    "reference": "Gymnasium FrozenLake-v1 / OpenAI Gym FrozenLake.",
     "sizes": {
         "tiny": {"requested_state_dim": 1400, "parameters": {}},
         "small": {"requested_state_dim": 14000, "parameters": {}},

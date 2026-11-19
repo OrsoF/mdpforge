@@ -14,10 +14,6 @@ METADATA = {
     "display_name": "LP · Pyomo/HiGHS · primal",
     "family": "lp",
     "backend": "linear",
-    "description": (
-        "Solve the discounted value-function primal linear program with "
-        "Bellman inequality constraints using Pyomo and HiGHS."
-    ),
 }
 
 

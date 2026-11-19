@@ -16,8 +16,6 @@ from mdpforge.models.discounted._jani.uniformization import (
 
 METADATA = {
     "category": "service_operations",
-    "description": "Uniformized tandem queues: reach a full second queue before it empties.",
-    "reference": "Garvels (2000), The splitting method in rare event simulation; pinned JANI TandemQueue source.",
     "model_type": "mdp",
     "source_model_type": "sta",
     "source_collection": "jani-models",

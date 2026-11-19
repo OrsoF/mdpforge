@@ -26,11 +26,6 @@ METADATA = {
         },
     },
     "category": "asset_management",
-    "description": "Stock replenishment under random demand.",
-    "reference": (
-        "Winston, W. L. and Goldberg, J. B. (2004). Operations Research: "
-        "Applications and Algorithms, 4th ed."
-    ),
 }
 
 

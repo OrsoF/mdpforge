@@ -27,11 +27,6 @@ METADATA = {
         },
     },
     "category": "asset_management",
-    "description": "Exercise or hold an American put option over a finite horizon.",
-    "reference": (
-        "Family reference: Cox, Ross & Rubinstein (1979). "
-        "Option Pricing: A Simplified Approach."
-    ),
 }
 
 

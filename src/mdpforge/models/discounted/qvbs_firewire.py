@@ -13,14 +13,6 @@ from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
     "category": "distributed_systems",
-    "description": (
-        "QVBS JANI import in Python: IEEE 1394 root contention; native "
-        "election time cost."
-    ),
-    "reference": (
-        "https://doi.org/10.1007/3-540-48778-6_4; QVBS (Hartmanns et "
-        "al., TACAS 2019), CC-BY 4.0: https://qcomp.org/benchmarks/"
-    ),
     "sizes": {
         "tiny": {
             "requested_state_dim": 500,

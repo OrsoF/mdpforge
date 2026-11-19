@@ -36,12 +36,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Reach the absorbing racetrack finish with reward on entry.",
-    "reference": (
-        "Barto, A. G., Bradtke, S. J. and Singh, S. P. (1995). Learning to act "
-        "using real-time dynamic programming. Artificial Intelligence "
-        "72(1-2):81-138."
-    ),
 }
 
 

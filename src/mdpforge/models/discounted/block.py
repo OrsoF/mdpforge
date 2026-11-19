@@ -32,11 +32,6 @@ METADATA = {
         },
     },
     "category": "abstract",
-    "description": "Random transition blocks with weak connections between blocks.",
-    "reference": (
-        "Meuleau et al. (1998). Solving very large weakly coupled Markov decision "
-        "processes. AAAI."
-    ),
 }
 
 

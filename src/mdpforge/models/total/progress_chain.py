@@ -12,11 +12,6 @@ from mdpforge.core.mdp import MDP
 
 METADATA = {
     "category": "abstract",
-    "description": (
-        "Reach an absorbing goal by advancing one or two states at a cost "
-        "of one per move."
-    ),
-    "reference": None,
     "sizes": {
         "tiny": {"requested_state_dim": 500, "parameters": {}},
         "small": {"requested_state_dim": 20, "parameters": {}},

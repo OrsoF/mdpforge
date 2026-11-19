@@ -10,11 +10,6 @@ from mdpforge.utils.transitions import TransitionBuilder
 
 METADATA = {
     "category": "service_operations",
-    "description": "One-crate transport with probabilistic delays and possible cargo damage.",
-    "reference": (
-        "Younes et al., JAIR 24 (2005), IPPC 2004 Boxworld: "
-        "https://www.cs.cmu.edu/afs/cs/project/jair/pub/volume24/younes05a-html/"
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 2000, "parameters": {}},
         "small": {"requested_state_dim": 20000, "parameters": {}},

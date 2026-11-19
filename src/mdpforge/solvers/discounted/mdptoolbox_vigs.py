@@ -13,7 +13,6 @@ METADATA = {
     "display_name": "VI · MDPToolbox · GS",
     "family": "vi",
     "backend": "mdptoolbox",
-    "description": "MDPToolbox value iteration with Gauss-Seidel sweeps.",
 }
 
 

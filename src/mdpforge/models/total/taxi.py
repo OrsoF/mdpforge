@@ -26,11 +26,6 @@ from mdpforge.models.discounted.taxi import Model as DiscountedTaxi
 
 METADATA = {
     "category": "service_operations",
-    "description": "Pick up and deliver a passenger with reward only for final delivery.",
-    "reference": (
-        "Dietterich, T. G. (2000). Hierarchical reinforcement learning with the "
-        "MAXQ value function decomposition. JAIR 13:227-303."
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 600, "parameters": {}},
         "small": {"requested_state_dim": 6000, "parameters": {}},

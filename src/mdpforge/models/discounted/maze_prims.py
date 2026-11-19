@@ -28,11 +28,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Navigation through a maze generated using Prim's algorithm.",
-    "reference": (
-        "Prim, R. C. (1957). Shortest connection networks and some generalizations. "
-        "Bell System Technical Journal 36(6):1389-1401."
-    ),
 }
 
 

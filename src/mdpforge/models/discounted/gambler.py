@@ -23,11 +23,6 @@ METADATA = {
         },
     },
     "category": "games_and_puzzles",
-    "description": "Stake selection to reach a capital target before ruin.",
-    "reference": (
-        "Sutton & Barto, Reinforcement Learning: An Introduction, Example 4.3, "
-        "Gambler's Problem."
-    ),
 }
 
 

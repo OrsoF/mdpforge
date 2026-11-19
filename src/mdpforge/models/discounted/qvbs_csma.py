@@ -13,14 +13,6 @@ from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
     "category": "distributed_systems",
-    "description": (
-        "QVBS JANI import in Python: CSMA/CD protocol; native transmission time cost."
-    ),
-    "reference": (
-        "http://www.cs.bilkent.edu.tr/~tugrul/CS518/Papers/802.3- "
-        "2000.pdf; QVBS (Hartmanns et al., TACAS 2019), CC-BY 4.0: "
-        "https://qcomp.org/benchmarks/"
-    ),
     "sizes": {
         "tiny": {
             "requested_state_dim": 500,

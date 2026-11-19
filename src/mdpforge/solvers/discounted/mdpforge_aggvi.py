@@ -23,10 +23,6 @@ METADATA = {
     "display_name": "Aggregated VI · mdpforge",
     "family": "experimental",
     "backend": "mdpforge",
-    "description": (
-        "Value iteration with progressively refined state aggregation, "
-        "projected Bellman backups and a full-state VI fallback."
-    ),
 }
 
 

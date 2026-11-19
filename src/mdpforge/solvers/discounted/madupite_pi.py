@@ -7,10 +7,6 @@ METADATA = {
     "display_name": "PI · madupite (LU)",
     "family": "pi",
     "backend": "madupite",
-    "description": (
-        "Policy iteration with direct LU-preconditioned policy evaluation on "
-        "one MPI rank."
-    ),
 }
 
 

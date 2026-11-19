@@ -26,11 +26,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Grid navigation with local wall observations that alias states.",
-    "reference": (
-        "McCallum (1996), Reinforcement Learning with Selective Perception and "
-        "Hidden State."
-    ),
 }
 
 

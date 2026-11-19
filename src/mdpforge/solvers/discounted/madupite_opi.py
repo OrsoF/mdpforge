@@ -7,10 +7,6 @@ METADATA = {
     "display_name": "OPI · madupite (Richardson)",
     "family": "mpi",
     "backend": "madupite",
-    "description": (
-        "Optimistic policy iteration with a fixed number of Richardson "
-        "policy-evaluation steps."
-    ),
 }
 
 

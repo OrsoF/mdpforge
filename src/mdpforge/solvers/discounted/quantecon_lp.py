@@ -12,9 +12,6 @@ METADATA = {
     "display_name": "LP · QuantEcon",
     "family": "lp",
     "backend": "linear",
-    "description": (
-        "QuantEcon dense simplex linear programming; transitions are densified locally."
-    ),
 }
 
 

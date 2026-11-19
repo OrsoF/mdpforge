@@ -15,10 +15,6 @@ METADATA = {
     "display_name": "MPI · MDPSolver · SOR",
     "family": "mpi",
     "backend": "mdpsolver",
-    "description": (
-        "MDPSolver modified policy iteration with successive over-relaxation "
-        "updates and backend-default initialization."
-    ),
 }
 
 

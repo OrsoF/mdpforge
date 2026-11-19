@@ -7,9 +7,6 @@ METADATA = {
     "display_name": "iPI · madupite (TFQMR)",
     "family": "pi",
     "backend": "madupite",
-    "description": (
-        "Inexact policy iteration with PETSc transpose-free QMR policy evaluation."
-    ),
 }
 
 

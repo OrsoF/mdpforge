@@ -35,10 +35,6 @@ METADATA = {
     "display_name": "Aggregated MPI · mdpforge",
     "family": "experimental",
     "backend": "mdpforge",
-    "description": (
-        "Modified policy iteration with progressively refined aggregate "
-        "policy evaluation and ground-state Bellman updates."
-    ),
 }
 
 

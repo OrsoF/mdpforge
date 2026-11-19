@@ -20,7 +20,7 @@ After `create_model()`, the data must satisfy:
 
 `S = state_dim`, `A = action_dim`. Values must be finite, transitions nonnegative and row sums within `1e-6` of 1. Average next-state-dependent rewards into expected rewards. Prefer sparse construction and keep backend conversions out of models.
 
-Document state encoding, actions, transitions, reward sign/scale, terminal states, parameter defaults/domains, references and adaptations. Original models use `reference=None` and explain their purpose and assumptions. Total models declare `supported_criteria={"total"}` and `terminal_states` and require finite return; average benchmarks reuse discounted models.
+Document state encoding, actions, transitions, reward sign and scale, terminal states, and parameter defaults and domains. Add the task, adaptations and bibliographic references to the [model catalogue](models.md). Explain the purpose and assumptions of original models. Total models declare `supported_criteria={"total"}` and `terminal_states` and require finite return. Average benchmarks reuse discounted models.
 
 For a goal-based total adaptation, preserve states, actions and non-goal transitions without adding a timeout. Make goals absorbing if needed, documenting the change. Reward is 1 for each nonterminal action with positive probability of entering a goal, otherwise 0, including at goals. Declare goals as `terminal_states` and use a distinct cache name.
 
@@ -28,10 +28,8 @@ For a goal-based total adaptation, preserve states, actions and non-goal transit
 
 Declare literal `METADATA`, readable with `ast.literal_eval` without importing the model:
 
-- `category`: one main task from `abstract`, `navigation`, `physical_control`, `service_operations`, `asset_management`, `games_and_puzzles`.
-- `description`: task and distinctive features.
-- `reference`: bibliographic source or `None`.
-- `sizes`: exactly `small`, `medium`, `large`.
+- `category`: one main task from `abstract`, `navigation`, `distributed_systems`, `service_operations`, `asset_management`, `games_and_puzzles`.
+- `sizes`: presets for `tiny`, `small`, `medium` and `large`.
 
 Available sizes use `{"requested_state_dim": <positive integer>, "parameters": {<other arguments>}}`; parameters may be empty and exclude `state_dim`. Actual dimensions come from the constructor. Unavailable sizes use `{"requested_state_dim": None, "parameters": None, "reason": "<reason>"}`. Keep sizes distinct and preserve model structure; always supply a small test instance.
 

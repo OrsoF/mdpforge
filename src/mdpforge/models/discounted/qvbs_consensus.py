@@ -12,13 +12,6 @@ from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
     "category": "distributed_systems",
-    "description": (
-        "QVBS JANI import in Python: Shared-coin consensus; native step cost."
-    ),
-    "reference": (
-        "https://doi.org/10.1016/0196-6774(90)90021-6; QVBS (Hartmanns "
-        "et al., TACAS 2019), CC-BY 4.0: https://qcomp.org/benchmarks/"
-    ),
     "sizes": {
         "tiny": {
             "requested_state_dim": 500,

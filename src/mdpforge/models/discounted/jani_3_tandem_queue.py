@@ -15,8 +15,6 @@ from mdpforge.models.discounted._jani.uniformization import (
 
 METADATA = {
     "category": "service_operations",
-    "description": "Three uniformized finite queues with Erlang phases and threshold occupancy reward.",
-    "reference": "Villen-Altamirano (2009), RESTART simulation of networks of queues with Erlang service times; pinned JANI source.",
     "model_type": "mdp",
     "source_model_type": "sta",
     "source_collection": "jani-models",

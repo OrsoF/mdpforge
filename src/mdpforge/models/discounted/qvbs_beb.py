@@ -12,8 +12,6 @@ from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
     "category": "distributed_systems",
-    "description": "Bounded Exponential Backoff",
-    "reference": "https://doi.org/10.1007/978-3-642-21461-5_4",
     "model_type": "mdp",
     "source_collection": "qvbs",
     "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/beb",

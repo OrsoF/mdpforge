@@ -39,11 +39,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Grid racetrack navigation with position and velocity states.",
-    "reference": (
-        "Sutton, R. S. and Barto, A. G. (2018). Reinforcement Learning: An "
-        "Introduction, 2nd ed., Exercise 5.12."
-    ),
 }
 
 

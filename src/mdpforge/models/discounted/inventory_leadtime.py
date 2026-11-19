@@ -27,11 +27,6 @@ METADATA = {
         },
     },
     "category": "asset_management",
-    "description": "Inventory replenishment with a one-period delivery delay.",
-    "reference": (
-        "General reference: Puterman (1994). Markov Decision Processes: "
-        "Discrete Stochastic Dynamic Programming."
-    ),
 }
 
 

@@ -15,7 +15,6 @@ METADATA = {
     "display_name": "PI · MDPax",
     "family": "pi",
     "backend": "mdpax",
-    "description": "MDPax JAX iterative policy evaluation and improvement.",
 }
 
 

@@ -22,7 +22,7 @@ This page lists the public solver entries in MDPForge: 50 discounted, 19 total-r
 | QuantEcon | Optional `quantecon` | `DiscreteDP` with sparse state-action rows for VI/PI/MPI; the LP adapter constructs a dense transition tensor and calls the native simplex method. |
 | MDPToolbox | Optional `pymdptoolbox` (import name `mdptoolbox`) | Native Python methods called with the model matrices and the adapter's explicit options. |
 | MDPSolver | Optional `mdpsolver` | CSR entries and rewards become native input lists; standard, GS and SOR profiles use the public `solve()` API. `parallel=False` by default. |
-| Marmote | Separate native installation | CSR transitions become Marmote sparse matrices and rewards a native full matrix; discounted, total and average adapters select different native MDP classes. |
+| Marmote | Separate native C++ installation | CSR transitions become Marmote sparse matrices and rewards a native full matrix; discounted, total and average adapters select different native MDP classes. |
 | MDPax | Optional `mdpax`, using JAX | CSR successors become padded state/action/event arrays, with double precision requested. Conversion is limited by `max_event_entries`; batching uses `max_batch_size`. |
 | madupite | Separate madupite/PETSc installation | Single MPI rank only; transitions and rewards are written to temporary PETSc files and values/policy read back. Named profiles fix the native policy-evaluation method. |
 
@@ -58,9 +58,9 @@ Use `Benchmark()` or `Benchmark(criterion="discounted")`, with `0 < discount < 1
 
 | Solver | Library | Method and differences | Stopping rule | Source or reference |
 | --- | --- | --- | --- | --- |
-| [`mdpforge_pi`](../src/mdpforge/solvers/discounted/mdpforge_pi.py) | MDPForge | Sparse linear-system evaluation; action-zero policy by default, optional initial policy. | Policy stability. | Local implementation |
+| [`mdpforge_pi`](../src/mdpforge/solvers/discounted/mdpforge_pi.py) | MDPForge | Sparse linear-system evaluation and greedy policy improvement. The initial policy picks action zero by default and can be supplied explicitly. | Policy stability. | Local implementation |
 | [`mdptoolbox_pi`](../src/mdpforge/solvers/discounted/mdptoolbox_pi.py) | MDPToolbox | Native default matrix-based policy evaluation and improvement. | Native PI with outer budget; no ε option. | MDPToolbox API |
-| [`mdpsolver_pi`](../src/mdpforge/solvers/discounted/mdpsolver_pi.py) | MDPSolver | Standard updates; values and policy explicitly zero by default, optional replacements. | Native PI; `tolerance=ε`. | MDPSolver API |
+| [`mdpsolver_pi`](../src/mdpforge/solvers/discounted/mdpsolver_pi.py) | MDPSolver | Standard updates with native postprocessing. Values and policy start at zero by default and can be supplied explicitly. | Native PI; `tolerance=ε`. | MDPSolver API |
 | [`mdpax_pi`](../src/mdpforge/solvers/discounted/mdpax_pi.py) | MDPax | JAX iterative policy evaluation and improvement; separate evaluation budget. | Native `max_diff` test with `epsilon=ε(1−γ)`. | MDPax API |
 | [`madupite_ipi`](../src/mdpforge/solvers/discounted/madupite_ipi.py) | madupite | Inexact PI; configurable Krylov solver/preconditioner, GMRES/none by default. | Native outer tolerance ε(1−γ), separate evaluation budget. | madupite/PETSc API |
 | [`madupite_ipi_gmres`](../src/mdpforge/solvers/discounted/madupite_ipi_gmres.py) | madupite | Named GMRES profile of inexact PI. | Native outer tolerance ε(1−γ). | madupite/PETSc profile |
@@ -74,7 +74,7 @@ Use `Benchmark()` or `Benchmark(criterion="discounted")`, with `0 < discount < 1
 | Solver | Library | Method and differences | Stopping rule | Source or reference |
 | --- | --- | --- | --- | --- |
 | [`mdpforge_mpi`](../src/mdpforge/solvers/discounted/mdpforge_mpi.py) | MDPForge | Synchronous truncated evaluation; zero values, random initial policy; ten inner updates by default. | Full residual < ε(1−γ); separate inner tolerance. | Local implementation |
-| [`mdptoolbox_mpi`](../src/mdpforge/solvers/discounted/mdptoolbox_mpi.py) | MDPToolbox | Native truncated evaluation; ten inner updates by default. | Native MPI; `epsilon=ε`. | MDPToolbox API |
+| [`mdptoolbox_mpi`](../src/mdpforge/solvers/discounted/mdptoolbox_mpi.py) | MDPToolbox | Native synchronous, truncated evaluation with ten inner updates by default. | Native MPI; `epsilon=ε`. | MDPToolbox API |
 | [`mdpsolver_mpi`](../src/mdpforge/solvers/discounted/mdpsolver_mpi.py) | MDPSolver | Standard partial evaluation; native initialization unless supplied. | Native; `tolerance=ε`, `parIterLim=10` by default. | MDPSolver API |
 | [`mdpsolver_mpigs`](../src/mdpforge/solvers/discounted/mdpsolver_mpigs.py) | MDPSolver | GS partial evaluation; native initialization unless supplied. | Native; tolerance ε and configurable partial-evaluation limit. | MDPSolver API |
 | [`mdpsolver_mpigs_init`](../src/mdpforge/solvers/discounted/mdpsolver_mpigs_init.py) | MDPSolver | GS profile with explicitly zero-initialized values and policy. | Native; tolerance ε and configurable partial-evaluation limit. | MDPSolver profile |
@@ -97,7 +97,7 @@ Use `Benchmark()` or `Benchmark(criterion="discounted")`, with `0 < discount < 1
 | --- | --- | --- | --- | --- |
 | [`scipy_primal`](../src/mdpforge/solvers/discounted/scipy_primal.py) | SciPy/HiGHS | Value-function Bellman inequalities; returns values without a policy. | HiGHS success status and native tolerances. | SciPy `linprog` API |
 | [`scipy_dual`](../src/mdpforge/solvers/discounted/scipy_dual.py) | SciPy/HiGHS | Discounted occupancy flows; extracts a deterministic policy and evaluates it by a sparse linear solve. | HiGHS success status and native tolerances. | SciPy `linprog` API |
-| [`pyomo_primal`](../src/mdpforge/solvers/discounted/pyomo_primal.py) | Pyomo/HiGHS | Explicit value-function LP; returns values without a policy. | Native optimal termination required. | Pyomo HiGHS API |
+| [`pyomo_primal`](../src/mdpforge/solvers/discounted/pyomo_primal.py) | Pyomo/HiGHS | Explicit value-function LP with Bellman inequalities. Returns values without a policy. | Native optimal termination required. | Pyomo HiGHS API |
 | [`pyomo_dual`](../src/mdpforge/solvers/discounted/pyomo_dual.py) | Pyomo/HiGHS | Explicit occupancy LP; extracts and evaluates a deterministic policy. | Native optimal termination required. | Pyomo HiGHS API |
 | [`quantecon_lp`](../src/mdpforge/solvers/discounted/quantecon_lp.py) | QuantEcon | Dense transition tensor and native simplex LP; returns values and policy. | Native simplex termination and pivot budget. | QuantEcon API |
 
@@ -107,14 +107,14 @@ Use `Benchmark()` or `Benchmark(criterion="discounted")`, with `0 < discount < 1
 | --- | --- | --- | --- | --- |
 | [`mdpforge_vi_reward_init`](../src/mdpforge/solvers/discounted/mdpforge_vi_reward_init.py) | MDPForge | Synchronous VI initialized with maximum immediate rewards divided by 1−γ. | Full residual < ε(1−γ). | Local initialization variant |
 | [`mdpforge_vi_span`](../src/mdpforge/solvers/discounted/mdpforge_vi_span.py) | MDPForge | Synchronous VI with a constant-shift correction; zero values by default. | Residual span < 2ε(1−γ)/γ before correction. | Local span variant |
-| [`mdpforge_mpi_reward_init`](../src/mdpforge/solvers/discounted/mdpforge_mpi_reward_init.py) | MDPForge | MPI initialized with maximum immediate rewards and their greedy policy; different default budgets from `mdpforge_mpi`. | Full residual < ε(1−γ); separate inner tolerance. | Local initialization variant |
+| [`mdpforge_mpi_reward_init`](../src/mdpforge/solvers/discounted/mdpforge_mpi_reward_init.py) | MDPForge | MPI with synchronous, truncated evaluation. Initializes from maximum immediate rewards and their greedy policy, with different default budgets from `mdpforge_mpi`. | Full residual < ε(1−γ); separate inner tolerance. | Local initialization variant |
 | [`mdpforge_aggvi`](../src/mdpforge/solvers/discounted/mdpforge_aggvi.py) | MDPForge | Progressively refined aggregation, projected backups, full-state updates and VI fallback. | Projected/refinement checks plus full residual ≤ ε(1−γ); fallback VI tolerance. | Local aggregation implementation |
-| [`mdpforge_aggqvi`](../src/mdpforge/solvers/discounted/mdpforge_aggqvi.py) | MDPForge | Progressive Q-value aggregation with full-state Bellman batches and VI fallback. | Projected/refinement checks plus full value residual ≤ ε(1−γ); fallback VI tolerance. | Local aggregation implementation |
-| [`mdpforge_aggmpi`](../src/mdpforge/solvers/discounted/mdpforge_aggmpi.py) | MDPForge | Aggregate policy evaluation with progressive refinement and full-state evaluation fallback. | Full residual < ε(1−γ) at policy improvement. | Local aggregation implementation |
+| [`mdpforge_aggqvi`](../src/mdpforge/solvers/discounted/mdpforge_aggqvi.py) | MDPForge | Progressive Q-value aggregation with synchronous full-state Bellman batches and VI fallback. | Projected/refinement checks plus full value residual ≤ ε(1−γ); fallback VI tolerance. | Local aggregation implementation |
+| [`mdpforge_aggmpi`](../src/mdpforge/solvers/discounted/mdpforge_aggmpi.py) | MDPForge | Aggregate policy evaluation with progressive refinement, full-state Bellman updates and a full-state evaluation fallback. | Full residual < ε(1−γ) at policy improvement. | Local aggregation implementation |
 | [`mdpforge_envvi`](../src/mdpforge/solvers/discounted/mdpforge_envvi.py) | MDPForge | Progressive lower/upper Bellman envelopes using compressed transitions. | Default residual polishing; optional `envelope` stop at half-width ≤ ε. | Local envelope implementation |
-| [`mdpforge_bertsekas`](../src/mdpforge/solvers/discounted/mdpforge_bertsekas.py) | MDPForge | PI with adaptive aggregate linear-system corrections and final full-state policy evaluation. | Policy stability; inner span and final evaluation tolerances. | Bertsekas and Castanon, *Adaptive Aggregation Methods for Infinite Horizon Dynamic Programming*, module adaptation |
-| [`mdpforge_abate`](../src/mdpforge/solvers/discounted/mdpforge_abate.py) | MDPForge | Adaptive aggregate policy evaluation, deterministic median refinement and full-state PI fallback; reward shift undone on return. | Policy stability or fallback iteration budget; aggregate evaluation error bounds. | Abate, Ceska and Kwiatkowska (2016), module adaptation |
-| [`mdpforge_chen`](../src/mdpforge/solvers/discounted/mdpforge_chen.py) | MDPForge | Alternates full-state Bellman sweeps and sampled aggregate stochastic-approximation updates. | Full-state Bellman variation < ε(1−γ). | Chen-named local variant; no paper cited in module |
+| [`mdpforge_bertsekas`](../src/mdpforge/solvers/discounted/mdpforge_bertsekas.py) | MDPForge | PI with synchronous policy evaluation, adaptive aggregate linear-system corrections and final full-state policy evaluation. | Policy stability; inner span and final evaluation tolerances. | Bertsekas and Castanon, *Adaptive Aggregation Methods for Infinite Horizon Dynamic Programming*, module adaptation |
+| [`mdpforge_abate`](../src/mdpforge/solvers/discounted/mdpforge_abate.py) | MDPForge | Adaptive aggregate policy evaluation, deterministic median refinement and full-state PI fallback; reward shift undone on return. | Policy stability or fallback iteration budget; error bounds for each region's policy evaluation. | Abate, Ceska and Kwiatkowska (2016), module adaptation |
+| [`mdpforge_chen`](../src/mdpforge/solvers/discounted/mdpforge_chen.py) | MDPForge | Alternates synchronous full-state Bellman sweeps with stochastic-approximation updates that sample one state per region. | Full-state Bellman variation < ε(1−γ). | Chen-named local variant; no paper cited in module |
 
 ## Total-reward solvers
 
@@ -174,7 +174,7 @@ The [shared result adapter](../src/mdpforge/solvers/average/_common.py) subtract
 | --- | --- | --- | --- | --- |
 | [`marmote_rvi`](../src/mdpforge/solvers/average/marmote_rvi.py) | Marmote | `AverageMDP.RelativeValueIteration` for unichain problems; returns potential, policy and gain. | Native RVI tolerance ε and outer budget. | Marmote API; family `vi` |
 | [`mdptoolbox_rvi`](../src/mdpforge/solvers/average/mdptoolbox_rvi.py) | MDPToolbox | Native RVI; returns potential, policy and average reward estimate. | Native span tolerance ε and outer budget. | MDPToolbox API; family `vi` |
-| [`mdpax_rvi`](../src/mdpforge/solvers/average/mdpax_rvi.py) | MDPax | JAX RVI over padded successors; returns potential, policy and reference-state gain. | Native span tolerance ε and outer budget. | MDPax API; family `vi` |
+| [`mdpax_rvi`](../src/mdpforge/solvers/average/mdpax_rvi.py) | MDPax | JAX RVI over padded CSR successors. Returns potential, policy and reference-state gain. | Native span tolerance ε and outer budget. | MDPax API; family `vi` |
 | [`mdpsolver_vi`](../src/mdpforge/solvers/average/mdpsolver_vi.py) | MDPSolver | Standard average-reward VI for constant-gain problems; returns potential and policy. | Native span tolerance ε. | MDPSolver API; family `vi` |
 | [`mdpsolver_pi`](../src/mdpforge/solvers/average/mdpsolver_pi.py) | MDPSolver | Standard average-reward policy evaluation and improvement for constant-gain problems. | Native PI; tolerance ε. | MDPSolver API; family `pi` |
 | [`marmote_mpi`](../src/mdpforge/solvers/average/marmote_mpi.py) | Marmote | Native unichain MPI; returns potential, policy and gain; ten inner updates by default. | Native outer/inner tolerances and iteration budgets. | Marmote API; family `mpi` |
@@ -210,7 +210,7 @@ total = list_total_solvers()
 average = list_average_solvers()
 
 for entry in local_vi:
-    print(entry["name"], entry["family"], entry["backend"], entry["description"])
+    print(entry["name"], entry["display_name"], entry["family"], entry["backend"])
 ```
 
 Listing reads literal metadata without importing optional backend modules or executing solvers. Filters combine different fields with AND and multiple values in one field with OR; unknown values and empty intersections raise `ValueError`. The top-level `list_solvers()` lists discounted entries only; total and average catalogues are separate. There is no installed-availability filter on `list_solvers()`.

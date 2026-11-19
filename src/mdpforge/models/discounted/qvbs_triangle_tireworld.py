@@ -12,8 +12,6 @@ from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
     "category": "navigation",
-    "description": "Triangle Tireworld",
-    "reference": "http://users.cecs.anu.edu.au/~iain/icaps07.pdf",
     "model_type": "mdp",
     "source_collection": "qvbs",
     "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/triangle-tireworld",

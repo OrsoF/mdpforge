@@ -12,9 +12,6 @@ METADATA = {
     "display_name": "MPI · QuantEcon",
     "family": "mpi",
     "backend": "quantecon",
-    "description": (
-        "QuantEcon sparse modified policy iteration with span stopping and value shift."
-    ),
 }
 
 

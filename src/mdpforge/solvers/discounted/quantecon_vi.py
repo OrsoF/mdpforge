@@ -12,9 +12,6 @@ METADATA = {
     "display_name": "VI · QuantEcon",
     "family": "vi",
     "backend": "quantecon",
-    "description": (
-        "QuantEcon sparse value iteration with its native norm-based stopping rule."
-    ),
 }
 
 

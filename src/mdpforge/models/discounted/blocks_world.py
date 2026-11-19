@@ -28,11 +28,6 @@ METADATA = {
         },
     },
     "category": "games_and_puzzles",
-    "description": (
-        "Factored block manipulation with looking, picking and lifting actions. "
-        "Larger instances require sequentially solving additional block puzzles."
-    ),
-    "reference": "McCallum (1996), Whitehead's Blocks World revisited.",
 }
 
 

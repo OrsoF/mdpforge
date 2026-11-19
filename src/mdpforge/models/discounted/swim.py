@@ -25,11 +25,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "River swimming with current-dependent movement rewards.",
-    "reference": (
-        "Strehl, A. L. and Littman, M. L. (2008). An analysis of model-based "
-        "interval estimation for Markov decision processes. JCSS 74(8):1309-1331."
-    ),
 }
 
 

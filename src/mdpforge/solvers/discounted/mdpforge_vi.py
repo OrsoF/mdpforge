@@ -10,10 +10,6 @@ METADATA = {
     "display_name": "VI · mdpforge",
     "family": "vi",
     "backend": "mdpforge",
-    "description": (
-        "Synchronous value iteration with a full Bellman-residual stopping "
-        "threshold for absolute value precision."
-    ),
 }
 
 

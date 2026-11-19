@@ -9,7 +9,6 @@ METADATA = {
     "display_name": "Average VI · MDPSolver",
     "family": "vi",
     "backend": "mdpsolver",
-    "description": "MDPSolver average-reward value iteration with standard updates.",
 }
 
 

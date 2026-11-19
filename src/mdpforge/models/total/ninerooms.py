@@ -32,11 +32,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Reach the absorbing exit through nine rooms with reward on entry.",
-    "reference": (
-        "Inspired by Hengst, B. (2012). Hierarchical approaches. In Reinforcement "
-        "Learning: State-of-the-Art, pp. 293-323."
-    ),
 }
 
 TEST_PARAMETERS = {"state_dim": 81}

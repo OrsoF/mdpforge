@@ -17,11 +17,6 @@ from mdpforge.models.discounted.cliff import Model as DiscountedCliff
 
 METADATA = {
     "category": "navigation",
-    "description": "Reach a cliff-side exit, retaining resets after unsafe moves.",
-    "reference": (
-        "Sutton, R. S. and Barto, A. G. (2018). Reinforcement Learning: An "
-        "Introduction, 2nd ed., Example 6.6."
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 1440, "parameters": {}},
         "small": {"requested_state_dim": 14400, "parameters": {}},

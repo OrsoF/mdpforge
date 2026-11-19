@@ -37,14 +37,6 @@ METADATA = {
         "large": {"requested_state_dim": 131200, "parameters": {}},
     },
     "category": "asset_management",
-    "description": (
-        "Restore all machines in a ring network to an absorbing all-up goal, "
-        "rewarding actions that can reach it."
-    ),
-    "reference": (
-        "Family reference: Guestrin, Koller, Parr & Venkataraman (2003). "
-        "Efficient Solution Algorithms for Factored MDPs."
-    ),
 }
 
 TEST_PARAMETERS = {"state_dim": 8}

@@ -12,7 +12,6 @@ METADATA = {
     "display_name": "Total LP · Pyomo/HiGHS · primal",
     "family": "lp",
     "backend": "linear",
-    "description": "Total-reward Bellman-inequality linear program using Pyomo/HiGHS.",
 }
 
 

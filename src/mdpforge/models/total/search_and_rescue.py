@@ -29,11 +29,6 @@ from mdpforge.models.discounted.search_and_rescue import (
 
 METADATA = {
     "category": "navigation",
-    "description": "Rescue survivors before the existing urgency budget expires.",
-    "reference": (
-        "IPPC 2008 Search-and-Rescue (Teichteil-Konigsbuch): "
-        "https://ipc08.icaps-conference.org/probabilistic/wiki/images/0/03/Results.pdf"
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 9120, "parameters": {}},
         "small": {"requested_state_dim": 91200, "parameters": {}},

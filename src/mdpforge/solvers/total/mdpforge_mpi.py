@@ -10,7 +10,6 @@ METADATA = {
     "display_name": "Total MPI · mdpforge",
     "family": "mpi",
     "backend": "mdpforge",
-    "description": "Total-reward modified policy iteration with truncated evaluation.",
 }
 
 

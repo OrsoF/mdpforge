@@ -14,10 +14,6 @@ METADATA = {
     "display_name": "MPI · MDPSolver · GS · V₀=0",
     "family": "mpi",
     "backend": "mdpsolver",
-    "description": (
-        "MDPSolver modified policy iteration with Gauss-Seidel updates and "
-        "explicitly zero-initialized values and policy."
-    ),
 }
 
 

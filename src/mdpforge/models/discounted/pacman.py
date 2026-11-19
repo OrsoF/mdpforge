@@ -5,10 +5,6 @@ from mdpforge.utils.transitions import TransitionBuilder
 
 METADATA = {
     "category": "games_and_puzzles",
-    "description": (
-        "Reduced Pac-Man: two pellets, moving ghost, capture and terminal collection."
-    ),
-    "reference": "QVBS Pacman benchmark: https://qcomp.org/benchmarks/",
     "sizes": {
         "tiny": {"requested_state_dim": 2640, "parameters": {}},
         "small": {"requested_state_dim": 26400, "parameters": {}},

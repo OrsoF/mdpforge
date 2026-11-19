@@ -15,10 +15,6 @@ METADATA = {
     "display_name": "PI · MDPSolver",
     "family": "pi",
     "backend": "mdpsolver",
-    "description": (
-        "MDPSolver policy iteration with standard value updates, explicit "
-        "zero initialization and backend postprocessing."
-    ),
 }
 
 

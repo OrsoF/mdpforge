@@ -23,8 +23,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "FrozenLake grid navigation with holes and a goal.",
-    "reference": "Gymnasium FrozenLake-v1 / OpenAI Gym FrozenLake.",
 }
 
 

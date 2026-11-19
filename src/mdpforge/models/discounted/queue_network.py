@@ -27,11 +27,6 @@ METADATA = {
         },
     },
     "category": "service_operations",
-    "description": "Service allocation in a finite queueing network.",
-    "reference": (
-        "General reference: Puterman (1994). Markov Decision Processes: "
-        "Discrete Stochastic Dynamic Programming."
-    ),
 }
 
 

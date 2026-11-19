@@ -164,6 +164,22 @@ for recipe in recipes:
     print(recipe["name"], recipe["category"], recipe["sizes"]["small"])
 ```
 
+### Topology and planning models
+
+Nine discounted recipes explore graph structure and control: `erdos_renyi`, `barabasi_albert`, `watts_strogatz`, `kronecker`, `layered`, `extreme_linear`, `extreme_dense`, `wetfloor` and `single_armed_pendulum`. Each declares T/S/M/L presets. The graph and grid tasks use -1 per non-goal action and 0 at absorbing goals; the pendulum uses negative quadratic stabilization rewards.
+
+```python
+from mdpforge import Benchmark
+
+bench = Benchmark()
+bench.add_mdp("layered", size="tiny")
+bench.add_mdp("watts_strogatz", size="tiny")
+bench.add_solver("mdpforge_vi")
+results = bench.run(discount=0.9, precision=1e-3, repeats=1, validate=True)
+```
+
+These are adaptations inspired by topology and planning benchmarks. Kronecker uses sparse samples from a row-normalized kernel, WetFloor is a simplified slippery grid, and the pendulum uses an independent discretization. See [model details, variants and sources](docs/models.md#topology-and-planning-adaptations). Their current copies in the total-reward catalogue still declare discounted support and are rejected by `Benchmark(criterion="total")`.
+
 ### Bring your own model
 
 Provide one transition matrix per action and expected rewards of shape `(states, actions)`; dense and sparse inputs are accepted:

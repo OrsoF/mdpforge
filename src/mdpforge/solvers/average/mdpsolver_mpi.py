@@ -13,9 +13,6 @@ METADATA = {
     "display_name": "Average MPI · MDPSolver",
     "family": "mpi",
     "backend": "mdpsolver",
-    "description": (
-        "MDPSolver average-reward modified policy iteration with standard updates."
-    ),
 }
 
 

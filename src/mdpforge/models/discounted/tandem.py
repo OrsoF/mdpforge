@@ -48,12 +48,6 @@ METADATA = {
         },
     },
     "category": "service_operations",
-    "description": "Service-capacity adjustments for two queues in tandem.",
-    "reference": (
-        "Ohno & Ichiki (1987). Computing Optimal Policies for Controlled "
-        "Tandem Queueing Systems. Operations Research 35(1), 121-126. "
-        "https://doi.org/10.1287/opre.35.1.121"
-    ),
 }
 
 

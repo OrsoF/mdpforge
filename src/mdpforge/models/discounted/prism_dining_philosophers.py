@@ -14,15 +14,6 @@ from mdpforge.models.discounted._prism.reader import build_prism, configure_pris
 
 METADATA = {
     "category": "distributed_systems",
-    "description": (
-        "PRISM Lehmann-Rabin philosophers: discounted steps until a designated "
-        "philosopher first reaches the native eating phases."
-    ),
-    "reference": (
-        "Lehmann and Rabin (1981), On the Advantages of Free Choice; "
-        "https://www.prismmodelchecker.org/casestudies/phil.php; "
-        "source examples: prismmodelchecker/prism, GPL-2.0."
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 500, "parameters": {}},
         "small": {"requested_state_dim": 956, "parameters": {"philosophers": 3}},

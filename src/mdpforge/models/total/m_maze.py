@@ -26,8 +26,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Reach the absorbing goal in an M-shaped maze with reward on entry.",
-    "reference": "McCallum (1996), U-Tree / UDM aliased maze variants.",
 }
 
 

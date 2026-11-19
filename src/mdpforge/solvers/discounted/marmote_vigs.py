@@ -15,7 +15,6 @@ METADATA = {
     "display_name": "VI · Marmote · GS",
     "family": "vi",
     "backend": "marmote",
-    "description": "Marmote C++ value iteration with Gauss-Seidel Bellman sweeps.",
 }
 
 

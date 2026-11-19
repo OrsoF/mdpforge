@@ -11,7 +11,6 @@ METADATA = {
     "display_name": "Total VI · Marmote",
     "family": "vi",
     "backend": "marmote",
-    "description": "Marmote total-reward value iteration.",
 }
 
 

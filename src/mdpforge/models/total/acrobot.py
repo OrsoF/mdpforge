@@ -20,12 +20,6 @@ from mdpforge.models.discounted.acrobot import Model as DiscountedAcrobot
 
 METADATA = {
     "category": "navigation",
-    "description": "Swing a discretized Acrobot to an absorbing height target.",
-    "reference": (
-        "Sutton, R. S. (1996). Generalization in Reinforcement Learning: Successful "
-        "Examples Using Sparse Coarse Coding. Advances in Neural Information "
-        "Processing Systems 8."
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 1000, "parameters": {}},
         "small": {"requested_state_dim": 10000, "parameters": {}},

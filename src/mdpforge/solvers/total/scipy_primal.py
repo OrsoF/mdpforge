@@ -10,7 +10,6 @@ METADATA = {
     "display_name": "Total LP · SciPy · primal",
     "family": "lp",
     "backend": "linear",
-    "description": "Solve total-reward Bellman inequalities with SciPy/HiGHS.",
 }
 
 

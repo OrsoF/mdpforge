@@ -7,10 +7,6 @@ METADATA = {
     "display_name": "VI · madupite (Richardson)",
     "family": "vi",
     "backend": "madupite",
-    "description": (
-        "Value iteration using one unpreconditioned Richardson step per "
-        "policy-evaluation sweep."
-    ),
 }
 
 

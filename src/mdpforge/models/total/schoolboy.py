@@ -19,8 +19,6 @@ from mdpforge.models.discounted.schoolboy import Model as DiscountedSchoolboy
 
 METADATA = {
     "category": "navigation",
-    "description": "Reach school using uncertain transport, rewarding access to school.",
-    "reference": "Hyon, E. (2020). Apprehender le hasard. Tangente Magazine.",
     "sizes": {
         "tiny": {"requested_state_dim": 8640, "parameters": {}},
         "small": {"requested_state_dim": 86400, "parameters": {}},

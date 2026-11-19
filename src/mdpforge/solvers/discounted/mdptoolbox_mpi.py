@@ -13,10 +13,6 @@ METADATA = {
     "display_name": "MPI · MDPToolbox",
     "family": "mpi",
     "backend": "mdptoolbox",
-    "description": (
-        "MDPToolbox modified policy iteration with synchronous, truncated "
-        "policy evaluation."
-    ),
 }
 
 

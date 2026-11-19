@@ -27,11 +27,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Grid navigation through four connected rooms.",
-    "reference": (
-        "Hengst, B. (2012). Hierarchical approaches. In Reinforcement Learning: "
-        "State-of-the-Art, pp. 293-323."
-    ),
 }
 
 

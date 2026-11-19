@@ -25,11 +25,6 @@ METADATA = {
         },
     },
     "category": "asset_management",
-    "description": "Machine deterioration with maintenance decisions.",
-    "reference": (
-        "General reference: Puterman (1994). Markov Decision Processes: "
-        "Discrete Stochastic Dynamic Programming."
-    ),
 }
 
 

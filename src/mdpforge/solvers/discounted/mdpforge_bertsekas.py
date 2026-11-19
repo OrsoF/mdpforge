@@ -23,10 +23,6 @@ METADATA = {
     "display_name": "Bertsekas adaptive PI · mdpforge",
     "family": "experimental",
     "backend": "mdpforge",
-    "description": (
-        "Policy iteration combining synchronous policy evaluation with "
-        "adaptive aggregate linear-system corrections."
-    ),
 }
 
 

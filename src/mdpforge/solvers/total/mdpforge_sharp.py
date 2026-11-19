@@ -20,10 +20,6 @@ METADATA = {
     "display_name": "Total SHARP · mdpforge",
     "family": "experimental",
     "backend": "mdpforge",
-    "description": (
-        "Total-reward hierarchical adaptive refinement with concrete-state local VI, "
-        "frozen boundary values and boundary-change-triggered re-solving."
-    ),
     "update_scheme": "asynchronous",
 }
 

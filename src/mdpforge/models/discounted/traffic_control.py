@@ -11,11 +11,6 @@ from mdpforge.utils.transitions import TransitionBuilder
 
 METADATA = {
     "category": "service_operations",
-    "description": "Two queues with independent arrivals and costly traffic-light switches.",
-    "reference": (
-        "IPPC 2011 Traffic Control RDDL benchmark (inspiration): "
-        "https://users.cecs.anu.edu.au/~ssanner/IPPC_2011/"
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 1560, "parameters": {}},
         "small": {"requested_state_dim": 15600, "parameters": {}},

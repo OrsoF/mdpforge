@@ -10,7 +10,6 @@ METADATA = {
     "display_name": "Total QVI · mdpforge",
     "family": "qvi",
     "backend": "mdpforge",
-    "description": "Total-reward Q-value iteration with a Bellman-residual threshold.",
 }
 
 

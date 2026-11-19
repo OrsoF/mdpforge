@@ -19,11 +19,6 @@ from mdpforge.models.discounted.windgrid import Model as DiscountedWindgrid
 
 METADATA = {
     "category": "navigation",
-    "description": "Reach an absorbing grid goal under column-dependent wind.",
-    "reference": (
-        "Sutton & Barto, Reinforcement Learning: An Introduction, Example 6.5, "
-        "Windy Gridworld."
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 1200, "parameters": {}},
         "small": {"requested_state_dim": 12000, "parameters": {}},

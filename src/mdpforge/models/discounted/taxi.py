@@ -29,11 +29,6 @@ METADATA = {
         },
     },
     "category": "service_operations",
-    "description": "Taxi navigation with passenger pickup and drop-off decisions.",
-    "reference": (
-        "Dietterich, T. G. (2000). Hierarchical reinforcement learning with the "
-        "MAXQ value function decomposition. JAIR 13:227-303."
-    ),
 }
 
 

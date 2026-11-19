@@ -32,10 +32,6 @@ METADATA = {
     "display_name": "Envelope VI · mdpforge",
     "family": "experimental",
     "backend": "mdpforge",
-    "description": (
-        "Progressive Bellman-envelope iteration with compressed transitions, "
-        "certified lower and upper bounds, and optional residual polishing."
-    ),
 }
 
 

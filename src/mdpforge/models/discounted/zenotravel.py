@@ -11,11 +11,6 @@ from mdpforge.utils.transitions import TransitionBuilder
 
 METADATA = {
     "category": "service_operations",
-    "description": "Single-aircraft passenger delivery with fuel, refuelling and flight failure.",
-    "reference": (
-        "Younes et al., JAIR 24 (2005), IPPC 2004 Zeno Travel: "
-        "https://www.cs.cmu.edu/afs/cs/project/jair/pub/volume24/younes05a-html/"
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 1200, "parameters": {}},
         "small": {"requested_state_dim": 12000, "parameters": {}},

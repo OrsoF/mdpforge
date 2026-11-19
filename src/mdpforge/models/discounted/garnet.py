@@ -24,13 +24,6 @@ METADATA = {
         },
     },
     "category": "abstract",
-    "description": (
-        "Random finite MDP with Gaussian rewards and normalized random transitions."
-    ),
-    "reference": (
-        "Bhatnagar, S. et al. (2009). Natural actor-critic algorithms. Automatica "
-        "45(11):2471-2482."
-    ),
 }
 
 

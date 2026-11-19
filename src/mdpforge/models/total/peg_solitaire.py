@@ -24,11 +24,6 @@ from mdpforge.models.discounted.peg_solitaire import Model as DiscountedPegSolit
 
 METADATA = {
     "category": "games_and_puzzles",
-    "description": "Jump pegs to reach the existing absorbing single-peg goal.",
-    "reference": (
-        "Winston, W. L. and Goldberg, J. B. (2004). Operations Research: "
-        "Applications and Algorithms, 4th ed."
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 500, "parameters": {}},
         "small": {"requested_state_dim": 640, "parameters": {}},

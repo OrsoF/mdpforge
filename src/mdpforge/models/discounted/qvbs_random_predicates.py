@@ -19,10 +19,6 @@ from mdpforge.models.discounted._qvbs.planning import _count, build_instance
 
 METADATA = {
     "category": "abstract",
-    "description": (
-        "Random Predicates with configurable object count and original PPDDL rules."
-    ),
-    "reference": "http://idm-lab.org/wiki/icaps/ipc2006/probabilistic/",
     "model_type": "mdp",
     "source_collection": "qvbs",
     "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/random-predicates",

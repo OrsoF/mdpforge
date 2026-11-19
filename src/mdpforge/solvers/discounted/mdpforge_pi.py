@@ -12,10 +12,6 @@ METADATA = {
     "display_name": "PI · mdpforge",
     "family": "pi",
     "backend": "mdpforge",
-    "description": (
-        "Policy iteration with sparse linear-system policy evaluation and "
-        "greedy policy improvement until policy stability."
-    ),
 }
 
 

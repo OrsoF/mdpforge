@@ -15,7 +15,6 @@ METADATA = {
     "display_name": "VI · MDPax",
     "family": "vi",
     "backend": "mdpax",
-    "description": "MDPax JAX value iteration over padded sparse CSR successors.",
 }
 
 

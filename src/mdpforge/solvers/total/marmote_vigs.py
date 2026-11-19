@@ -12,7 +12,6 @@ METADATA = {
     "display_name": "Total VI · Marmote · GS",
     "family": "vi",
     "backend": "marmote",
-    "description": "Total-reward ValueIterationGS using Marmote.",
 }
 
 

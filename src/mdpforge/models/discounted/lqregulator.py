@@ -25,13 +25,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": (
-        "Discretized scalar dynamics with quadratic state and control costs."
-    ),
-    "reference": (
-        "Family reference: Kalman (1960). Contributions to the Theory "
-        "of Optimal Control."
-    ),
 }
 
 

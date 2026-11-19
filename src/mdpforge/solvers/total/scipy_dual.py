@@ -10,7 +10,6 @@ METADATA = {
     "display_name": "Total LP · SciPy · dual",
     "family": "lp",
     "backend": "linear",
-    "description": "Solve total-reward occupancy flows with SciPy/HiGHS.",
 }
 
 

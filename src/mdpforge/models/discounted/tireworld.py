@@ -5,13 +5,6 @@ from mdpforge.utils.transitions import TransitionBuilder
 
 METADATA = {
     "category": "navigation",
-    "description": (
-        "Reduced Tireworld: two-lane road, punctures, spare depots and dead ends."
-    ),
-    "reference": (
-        "IPPC 2004 Tireworld (Younes et al., JAIR 2005): "
-        "https://ipc04.icaps-conference.org/probabilistic/"
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 1560, "parameters": {}},
         "small": {"requested_state_dim": 15600, "parameters": {}},

@@ -14,15 +14,6 @@ from mdpforge.models.discounted._prism.reader import build_prism, configure_pris
 
 METADATA = {
     "category": "distributed_systems",
-    "description": (
-        "PRISM Rabin mutual exclusion: discounted steps until a designated "
-        "process first enters its critical section."
-    ),
-    "reference": (
-        "Rabin (1982), randomized mutual exclusion; PRISM case study: "
-        "https://www.prismmodelchecker.org/casestudies/rabin.php; "
-        "source examples: prismmodelchecker/prism, GPL-2.0."
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 2776, "parameters": {}},
         "small": {"requested_state_dim": 27766, "parameters": {"processes": 3}},

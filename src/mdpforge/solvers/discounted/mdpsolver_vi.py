@@ -15,7 +15,6 @@ METADATA = {
     "display_name": "VI · MDPSolver",
     "family": "vi",
     "backend": "mdpsolver",
-    "description": "MDPSolver value iteration with standard Bellman sweeps.",
 }
 
 

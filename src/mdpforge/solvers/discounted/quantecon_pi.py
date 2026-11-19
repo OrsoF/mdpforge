@@ -12,7 +12,6 @@ METADATA = {
     "display_name": "PI · QuantEcon",
     "family": "pi",
     "backend": "quantecon",
-    "description": "QuantEcon sparse policy iteration with exact policy evaluation.",
 }
 
 

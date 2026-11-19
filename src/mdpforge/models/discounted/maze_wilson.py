@@ -28,11 +28,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Navigation through a maze generated using Wilson's algorithm.",
-    "reference": (
-        "Wilson, D. B. (1996). Generating random spanning trees more quickly than "
-        "the cover time. STOC, pp. 296-303."
-    ),
 }
 
 

@@ -15,9 +15,6 @@ METADATA = {
     "display_name": "Average MPI · Marmote",
     "family": "mpi",
     "backend": "marmote",
-    "description": (
-        "Marmote modified policy iteration for unichain average-reward MDPs."
-    ),
 }
 
 

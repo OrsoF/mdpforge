@@ -18,15 +18,15 @@ The benchmark times construction, conversions and `run()`. Durations belong in b
 
 Declare a literal `METADATA` dictionary readable without backend imports:
 
-- `display_name` and `description`: nonempty label and one-sentence description.
-- `family`: `vi`, `pi`, `mpi`, `lp` or `experimental`.
-- `backend`: nonempty implementation-library name, such as `mdpforge`, `scipy` or `mdpsolver`.
+- `display_name`: nonempty label for graphs.
+- `family`: `vi`, `pi`, `mpi`, `qvi`, `lp` or `experimental`.
+- `backend`: catalogue filter such as `mdpforge` or `mdpsolver`. Use `linear` for linear programming entries.
 
 For discounted VI, set `solver_type = "vi"`. Check `list_solvers()` in the selected catalogue and `Benchmark(criterion=...).add_solver("<name>")`. Declare dependencies in `pyproject.toml`; optional integrations must not block core imports or discovery.
 
 ## 3. Precision and behavior
 
-- Document the reference, adaptations, initialization, stopping rule and option domains. Reproduce random behavior after resetting NumPy/Python seeds, including private RNGs.
+- Add the solver's method, stopping rule and reference to the [solver catalogue](solvers.md). Document adaptations, initialization and option domains. Reproduce random behavior after resetting NumPy/Python seeds, including private RNGs.
 - Use public backend APIs and propagate errors. Preserve reward scales, discount conventions, stopping rules and the VI reference cache.
 - `Benchmark.run(validate=True)` checks results after timing. Execution and validation statuses are separate; `success` alone does not certify accuracy.
 - Discounted residual validation bounds value error by `||T(V) - V||∞ / (1 - discount)`. Total certification covers absorbing acyclic models; average certification is unavailable. Declare the appropriate `validation_method` in `SolveResult`.

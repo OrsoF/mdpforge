@@ -9,10 +9,6 @@ METADATA = {
     "display_name": "VI · mdpforge · reward init",
     "family": "experimental",
     "backend": "mdpforge",
-    "description": (
-        "Synchronous value iteration initialized from maximum immediate "
-        "rewards divided by one minus the discount."
-    ),
 }
 
 

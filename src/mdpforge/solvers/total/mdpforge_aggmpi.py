@@ -16,10 +16,6 @@ METADATA = {
     "display_name": "Total Aggregated MPI · mdpforge",
     "family": "experimental",
     "backend": "mdpforge",
-    "description": (
-        "Total-reward modified policy iteration with progressively refined "
-        "aggregate policy evaluation."
-    ),
 }
 
 

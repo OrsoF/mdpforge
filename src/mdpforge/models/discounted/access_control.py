@@ -32,11 +32,6 @@ METADATA = {
         },
     },
     "category": "service_operations",
-    "description": "Accept or reject priority requests with limited free servers.",
-    "reference": (
-        "Sutton, R. S. and Barto, A. G. (2018). Reinforcement Learning: An "
-        "Introduction, 2nd ed., Example 10.2."
-    ),
 }
 
 

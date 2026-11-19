@@ -12,8 +12,6 @@ from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
     "category": "distributed_systems",
-    "description": "Pnueli-Zuck mutual exclusion",
-    "reference": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/MutualExclusion",
     "model_type": "mdp",
     "source_collection": "jani-models",
     "source_url": "https://github.com/ahartmanns/jani-models/tree/5e2fd8fa31778ad7e06b298b2d3e333ba450b042/MutualExclusion",

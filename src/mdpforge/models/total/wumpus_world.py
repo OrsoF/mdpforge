@@ -25,12 +25,6 @@ from mdpforge.models.discounted.wumpus_world import Model as DiscountedWumpusWor
 
 METADATA = {
     "category": "navigation",
-    "description": "Retrieve gold and exit safely, retaining death and empty-handed exit.",
-    "reference": (
-        "Wumpus World, Russell & Norvig, Artificial Intelligence: A Modern "
-        "Approach; used as a discrete-state benchmark in CAT+RL (Dadvar et al., "
-        "2023)."
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 680, "parameters": {}},
         "small": {"requested_state_dim": 6800, "parameters": {}},

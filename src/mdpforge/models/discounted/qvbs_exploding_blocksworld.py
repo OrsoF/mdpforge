@@ -12,8 +12,6 @@ from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
     "category": "games_and_puzzles",
-    "description": "Exploding Blocksworld",
-    "reference": "https://ldc.usb.ve/~bonet/ipc5/",
     "model_type": "mdp",
     "source_collection": "qvbs",
     "source_url": "https://github.com/ahartmanns/qcomp/tree/a96cf379885c0a160a552a8fe0de417e2b55b161/benchmarks/mdp/exploding-blocksworld",

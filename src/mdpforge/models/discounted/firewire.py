@@ -12,15 +12,6 @@ from mdpforge.models.discounted._prism.reader import build_prism, configure_pris
 
 METADATA = {
     "category": "distributed_systems",
-    "description": (
-        "PRISM FireWire root contention with both wires, node control states "
-        "and digital clocks."
-    ),
-    "reference": (
-        "Kwiatkowska, Norman and Parker, The PRISM Benchmark Suite, QEST "
-        "2012; CC-BY 4.0: "
-        "https://github.com/prismmodelchecker/prism-benchmarks"
-    ),
     "sizes": {
         "tiny": {
             "requested_state_dim": 500,

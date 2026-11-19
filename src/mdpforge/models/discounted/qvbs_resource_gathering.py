@@ -13,14 +13,6 @@ from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
     "category": "navigation",
-    "description": (
-        "QVBS JANI import in Python: Resource gathering with attacks; "
-        "native collected-gold reward."
-    ),
-    "reference": (
-        "https://doi.org/10.1145/1390156.1390162; QVBS (Hartmanns et "
-        "al., TACAS 2019), CC-BY 4.0: https://qcomp.org/benchmarks/"
-    ),
     "sizes": {
         "tiny": {
             "requested_state_dim": 2406,

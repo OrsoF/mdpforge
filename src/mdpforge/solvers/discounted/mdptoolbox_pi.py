@@ -13,10 +13,6 @@ METADATA = {
     "display_name": "PI · MDPToolbox",
     "family": "pi",
     "backend": "mdptoolbox",
-    "description": (
-        "MDPToolbox policy iteration using its default matrix-based policy "
-        "evaluation and greedy policy improvement."
-    ),
 }
 
 

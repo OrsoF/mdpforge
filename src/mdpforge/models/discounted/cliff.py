@@ -24,11 +24,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Grid navigation beside a cliff with penalties for unsafe moves.",
-    "reference": (
-        "Sutton, R. S. and Barto, A. G. (2018). Reinforcement Learning: An "
-        "Introduction, 2nd ed., Example 6.6."
-    ),
 }
 
 

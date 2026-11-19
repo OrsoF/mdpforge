@@ -28,11 +28,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Reach the absorbing exit in a Wilson maze with reward on entry.",
-    "reference": (
-        "Wilson, D. B. (1996). Generating random spanning trees more quickly than "
-        "the cover time. STOC, pp. 296-303."
-    ),
 }
 
 

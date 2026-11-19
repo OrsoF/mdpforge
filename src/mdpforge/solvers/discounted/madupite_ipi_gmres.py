@@ -7,10 +7,6 @@ METADATA = {
     "display_name": "iPI · madupite (GMRES)",
     "family": "pi",
     "backend": "madupite",
-    "description": (
-        "Named GMRES profile of madupite inexact policy iteration for "
-        "reproducible comparisons."
-    ),
 }
 
 

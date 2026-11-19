@@ -31,11 +31,6 @@ METADATA = {
         },
     },
     "category": "abstract",
-    "description": "Controlled random walk between absorbing boundary states.",
-    "reference": (
-        "Sutton, R. S. and Barto, A. G. (2018). Reinforcement Learning: An "
-        "Introduction, 2nd ed. Random-walk prediction examples."
-    ),
 }
 
 

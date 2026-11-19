@@ -22,11 +22,6 @@ from mdpforge.models.discounted.gambler import Model as DiscountedGambler
 
 METADATA = {
     "category": "games_and_puzzles",
-    "description": "Choose stakes to reach a capital target before absorbing ruin.",
-    "reference": (
-        "Sutton & Barto, Reinforcement Learning: An Introduction, Example 4.3, "
-        "Gambler's Problem."
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 1000, "parameters": {}},
         "small": {"requested_state_dim": 10000, "parameters": {}},

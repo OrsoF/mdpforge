@@ -20,8 +20,6 @@ from mdpforge.models.discounted._jani.uniformization import (
 
 METADATA = {
     "category": "service_operations",
-    "description": "Uniformized database reliability, aggregated by symmetry, with a first-system-failure reward.",
-    "reference": "Villen-Altamirano and Villen-Altamirano (2011), The rare event simulation method RESTART; pinned JANI Database dynamics.",
     "model_type": "mdp",
     "source_model_type": "sta",
     "source_collection": "jani-models",

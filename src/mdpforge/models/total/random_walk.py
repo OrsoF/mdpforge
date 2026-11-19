@@ -22,11 +22,6 @@ from mdpforge.models.discounted.random_walk import Model as DiscountedRandomWalk
 
 METADATA = {
     "category": "abstract",
-    "description": "Control a random walk toward a successful absorbing right boundary.",
-    "reference": (
-        "Sutton, R. S. and Barto, A. G. (2018). Reinforcement Learning: An "
-        "Introduction, 2nd ed. Random-walk prediction examples."
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 1560, "parameters": {}},
         "small": {"requested_state_dim": 15600, "parameters": {}},

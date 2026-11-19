@@ -29,13 +29,6 @@ METADATA = {
         },
     },
     "category": "service_operations",
-    "description": (
-        "Elevator movement and pickup decisions with passenger destination masks."
-    ),
-    "reference": (
-        "Tartan, E. O. and Ciflikli, C. (2023). Sequential Decision Making for "
-        "Elevator Control."
-    ),
 }
 
 

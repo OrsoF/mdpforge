@@ -12,7 +12,6 @@ METADATA = {
     "display_name": "Gauss-Seidel VI · mdpforge",
     "family": "vi",
     "backend": "mdpforge",
-    "description": "In-place Bellman sweeps with certified discounted value precision.",
 }
 
 

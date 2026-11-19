@@ -41,13 +41,6 @@ METADATA = {
         },
     },
     "category": "service_operations",
-    "description": (
-        "Batch service of an impatient queue with a truncated transition kernel."
-    ),
-    "reference": (
-        "Hyon & Jean-Marie (2012). Scheduling Services in a Queuing System "
-        "with Impatience and Setup Costs. The Computer Journal 55(5)."
-    ),
 }
 
 

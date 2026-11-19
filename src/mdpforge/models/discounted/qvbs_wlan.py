@@ -13,14 +13,6 @@ from mdpforge.models.discounted._jani.model import JANIModel
 
 METADATA = {
     "category": "distributed_systems",
-    "description": (
-        "QVBS JANI import in Python: IEEE 802.11 wireless LAN; native "
-        "transmission cost."
-    ),
-    "reference": (
-        "https://doi.org/10.1007/3-540-45605-8_11; QVBS (Hartmanns et "
-        "al., TACAS 2019), CC-BY 4.0: https://qcomp.org/benchmarks/"
-    ),
     "sizes": {
         "tiny": {
             "requested_state_dim": 500,

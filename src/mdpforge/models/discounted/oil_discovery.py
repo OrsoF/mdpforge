@@ -30,13 +30,6 @@ METADATA = {
         },
     },
     "category": "asset_management",
-    "description": (
-        "Oil exploration with drilling costs and evolving reservoir position."
-    ),
-    "reference": (
-        "Sinclair, Banerjee & Yu (2019), Adaptive Discretization for Episodic "
-        "Reinforcement Learning."
-    ),
 }
 
 

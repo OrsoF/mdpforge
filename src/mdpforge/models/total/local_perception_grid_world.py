@@ -25,11 +25,6 @@ from mdpforge.models.discounted.local_perception_grid_world import (
 
 METADATA = {
     "category": "navigation",
-    "description": "Reach a maze goal while retaining aliased local-wall observations.",
-    "reference": (
-        "McCallum (1996), Reinforcement Learning with Selective Perception and "
-        "Hidden State."
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 1160, "parameters": {}},
         "small": {"requested_state_dim": 11600, "parameters": {}},

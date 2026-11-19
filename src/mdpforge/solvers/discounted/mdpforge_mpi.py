@@ -10,10 +10,6 @@ METADATA = {
     "display_name": "MPI · mdpforge",
     "family": "mpi",
     "backend": "mdpforge",
-    "description": (
-        "Modified policy iteration with synchronous, truncated policy "
-        "evaluation and a randomly initialized policy."
-    ),
 }
 
 

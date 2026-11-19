@@ -21,11 +21,6 @@ from mdpforge.models.discounted.tireworld import Model as DiscountedTireworld
 
 METADATA = {
     "category": "navigation",
-    "description": "Reach a road destination despite punctures and absorbing stranding.",
-    "reference": (
-        "IPPC 2004 Tireworld (Younes et al., JAIR 2005): "
-        "https://ipc04.icaps-conference.org/probabilistic/"
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 1560, "parameters": {}},
         "small": {"requested_state_dim": 15600, "parameters": {}},

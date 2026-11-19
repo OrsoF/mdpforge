@@ -14,7 +14,6 @@ METADATA = {
     "display_name": "Average RVI · Marmote",
     "family": "vi",
     "backend": "marmote",
-    "description": "Marmote relative value iteration for unichain average-reward MDPs.",
 }
 
 

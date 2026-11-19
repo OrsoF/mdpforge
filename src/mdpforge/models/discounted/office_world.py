@@ -26,11 +26,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Collect mail and coffee before reaching an office destination.",
-    "reference": (
-        "Office World, adapted from Icarte et al. (2018) reward-machine benchmark; "
-        "used as a tabular/factored benchmark in CAT+RL (Dadvar et al., 2023)."
-    ),
 }
 
 

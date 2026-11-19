@@ -22,8 +22,6 @@ from mdpforge.models.discounted.pacman import Model as DiscountedPacman
 
 METADATA = {
     "category": "games_and_puzzles",
-    "description": "Collect both pellets without capture, rewarding possible victory.",
-    "reference": "QVBS Pacman benchmark: https://qcomp.org/benchmarks/",
     "sizes": {
         "tiny": {"requested_state_dim": 2640, "parameters": {}},
         "small": {"requested_state_dim": 26400, "parameters": {}},

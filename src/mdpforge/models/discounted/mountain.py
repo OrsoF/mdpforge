@@ -35,11 +35,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Discretized MountainCar position and velocity control.",
-    "reference": (
-        "Moore, A. W. (1990). Efficient Memory-based Learning for Robot Control. "
-        "PhD thesis, University of Cambridge."
-    ),
 }
 
 

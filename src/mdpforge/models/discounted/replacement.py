@@ -27,11 +27,6 @@ METADATA = {
         },
     },
     "category": "asset_management",
-    "description": "Replacement decisions for equipment with aging-related costs.",
-    "reference": (
-        "Howard, R. A. (1960). Dynamic Programming and Markov Processes, p.54, The "
-        "Replacement Problem."
-    ),
 }
 
 

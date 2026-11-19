@@ -10,10 +10,6 @@ METADATA = {
     "display_name": "VI · mdpforge · Span",
     "family": "experimental",
     "backend": "mdpforge",
-    "description": (
-        "Synchronous value iteration with span-residual stopping and "
-        "constant-shift correction for absolute value precision."
-    ),
 }
 
 

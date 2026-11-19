@@ -10,7 +10,6 @@ _METADATA_FIELDS = (
     "display_name",
     "family",
     "backend",
-    "description",
 )
 
 

@@ -28,11 +28,6 @@ METADATA = {
         },
     },
     "category": "service_operations",
-    "description": "One-dimensional ambulance positioning under random demand.",
-    "reference": (
-        "Mason, W. A. and Watts, D. J. (2012). Collaborative learning in networks. "
-        "PNAS 109(3):764-769."
-    ),
 }
 
 

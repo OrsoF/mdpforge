@@ -25,10 +25,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": (
-        "Choose transport modes with uncertain travel times to reach school."
-    ),
-    "reference": "Hyon, E. (2020). Apprehender le hasard. Tangente Magazine.",
 }
 
 

@@ -13,10 +13,6 @@ METADATA = {
     "display_name": "LP · SciPy · primal",
     "family": "lp",
     "backend": "linear",
-    "description": (
-        "Solve the discounted value-function primal linear program with "
-        "Bellman inequality constraints using SciPy/HiGHS."
-    ),
 }
 
 

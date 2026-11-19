@@ -10,7 +10,6 @@ METADATA = {
     "display_name": "Average LP · SciPy · primal",
     "family": "lp",
     "backend": "linear",
-    "description": "Scalar-gain average-reward Bellman inequalities using SciPy/HiGHS.",
 }
 
 

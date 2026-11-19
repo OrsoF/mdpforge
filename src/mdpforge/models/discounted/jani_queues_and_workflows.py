@@ -18,8 +18,6 @@ from mdpforge.models.discounted._jani.uniformization import (
 
 METADATA = {
     "category": "service_operations",
-    "description": "Two-server finite workflow with immediate dispatch choices, uniformized service phases and completion rewards.",
-    "reference": "Pinned JANI QueuesAndWorkflows/SimpleWorkflow Petri net and source export.",
     "model_type": "mdp",
     "source_model_type": "ma",
     "source_collection": "jani-models",

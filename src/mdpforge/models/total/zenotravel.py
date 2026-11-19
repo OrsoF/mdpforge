@@ -24,11 +24,6 @@ from mdpforge.models.discounted.zenotravel import Model as DiscountedZenotravel
 
 METADATA = {
     "category": "service_operations",
-    "description": "Deliver a passenger using fuel-constrained, unreliable flights.",
-    "reference": (
-        "Younes et al., JAIR 24 (2005), IPPC 2004 Zeno Travel: "
-        "https://www.cs.cmu.edu/afs/cs/project/jair/pub/volume24/younes05a-html/"
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 1200, "parameters": {}},
         "small": {"requested_state_dim": 12000, "parameters": {}},

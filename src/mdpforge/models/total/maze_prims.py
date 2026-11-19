@@ -28,11 +28,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Reach the absorbing exit in a Prim maze with reward on entry.",
-    "reference": (
-        "Prim, R. C. (1957). Shortest connection networks and some generalizations. "
-        "Bell System Technical Journal 36(6):1389-1401."
-    ),
 }
 
 

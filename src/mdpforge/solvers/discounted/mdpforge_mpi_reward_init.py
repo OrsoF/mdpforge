@@ -10,10 +10,6 @@ METADATA = {
     "display_name": "MPI · mdpforge · reward init",
     "family": "experimental",
     "backend": "mdpforge",
-    "description": (
-        "Modified policy iteration with synchronous, truncated evaluation and "
-        "value and policy initialization from immediate rewards."
-    ),
 }
 
 

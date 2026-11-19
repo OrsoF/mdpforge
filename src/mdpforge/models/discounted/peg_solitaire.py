@@ -29,13 +29,6 @@ METADATA = {
         },
     },
     "category": "games_and_puzzles",
-    "description": (
-        "Peg-jumping puzzle with board configurations represented as states."
-    ),
-    "reference": (
-        "Winston, W. L. and Goldberg, J. B. (2004). Operations Research: "
-        "Applications and Algorithms, 4th ed."
-    ),
 }
 
 

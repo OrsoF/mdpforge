@@ -17,10 +17,6 @@ METADATA = {
     "display_name": "Total Aggregated VI · mdpforge",
     "family": "experimental",
     "backend": "mdpforge",
-    "description": (
-        "Total-reward value iteration with progressive state aggregation "
-        "and a full-state VI fallback."
-    ),
 }
 
 

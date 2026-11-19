@@ -11,11 +11,6 @@ from mdpforge.utils.transitions import TransitionBuilder
 
 METADATA = {
     "category": "navigation",
-    "description": "Depth-dependent treasure, limited oxygen, risky currents, and surfacing.",
-    "reference": (
-        "ElSayed-Aly, Parker & Feng, NFM 2024, DS Treasure example: "
-        "https://www.prismmodelchecker.org/files/nfm24dpmc/"
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 2400, "parameters": {}},
         "small": {"requested_state_dim": 24000, "parameters": {}},

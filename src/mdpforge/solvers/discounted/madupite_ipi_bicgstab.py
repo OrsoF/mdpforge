@@ -7,9 +7,6 @@ METADATA = {
     "display_name": "iPI · madupite (BiCGStab)",
     "family": "pi",
     "backend": "madupite",
-    "description": (
-        "Inexact policy iteration with PETSc BiCGStab (bcgs) policy evaluation."
-    ),
 }
 
 

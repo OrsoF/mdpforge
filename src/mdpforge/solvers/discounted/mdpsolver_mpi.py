@@ -15,10 +15,6 @@ METADATA = {
     "display_name": "MPI · MDPSolver",
     "family": "mpi",
     "backend": "mdpsolver",
-    "description": (
-        "MDPSolver modified policy iteration with standard updates and an "
-        "explicit ten-step partial evaluation limit."
-    ),
 }
 
 

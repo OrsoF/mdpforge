@@ -10,10 +10,6 @@ METADATA = {
     "display_name": "QVI · mdpforge",
     "family": "qvi",
     "backend": "mdpforge",
-    "description": (
-        "Synchronous Q-value iteration with a full Q-Bellman-residual stopping "
-        "threshold for absolute value precision."
-    ),
 }
 
 

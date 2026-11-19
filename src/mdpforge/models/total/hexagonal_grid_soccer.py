@@ -24,11 +24,6 @@ from mdpforge.models.discounted.hexagonal_grid_soccer import (
 
 METADATA = {
     "category": "games_and_puzzles",
-    "description": "Score in an absorbing right goal against a deterministic defender.",
-    "reference": (
-        "Continuous U-Tree, Uther & Veloso (1998), enlarged hexagonal-grid soccer; "
-        "inspired by Littman (1994) Markov games. Single-agent tabular reduction."
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 685, "parameters": {}},
         "small": {"requested_state_dim": 6859, "parameters": {}},

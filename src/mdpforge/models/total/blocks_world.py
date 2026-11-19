@@ -26,8 +26,6 @@ from mdpforge.models.discounted.blocks_world import Model as DiscountedBlocksWor
 
 METADATA = {
     "category": "games_and_puzzles",
-    "description": "Complete sequential block puzzles, rewarding only final completion.",
-    "reference": "McCallum (1996), Whitehead's Blocks World revisited.",
     "sizes": {
         "tiny": {"requested_state_dim": 800, "parameters": {}},
         "small": {"requested_state_dim": 8000, "parameters": {}},

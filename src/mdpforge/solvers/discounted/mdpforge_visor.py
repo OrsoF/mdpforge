@@ -11,10 +11,6 @@ METADATA = {
     "display_name": "VI · mdpforge · SOR",
     "family": "vi",
     "backend": "mdpforge",
-    "description": (
-        "Sequential Bellman updates with successive over-relaxation and "
-        "full-residual stopping for absolute value precision."
-    ),
 }
 
 

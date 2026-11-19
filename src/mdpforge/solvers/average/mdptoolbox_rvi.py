@@ -12,9 +12,6 @@ METADATA = {
     "display_name": "Average RVI · pymdptoolbox",
     "family": "vi",
     "backend": "mdptoolbox",
-    "description": (
-        "pymdptoolbox relative value iteration with native span convergence."
-    ),
 }
 
 

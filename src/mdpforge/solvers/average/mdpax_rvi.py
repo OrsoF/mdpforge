@@ -14,7 +14,6 @@ METADATA = {
     "display_name": "Average RVI · MDPax",
     "family": "vi",
     "backend": "mdpax",
-    "description": "MDPax JAX relative value iteration over padded CSR successors.",
 }
 
 

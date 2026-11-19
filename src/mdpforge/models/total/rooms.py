@@ -27,11 +27,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Reach the absorbing exit through four rooms with reward on entry.",
-    "reference": (
-        "Hengst, B. (2012). Hierarchical approaches. In Reinforcement Learning: "
-        "State-of-the-Art, pp. 293-323."
-    ),
 }
 
 

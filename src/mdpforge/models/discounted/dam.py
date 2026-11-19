@@ -94,12 +94,6 @@ METADATA = {
         },
     },
     "category": "asset_management",
-    "description": "Reservoir release decisions with stochastic inflow.",
-    "reference": (
-        "Carpentier, P., Chancelier, J.-P., Leclere, V. and Pacaud, F. (2018). "
-        "Stochastic decomposition applied to large-scale hydro valleys management. "
-        "EJOR 270(3):1086-1098."
-    ),
 }
 
 

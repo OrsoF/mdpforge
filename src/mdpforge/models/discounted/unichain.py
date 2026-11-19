@@ -25,11 +25,6 @@ METADATA = {
         },
     },
     "category": "abstract",
-    "description": "Two-action chain with a zero-cost boundary state.",
-    "reference": (
-        "Puterman, M. L. (2014). Markov Decision Processes: Discrete Stochastic "
-        "Dynamic Programming, p.353."
-    ),
 }
 
 

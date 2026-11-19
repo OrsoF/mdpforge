@@ -39,11 +39,6 @@ METADATA = {
         },
     },
     "category": "navigation",
-    "description": "Reach the absorbing finish line with reward on entry.",
-    "reference": (
-        "Sutton, R. S. and Barto, A. G. (2018). Reinforcement Learning: An "
-        "Introduction, 2nd ed., Exercise 5.12."
-    ),
 }
 
 

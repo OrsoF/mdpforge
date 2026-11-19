@@ -10,7 +10,6 @@ METADATA = {
     "display_name": "Total VI · mdpforge",
     "family": "vi",
     "backend": "mdpforge",
-    "description": "Total-reward value iteration with a Bellman-residual threshold.",
 }
 
 

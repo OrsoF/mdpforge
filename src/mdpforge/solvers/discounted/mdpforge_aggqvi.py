@@ -33,10 +33,6 @@ METADATA = {
     "display_name": "Aggregated QVI · mdpforge",
     "family": "experimental",
     "backend": "mdpforge",
-    "description": (
-        "Q-value iteration with progressive state aggregation, synchronous "
-        "Bellman backups and a full-state VI fallback."
-    ),
 }
 
 

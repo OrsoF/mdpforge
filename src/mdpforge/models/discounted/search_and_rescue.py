@@ -11,11 +11,6 @@ from mdpforge.utils.transitions import TransitionBuilder
 
 METADATA = {
     "category": "navigation",
-    "description": "Helicopter survey, safe landing discovery, extraction and time pressure.",
-    "reference": (
-        "IPPC 2008 Search-and-Rescue (Teichteil-Konigsbuch): "
-        "https://ipc08.icaps-conference.org/probabilistic/wiki/images/0/03/Results.pdf"
-    ),
     "sizes": {
         "tiny": {"requested_state_dim": 9120, "parameters": {}},
         "small": {"requested_state_dim": 91200, "parameters": {}},

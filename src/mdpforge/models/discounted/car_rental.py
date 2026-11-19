@@ -36,11 +36,6 @@ METADATA = {
         },
     },
     "category": "asset_management",
-    "description": "Overnight car transfers between two locations with rental demand.",
-    "reference": (
-        "Sutton, R. S. and Barto, A. G. (2018). Reinforcement Learning: An "
-        "Introduction, 2nd ed., Example 4.2."
-    ),
 }
 
 
