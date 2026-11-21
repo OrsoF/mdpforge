@@ -179,6 +179,76 @@ class BenchmarkResult:
             self.rows, self.experiment, solver_labels=solver_labels, ax=ax, show=show
         )
 
+    def plot_average_rank(
+        self, *, confidence=0.95, n_bootstrap=2000, seed=0, ax=None, show=True
+    ):
+        """Plot mean ranks from validated trial medians with paired bootstrap intervals.
+
+        confidence: float between 0 and 1, exclusive; confidence level.
+        n_bootstrap: integer of at least 2; number of model resamples.
+        seed: nonnegative integer for the local bootstrap generator.
+        ax: Matplotlib axes, or None to create a figure.
+        show: True displays the figure; False returns (figure, axes) without displaying.
+        """
+        from mdpforge.utils.analysis import plot_average_rank
+
+        return plot_average_rank(
+            self.rows,
+            self.experiment,
+            confidence=confidence,
+            n_bootstrap=n_bootstrap,
+            seed=seed,
+            ax=ax,
+            show=show,
+        )
+
+    def plot_pairwise_wins(self, *, tolerance=0.05, ax=None, show=True):
+        """Plot each row solver's win rate against each column solver.
+
+        tolerance: nonnegative finite fraction; draws allow this runtime gap
+            relative to the faster validated median.
+        ax: Matplotlib axes, or None to create a figure.
+        show: True displays the figure; False returns (figure, axes) without displaying.
+        """
+        from mdpforge.utils.tournament import plot_pairwise_wins
+
+        return plot_pairwise_wins(
+            self.rows, self.experiment, tolerance=tolerance, ax=ax, show=show
+        )
+
+    def plot_elo(
+        self,
+        *,
+        tolerance=0.05,
+        confidence=0.95,
+        n_bootstrap=500,
+        seed=0,
+        ax=None,
+        show=True,
+    ):
+        """Plot Davidson Bradley–Terry strengths on an Elo scale centered at 1500.
+
+        tolerance: nonnegative finite fraction; draws allow this runtime gap
+            relative to the faster validated median.
+        confidence: float between 0 and 1, exclusive; confidence level.
+        n_bootstrap: integer of at least 2; number of model resamples.
+        seed: nonnegative integer for the local bootstrap generator.
+        ax: Matplotlib axes, or None to create a figure.
+        show: True displays the figure; False returns (figure, axes) without displaying.
+        """
+        from mdpforge.utils.tournament import plot_elo
+
+        return plot_elo(
+            self.rows,
+            self.experiment,
+            tolerance=tolerance,
+            confidence=confidence,
+            n_bootstrap=n_bootstrap,
+            seed=seed,
+            ax=ax,
+            show=show,
+        )
+
     def plot_status(self, *, solver_labels=None, ax=None, show=True):
         """Plot trial execution counts and recorded validation counts separately.
 

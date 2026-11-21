@@ -5,8 +5,8 @@ from collections import Counter
 import numpy as np
 
 
-def _aggregate_rows(rows, experiment=None):
-    """Aggregate eligible, fully successful trials by model and solver."""
+def _aggregate_rows(rows, experiment=None, *, require_validation=False):
+    """Aggregate complete trial sets, optionally requiring validation to pass."""
     if not rows:
         raise ValueError("No benchmark measurements available")
     models = list(dict.fromkeys(row["model"] for row in rows))
@@ -62,6 +62,7 @@ def _aggregate_rows(rows, experiment=None):
                 row["status"] == "success"
                 and np.isfinite(row["runtime"])
                 and row["runtime"] > 0
+                and (not require_validation or row.get("validation_status") == "passed")
                 for row in group
             )
             complete = bool(group) and present and valid
@@ -536,6 +537,137 @@ def plot_runtime_distribution(
         )
     ax.grid(alpha=0.3)
     ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1), frameon=False)
+    fig.tight_layout()
+    if show:
+        plt.show()
+    return fig, ax
+
+
+def _average_ranks(results, experiment):
+    """Rank validated runtime medians, with ineligible solvers tied at the bottom."""
+    from scipy.stats import rankdata
+
+    models, solvers, aggregated = _aggregate_rows(
+        results, experiment, require_validation=True
+    )
+    models = list(dict.fromkeys([*(experiment or {}).get("models", {}), *models]))
+    solvers = list(dict.fromkeys([*(experiment or {}).get("solvers", {}), *solvers]))
+    ordered, labels = _ordered_solver_labels(solvers, experiment)
+    times = np.array(
+        [
+            [
+                aggregated.get((model, solver), {}).get("median_runtime", np.nan)
+                for solver in ordered
+            ]
+            for model in models
+        ]
+    )
+    eligible = np.isfinite(times)
+    ranked_models = eligible.any(axis=1)
+    if not ranked_models.any():
+        raise ValueError(
+            "Average rank needs at least one model/solver pair with all repeats "
+            "passing validation. Use results from Benchmark.run(validate=True)."
+        )
+    times = np.where(eligible, times, np.inf)[ranked_models]
+    return labels, rankdata(times, method="average", axis=1), len(models)
+
+
+def _bootstrap_rank_intervals(ranks, averages, confidence, n_bootstrap, seed):
+    """Estimate rank intervals and a simultaneous margin for pairwise differences."""
+    rng = np.random.default_rng(seed)
+    n_models, n_solvers = ranks.shape
+    samples = np.empty((n_bootstrap, n_solvers))
+    for sample in samples:
+        indices = rng.integers(n_models, size=n_models)
+        sample[:] = ranks[indices].mean(axis=0)
+
+    tail = (1 - confidence) / 2
+    lower, upper = np.quantile(samples, [tail, 1 - tail], axis=0)
+    # The range of the centered means is the maximum absolute pairwise error.
+    margin = np.quantile(np.ptp(samples - averages, axis=1), confidence)
+    return lower, upper, margin
+
+
+def plot_average_rank(
+    results,
+    experiment=None,
+    *,
+    confidence=0.95,
+    n_bootstrap=2000,
+    seed=0,
+    ax=None,
+    show=True,
+):
+    """Plot model-weighted average ranks and highlight unresolved leader comparisons.
+
+    Only models with at least one eligible solver contribute to the ranking.
+    Bootstrap intervals and comparisons use paired resampling of whole models.
+    """
+    if not isinstance(confidence, (float, np.floating)) or not 0 < confidence < 1:
+        raise ValueError("confidence must be between zero and one, exclusive")
+    if type(n_bootstrap) is not int or n_bootstrap < 2:
+        raise ValueError("n_bootstrap must be an integer of at least two")
+    if type(seed) is not int or seed < 0:
+        raise ValueError("seed must be a nonnegative integer")
+
+    labels, ranks, n_models = _average_ranks(results, experiment)
+    averages = ranks.mean(axis=0)
+    order = np.argsort(averages, kind="stable")
+    averages = averages[order]
+    ranks = ranks[:, order]
+    n_ranked, n_solvers = ranks.shape
+    positions = np.arange(n_solvers)
+    highlighted = np.zeros(n_solvers, dtype=bool)
+
+    import matplotlib.pyplot as plt
+    from matplotlib.ticker import MaxNLocator
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(8, max(3.4, 0.36 * n_solvers + 2.2)))
+    else:
+        fig = ax.figure
+
+    subtitle = f"{n_ranked} of {n_models} models ranked"
+    if n_ranked >= 2:
+        lower, upper, margin = _bootstrap_rank_intervals(
+            ranks, averages, confidence, n_bootstrap, seed
+        )
+        ax.hlines(
+            positions,
+            lower,
+            upper,
+            color="#94a3b8",
+            linewidth=2,
+            label=f"{100 * confidence:g}% bootstrap CI",
+        )
+        if n_solvers > 1:
+            highlighted = averages - averages[0] <= margin
+            ax.scatter(
+                averages[highlighted],
+                positions[highlighted],
+                color="#1d4ed8",
+                label="Leader or inconclusive comparison with leader",
+                zorder=3,
+            )
+        ax.legend(loc="upper left", bbox_to_anchor=(0, -0.22), frameon=False)
+    else:
+        subtitle += " · Bootstrap requires at least two models"
+
+    ax.scatter(
+        averages[~highlighted], positions[~highlighted], color="#475569", zorder=3
+    )
+    ax.set_yticks(
+        positions, [f"{labels[i]}  ({rank:.2f})" for i, rank in zip(order, averages)]
+    )
+    ax.set_ylim(n_solvers - 0.5, -0.5)
+    ax.set_xlim(0.8, n_solvers + 0.2)
+    ax.xaxis.set_major_locator(MaxNLocator(integer=True, min_n_ticks=1))
+    ax.set_xlabel("Average rank (1 is best)")
+    ax.set_title(f"Average solver rank\n{subtitle}", loc="left")
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.grid(axis="x", alpha=0.3)
+    ax.set_axisbelow(True)
     fig.tight_layout()
     if show:
         plt.show()
