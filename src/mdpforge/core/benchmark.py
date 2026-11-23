@@ -109,7 +109,9 @@ class Benchmark:
             reward: Reward matrix (S, A).
             terminal_states: Terminal state indices for a total-reward matrix model.
             size: "tiny", "small", "medium", or "large".
-            category: Model category (e.g., "navigation", "abstract").
+            category: Filter by "abstract", "navigation", "distributed_systems",
+                "service_operations", "asset_management", or "games_and_puzzles".
+                None leaves the category unfiltered.
             verbose: Whether to print loading progress.
 
         Returns:

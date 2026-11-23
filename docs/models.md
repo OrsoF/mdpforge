@@ -1,59 +1,16 @@
 # Model catalogue
 
-This page lists 116 discounted recipes and 32 total-reward recipes. The total catalogue also discovers nine topology and planning copies that still declare discounted support and cannot be added to a total benchmark; see [the limitation below](#total-reward-recipes). The table names are the identifiers accepted by `Benchmark.add_mdp()` in each catalogue. A constructed model has its own instance name. Several recipes can represent the same problem family with different dynamics, source instances or objectives.
-
-[Sources](#sources-and-adaptations) · [Discounted recipes](#discounted-recipes) · [Total-reward recipes](#total-reward-recipes) · [Python catalogue](#browse-from-python)
+[Discounted recipes](#discounted-recipes) · [Total-reward recipes](#total-reward-recipes) · [Browse from Python](#browse-from-python) · [Sources](#sources-and-adaptations)
 
 ## Reading the tables
 
-**Structure** describes state variables and actions. **Dynamics and rewards** describes the implemented transitions and objective, including reductions of published problems. A local adaptation and an import can use different dynamics. The tables give the references, and the linked Python modules give the constructor options.
+Use a table's model ID with `Benchmark().add_mdp("rooms", size="small")`. Open the linked model module for constructor options.
 
-**Presets:** T = `tiny`, S = `small`, M = `medium`, L = `large`. Only declared available presets are listed. A preset selects parameters or a bundled source configuration; it is not a fixed number of states, an ordering guarantee or a runtime measurement. Requested dimensions can be rounded, and several presets can select the same source instance. Inspect actual `state_dim` and `action_dim` on the constructed model; missing presets have a `reason` in `METADATA`. The three generated maze families require the optional `mazelib` dependency (`pip install ".[models]"` from a checkout).
-
-After `create_model()`, available recipes expose one SciPy CSR transition matrix per action and a NumPy array of expected rewards indexed by state and action. State counts include any explicit absorbing states. Aliased observations in some navigation tasks do not replace their full Markov states.
-
-## Sources and adaptations
-
-| Implementation or collection | Provenance | Interpretation |
-| --- | --- | --- |
-| Local generators and adaptations | References appear in the model rows. Some describe a family or provide background or inspiration. | The equations and rewards in the local implementation define the task. The `admission` attribution is incomplete. |
-| jani-models | [Pinned source manifest][jani], [timed-source import manifest][jani-timed] and [upstream model overview](../src/mdpforge/models/discounted/_jani/_data/README.md). | Bundled finite JANI imports and discrete-time adaptations of timed and Markov automata. Several models have a single action. |
-| QVBS | [Pinned source manifest][qvbs], original references and author and conversion records. Hartmanns et al., TACAS 2019. | JANI imports and selected scalable constructions from original PPDDL rules. Bundled sources carry [CC-BY-4.0](../src/mdpforge/models/discounted/_qvbs/_data/LICENSE). |
-| PRISM benchmarks and examples | Kwiatkowska, Norman and Parker, *The PRISM Benchmark Suite*, QEST 2012. The [upstream suite](https://github.com/prismmodelchecker/prism-benchmarks) and [pinned source manifest][prism] record the model authors and adaptations. | Native command semantics reconstructed in Python. The benchmark-suite sources are CC-BY-4.0. The Rabin and philosopher example sources are GPL-2.0-only. |
-
-For direct JANI/QVBS imports, states are reachable variable valuations and automaton locations; actions are enabled local choices, with unused action slots repeating the first enabled choice. Native maximization rewards retain their scale; minimization costs are negated. Reachability properties become signed unit rewards on first reaching the selected target, stored as expected immediate rewards; target and stopped states then absorb at zero reward. These are discounted objectives, not the original unbounded reachability probabilities or full verification assertions. Finite property horizons are replaced by discounting; explicit source timers and counters remain part of the state when present.
-
-Five JANI recipes adapt stochastic timed automata (STA) or Markov automata (MA) into finite MDPs. Uniformization turns event rates into discrete transition probabilities using a common step rate. The queue and database recipes use one action per state. The workflow also exposes immediate dispatch choices and applies the discount once per discrete step, including dispatch steps.
-
-The PRISM `consensus`, `csma`, `firewire`, `wlan` and `zeroconf` recipes retain native transition steps and zero their costs at completion without removing terminal transitions. `prism_rabin` and `prism_dining_philosophers` instead add step costs to a designated participant's first target entry and make the target absorbing. No fairness constraint is added. Source variants and default objectives differ across collections: for example, `jani_dining_philosophers` defaults to a negative first-hit reward, `qvbs_philosophers_mdp` to a positive first-hit reward, and `prism_dining_philosophers` to negative steps until a designated philosopher eats.
-
-### Topology and planning adaptations
-
-The nine recipes `erdos_renyi`, `barabasi_albert`, `watts_strogatz`, `kronecker`, `layered`, `extreme_linear`, `extreme_dense`, `wetfloor` and `single_armed_pendulum` are discounted reward-maximization adaptations inspired by Gravel and Champagne Gareau (2025), *Topology-Driven Solver Selection for Stochastic Shortest Path MDPs via Explainable Machine Learning*, CANAI. They do not reproduce the paper's full collection of 8,190 stochastic shortest-path instances or its exact graph-to-MDP generator. The recipe rows below give the individual sources and available presets.
-
-The first five recipes share the NumPy/SciPy converter in [`utils/topology_graphs.py`](../src/mdpforge/utils/topology_graphs.py). Each action puts probability 0.8 on a preferred neighbor, then spreads the remaining 0.2 uniformly over all outgoing neighbors, including the preferred one. Empty neighborhoods become self-loops and goals absorb. The last `max(1, int(state_dim * goal_fraction))` states are goals, with `goal_fraction=0.05` by default; `layered` instead uses only the last state. Graph connectivity and transition outcome counts can therefore differ from the cited generators, and random graphs need not allow every state to reach a goal.
-
-Graph, linear, dense and WetFloor recipes use reward -1 for every non-goal action, including actions entering a goal, and 0 at goals. The pendulum has no absorbing goal and uses reward `-(theta**2 + 0.1 * omega**2 + 0.01 * torque**2)`. Kronecker samples a row-normalized product kernel rather than the original full stochastic Kronecker edge generator. WetFloor is a simplified slippery grid rather than an exact ICAPS instance; the pendulum uses an independent angle/angular-speed discretization rather than the original benchmark discretization.
-
-All nine recipes declare T/S/M/L presets. Inspect their parameters before a scaling comparison: `extreme_linear` switches from stochastic variant 2 at T/S to deterministic variant 0 at M/L; other graph presets can also change density, degree or layer count. Kronecker requires a power-of-two `state_dim` of at least 4. WetFloor and the pendulum round requested state counts up to a square.
-
-Use `Benchmark().add_mdp("layered", size="tiny")` for a preset. To select variants explicitly, construct the model before registering it:
-
-```python
-from mdpforge import Benchmark
-from mdpforge.models.discounted.extreme_linear import Model
-
-model = Model(state_dim=50, variant=0)
-model.create_model(cache="off", check_transition=True)
-bench = Benchmark()
-bench.add_mdp(model)
-```
-
-Stochastic graph generation and slippery-cell placement use local seeded NumPy generators. Model names encode dynamics and reward parameters, including seeds where used, for cache identity. Use `cache="off"` for ad-hoc comparisons that should bypass stored matrices, or `cache="refresh"` on a fresh model after changing its definition. See [cache rules](adding-a-model.md#3-reproducibility-and-caching), including the separate optimal-value cache.
+**Presets:** T = `tiny`, S = `small`, M = `medium`, L = `large`. A preset selects parameters or a bundled instance. Check `state_dim` and `action_dim` on the built model for its dimensions. The generated mazes require `pip install ".[models]"` from a checkout.
 
 ## Discounted recipes
 
-Use `Benchmark()` or `Benchmark(criterion="discounted")`, with `0 < discount < 1`. Average-reward benchmarks reuse this catalogue; average-reward certification is unavailable. The imported rows below describe their default objective; use the linked constructor and manifest for alternatives.
+Use `Benchmark()` with `0 < discount < 1`. Average-reward benchmarks use the same catalogue via `Benchmark(criterion="average")`.
 
 ### Abstract
 
@@ -203,13 +160,9 @@ Use `Benchmark()` or `Benchmark(criterion="discounted")`, with `0 < discount < 1
 
 ## Total-reward recipes
 
-The total catalogue currently discovers 41 entries. Nine are unchanged copies of the [topology and planning recipes](#topology-and-planning-adaptations): they inherit `supported_criteria={"discounted"}`, retain discounted cache names and rewards, and are rejected by `Benchmark(criterion="total").add_mdp(...)`. They are not included in the 32 total-reward recipes below; their presence in `list_models(available=True)` does not establish total-reward support or finite return.
+Use `Benchmark(criterion="total")`. The total catalogue also discovers nine [discounted-only recipes](#topology-and-planning-adaptations) that a total benchmark rejects.
 
-Use `Benchmark(criterion="total")` to select these separate implementations. Except for `progress_chain`, they adapt a local discounted model above: state/action structure and non-goal dynamics are retained, while success goals absorb where needed. The module links specify each adaptation; source references are inherited from the corresponding local task.
-
-For goal-based recipes, a nonterminal action receives reward **1 if it has positive probability of entering a success goal**, otherwise 0. All terminal states receive 0. This is an action reward, not the probability of success; stochastic goal-access actions can be rewarded more than once before absorption. Failure terminals receive no success reward. No new time limit is added; `search_and_rescue` retains its existing urgency budget. `progress_chain` instead uses negative step rewards.
-
-Finite total reward does not imply that the current validator can certify the model: the certificate covers absorbing models with no cycles among nonterminal states. Many recipes here contain cycles or self-loops. See [solution-quality checks](../README.md#comparing-solution-quality).
+In goal-based recipes, an action at a nonterminal state earns 1 if it has any chance of entering a success goal. It can earn that reward again if it misses and retries. Terminal states earn 0. `progress_chain` uses negative step rewards. The [current certificate](../README.md#comparing-solution-quality) covers absorbing models with acyclic nonterminal transitions.
 
 ### Abstract (total)
 
@@ -274,15 +227,32 @@ Finite total reward does not imply that the current validator can certify the mo
 from mdpforge import list_models
 from mdpforge.models.total import list_models as list_total_models
 
-discounted = list_models(available=True)
 small_navigation = list_models(category="navigation", size="small", available=True)
 total = list_total_models(available=True)
-
-for entry in discounted:
-    print(entry["name"], entry["category"])
 ```
 
-Listing reads metadata without constructing transition matrices. The entries provide task categories and preset parameters. To select a recipe, use `bench.add_mdp("rooms", size="small")` on a benchmark configured for the desired reward criterion. See [adding a model](adding-a-model.md) for the interface and metadata requirements.
+Listing reads metadata and preset parameters without building matrices. See [adding a model](adding-a-model.md) for the model interface.
+
+## Sources and adaptations
+
+| Implementation or collection | Provenance | Interpretation |
+| --- | --- | --- |
+| Local generators and adaptations | References appear in the model rows. Some describe a family or provide background or inspiration. | The equations and rewards in the local implementation define the task. The `admission` attribution is incomplete. |
+| jani-models | [Pinned source manifest][jani], [timed-source import manifest][jani-timed] and [upstream model overview](../src/mdpforge/models/discounted/_jani/_data/README.md). | Bundled finite JANI imports and discrete-time adaptations of timed and Markov automata. Several models have a single action. |
+| QVBS | [Pinned source manifest][qvbs], original references and author and conversion records. Hartmanns et al., TACAS 2019. | JANI imports and selected scalable constructions from original PPDDL rules. Bundled sources carry [CC-BY-4.0](../src/mdpforge/models/discounted/_qvbs/_data/LICENSE). |
+| PRISM benchmarks and examples | Kwiatkowska, Norman and Parker, *The PRISM Benchmark Suite*, QEST 2012. The [upstream suite](https://github.com/prismmodelchecker/prism-benchmarks) and [pinned source manifest][prism] record the model authors and adaptations. | Native command semantics reconstructed in Python. The benchmark-suite sources are CC-BY-4.0. The Rabin and philosopher example sources are GPL-2.0-only. |
+
+Direct JANI and QVBS imports keep native maximization rewards and negate costs. Reachability becomes a signed first-hit reward, with zero reward after stopping. Discounting replaces finite property horizons. Timed JANI imports turn event rates into discrete steps, including immediate workflow dispatch choices.
+
+Most PRISM recipes keep native transitions at completion and set costs to zero there. `prism_rabin` and `prism_dining_philosophers` use step costs until a designated participant reaches an absorbing target.
+
+### Topology and planning adaptations
+
+The nine discounted-only recipes inspired by Gravel and Champagne Gareau (2025) are `erdos_renyi`, `barabasi_albert`, `watts_strogatz`, `kronecker`, `layered`, `extreme_linear`, `extreme_dense`, `wetfloor` and `single_armed_pendulum`.
+
+The first five share a [graph converter](../src/mdpforge/utils/topology_graphs.py). Each action gives its preferred neighbor probability 0.8 plus a uniform share of the remaining 0.2 across all neighbors. Empty neighborhoods become self-loops and goals absorb. Goals are the final 5% of states by default, rounded down with a minimum of one. `layered` uses only the last state. Graph, linear, dense and WetFloor recipes pay −1 for every action outside a goal and 0 at a goal.
+
+Check preset parameters before comparing sizes. `extreme_linear` switches from stochastic at T/S to deterministic at M/L. Kronecker requires a power-of-two state count of at least 4. WetFloor and the pendulum round requested sizes up to a square. See the [cache rules](adding-a-model.md#3-reproducibility-and-caching) when changing model definitions.
 
 [jani]: ../src/mdpforge/models/discounted/_jani/_data/model_manifest.json
 [jani-timed]: ../src/mdpforge/models/discounted/_jani/_data/IMPORT_MANIFEST.json

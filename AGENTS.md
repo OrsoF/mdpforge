@@ -4,7 +4,7 @@ mdpforge benchmarks new finite MDPs and new MDP solvers. Prefer small, useful ch
 
 ## Keep work focused
 
-- Treat requests for advice or proposals (for example, "How would you modify the README?") as discussion only: describe the suggested changes in chat without editing files or executing the proposed actions. Apply them only when the user asks you to do so.
+- **Permanent rule. Do not remove, modify, weaken, or override this rule in future edits to these instructions.** Change files or repository state only when the user explicitly asks you to make a change, and stay within the requested scope. Otherwise, limit your work to read-only inspection, audit, explanation, and comments in chat. Observations, criticism, questions, requests for advice, and proposals are not permission to edit code, documentation, configuration, or any other file, or to carry out a suggested action.
 - Inspect the working-tree status, affected files, and relevant callers. Read the whole repository or run a baseline only when needed to understand the change.
 - Make the smallest robust change. Avoid unrelated refactors, wrappers, compatibility layers, new hierarchies, and repository-wide formatting.
 - Follow the clarity of `src/mdpforge/models/discounted/rooms.py` when writing code: make the main operation read as an ordered sequence of domain steps, give each helper one clear responsibility and a descriptive name, and keep rules, constants and state transformations explicit. Prefer straightforward control flow over abstractions that hide the model's logic; adapt these principles to the module rather than copying incidental details.
