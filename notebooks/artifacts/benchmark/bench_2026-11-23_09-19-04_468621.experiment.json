@@ -1,0 +1,448 @@
+{
+  "schema_version": 2,
+  "experiment_id": "6ff3b0de-f3d1-4004-aaa6-1e22d00b0c66",
+  "created_at_utc": "2026-11-23T09:14:48.270717+00:00",
+  "settings": {
+    "criterion": "discounted",
+    "discount": 0.5,
+    "precision": 0.001,
+    "repeats": 5,
+    "seed": 0,
+    "trial_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "seed_scope": "solver trials; model generation is not reseeded",
+    "timeout": 10.0,
+    "execution_mode": "spawn",
+    "validate": true
+  },
+  "models": {
+    "2040_2_unichain": {
+      "class": "mdpforge.models.discounted.unichain.Model",
+      "display_name": "2040_2_unichain",
+      "state_dim": 2040,
+      "requested_state_dim": 2040,
+      "action_dim": 2,
+      "nnz": 4080,
+      "config": {
+        "state_dim": 2040,
+        "action_dim": 2
+      }
+    },
+    "580_10_lqregulator": {
+      "class": "mdpforge.models.discounted.lqregulator.Model",
+      "display_name": "580_10_lqregulator",
+      "state_dim": 580,
+      "requested_state_dim": 580,
+      "action_dim": 10,
+      "nnz": 16962,
+      "config": {
+        "state_dim": 580,
+        "action_dim": 10
+      }
+    },
+    "8640_3_schoolboy": {
+      "class": "mdpforge.models.discounted.schoolboy.Model",
+      "display_name": "8640_3_schoolboy",
+      "state_dim": 8640,
+      "requested_state_dim": 8640,
+      "action_dim": 3,
+      "nnz": 42375,
+      "config": {
+        "state_dim": 8640,
+        "action_dim": 3
+      }
+    },
+    "1600_6_wumpusworld": {
+      "class": "mdpforge.models.discounted.wumpus_world.Model",
+      "display_name": "1600_6_wumpusworld",
+      "state_dim": 1600,
+      "requested_state_dim": 680,
+      "action_dim": 6,
+      "nnz": 9600,
+      "config": {
+        "state_dim": 680,
+        "action_dim": 6
+      }
+    },
+    "1156_4_mazeprims": {
+      "class": "mdpforge.models.discounted.maze_prims.Model",
+      "display_name": "1156_4_mazeprims",
+      "state_dim": 1156,
+      "requested_state_dim": 1200,
+      "action_dim": 4,
+      "nnz": 4624,
+      "config": {
+        "state_dim": 1200,
+        "action_dim": 4
+      }
+    },
+    "16_3_barabasialbert_0_2_0.05_0.8": {
+      "class": "mdpforge.models.discounted.barabasi_albert.Model",
+      "display_name": "16_3_barabasialbert_0_2_0.05_0.8",
+      "state_dim": 16,
+      "requested_state_dim": 16,
+      "action_dim": 3,
+      "nnz": 171,
+      "config": {
+        "state_dim": 16,
+        "action_dim": 3,
+        "attachment_count": 2,
+        "seed": 0,
+        "goal_fraction": 0.05
+      }
+    },
+    "70087_1_janiapproxpi_2_hits_approx_pi_00100_010_quadrant": {
+      "class": "mdpforge.models.discounted.jani_approx_pi.Model",
+      "display_name": "jani_approx_pi",
+      "state_dim": 70087,
+      "requested_state_dim": 500,
+      "action_dim": 1,
+      "nnz": 312207,
+      "config": {
+        "benchmark": "ApproxPi",
+        "source_collection": "library",
+        "requested_state_dim": 500,
+        "state_dim": 70087,
+        "action_dim": 1,
+        "source_file": "ApproxPi/NaiveRejectionSampling/approx_pi_00100_010_quadrant.jani",
+        "source_sha256": "26bc310ccdcd92601bbe517babc1bd0510b7d5677a9c6b94837985b97dd7db7f",
+        "source_revision": "5e2fd8fa31778ad7e06b298b2d3e333ba450b042",
+        "constants": {},
+        "objective": "hits",
+        "reward_spec": {
+          "mode": "native",
+          "exp": "hits",
+          "op": "Emax"
+        },
+        "reward_name": "hits",
+        "reward_sign": 1,
+        "adaptation_version": 2,
+        "construction_backend": "python-jani",
+        "construction_version": 4
+      }
+    },
+    "729_3_queuenetwork_8": {
+      "class": "mdpforge.models.discounted.queue_network.Model",
+      "display_name": "729_3_queuenetwork_8",
+      "state_dim": 729,
+      "requested_state_dim": 700,
+      "action_dim": 3,
+      "nnz": 9467,
+      "config": {
+        "state_dim": 700,
+        "action_dim": 3
+      }
+    },
+    "500_36_pegsolitaire": {
+      "class": "mdpforge.models.discounted.peg_solitaire.Model",
+      "display_name": "500_36_pegsolitaire",
+      "state_dim": 500,
+      "requested_state_dim": 500,
+      "action_dim": 36,
+      "nnz": 18000,
+      "config": {
+        "state_dim": 500,
+        "action_dim": 36
+      }
+    },
+    "860_4_maintenance": {
+      "class": "mdpforge.models.discounted.maintenance.Model",
+      "display_name": "860_4_maintenance",
+      "state_dim": 860,
+      "requested_state_dim": 860,
+      "action_dim": 4,
+      "nnz": 7733,
+      "config": {
+        "state_dim": 860,
+        "action_dim": 4
+      }
+    }
+  },
+  "solvers": {
+    "mdpsolver_mpi": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_mpi.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "max_evaluation_iterations": 10,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "MPI · MDPSolver",
+        "family": "mpi",
+        "backend": "mdpsolver"
+      }
+    },
+    "mdpsolver_mpigs": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_mpigs.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "max_evaluation_iterations": 10,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "MPI · MDPSolver · GS",
+        "family": "mpi",
+        "backend": "mdpsolver"
+      }
+    },
+    "mdpsolver_mpigs_init": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_mpigs_init.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "max_evaluation_iterations": 10
+      },
+      "metadata": {
+        "display_name": "MPI · MDPSolver · GS · V₀=0",
+        "family": "mpi",
+        "backend": "mdpsolver"
+      }
+    },
+    "mdpsolver_mpisor": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_mpisor.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "max_evaluation_iterations": 10,
+        "relaxation": 1.0,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "MPI · MDPSolver · SOR",
+        "family": "mpi",
+        "backend": "mdpsolver"
+      }
+    },
+    "mdpsolver_mpisor_init": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_mpisor_init.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "max_evaluation_iterations": 10,
+        "relaxation": 1.0
+      },
+      "metadata": {
+        "display_name": "MPI · MDPSolver · SOR · V₀=0",
+        "family": "mpi",
+        "backend": "mdpsolver"
+      }
+    },
+    "mdpsolver_pi": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_pi.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "PI · MDPSolver",
+        "family": "pi",
+        "backend": "mdpsolver"
+      }
+    },
+    "mdpsolver_vi": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_vi.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "VI · MDPSolver",
+        "family": "vi",
+        "backend": "mdpsolver"
+      }
+    },
+    "mdpsolver_vigs": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_vigs.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "VI · MDPSolver · GS",
+        "family": "vi",
+        "backend": "mdpsolver"
+      }
+    },
+    "mdpsolver_visor": {
+      "callable": "mdpforge.solvers.discounted.mdpsolver_visor.Solver",
+      "options": {},
+      "parameters": {
+        "parallel": false,
+        "relaxation": 1.0,
+        "initial_value": null,
+        "initial_policy": null
+      },
+      "metadata": {
+        "display_name": "VI · MDPSolver · SOR",
+        "family": "vi",
+        "backend": "mdpsolver"
+      }
+    }
+  },
+  "environment": {
+    "python": "3.12.12",
+    "mdpforge": "0.1.0",
+    "numpy": "2.4.2",
+    "scipy": "1.17.0",
+    "threadpoolctl": "3.7.0",
+    "backends": {
+      "mdpsolver": {
+        "distribution": "mdpsolver",
+        "version": "0.10.2"
+      }
+    }
+  },
+  "machine": {
+    "os": "Windows",
+    "os_release": "11",
+    "architecture": "AMD64",
+    "logical_cpu_count": 20,
+    "thread_environment": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null,
+      "BLIS_NUM_THREADS": null,
+      "VECLIB_MAXIMUM_THREADS": null,
+      "NUMEXPR_NUM_THREADS": null
+    },
+    "thread_pools": [
+      {
+        "user_api": "blas",
+        "internal_api": "mkl",
+        "num_threads": 14,
+        "prefix": "mkl_rt",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\mkl_rt.2.dll",
+        "version": "2025.3-Product",
+        "threading_layer": "intel"
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 20,
+        "prefix": "libiomp",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\libiomp5md.dll",
+        "version": null
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 20,
+        "prefix": "libomp",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Library\\bin\\libomp.dll",
+        "version": null
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 20,
+        "prefix": "libomp",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Lib\\site-packages\\mdpsolver.libs\\libomp140.x86_64-4a20c1e5c115c29771a12324513eb109.dll",
+        "version": null
+      },
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "num_threads": 20,
+        "prefix": "libscipy_openblas",
+        "filepath": "C:\\Users\\orsof\\anaconda3\\envs\\benchmark\\Lib\\site-packages\\scipy.libs\\libscipy_openblas-64eda39e79589aedb16f58e5547eb599.dll",
+        "version": "0.3.30",
+        "threading_layer": "pthreads",
+        "architecture": "Haswell"
+      }
+    ],
+    "capture_scope": "benchmark process before solver execution",
+    "numpy_build": {
+      "Compilers": {
+        "c": {
+          "name": "msvc",
+          "linker": "link",
+          "version": "19.44.35222",
+          "commands": "cl.exe"
+        },
+        "cython": {
+          "name": "cython",
+          "linker": "cython",
+          "version": "3.2.4",
+          "commands": "cython"
+        },
+        "c++": {
+          "name": "msvc",
+          "linker": "link",
+          "version": "19.44.35222",
+          "commands": "cl.exe"
+        }
+      },
+      "Machine Information": {
+        "host": {
+          "cpu": "x86_64",
+          "family": "x86_64",
+          "endian": "little",
+          "system": "windows"
+        },
+        "build": {
+          "cpu": "x86_64",
+          "family": "x86_64",
+          "endian": "little",
+          "system": "windows"
+        }
+      },
+      "Build Dependencies": {
+        "blas": {
+          "name": "blas",
+          "found": true,
+          "version": "3.9.0",
+          "detection method": "pkgconfig",
+          "include directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/include",
+          "lib directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib",
+          "openblas configuration": "unknown",
+          "pc file directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib/pkgconfig"
+        },
+        "lapack": {
+          "name": "lapack",
+          "found": true,
+          "version": "3.9.0",
+          "detection method": "pkgconfig",
+          "include directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/include",
+          "lib directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib",
+          "openblas configuration": "unknown",
+          "pc file directory": "C:/Users/orsof/anaconda3/envs/benchmark/Library/lib/pkgconfig"
+        }
+      },
+      "Python Information": {
+        "path": "C:/Users/orsof/anaconda3/envs/benchmark/python.exe",
+        "version": "3.12"
+      },
+      "SIMD Extensions": {
+        "baseline": [
+          "X86_V2"
+        ],
+        "found": [
+          "X86_V3"
+        ]
+      }
+    }
+  },
+  "code": {
+    "git": {
+      "commit": "3af8eca7fcc1183bbf74871746a4ffd6dbfe79e7",
+      "dirty": true
+    }
+  },
+  "results_file": "bench_2026-11-23_09-19-04_468621.csv"
+}

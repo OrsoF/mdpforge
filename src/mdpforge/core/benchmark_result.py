@@ -226,7 +226,7 @@ class BenchmarkResult:
         ax=None,
         show=True,
     ):
-        """Plot Davidson Bradley–Terry strengths on an Elo scale centered at 1500.
+        """Plot Davidson Bradley-Terry strengths on an Elo scale centered at 1500.
 
         tolerance: nonnegative finite fraction; draws allow this runtime gap
             relative to the faster validated median.
