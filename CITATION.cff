@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: >-
+  If you use MDPForge in your research, please cite this software.
+type: software
+title: 'MDPForge: Finite Markov Decision Processes and Reproducible Solver Benchmarks'
+authors:
+  - family-names: Forghieri
+    given-names: Orso
+version: '0.2.1'
+url: 'https://github.com/OrsoF/mdpforge'
+repository-code: 'https://github.com/OrsoF/mdpforge'
+abstract: >-
+  MDPForge is a Python toolkit for constructing finite Markov decision
+  processes and reproducibly benchmarking dynamic programming solvers,
+  with explicit solution-quality checks and experiment records.
+keywords:
+  - Markov decision processes
+  - dynamic programming
+  - benchmarking
+  - reinforcement learning
+  - reproducible research
