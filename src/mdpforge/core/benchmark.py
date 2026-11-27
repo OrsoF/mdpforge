@@ -263,9 +263,8 @@ class Benchmark:
         if model is not None:
             self.add_mdp(model)
             if verbose:
-                model_label = getattr(model, "display_name", model.name)
                 print(
-                    f"Added MDP {model_label!r} "
+                    f"Added MDP {model.name!r} "
                     f"({model.state_dim} states, {model.action_dim} actions) "
                     f"in {perf_counter() - start:.3f} s",
                     flush=True,
@@ -617,12 +616,11 @@ class Benchmark:
                 criterion=self.criterion,
             )
             for model in self._mdps:
-                model_label = getattr(model, "display_name", model.name)
                 for solver_name, (constructor, kwargs) in self._solvers.items():
                     for repeat in range(repeats):
                         if verbose:
                             print(
-                                f"{model_label} / {solver_name} "
+                                f"{model.name} / {solver_name} "
                                 f"[{repeat + 1}/{repeats}]: ",
                                 end="",
                                 flush=True,
