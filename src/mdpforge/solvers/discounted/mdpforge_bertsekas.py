@@ -11,6 +11,7 @@ from mdpforge.core.operators import (
     bellman_operator,
     bellman_policy_operator,
     compute_transition_reward_policy,
+    norminf,
 )
 from mdpforge.core.partition import Partition
 from mdpforge.core.solve_result import SolveResult
@@ -54,6 +55,7 @@ class Solver:
         self.model = model
         self.discount = discount
         self.final_precision = final_precision
+        self.optimal_residual_tol = final_precision * (1 - discount) / (2 * discount)
         self.epsilon_policy_evaluation = final_precision / 10
         self.epsilon_final_policy_evaluation = final_precision * (1 - discount) / 10
         self.beta_1 = float(beta_1)
@@ -73,12 +75,11 @@ class Solver:
 
         for _ in bounded_iterations(self.max_iterations, "policy iteration"):
             value = self._policy_evaluation(policy, value)
+            new_policy, converged = self._improve_policy(value, policy)
+            if converged:
+                return SolveResult(value, new_policy, validation_method="policy")
 
-            new_policy = self._greedy_policy(value, policy)
-
-            policy_condition = np.all(new_policy == policy)
-
-            if policy_condition:
+            if np.array_equal(new_policy, policy):
                 transition_policy, reward_policy = compute_transition_reward_policy(
                     self.model, policy
                 )
@@ -92,18 +93,22 @@ class Solver:
                     max_iterations=self.max_evaluation_iterations,
                 )
 
-                break
-            else:
-                policy = new_policy
+                new_policy, converged = self._improve_policy(value, policy)
+                if converged:
+                    return SolveResult(value, new_policy, validation_method="policy")
+            policy = new_policy
 
-        return SolveResult(value, policy, validation_method="policy")
-
-    def _greedy_policy(self, value: np.ndarray, policy: np.ndarray) -> np.ndarray:
+    def _improve_policy(
+        self, value: np.ndarray, policy: np.ndarray
+    ) -> tuple[np.ndarray, bool]:
         q_value = bellman_operator(self.model, value, self.discount)
         greedy = q_value.argmax(axis=1)
         states = np.arange(self.model.state_dim)
-        improve = q_value[states, greedy] > q_value[states, policy] + 1e-12
-        return np.where(improve, greedy, policy)
+        optimal_backup = q_value[states, greedy]
+        if norminf(optimal_backup - value) < self.optimal_residual_tol:
+            return greedy, True
+        improve = optimal_backup > q_value[states, policy] + 1e-12
+        return np.where(improve, greedy, policy), False
 
     def _policy_evaluation(
         self, policy: np.ndarray, initial_value: np.ndarray

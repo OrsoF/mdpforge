@@ -26,7 +26,11 @@ from time import time
 import numpy as np
 
 from mdpforge.core.mdp import MDP
-from mdpforge.core.operators import bellman_operator, compute_transition_reward_policy
+from mdpforge.core.operators import (
+    bellman_operator,
+    compute_transition_reward_policy,
+    norminf,
+)
 from mdpforge.core.partition import Partition
 from mdpforge.core.solve_result import SolveResult
 from mdpforge.core.solver import GenericSolver
@@ -66,6 +70,7 @@ class Solver(GenericSolver):
             model, discount, final_precision, max_iterations=max_policy_iterations
         )
         self.epsilon = final_precision / 10
+        self.optimal_residual_tol = final_precision * (1 - discount) / (2 * discount)
         self.verbose = verbose
         self.max_policy_iterations = max_policy_iterations
         self.max_value_iterations = max_value_iterations
@@ -107,14 +112,12 @@ class Solver(GenericSolver):
                 return self._finish(value, policy, start_time)
 
             value = self._approximate_policy_evaluation(policy, value)
-            new_policy = self._greedy_policy(value, policy)
+            policy, converged = self._improve_policy(value, policy)
 
-            if np.array_equal(new_policy, policy):
+            if converged:
                 return self._finish(value, policy, start_time)
 
-            policy = new_policy
-
-        # Conservative fallback if approximate PI has not stabilized.
+        # Fall back to full-state evaluation if the aggregate phase exhausts its budget.
         value, policy = self._exact_policy_iteration(value, policy)
         return self._finish(value, policy, start_time)
 
@@ -279,17 +282,18 @@ class Solver(GenericSolver):
 
         return changed
 
-    def _greedy_policy(
-        self, value: np.ndarray, policy: np.ndarray | None = None
-    ) -> np.ndarray:
-        q_value = bellman_operator(self.model, value, self.discount)
+    def _improve_policy(
+        self, value: np.ndarray, policy: np.ndarray
+    ) -> tuple[np.ndarray, bool]:
+        original_value = self._unshift_value(value)
+        q_value = bellman_operator(self.model, original_value, self.discount)
         greedy = q_value.argmax(axis=1)
-        if policy is None:
-            return greedy
-
         states = np.arange(self.n_states)
-        improve = q_value[states, greedy] > q_value[states, policy] + 1e-12
-        return np.where(improve, greedy, policy)
+        optimal_backup = q_value[states, greedy]
+        if norminf(optimal_backup - original_value) < self.optimal_residual_tol:
+            return greedy, True
+        improve = optimal_backup > q_value[states, policy] + 1e-12
+        return np.where(improve, greedy, policy), False
 
     def _exact_policy_evaluation(
         self, policy: np.ndarray, value: np.ndarray
@@ -308,23 +312,28 @@ class Solver(GenericSolver):
     def _exact_policy_iteration(self, value, policy):
         for _ in range(self.max_policy_iterations):
             value = self._exact_policy_evaluation(policy, value)
-            new_policy = self._greedy_policy(value, policy)
-            if np.array_equal(new_policy, policy):
+            policy, converged = self._improve_policy(value, policy)
+            if converged:
                 return value, policy
-            policy = new_policy
-        return value, policy
+        raise RuntimeError(
+            "Abate stopped: max_policy_iterations reached before convergence"
+        )
 
     def _region_max(self, values: np.ndarray) -> np.ndarray:
         out = np.full(self.partition.n_regions, -np.inf)
         np.maximum.at(out, self.partition.state_to_region, np.asarray(values).ravel())
         return out
 
-    def _finish(
-        self, value: np.ndarray, policy: np.ndarray, start_time: float
-    ) -> SolveResult:
+    def _unshift_value(self, value: np.ndarray) -> np.ndarray:
         value = np.asarray(value).ravel()
         if self.reward_shift and self.discount < 1:
             value = value - self.reward_shift / (1 - self.discount)
+        return value
+
+    def _finish(
+        self, value: np.ndarray, policy: np.ndarray, start_time: float
+    ) -> SolveResult:
+        value = self._unshift_value(value)
         policy = np.asarray(policy, dtype=int)
         self.runtime = time() - start_time
         return SolveResult(value, policy, validation_method="policy")
